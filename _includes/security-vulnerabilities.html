@@ -1,0 +1,115 @@
+<div align=center>
+	<font size=5>Security Vulnerabilities Demo</font>
+	<hr>
+</div>
+
+<table align=center>
+	<tr>
+		<td>
+			SQL Injection
+		</td>
+		<td>
+			<form action="main.php" method="POST" style='display:inline'>
+				<input type=hidden name="current_page_id" value="6">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Set Cookie
+		</td>
+		<td>
+			<form action="setCookie.php" method="POST" style='display:inline'>
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Show Cookie
+		</td>
+		<td>
+			<form action="main.php" method="POST"	style='display:inline'>
+				<input type=hidden name="current_page_id" value="20">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Clear Cookie
+		</td>
+		<td>
+			<form action="clearCookie.php" method="POST" style='display:inline'>
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Reflected XSS1
+		</td>
+		<td>
+			<form action="main.php" method="POST"	style='display:inline'>
+				<input type=hidden name="current_page_id" value="21">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Reflected XSS2
+		</td>
+		<td>
+			<form action="main.php" method="POST"	style='display:inline'>
+				<input type=hidden name="current_page_id" value="1">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Stored XSS
+		</td>
+		<td>
+			<form action="main.php" method="POST"	style='display:inline'>
+				<input type=hidden name="current_page_id" value="3">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Insecure Direct Object Reference
+		</td>
+		<td>
+			<form action="main.php" method="POST" style='display:inline'>
+				<input type=hidden name="current_page_id" value="17">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Cross Site Request Forgery
+		</td>
+		<td>
+			<form action="main.php" method="POST" style='display:inline'>
+				<input type=hidden name="current_page_id" value="12">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Unvalidated Redirects
+		</td>
+		<td>
+			<form action="main.php" method="POST" style='display:inline'>
+				<input type=hidden name="current_page_id" value="18">
+				<input type=submit value="Enter">
+			</form>
+		</td>
+	</tr>
+</table>
