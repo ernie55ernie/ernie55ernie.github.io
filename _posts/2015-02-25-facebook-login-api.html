@@ -134,8 +134,7 @@ categories: facebook
 		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 		</fb:login-button>
 
-		<fb:login-button size="small" onlogin="fbLogout();" perms="email,user_birthday">
-		</fb:login-button>
+		<span id="fbLogout" onclick="fbLogout()"><a class="fb_button fb_button_medium"><span class="fb_button_text">Logout</span></a></span>
 
 		<div id="status">
 		</div>
