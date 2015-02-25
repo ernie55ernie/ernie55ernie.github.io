@@ -91,6 +91,17 @@ categories: facebook
 		    statusChangeCallback(response);
 		  });
 
+		  FB.logout(function(response) {
+        // Person is now logged out
+    		});
+
+		  function fbLogout() {
+        FB.logout(function (response) {
+            //Do what ever you want here when logged out like reloading the page
+            window.location.reload();
+        	});
+    		}
+
 		  };
 
 		  // Load the SDK asynchronously
@@ -121,6 +132,9 @@ categories: facebook
 		-->
 
 		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+		</fb:login-button>
+
+		<fb:login-button size="small" onlogin="fbLogout();" perms="email,user_birthday">
 		</fb:login-button>
 
 		<div id="status">
