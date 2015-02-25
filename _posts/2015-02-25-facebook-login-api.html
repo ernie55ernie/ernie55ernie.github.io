@@ -109,7 +109,7 @@ categories: facebook
 		    FB.api('/me', function(response) {
 		      console.log('Successful login for: ' + response.name);
 		      document.getElementById('status').innerHTML =
-		        'Thanks for logging in, ' + response.name + '!' + "<p>Your email is " + response.email + "</p><p>";
+		        'Thanks for logging in, ' + response.name + '!' + "<p> " + JSON.stringify(response) + "</p>";
 		    });
 		  }
 		</script>
