@@ -123,7 +123,7 @@ categories: facebook
 		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 		</fb:login-button>
 
-		<fb:login-button size="small" onlogin="RedirectLogon();" perms="email,user_birthday" autologoutlink="true">
+		<fb:login-button size="small" onlogin="RedirectLogon();window.location.reload();" perms="email,user_birthday" autologoutlink="true">
 		</fb:login-button>
 
 		<div id="status">
