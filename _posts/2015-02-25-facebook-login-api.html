@@ -91,18 +91,12 @@ categories: facebook
 		    statusChangeCallback(response);
 		  });
 
-		  FB.logout(function(response) {
-        // Person is now logged out
-    		});
-
-		  function fbLogout() {
-        FB.logout(function (response) {
-            //Do what ever you want here when logged out like reloading the page
-            window.location.reload();
-        	});
-    		}
-
-		  };
+		function fbLogout() {
+	        FB.logout(function (response) {
+	            //Do what ever you want here when logged out like reloading the page
+	            window.location.reload();
+	        });
+	    }
 
 		  // Load the SDK asynchronously
 		  (function(d, s, id) {
