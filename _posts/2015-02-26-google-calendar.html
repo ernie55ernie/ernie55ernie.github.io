@@ -32,14 +32,12 @@ categories: google
 	      }
 
 	      function makeTodayClass(){
-	      	alert('todayclass');
-	      	var todayclass = gap.client.calendar.events.list({
-	      		'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com',
-        		'singleEvents': true, /* required to use timeMin */ 
-        		'timeMin': '2015-03-10T10:00:00.000Z'
-	      	});
-	      	alert(todayclass);
 	      	todayclass.execute(appendtodayclass);
+	      	var request = gapi.client.calendar.events.list({
+		      'calendarId': f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com
+		    });
+
+		  	request.execute(appendtodayclass);
 	      }
 
 	      function init() {
