@@ -14,13 +14,7 @@ categories: google
 	        results.appendChild(document.createTextNode(text));
 	      }
 
-	      function appendtodayclass(text){
-	      	var todayclass = document.getElementById('todayclass');
-	      	todayclass.appendChild(document.createElement('P'));
-	      	todayclass.appendChild(document.createTextNode(text));
-	      }
-
-	      function makeRequest() {
+	      /*function makeRequest() {
 	        var request = gapi.client.urlshortener.url.get({
 	          'shortUrl': 'http://goo.gl/i7BLCb'
 	        });
@@ -29,16 +23,16 @@ categories: google
 	        }, function(reason) {
 	          console.log('Error: ' + reason.result.error.message);
 	        });
-	      }
+	      }*/
 
-	      function makeTodayClass(){
+	      function makeRequest(){
 	      	var request = gapi.client.calendar.events.list({
 		      'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com',
               'start': new Date("2015-02-24").toISOString(),
               'end': new Date("2015-06-26").toISOString()
 		    });
 	      	alert(request);
-		  	request.execute(appendtodayclass);
+		  	request.execute(appendResults);
 	      }
 
 	      function init() {
@@ -47,8 +41,8 @@ categories: google
 
 	        //alert('init urlshortener finished');
 	      	
-	        gapi.client.load('calendar', 'v3').then(makeTodayClass);
-	      	alert('request today class');
+	        gapi.client.load('calendar', 'v3').then(makeRequest);
+	      	alert('request result');
 	      }
 	    </script>
 	    <script src="https://apis.google.com/js/client.js?onload=init"></script>
