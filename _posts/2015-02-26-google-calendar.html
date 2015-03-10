@@ -32,7 +32,11 @@ categories: google
 	      }
 
 	      function makeTodayClass(){
-	      	var todayclass = gap.client.
+	      	var todayclass = gap.client.calendar.events.list({
+	      		'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com',
+           		'timeMin': '2015-02-24T00:00:00-00:00'
+	      	});
+	      	todayclass.execute(appendtodayclass);
 	      }
 
 	      function init() {
@@ -41,11 +45,12 @@ categories: google
 
 	        alert('init urlshortener finished');
 	      	
-	        gapi.client.load('', 'v3').then(makeTodayClass);
+	        gapi.client.load('calendar', 'v3').then(makeTodayClass);
 	      	alert('request today class');
 	      }
 	    </script>
 	    <script src="https://apis.google.com/js/client.js?onload=init"></script>
+	    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	</head>
 	<body>
 		<div id="todayclass"></div>
