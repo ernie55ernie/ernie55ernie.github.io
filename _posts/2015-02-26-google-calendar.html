@@ -14,6 +14,12 @@ categories: google
 	        results.appendChild(document.createTextNode(text));
 	      }
 
+	      function appendtodayclass(text){
+	      	var todayclass = document.getElementById('todayclass');
+	      	todayclass.appendChild(document.createElement('P'));
+	      	todayclass.appendChild(document.createTextNode(text));
+	      }
+
 	      function makeRequest() {
 	        var request = gapi.client.urlshortener.url.get({
 	          'shortUrl': 'http://goo.gl/i7BLCb'
@@ -25,11 +31,18 @@ categories: google
 	        });
 	      }
 
+	      function makeTodayClass(){
+	      	var todayclass = gap.client.
+	      }
+
 	      function init() {
 	        gapi.client.setApiKey('AIzaSyBYt_lOEaWT552UNXGV7s3Mwth_DP-A2ac');
 	        gapi.client.load('urlshortener', 'v1').then(makeRequest);
 
 	        alert('init urlshortener finished');
+	      	
+	        gapi.client.load('', 'v3').then(makeTodayClass);
+	      	alert('request today class');
 	      }
 	    </script>
 	    <script src="https://apis.google.com/js/client.js?onload=init"></script>
