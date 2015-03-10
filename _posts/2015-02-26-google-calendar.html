@@ -34,7 +34,9 @@ categories: google
 	      function makeTodayClass(){
 	      	todayclass.execute(appendtodayclass);
 	      	var request = gapi.client.calendar.events.list({
-		      'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com'
+		      calendarId: f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com,
+            	start: new Date("2015-02-24").toISOString(),
+            	end: new Date("2015-06-26").toISOString()
 		    });
 
 		  	request.execute(appendtodayclass);
