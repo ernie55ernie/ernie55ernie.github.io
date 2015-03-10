@@ -10,8 +10,13 @@ categories: google
 		<script>
 	      function appendResults(text) {
 	        var results = document.getElementById('results');
-	        results.appendChild(document.createElement('P'));
-	        results.appendChild(document.createTextNode(text));
+	        // results.appendChild(document.createElement('P'));
+	        // results.appendChild(document.createTextNode(text));
+	        for (var i = 0; i < resp.items.length; i++) {
+		      var li = document.createElement('li');
+		      li.appendChild(document.createTextNode(resp.items[i].summary));
+		      document.getElementById('results').appendChild(li);
+		    }
 	      }
 
 	      /*function makeRequest() {
