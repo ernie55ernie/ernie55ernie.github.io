@@ -18,7 +18,6 @@ categories: google
 	      	var todayclass = document.getElementById('todayclass');
 	      	todayclass.appendChild(document.createElement('P'));
 	      	todayclass.appendChild(document.createTextNode(text));
-	      	todayclass.appendChild(document.createTextNode('today'));
 	      }
 
 	      function makeRequest() {
@@ -35,7 +34,7 @@ categories: google
 	      function makeTodayClass(){
 	      	todayclass.execute(appendtodayclass);
 	      	var request = gapi.client.calendar.events.list({
-		      'calendarId': f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com
+		      'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com'
 		    });
 
 		  	request.execute(appendtodayclass);
