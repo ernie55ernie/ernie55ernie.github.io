@@ -12,9 +12,9 @@ categories: google
 	        var results = document.getElementById('results');
 	        // results.appendChild(document.createElement('P'));
 	        // results.appendChild(document.createTextNode(text));
-	        for (var i = 0; i < resp.items.length; i++) {
+	        for (var i = 0; i < text.items.length; i++) {
 		      var li = document.createElement('li');
-		      li.appendChild(document.createTextNode(resp.items[i].summary));
+		      li.appendChild(document.createTextNode(text.items[i].summary));
 		      document.getElementById('results').appendChild(li);
 		    }
 	      }
