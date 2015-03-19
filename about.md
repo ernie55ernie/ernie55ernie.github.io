@@ -4,7 +4,8 @@ title: About
 permalink: /about/
 ---
 
-Seize the vulnerable time and code at once! 
+Seize the vulnerable time and code at once!
+The following is a piece of [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29) code
 
 {% highlight java %}
 	public class HelloWorld{
