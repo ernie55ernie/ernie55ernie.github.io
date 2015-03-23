@@ -112,6 +112,12 @@ categories: facebook
 		        'Thanks for logging in, ' + response.name + '!' + "<p> " + JSON.stringify(response) + "</p>";
 		    });
 		  }
+
+		  function logout(){
+		  	FB.logout(function(response){
+		  		// user is now logged out
+		  	});
+		  }
 		</script>
 
 		<!--
@@ -128,5 +134,7 @@ categories: facebook
 
 		<div id="status">
 		</div>
+
+		<a href="javascript:logout();">Logout</a>
 	</body>
 </html>
