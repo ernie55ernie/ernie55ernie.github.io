@@ -116,6 +116,7 @@ categories: facebook
 		  function logout(){
 		  	FB.logout(function(response){
 		  		// user is now logged out
+		  		location.reload();
 		  	});
 		  }
 		</script>
@@ -135,6 +136,6 @@ categories: facebook
 		<div id="status">
 		</div>
 
-		<a href="javascript:logout();location.reload();">Logout</a>
+		<a href="javascript:logout();">Logout</a>
 	</body>
 </html>
