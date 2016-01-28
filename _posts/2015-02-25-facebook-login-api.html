@@ -9,23 +9,11 @@ categories: facebook
 		<title>Facebook login api</title>
 	</head>
 	<body>
-		<script>
-		  window.fbAsyncInit = function() {
-		    FB.init({
-		      appId      : '869780883093064',
-		      xfbml      : true,
-		      version    : 'v2.2'
-		    });
-		  };
+		<h3>Introduction</h3>
+		<div>
+			This is a demonstation of how to include facebook buttons, such as login, like, and share. After loggin in, the users' information would be printed below the button in a json format. I would go through the process from creating a facebook application and the configuration needed below. 
+		</div>
 
-		  (function(d, s, id){
-		     var js, fjs = d.getElementsByTagName(s)[0];
-		     if (d.getElementById(id)) {return;}
-		     js = d.createElement(s); js.id = id;
-		     js.src = "//connect.facebook.net/en_US/sdk.js";
-		     fjs.parentNode.insertBefore(js, fjs);
-		   }(document, 'script', 'facebook-jssdk'));
-		</script>
 		<div
 		  class="fb-like"
 		  data-share="true"
@@ -67,13 +55,12 @@ categories: facebook
 		  }
 
 		  window.fbAsyncInit = function() {
-		  FB.init({
-		    appId      : '869780883093064',
-		    cookie     : true,  // enable cookies to allow the server to access 
-		                        // the session
-		    xfbml      : true,  // parse social plugins on this page
-		    version    : 'v2.2' // use version 2.2
-		  });
+		    FB.init({
+		      appId      : '205915156426121',
+		      xfbml      : true,
+		      version    : 'v2.5'
+		    });
+		  };
 
 		  // Now that we've initialized the JavaScript SDK, we call 
 		  // FB.getLoginStatus().  This function gets the state of the
@@ -136,8 +123,18 @@ categories: facebook
 		<div id="status">
 		</div>
 
-		<a href="javascript:logout();">Logout</a>
+		<div>
+			<a href="javascript:logout();">Logout</a>
+		</div>
 
+		<img src="/assets/facebook-login-api-add.png"></img>
+		<h3>Facebook application setup</h3>
+		<h3></h3>
+
+		<h3>History</h3>
+		<div>
+			First revision: add description - 2016/01/28
+		</div>
 		<h3>Reference</h3>
 		<ul>
 			<li><a href="https://developers.facebook.com">Facebook developer</a><li>
