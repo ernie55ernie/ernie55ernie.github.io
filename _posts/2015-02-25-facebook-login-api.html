@@ -127,7 +127,7 @@ categories: facebook
 			<br><img width="50%" alt="Facebook application setting" src="/assets/facebook-login-api-setting.png"></li>
 			<li>Using the code from the <a href="https://developers.facebook.com/docs/facebook-login/web">Facebook login documents</a> 
 			<div>
-				```javascript
+				{% highlight javascript %}
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -206,12 +206,12 @@ categories: facebook
         'Thanks for logging in, ' + response.name + '!';
     });
   }
-				```
+				{% endhighlight %}
 			</div> and a simple html button, 
-				```html
+				{% highlight html %}
 <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 </fb:login-button>
-				```
+				{% endhighlight %}
 			a simple login button would be finished.</li>
 		</ol>
 		<h3>Conslusion</h3>
