@@ -1,0 +1,65 @@
+---
+layout: post
+title: "WebGoat installation"
+data: 2016-02-04 20:45:00
+categories: webgoat
+---
+<h3>Introduction</h3>
+<div>
+	In the era of information explosion, there much data generated on the web, such as searching history, browsing history, click stream history, and keystorke etc. Probably some of us would have account in shopping websites, social medias, such as Facebook, LinkedIn, Instagram, Github, and Google+. These accounts might contain personal information, such as cell phone, address, birthday, working place, and even credit card number. Privacy should be severely considered as a first prioity. But how may we pratice and learn about the possible attack? There is a nonprofit charitable progranization focused on improving the security of software called <a href="https://www.owasp.org/index.php/Main_Page">OWASP</a> and they are maintaining a project called <a href="https://www.owasp.org/index.php/Category:OWASP_WebGoat_Project">WebGoat</a>. It's a fun insecure web application that is designed to teach web security lessons. Here, I'm installing a non-developer version on Windows and a developer version on Mac OS. The difference between the non-developer and developer version is that some of the lessons may require the user to modify the code to prevent an attack and new lessons may be created, compiled and runned on a developer version.
+</div>
+<h3>Install non-developer version of WebGoat</h3>
+<ol>
+	<li>Install Java from the offcial web site of orable.<br><a href="http://www.oracle.com/technetwork/indexes/downloads/index.html#java">Orable</a></li>
+	<li>Download WebGoat-6.0.1-war-exec.jar.<br><a href="https://github.com/WebGoat/WebGoat-Legacy/releases/tag/v6.0.1">WebGoat release</a></li>
+	<li>Go to the directory where WebGoat-6.0.1-war-exec.jar has been downloaded in a command line (bash or terminal) and type in java -jar WebGoat-6.0.1-war.exec.jar.<br>
+	{% highlight shell %}
+java -jar WebGoat-6.0.1-war.exec.jar
+	{% endhighlight %}</li>
+	<li>Direct the url to http://localhost:8080/WebGoat.<br>
+	{% highlight shell %}
+http://localhost:8080/WebGoat
+	{% endhighlight %}</li>
+	<li>Start hacking!<br>
+	<img width="50%" src="/assets/webgoat-installation-picture.png" alt="WebGoat picture"></li>
+</ol>
+<h3>Install developer version of WebGoat on Mac OS</h3>
+<ol>
+	<li>Make a directory at where you want to put the project.<br>
+	{% highlight shell %}
+mkdir WebGoat-Workspace
+	{% endhighlight %}</li>
+	<li>Change the directory into the workspace.<br>
+	{% highlight shell %}
+cd WebGoat-Workspace
+	{% endhighlight %}</li>
+	<li>Download a shell file from a URL with an option that specifies the file output name.<br>
+	{% highlight shell %}
+curl -o webgoat_developer_bootstrap.sh https://raw.githubusercontent.com/WebGoat/WebGoat/master/webgoat_developer_bootstrap.sh
+	{% endhighlight %}</li>
+	<li>Install <a href="http://brew.sh">Homebrew</a> (a package manager for OS X)<br>
+	{% highlight shell %}
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	{% endhighlight %}</li>
+	<li>Install maven<br>
+	{% highlight shell %}
+brew install maven
+	{% endhighlight %}</li>
+	<li>The webgoat_developer_bootstrap.sh script will clone the necessary repositories, call the maven goals in order launch Tomcat listening on localhost:8080<br>
+	{% highlight shell %}
+sh webgoat_developer_bootstrap.sh
+	{% endhighlight %}</li>
+	<li>Start hacking!<br>
+	<img width="50%" alt="start using WebGoat picture" src="/assets/webgoat-installation-start.png"></li>
+	<li>Open localhost:8080/WebGoat/<br>
+	<img width="50%" src="/assets/webgoat-installation-picture.png" alt="WebGoat picture"></li>
+</ol>
+<h3>Conclusion</h3>
+<div>After installing WebGoat, we may start to explorer the lessons in this fantastic amazing project! The following posts would describe some of the methods of solving.</div>
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://github.com/WebGoat/WebGoat/blob/master/README.MD">WebGoat README.MD</a></li>
+	<li><a href="https://github.com/WebGoat/WebGoat-Legacy/releases/tag/v6.0.1">WebGoat-Legacy</a></li>
+	<li><a href="https://www.owasp.org/index.php/Main_Page">OWASP</a></li>
+</ol>
