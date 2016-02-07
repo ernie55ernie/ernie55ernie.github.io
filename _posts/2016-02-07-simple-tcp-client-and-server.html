@@ -1,0 +1,81 @@
+---
+layout: post
+title: "Simple TCP client and server"
+date: 2016-02-07 01:00:00
+categories: python
+---
+<h3>Introduction</h3>
+<div>There are powerful libraries and tools written in <a href="https://www.python.org">python</a>. In the core part of these libraries and tools is the <a href="https://docs.python.org/2/library/socket.html">socket module</a>. This module provides access to the <a href="https://en.wikipedia.org/wiki/Berkeley_sockets">BSD socket</a> interface and avaliable on numerous platforms, Unix, Window, and Mac OS X etc. Here, I'm going to create a TCP client and TCP server to test and transfer data.</div>
+<h3>TCP client</h3>
+<div>
+	Using a TCP client, we could test service, transfer trash data, do fuzzy tests, and execute any kinds of works. First, we use AF_INET address family, where host is representing either a hostname in Internet domain notation like 'en.wikipedia.org' or an IPv4 address like '198.35.26.96', and SOCK_STREAM which means TCP client.<br>
+	Here are a few assumptions in the below code:
+	<ol>
+		<li>Connection would be successful.</li>
+		<li>Server would wait for client to send data first.</li>
+		<li>Server would response in a short time.</li>
+	</ol>
+</div>
+{% highlight python linenos %}
+import socket
+target_host = "0.0.0.0"
+target_port = 27700
+# create a socket connection
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# let the client connect
+client.connect((target_host, target_port))
+# send some data
+client.send("SYN")
+# get some data
+response = client.recv(4096)
+print response
+{% endhighlight %}
+<h3>TCP server</h3>
+<div>To establish a TCP server, we would build a multi-threaded TCP server. After binding the listening host ip and port, specify the maximum number value of the connections made to the socket.<br>
+Everytime the server accept a connection, store the socket object into client variable and create a new thread to handle this connection using the handle_client function.</div>
+{% highlight python linenos %}
+import socket
+import threading
+bind_ip = "0.0.0.0"
+bind_port = 27700
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((bind_ip, bind_port))
+server.listen(5)
+print "[*] Listening on %s:%d" % (bind_ip, bind_port)
+# This is the thread we handle the data from  the client
+def handle_client(client_socket):
+    # show the data from the client
+    request = client_socket.recv(1024)
+    print "[*] Received: %s" % request
+    # Return a packet
+    client_socket.send("ACK!")
+    client_socket.close()
+while True:
+    client, addr = server.accept()
+    print "[*] Accepted connection from: %s:%d" % (addr[0], addr[1])
+    # activate the function to handle the data from client
+    client_handler = threading.Thread(target = handle_client, args=(client,))
+    client_handler.start()
+{% endhighlight %}
+<h3>Demonstration</h3>
+<div>Execute the server and then execute the client in another terminal window. This is the output in the server window.</div>
+{% highlight shell %}
+python tcp_server.py 
+[*] Listening on 0.0.0.0:27700
+[*] Accepted connection from: 127.0.0.1:50061
+[*] Received: SYN
+{% endhighlight %}
+<div>This is the output in the output in the client window.</div>
+{% highlight shell %}
+python tcp_client.py 
+ACK!
+{% endhighlight %}
+<h3>Conclusion</h3>
+<div>It's quite easy but powerful to write these TCP connections in Python. Afterward, there would be more extension of these applications.</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://docs.python.org/2/library/socket.html">Python 2.7.11 socket</a></li>
+	<li><a href="https://www.python.org">Python</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Berkeley_sockets">BSD socket</a></li>
+</ol>
