@@ -1,0 +1,229 @@
+---
+layout: post
+title: "Validate XML with XML schema using Java"
+date: 2016-02-08 6:00:00
+categories: Java
+---
+<h3>Introduction</h3>
+<div>There are wide usages of XML in the representation of arbitrary data structures such as those used in web service. XML and its extensions are often criticized for verbosity and complexity. There are other akternatives such as JSON, YAML, and S-Expression which concentrate on representing highly structured data. Here, I'm gonna briefly explain XML and demonstrate how to use Java to validate XML with a XML schema.</div>
+<h3>XML and XML schema brief</h3>
+<div>XML (extensible markup language) is a markup language which is a system for annotating a document in a way that is syntactically distinguishable from the text and defines some rules for formatting documents in human-readable and machine-readable formats. The markup can be transformed into HTML, PDF, and Rich Text Format using a programming language or XSL.<br>
+The XML specification defines an XML document as a well-formed text when the following conditions are met:
+<ol>
+	<li>properly encoded unicode characters.</li>
+	<li>&lt; and &amp; appear only when markup.</li>
+	<li>Elements are correctly nested without overlapping.</li>
+	<li>Tags are case-sensitive.</li>
+	<li>There's only a single root element that contains all the other elements.</li>
+</ol>
+Here's a simple XML document called note.xml
+{% highlight xml %}
+<?xml version="1.0"?>
+<note
+xmlns="http://www.w3schools.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.w3schools.com note.xsd">
+  <to>Fiona</to>
+  <from>Ernie</from>
+  <heading>Reminder</heading>
+  <body>Don't forget to exercise!</body>
+</note>
+{% endhighlight %}
+A valid XML document as a well-formed XML document also contains a reference to a DTD(Document Type Definition) or XML schema. Here's an example of XML schema called note.xsd that defines the elements of the XML document above. 
+{% highlight xml %}
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.w3schools.com"
+xmlns="http://www.w3schools.com"
+elementFormDefault="qualified">
+<xs:element name="note">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="to" type="xs:string"/>
+      <xs:element name="from" type="xs:string"/>
+      <xs:element name="heading" type="xs:string"/>
+      <xs:element name="body" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
+{% endhighlight %}</div>
+<h3>Java code</h3>
+<div>
+Here, I use <a href="http://dom4j.github.io">dom4j-1.6.1</a> as the SAX (Simple API for XML) reader which is an event-driven for parsing XML. SAX that operates on each piece of the XML document sequentially is an alternatives to DOM (Document Object Model) that operates on the document as a whole.
+<ol>
+	<li>Specify the XML document and XML schema.
+	{% highlight java %}
+// specify the system id (url or path) of the schema source
+static Source noteSchema = new StreamSource("note.xsd");
+// XML file to be validated
+static File file = new File("note.xml");
+	{% endhighlight %}</li>
+	<li>Create SAX factory to obtain and set a SAX parser and schema factory to gain and configure a XML schema parser.
+	{% highlight java %}
+// a factory to acquire and configure a SAX based parser to parse XML
+SAXParserFactory factory = SAXParserFactory.newInstance();
+// a factory to acquire and configure a parser to parse XML schema based on the specified schema language
+SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+// an array of schemas may be use to generate a Schema object
+Source[] schemaSources = new Source[]{noteSchema};
+	{% endhighlight %}</li>
+	<li>Set the schema for the SAX parser and create the SAX reader.
+	{% highlight java %}
+// use the source array to generate a Schema object
+Schema schema = schemaFactory.newSchema(schemaSources);
+// set the schema to be used by SAX based parser created by this factory
+factory.setSchema(schema);
+// create a new object of SAX parser
+SAXParser parser = factory.newSAXParser();
+// use interface for reading XML document callbacks to initialize the SAX reader
+// that creates a DOM4J tree from SAX parsing events
+SAXReader reader = new SAXReader(parser.getXMLReader());
+// turn off the validation mode
+reader.setValidation(false);
+	{% endhighlight%}</li>
+	<li>Create the callback function for the SAX reader so that everytime a SAX error occurs, the error would be printed out.
+	{% highlight java %}
+// Callback functions for SAX errors that would print the line number and the error message
+class LineNumberErrorHandler implements ErrorHandler{
+	@Override
+	public void warning(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());
+	}
+	@Override
+	public void error(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());;
+	}
+	@Override
+	public void fatalError(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());
+	}
+}
+	{% endhighlight %}</li>
+	<li>Set the callback functions and read a XML file.
+	{% highlight java %}
+// set the callback functions as a error handler that would print the line number
+// and error message
+reader.setErrorHandler(new LineNumberErrorHandler());
+reader.read(file);
+System.out.println("Finish validation");
+	{% endhighlight %}</li>
+</ol>
+Full piece of code is shown below.
+	{% highlight java %}
+package xmlschema;
+import java.io.File;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.dom4j.io.SAXReader;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+/**
+ * @author ernie
+ *
+ */
+public class XMLValidation {
+	// specify the system id (url or path) of the schema source
+	static Source noteSchema = new StreamSource("note.xsd");
+	// XML file to be validated
+	static File file = new File("note.xml");
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// a factory to acquire and configure a SAX based parser to parse XML
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		// a factory to acquire and configure a parser to parse XML schema based on the specified schema language
+		SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+		// an array of schemas may be use to generate a Schema object
+		Source[] schemaSources = new Source[]{noteSchema};
+		try{
+			// use the source array to generate a Schema object
+			Schema schema = schemaFactory.newSchema(schemaSources);
+			// set the schema to be used by SAX based parser created by this factory
+			factory.setSchema(schema);
+			// create a new object of SAX parser
+			SAXParser parser = factory.newSAXParser();
+			// use interface for reading XML document callbacks to initialize the SAX reader
+			// that creates a DOM4J tree from SAX parsing events
+			SAXReader reader = new SAXReader(parser.getXMLReader());
+			// turn off the validation mode
+			reader.setValidation(false);
+			// set the callback functions as a error handler that would print the line number
+			// and error message
+			reader.setErrorHandler(new LineNumberErrorHandler());
+			reader.read(file);
+			System.out.println("Finish validation");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+}
+// Callback functions for SAX errors that would print the line number and the error message
+class LineNumberErrorHandler implements ErrorHandler{
+	@Override
+	public void warning(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());
+	}
+	@Override
+	public void error(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());;
+	}
+	@Override
+	public void fatalError(SAXParseException exception) throws SAXException {
+		System.out.println("Line: " + exception.getLineNumber() + ") " + exception.getMessage());
+	}
+}
+	{% endhighlight %}
+</div>
+<h3>Demonstration</h3>
+<ol>
+	<li>Download the jar or use maven to manage the jar of <a>dom4j</a></li>
+	<li>Compile the java code with the specufied class path (the dom4j jar downloaded)
+	{% highlight shell %}
+$ javac -cp path/to/jar: xmlschema/XMLValidation.java
+	{% endhighlight %}</li>
+	<li>Run the program with the specified path to te dom4j jar
+	{% highlight shell %}
+$ java -cp path/to/jar: xmlschema/XMLValidation
+Finish validation
+	{% endhighlight %}</li>
+	<li>Replace the note.xml with a invalid content that change the "to" tag to the "for" tag.
+	{% highlight xml %}
+<?xml version="1.0"?>
+<note
+xmlns="http://www.w3schools.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.w3schools.com note.xsd">
+  <for>Fiona</for>
+  <from>Ernie</from>
+  <heading>Reminder</heading>
+  <body>Don't forget to exercise!</body>
+</note>
+	{% endhighlight %}</li>
+	<li>Run the program again and the error would be shown.
+	{% highlight shell %}
+$ java -cp ../Documents/OneDrive/Jar/dom4j-1.6.1/dom4j-1.6.1.jar: xmlschema/XMLValidation
+Line: 6) cvc-complex-type.2.4.a: Invalid content was found starting with element 'for'. One of '{"http://www.w3schools.com":to}' is expected.
+Finish validation
+	{% endhighlight %}</li>
+</ol>
+<h3>Conclusion</h3>
+<div>There are many alternatives in this piece of code, such as multiple source of schema, different schema language, and customized error handlers. To make full use of the javax.xml and dom4j, please reference the links below to explore the full power of validating XML using Java.</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://docs.oracle.com/javase/tutorial/jaxp/dom/validating.html">Validate with XML schema</a></li>
+	<li><a href="http://www.w3.org/TR/xmlschema-0/">XML Schema Part 0: Primer Second Edition</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/XML">XML</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Markup_language">Markup language</a></li>
+	<li><a href="http://www.w3schools.com/xml/">XML tutorial</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Comparison_of_data_serialization_formats">Comparison of data serialization formats</a></li>
+	<li><a href="https://dom4j.github.io">Dom4j XML framework for Java</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Simple_API_for_XML">Simple API for XML</a></li>
+</ol>
