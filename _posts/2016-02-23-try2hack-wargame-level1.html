@@ -1,0 +1,60 @@
+---
+layout: post
+title: "TRY2HACK wargame level 1"
+date: 2016-02-23 13:08:00
+categories: Wargame
+---
+<h3>Introduction</h3>
+<div>
+	A wargame is a strategy game which can also be called conflicit simulations. <a href="http://try2hack.nl/">TRY2HACK</a> is a website providing a wargame aimimg at the domain of information security. There are plenty of levels that has a login page or program containing security holes waiting for you to hack. Here. I choose to use <a href="https://www.google.com/chrome/browser/desktop/">Google chrome</a> and <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> to play this wargame since the developer console of these two browser have many functionalities, such as elements, console, sources, network, timeline, profiles, resources, and audits.
+	<img src="/assets/try2hack-wargame-level1-index.png" alt="Webpage index" width="100%">
+</div>
+<h3>level 1</h3>
+<div>
+	Press the START button on the right of the menu, and a input of password is shown.
+	<img src="/assets/try2hack-wargame-level1-level1index.png" alt="Level 1 index" width="100%">
+	I randomly type in some nonsence words, such as qwer and an message of incorrect password is shown.
+	<img src="/assets/try2hack-wargame-level1-level1try.png" alt="Level 1 try password" width="100%">
+	The page is redirceted to the webpage of Disney. How humor the author of this webpage is.
+	<img src="/assets/try2hack-wargame-level1-level1disney.png" alt="Level 1 disney page" width="100%">
+	There may be some security holes hidding in the source code. Right click on the input and choose the inspect.
+	<img src="/assets/try2hack-wargame-level1-level1inspect.png" alt="Level 1 inspect element" width="100%">
+	From the elements tab, we could see that there is a javascript function, Try, called upon the clicking event of the button, click here to continue.
+	<img src="/assets/try2hack-wargame-level1-level1input.png" alt="Level 1 input tag action" width="100%">
+	Searching for the script tag in this file where javascript is declared, I've found it at several lines above.
+	<img src="/assets/try2hack-wargame-level1-level1script.png" alt="Level 1 javascript script tag" width="100%">
+	Extend this tag and the javascript would appear.
+	<img src="/assets/try2hack-wargame-level1-level1expand.png" alt="Level 1 javascript code" width="100%">
+	Viewing the following code inside the script tag, we may observe that the function, Try, called upon the clicking event of the button is simply comparing the input parameter with a string. If the condition is not met, an alert message would be thrown and the webpage would be redirected to <a herf="http://www.disney.com/">Disney</a>
+{% highlight javascript %}
+<!--
+  function Try(passwd) {   
+    if (passwd =="*****") {
+      alert("Alright! On to level 2...");   
+      location.href = "level2-xfdgnh.xhtml";
+    }
+    else {
+      alert("The password is incorrect. Please don't try again.");
+        location.href = "http://www.disney.com/";
+    }
+  }
+//-->  
+{% endhighlight %}
+	Enter the comparing string in the javascript and the passed message would appear.
+	<img src="/assets/try2hack-wargame-level1-level1success.png" alt="Level 1 complete" width="100%">
+</div>
+<h3>Conclusion</h3>
+<div>
+	This techniques needed in this level are 
+	<ol>
+		<li>HTML</li>
+		<li>Javascript</li>
+	</ol>
+	This level is relativly easy. Though only a serveral steps necessary to pass this level but still there's still possibilities that a programmer would accidentally write the checking of input inside the HTMl code. The validatation of user's input should always be done at the server's side and keep from revealing sensitive data.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://en.wikipedia.org/wiki/Wargaming">Wargaming</a></li>
+	<li><a href="http://try2hack.nl/">TRY2HACK</a></li>
+</ol>
