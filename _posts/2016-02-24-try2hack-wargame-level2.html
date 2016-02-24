@@ -1,0 +1,82 @@
+---
+layout: post
+title: "TRY2HACK wargame level 2"
+date: 2016-02-24 14:03:00
+categories: wargame
+---
+<h3>Introduction</h3>
+<div>
+	
+</div>
+<h3>Level 2</h3>
+<div>
+	<img src="/assets/try2hack-wargame-level2-index.png" width="100%" alt="Level 2 index">
+	<img src="/assets/try2hack-wargame-level2-try.png" width="100%" alt="Level 2 try">
+	<img src="/assets/try2hack-wargame-level2-disabled.png" width="100%" alt="Level 2 right click disabled">
+	<img src="/assets/try2hack-wargame-level2-developer.png" width="100%" alt="Level 2 developer">
+	<img src="/assets/try2hack-wargame-level2-choose.png" width="100%" alt="Level 2 choose html object">
+	<img src="/assets/try2hack-wargame-level2-object.png" width="100%" alt="Level 2 swf object">
+	<img src="/assets/try2hack-wargame-level2-script.png" width="100%" alt="Level 2 javascript">
+	<img src="/assets/try2hack-wargame-level2-extend.png" width="100%" alt="Level 2 extend the javascript tag">
+{% highlight javascript %}
+      <!--
+      passwd="ItIsSoEasy";
+      function disable_right_click(e) {
+        var browser = navigator.appName.substring ( 0, 9 );
+        var event_number = 0;
+        if (browser=="Microsoft")
+          event_number = event.button;
+        else
+          event_number = e.which;
+        if ( event_number==2 || event_number==3 || event_number==4) {
+          alert ("Right/middle mousebutton is disabled");
+          return (false);
+        }
+        return (true);
+      }
+      function check_mousekey () {
+        var mouse_key = 93;
+        var keycode = event.keyCode;
+        if ( keycode == mouse_key )
+          alert ( "Mouse Key Is Disabled" );
+      }
+      function trap_page_mouse_key_events () {
+        var browser = navigator.appName.substring ( 0, 9 );
+        document.onmousedown = disable_right_click;
+        if ( browser == "Microsoft" )
+          document.onkeydown = check_mousekey;
+        else
+          document.captureEvents( Event.MOUSEDOWN );
+      }
+      window.onload = trap_page_mouse_key_events;
+      //-->
+{% endhighlight %}
+	<img src="/assets/try2hack-wargame-level2-swf.png" width="100%" alt="Level 2 swf object data">
+	<img src="/assets/try2hack-wargame-level2-url.png" width="100%" alt="Level 2 enter swf object url">
+	<img src="/assets/try2hack-wargame-level2-swfurl.png" width="100%" alt="Level 2 swf object url">
+	<img src="/assets/try2hack-wargame-level2-search.png" width="100%" alt="Level 2 search for flash decompiler">
+	<img src="/assets/try2hack-wargame-level2-decompiler.png" width="100%" alt="Level 2 flash decompiler">
+	<img src="/assets/try2hack-wargame-level2-decompilerurl.png" width="100%" alt="Level 2 enter swf url">
+	<img src="/assets/try2hack-wargame-level2-code.png" width="100%" alt="Level 2 code">
+{% highlight c %}
+//---------------------------------------------------------------------- 
+//Symbol 9 Button //---------------------------------------------------------------------- 
+on (release) { 
+	if ((txtUsername == "try2hack") and (txtPassword == "irtehh4x0r!")) { 
+		geturl ("level3-.xhtml", "_self"); 
+	} 
+}
+{% endhighlight %}
+	<img src="/assets/try2hack-wargame-level2-success.png" width="100%" alt="Level 2 enter level 3">
+}
+}
+</div>
+<h3>Conclusion</h3>
+<div>
+	
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	
+</ol>
