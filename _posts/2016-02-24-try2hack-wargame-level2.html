@@ -6,18 +6,27 @@ categories: wargame
 ---
 <h3>Introduction</h3>
 <div>
-	
+  In the previous post of <a href="/wargame/2016/02/23/try2hack-wargame-level1.html">TRY2HACK wargame level 1</a> has described the basic about the <a href="https://en.wikipedia.org/wiki/Wargaming">wargaming</a>. The website <a href="http://try2hack.nl">TRY2HACK</a> is simlating the conflict between web page programmer who writes a login page and the hacker trying to crack a login page.
 </div>
 <h3>Level 2</h3>
 <div>
+  After passing the level 1, another login page is shown. But this time, the input box is fancier than the previous one.
 	<img src="/assets/try2hack-wargame-level2-index.png" width="100%" alt="Level 2 index">
+  Try random username and password with qwer. Nothing happens.
 	<img src="/assets/try2hack-wargame-level2-try.png" width="100%" alt="Level 2 try">
+  If right click is performed, an alert message would inform that the right click is disabled.
 	<img src="/assets/try2hack-wargame-level2-disabled.png" width="100%" alt="Level 2 right click disabled">
+  To open the developer tools of <a href="https://www.google.com/chrome/">Google chrome</a>, open the view menu and choose developer option. There is the developer tools.
 	<img src="/assets/try2hack-wargame-level2-developer.png" width="100%" alt="Level 2 developer">
+  After opening the developer tools, press the icon of a mouse in a box on the top left.
 	<img src="/assets/try2hack-wargame-level2-choose.png" width="100%" alt="Level 2 choose html object">
+  In this mode, the selected element would be highlighted in the right pane of html and left pane of codes. Move the mouse on the login object and the code for these input boxes is selected on the left. An object tag of flash appears.
 	<img src="/assets/try2hack-wargame-level2-object.png" width="100%" alt="Level 2 swf object">
+  Oh wait, there is a script tag above.
 	<img src="/assets/try2hack-wargame-level2-script.png" width="100%" alt="Level 2 javascript">
+  Extend the script tag and the javascript code is shown.
 	<img src="/assets/try2hack-wargame-level2-extend.png" width="100%" alt="Level 2 extend the javascript tag">
+  Browsing the code below, we may find out that the functions, disable_right_click, check_mouse, and trap_page_mouse_key_events are functions that trap and disable right clicks. So this piece of code doesn't program the validation of username and password.
 {% highlight javascript %}
       <!--
       passwd="ItIsSoEasy";
@@ -51,32 +60,49 @@ categories: wargame
       window.onload = trap_page_mouse_key_events;
       //-->
 {% endhighlight %}
+  Ok, the javascript code isn't the important thing. Then let's look back to the object on the page. Let's copy the data of the object which is level2.swf. It looks like a flash vedio.
 	<img src="/assets/try2hack-wargame-level2-swf.png" width="100%" alt="Level 2 swf object data">
+  Copy the name of the flash object and paste to the url bar.
 	<img src="/assets/try2hack-wargame-level2-url.png" width="100%" alt="Level 2 enter swf object url">
+  The flash object may be obtained by a url.
 	<img src="/assets/try2hack-wargame-level2-swfurl.png" width="100%" alt="Level 2 swf object url">
+  Find a flash decompiler online. Here I use <a href="http://www.showmycode.com">Show my code</a>
 	<img src="/assets/try2hack-wargame-level2-search.png" width="100%" alt="Level 2 search for flash decompiler">
+  This compiler may decompile class, flash, and .NET etc.
 	<img src="/assets/try2hack-wargame-level2-decompiler.png" width="100%" alt="Level 2 flash decompiler">
+  Enter the url of the flash object, the check character, and press the show my code button.
 	<img src="/assets/try2hack-wargame-level2-decompilerurl.png" width="100%" alt="Level 2 enter swf url">
+  And the reverse engineering code is shown below.
 	<img src="/assets/try2hack-wargame-level2-code.png" width="100%" alt="Level 2 code">
+  A simple piece of code about the comparing of username and password appears.
 {% highlight c %}
 //---------------------------------------------------------------------- 
 //Symbol 9 Button //---------------------------------------------------------------------- 
 on (release) { 
-	if ((txtUsername == "try2hack") and (txtPassword == "irtehh4x0r!")) { 
+	if ((txtUsername == "********") and (txtPassword == "***********")) { 
 		geturl ("level3-.xhtml", "_self"); 
 	} 
 }
 {% endhighlight %}
+  Copy the username and password, enter them to the flash vedio, and level 3 is passed.
 	<img src="/assets/try2hack-wargame-level2-success.png" width="100%" alt="Level 2 enter level 3">
-}
-}
 </div>
 <h3>Conclusion</h3>
 <div>
-	
+	The technique needed in this level are
+  <ol>
+    <li>Mouse disabled</li>
+    <li>Flash decompile</li>
+    <li>Flash actionscript</li>
+  </ol>
+  Flash is used to display streaming video, advertisement and interactive multimedia on web pages. The actionscript is an object-oriented programming language and used for the development of websites and software targeting the Adobe Flash Player platform, used on Web pages in the form of embeded SWF files. Well in recent years, Flash has been declined by many of the browsers since there are many vulnerabilities.
 </div>
 <h3>History</h3>
 <h3>Reference</h3>
 <ol>
-	
+	<li><a href="http://try2hack.nl">TRY2HACK</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Wargaming">Wargaming</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Adobe_Flash">Adobe flash</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/ActionScript">ActionScript</a></li>
+  <li><a href="https://www.recordedfuture.com/top-vulnerabilities-2015/">Gone in a Flash: Top 10 Vulnerabilities Used by Exploit Kits</a></li>
 </ol>
