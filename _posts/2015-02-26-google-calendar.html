@@ -10,8 +10,6 @@ categories: google
 		<script>
 	      function appendResults(text) {
 	        var results = document.getElementById('results');
-	        // results.appendChild(document.createElement('P'));
-	        // results.appendChild(document.createTextNode(text));
 	        for (var i = 0; i < text.items.length; i++) {
 		      var li = document.createElement('li');
 		      li.appendChild(document.createTextNode(text.items[i].summary));
@@ -19,44 +17,91 @@ categories: google
 		    }
 	      }
 
-	      /*function makeRequest() {
-	        var request = gapi.client.urlshortener.url.get({
-	          'shortUrl': 'http://goo.gl/i7BLCb'
-	        });
-	        request.then(function(response) {
-	          appendResults(response.result.longUrl);
-	        }, function(reason) {
-	          console.log('Error: ' + reason.result.error.message);
-	        });
-	      }*/
-
 	      function makeRequest(){
 	      	var request = gapi.client.calendar.events.list({
 		      'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com',
-              'start': new Date("2015-02-24").toISOString(),
-              'end': new Date("2015-06-26").toISOString()
+              'start': new Date("2016-02-24").toISOString(),
+              'end': new Date("2016-06-26").toISOString()
 		    });
-	      	// alert(request);
 		  	request.execute(appendResults);
 	      }
 
 	      function init() {
 	        gapi.client.setApiKey('AIzaSyBYt_lOEaWT552UNXGV7s3Mwth_DP-A2ac');
-	        //gapi.client.load('urlshortener', 'v1').then(makeRequest);
-
-	        //alert('init urlshortener finished');
 	      	
 	        gapi.client.load('calendar', 'v3').then(makeRequest);
-	      	// alert('request result');
 	      }
 	    </script>
 	    <script src="https://apis.google.com/js/client.js?onload=init"></script>
 	    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	</head>
 	<body>
+		<h3>Introducition</h3>
+		<div>
+			There are plenty of services provided by Google, such as gmail, google calendar, google map, google drive etc. A whole list of products may be seen on this <a href="https://www.google.com.tw/intl/en/about/products/">About Google - Products</a>. These services may be integrated into developers' application. More information please visit <a href="https://developers.google.com">Google developers</a>. The following is a little try out of the <a href="https://calendar.google.com/calendar/">Google calendar</a> service.
+		</div>
+		<h3>Demonstration</h3>
 		<div id="todayclass"></div>
 		<div id="results"></div>
-		<iframe src="https://www.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=f6i3vqb0ogfabog28dg2d7s5g4%40group.calendar.google.com&amp;color=%2342104A&amp;ctz=America%2FNew_York" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>
-		<iframe src="https://nol.ntu.edu.tw/nol/coursesearch/search_for_02_dpt.php?current_sem=103-2&amp;coursename=&amp;dptname=5050&amp;dpt_sel=5000&amp;yearcode=0&amp;teachername=&amp;selcode=-1&amp;alltime=yes&amp;week1=&amp;week2=&amp;week3=&amp;week4=&amp;week5=&amp;week6=&amp;allproced=yes&amp;proced0=&amp;proced1=&amp;proced2=&amp;proced3=&amp;proced4=&amp;procedE=&amp;proced5=&amp;proced6=&amp;proced7=&amp;proced8=&amp;proced9=&amp;procedA=&amp;procedB=&amp;procedC=&amp;procedD=&amp;yearcode=2" style="width: 90%; height: 600px"></iframe>
+		<iframe src="https://www.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=f6i3vqb0ogfabog28dg2d7s5g4%40group.calendar.google.com&amp;color=%2342104A&amp;ctz=Taiwan%2FTaipei" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>
+		<h3>Setup</h3>
+		<ol>
+			<li>Open Google calendar api via <a href="https://console.developers.google.com/flows/enableapi?apiid=calendar">Google developer console</a>. Create a new project or choose an existed projects.</li>
+			<li>Go the credentials.</li>
+			<li>Select the credentials on the left hand side
+			<img src="/assets/google-calendar-credential.png" alt="Credentials" width="100%">
+			</li>
+			<li>Create credentials and select API key.
+			<img src="/assets/google-calendar-create.png" alt="Create credential" width="100%"></li>
+			<li>Enter the url of the webpage.
+			<img src="/assets/google-calendar-url.png" alt="Url" width="100%"></li>
+		</ol>
+		<h3>Code</h3>
+		<div>
+			This piece of code declares three functions, while appendResults would append the returning results of the querying events from 2016-02-24 to 2016-06-26, makeRequest would make a request to the Google calendar service, and init would set up the api key and load the calendar object.
+			The following two script would load the google javascript api and call the function init after loading.
+		</div>
+		{% highlight javascript %}
+<script>
+  function appendResults(text) {
+    var results = document.getElementById('results');
+    for (var i = 0; i < text.items.length; i++) {
+      var li = document.createElement('li');
+      li.appendChild(document.createTextNode(text.items[i].summary));
+      document.getElementById('results').appendChild(li);
+    }
+  }
+  function makeRequest(){
+  	var request = gapi.client.calendar.events.list({
+      'calendarId': 'f6i3vqb0ogfabog28dg2d7s5g4@group.calendar.google.com',
+      'start': new Date("2016-02-24").toISOString(),
+      'end': new Date("2016-06-26").toISOString()
+    });
+  	request.execute(appendResults);
+  }
+  function init() {
+    gapi.client.setApiKey('AIzaSyBYt_lOEaWT552UNXGV7s3Mwth_DP-A2ac');
+  	
+    gapi.client.load('calendar', 'v3').then(makeRequest);
+  }
+</script>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+		{% endhighlight %}
+		<h3>Conclusion</h3>
+		<div>
+			Including the Google calendar in an applications may utilize the calendar functions provided Google. There are more examples and apis may be found on <a href="https://developers.google.com/google-apps/calendar/v3/reference/">Google calendar reference</a>.
+		</div>
+		<h3>History</h3>
+		<div>
+			First revision: add description - 2016/02/27
+		</div>
+		<h3>Reference</h3>
+		<ol>
+			<li><a href="https://www.google.com.tw/intl/en/about/products/">Google products</a></li>
+			<li><a href="https://developers.google.com">Google developers</a></li>
+			<li><a href="https://developers.google.com/google-apps/calendar/quickstart/js">Google calendar developer quick start javascript</a></li>
+		</ol>
+		<!--<iframe src="https://nol.ntu.edu.tw/nol/coursesearch/search_for_02_dpt.php?current_sem=103-2&amp;coursename=&amp;dptname=5050&amp;dpt_sel=5000&amp;yearcode=0&amp;teachername=&amp;selcode=-1&amp;alltime=yes&amp;week1=&amp;week2=&amp;week3=&amp;week4=&amp;week5=&amp;week6=&amp;allproced=yes&amp;proced0=&amp;proced1=&amp;proced2=&amp;proced3=&amp;proced4=&amp;procedE=&amp;proced5=&amp;proced6=&amp;proced7=&amp;proced8=&amp;proced9=&amp;procedA=&amp;procedB=&amp;procedC=&amp;procedD=&amp;yearcode=2" style="width: 90%; height: 600px"></iframe>-->
 	</body>
 </html>
