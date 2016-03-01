@@ -1,0 +1,81 @@
+---
+layout: post
+title: "Micorsoft project oxford OCR"
+date: 2016-02-29 13:33:00
+categories: ocr
+---
+<h3>Introdution</h3>
+<div>
+	Recently, Micorsoft has released a set of artificial intelligence based vision, speech and language APIs. In the set of vision, there are computer vision, face, emotion, and vedio API. In the set of speech, there are speech, speaker recognition, and custom recognotion intelligence service API. In the set of language, there are spell check, language understanding intelligence service, and web language model API. Today, I'm going to test the functionality of <a href="https://en.wikipedia.org/wiki/Optical_character_recognition">object character recognition</a> in the computer vision API.
+</div>
+<h3>Prerequistes</h3>
+<ul>
+	<li>An account of <a href="https://login.live.com">Microsoft</a></li>
+	<li>Subscribe to the <a href="https://www.projectoxford.ai">Microsoft Project Oxford</a></li>
+</ul>
+<h3>Demo</h3>
+<div>
+	Here is the demo <a href="/assets/ocr.html">site</a> without a proper subscription key. You will need to fill in your subscription key to make it working properly.<br>
+	<img src="/assets/microsoft-project-oxford-ocr-start.png" alt="start" width="50%">
+	After entering the subscription key and the image url, the result would be returned beneath.
+	<img src="/assets/microsoft-project-oxford-ocr-result.png" alt="result" width="75%">
+</div>
+<h3>Code</h3>
+<div>
+	This simple page of application would let the user enter the subscription key and the image url and send a request to the <a href="https://www.projectoxford.ai">Microsoft Project Oxford</a> APIs using the ajax function of <a href="https://jquery.com">JQuery</a>. There are request headers needed to be set before sending out the AJAX (asynchronous HTTP), including Content-Type and Ocp-Apim-Subscription-Key. Upon receiving the results, the string would be appended below.
+</div>
+{% highlight html %}
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+<script type="text/javascript">
+	function submitForm(){
+		var sbkey = $("#key").val();
+		var data = {};
+		data.Url = $("#url").val();
+		$("img").attr("src", data.Url);
+		data = JSON.stringify(data);
+		$.ajax({
+		  type: "POST",
+		  url: "https://api.projectoxford.ai/vision/v1/ocr?language=unk&detectOrientation=true",
+		  data: data,
+		  dataType: "json",
+		  beforeSend: function(xhrObj) {
+		  	// Request headers
+            xhrObj.setRequestHeader("Content-Type", "application/json");
+            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", sbkey);
+          }
+		}).done(function(data){
+			$("#result").text(JSON.stringify(data));
+		}).fail(function(err){
+			alert(err.getAllResponseHeaders())
+		});
+	}
+</script>
+<form name="imageForm" id="imageForm">
+	Subscription key:<br>
+	<input type="text" name="key" id="key"><br>
+	Image url:<br>
+	<input type="text" name="Url" id="url" value="http://www.sinaimg.cn/dy/slidenews//21_img/2013_45/52267_2677262_838873.jpg">
+	<input type="button" value="Submit" onclick="submitForm()">
+</form>
+<img id="img" alt="image" width="50%">
+<div id="result"></div>
+{% endhighlight %}
+<h3>Conclusion</h3>
+<div>
+	There are a growing number of such service provided by vendors, such as Microsoft, Google, IBM etc. We would embrace these tools to strength and enrich the functionality of our application. An idiom comes to me:
+{% highlight html %}
+Don't reinvent the wheel, just realign it. 
+Anthony J. D'Angelo
+{% endhighlight %}
+	Though reinvent the wheel is another great way to go through the background knoledge of a domain, it's move energy saving and efficient to use these APIs.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://www.projectoxford.ai">Microsoft Project Oxford</a></li>
+	<li><a href="http://stackoverflow.com/questions/35565732/implementing-microsofts-project-oxford-emotion-api-and-file-upload">Implementing Microsoft's Project Oxford - Emotion API and file upload</a></li>
+	<li><a href="https://jquery.com">JQuery</a></li>
+	<li><a href="http://www.w3schools.com/jquery/ajax_ajax.asp">JQuery ajax w3schools reference</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Ajax_(programming)">AJAX</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Reinventing_the_wheel">Reinventing the wheel</a></li>
+</ol>
