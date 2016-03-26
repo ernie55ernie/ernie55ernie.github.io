@@ -1,0 +1,202 @@
+---
+layout: post
+title: "OpenMP game of life"
+date: 2016-03-25 15:16:00
+categories: openmp
+---
+<h3>Introduction</h3>
+<div>
+	The game of life is the celluar automation invented by <a href="https://en.wikipedia.org/wiki/John_Horton_Conway">John Horton Conway</a>. Cellular automation is a discrete model studied in computability theory, mathematics, physics, complexity science, theoretical biology and microstructure modeling. I think iterative arrays is a more conprehensive name since a cellular automation consists of a regular grid of cells, each in one of a finite number of states, such as 1 and 0.
+	This game has no player and the evolution is determined by the initial state. Now we have a N * N plate with M modeling cyclings. 
+</div>
+<h3>Rules</h3>
+<div>
+	In the game of life, for any cells, there are two states, live or death. Each cells will interact with the surrounding eight cells.
+	<ul>
+		<li>Any live cell with fewer than two live adjacent cells dies</li>
+		<li>Any live cell with two or three live adjacent cells livs on</li>
+		<li>Any live cell with more than three live adjacent cells dies</li>
+		<li>Any dead cell with exactly three live adjacent cells becomes a live cell</li>
+	</ul>
+	The initial pattern constitutes the seed of the system. The first generation is created the above rules simulaneously to every cell in the seed.
+</div>
+<h3>Input</h3>
+<div>
+	The first line would be two integer, N and M, indicating the the plate is of size N * N and modeling cycles is M. The following would be N lines with N words on each line, where 0 indicates the cell is dead and 1 is live.
+</div>
+<h4>input example</h4>
+data1
+{% highlight html%}
+5 1
+10001
+00100
+01110
+00100
+01010
+{% endhighlight %}
+<h4>output example</h4>
+{% highlight html%}
+00000
+00100
+01010
+00000
+00100
+{% endhighlight %}
+<h3>Code</h3>
+{% highlight c %}
+#define MAX_N 2000
+int plate[2][(MAX_N + 2) * (MAX_N + 2)];
+int which = 0;
+int n;
+{% endhighlight %}
+<div>
+	The MAX_N variable is the max number of the board. There two dimension array stores the two succinct cycle. Since the cells would interact with the sourrounding cells, initialize an array of (MAX_N + 2) * (MAX_N + 2) with the 0 borders would simplify the process of counting the adjacent living cells. The which variable is the indicator of the which array is the current cycle. The n variable is the size of input plate. 
+</div>
+{% highlight c %}
+int main(){
+	int M;
+	char line[MAX_N];
+	memset(plate[0], 0, sizeof(int) * (n + 2) * (n + 2));
+	memset(plate[1], 0, sizeof(int) * (n + 2) * (n + 2));
+	if(scanf("%d %d", &n, &M) == 2){
+		for(int i = 1; i <= n; i++){
+			scanf("%s", &line);
+			for(int j = 0; j < n; j++){
+				plate[0][i * (n + 2) + j + 1] = line[j] - '0';
+			}
+		}
+		for(int i = 0; i < M; i++){
+			iteration();
+		}
+		print_plate();
+	}
+	return 0;
+}
+{% endhighlight %}
+<div>
+	First read the size of the border and the cycle number and set the values of the arrays to 0. And then read the border content.
+</div>
+{% highlight c %}
+void iteration(){
+#pragma omp parallel for schedule(static)
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= n; j++){
+			int index = i * (n + 2) + j;
+			int num = live(index);
+			if(plate[which][index]){
+				plate[!which][index] =  (num == 2 || num == 3) ?
+					1 : 0;
+			}else{
+				plate[!which][index] = (num == 3);
+			}
+		}
+	}
+	which = !which;
+}
+{% endhighlight %}
+<div>
+	This is the main logic of deciding whether the cells is alive in the next cycle. Noted that the indexes need to be carefully handled since the array has a border. A little parallel is done here with the preprocessor directive. The OpenMP directive only applies to the following statement. This directive would tell the compiler to generate OpenMP parallel code on the for loop. Schedule indicates the workload distribution of every core. Static means to divide the loop into equal-sized chunks or as equal as possible in the case where the number of loop iterations is not evenly divisible by the number of threads multiplied by the chunk size. Watch out for all the variables used in parallel regions of code.
+</div>
+{% highlight c %}
+int live(int index){
+	return (plate[which][index - n - 3] 
+		+ plate[which][index - n - 2]
+		+ plate[which][index - n - 1]
+		+ plate[which][index - 1]
+		+ plate[which][index + 1]
+		+ plate[which][index + n + 1]
+		+ plate[which][index + n + 2]
+		+ plate[which][index + n + 3]);
+}
+{% endhighlight %}
+<div>
+	This function calculates the number of the adjacent living cells. Full code is shown below.
+</div>
+{% highlight c %}
+#include <stdio.h>
+#include <string.h>
+#include <omp.h>
+#include <stdlib.h>
+#include <assert.h>
+#define MAX_N 2000
+int plate[2][(MAX_N + 2) * (MAX_N + 2)];
+int which = 0;
+int n;
+int live(int index){
+	return (plate[which][index - n - 3] 
+		+ plate[which][index - n - 2]
+		+ plate[which][index - n - 1]
+		+ plate[which][index - 1]
+		+ plate[which][index + 1]
+		+ plate[which][index + n + 1]
+		+ plate[which][index + n + 2]
+		+ plate[which][index + n + 3]);
+}
+void iteration(){
+#pragma omp parallel for schedule(static)
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= n; j++){
+			int index = i * (n + 2) + j;
+			int num = live(index);
+			if(plate[which][index]){
+				plate[!which][index] =  (num == 2 || num == 3) ?
+					1 : 0;
+			}else{
+				plate[!which][index] = (num == 3);
+			}
+		}
+	}
+	which = !which;
+}
+void print_plate(){
+	for(int i = 1; i <= n; i++){
+		for(int j = 1; j <= n; j++){
+			printf("%d", plate[which][i * (n + 2) + j]);
+		}
+		printf("\n");
+	}
+	printf("\0");
+}
+int main(){
+	int M;
+	char line[MAX_N];
+	memset(plate[0], 0, sizeof(int) * (n + 2) * (n + 2));
+	memset(plate[1], 0, sizeof(int) * (n + 2) * (n + 2));
+	if(scanf("%d %d", &n, &M) == 2){
+		for(int i = 1; i <= n; i++){
+			scanf("%s", &line);
+			for(int j = 0; j < n; j++){
+				plate[0][i * (n + 2) + j + 1] = line[j] - '0';
+			}
+		}
+		for(int i = 0; i < M; i++){
+			iteration();
+		}
+		print_plate();
+	}
+	return 0;
+}
+{% endhighlight %}
+<h3>Compile and run</h3>
+{% highlight shell %}
+gcc game_of_life.c -fopenmp
+{% endhighlight %}
+<div>Use gcc with -fopenmp option to instruct the compiler to generate code to run on every core.</div>
+{% highlight shell %}
+./a.out < data1
+{% endhighlight %}
+Run the executable output file.
+<h3>Conclusion</h3>
+<div>
+	We may see that paralleling a program with OpenMP is relatively easy. In fact, the code is almost the same as the sequential code. This enables the incremental development strategy that is from sequential to parallel. It avoids the all-or-none rish of parallel code involved in message-passing or other parallel programming model. I would start to explorer more power and model in parallel programming.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of life</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/John_Horton_Conway">John Horton Conway</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Cellular_automaton"></a>Cellular automation</li>
+	<li><a href="http://openmp.org/wp/">OpenMP</a></li>
+	<li><a href="https://software.intel.com/en-us/articles/openmp-loop-scheduling">OpenMP* Loop Scheduling</a></li>
+	<li><a href="http://supercomputingblog.com/openmp/tutorial-parallel-for-loops-with-openmp/">Tutorial – Parallel For Loops with OpenMP</a></li>
+</ol>
