@@ -1,0 +1,63 @@
+---
+layout: post
+title: "TRY2HACK wargame level 3"
+date: 2016-04-11 21:14:00
+category: wargame
+---
+<h3>Introduction</h3>
+<div>In the previous post of <a href="/wargame/2016/02/24/try2hack-wargame-level2.html">TRY2HACK wargame level 2</a> introduces the flash decomposer.</div>
+<h3>Level 3</h3>
+<div>
+	As soon as you pass level 2, an prompt asking the password for the level 3 is shown.
+	<img src="/assets/try2hack-wargame-level3-prompt.png" width="100%" alt="Window prompt">
+	I tried to enter a random string and get the following message...
+	<img src="/assets/try2hack-wargame-level3-goto.png" width="100%" alt="Go to Disney">
+	And here I am...
+	<img src="/assets/try2hack-wargame-level3-disney.png" width="100%" alt="Disney">
+	Notice that once entering the webpage the prompt would be shown. Just open the developer tools and see what is going on in this page.
+	<img src="/assets/try2hack-wargame-level3-open.png" width="100%" alt="Developer tool">
+	Scroll down to the part that prompt out the message box.
+	<img src="/assets/try2hack-wargame-level3-script.png" width="100%" alt="javascript">
+	Look at the piece of code. The prompt would ask the user's input and compara with a variable named PASSWORD. Despite of the <a href="http://www.w3schools.com/js/js_hoisting.asp">variable hoisting</a> in javascript. The under assignments is counterfeit. See closer to the code. There is another script that has a source named Javascript.
+{% highlight javascript %}
+<script type="text/javascript" src="JavaScript"></script>
+<script type="text/javascript">
+	<!--
+	pwd = prompt("Please enter the password for level 3:","");
+	if (pwd==PASSWORD){
+ 		alert("Allright!\nEntering Level 4 ...");
+		location.href = CORRECTSITE;
+		}
+	else {
+        alert("WRONG!\nBack to disneyland !!!");
+        location.href = WRONGSITE;
+	}
+	PASSWORD="AbCdE";
+	CORRECTSITE="level4-sfvfxc.xhtml";
+	WRONGSITE="http://www.disney.com";
+	//-->
+</script>
+{% endhighlight %}
+	Look for the sources and the file named Javascript is right there!
+	<img src="/assets/try2hack-wargame-level3-sources.png" width="50%" alt="sources">
+	Click on the file and the password is shown!
+	<img src="/assets/try2hack-wargame-level3-src.png" width="100%" alt="Javascript file">
+	Here we go!
+	<img src="/assets/try2hack-wargame-level3-alright.png" width="100%" alt="Alright">
+</div>
+<h3>Conclusion</h3>
+<div>
+	The techniques needed in this level are
+	<ol>
+		<li>Window prompt</li>
+		<li>Javascript source inclusion</li>
+	</ol>
+	There is a little tricky in the code in this level. The variable PASSWORD is assigned in two places. One in the html file and another in the source file called JavaScript. Since the JavaScript is upper than the inline script, the PASSWORD is first assigned to the real password.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://www.w3schools.com/jsref/met_win_prompt.asp">Window prompt</a></li>
+	<li><a href="http://www.w3schools.com/js/js_hoisting.asp">variable hoisting</a></li>
+	<li><a href="http://stackoverflow.com/questions/1795438/load-and-execution-sequence-of-a-web-page">Load and execution sequence of a web page</a></li>
+</ol>
