@@ -1,0 +1,55 @@
+---
+layout: post
+title: "Webgoat http basics interception"
+date: 2016-05-13 11:26:45
+category: webgoat
+---
+<h3>Introduction</h3>
+<div>
+	In this section, I will use Firefox as browser and <a href="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project">OWASP ZAP</a>, OWASP zed attack proxy, as interception tools to play with the insecure web application, WebGoat. Web application uses <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a>, hypertext text transfer protocol, to communicate with a web server. Hypertext is a structural text that uses logical links (hyperlinks) between nodes, such as devices, personal computers, cell phones, printers, or servers. HTTP functions as a request-response protocol between clients and servers. In the context of <a href="https://github.com/WebGoat">WebGoat</a>, the command 
+{% highlight sh %}
+java -jar WebGoat-6.0.1-war.exec.jar
+{% endhighlight %}
+	would open a web server, waiting at localhost (127.0.0.1) and port 8080 for requesting web pages.
+</div>
+<h3>Configuration for firefox and OWASP ZAP</h3>
+<div>
+	<ol>
+		<li>Open the preference panel on firefox<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-preference.png" width="50%" alt="firefox preference panel"></li>
+		<li>Choose the advance tab on the left and then the network tab on the top<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-network.png" alt="firefox advance preference"></li>
+		<li>Open OWASP ZAP and choose tools -> options to configure the address and port where OWASP ZAP would proxy.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-options.png"></li>
+		<li>Choose the local proxy option and set the address and port to an appropriate settings that will not conflict with the other service, such as WebGoat on port 8080, in the computer.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-local-proxy.png"></li>
+		<li>Configure the proxies to access the internet. Use the manual proxy configuration and set the HTTP proxy to the address and port the OWASP proxies on. (Be sure that the no proxy for localhost is removed if OWASP is working at address localhost).<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-setting.png" alt="firefox proxy setting" width="50%"></li>
+	</ol>
+</div>
+<h3>Basic HTTP interception in OWASP</h3>
+<div>
+	<ol>
+		<li>Working on interception of internet packets, press on the green circle button.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-intercept.png" alt="green button"><p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-start.png" alt="red button"></li>
+		<li>Go back to the browser, enter go in the input box, and press go!. Now the webpage would halt and nothing would happen.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-go.png" alt="WebGoat go"></li>
+		<li>Now see the OWASP ZAP, we could see a break point indicting the inteception event of OWASP ZAP. The request is of type get, containing the parameter SUBMIT at the end of the URL.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-get.png" alt="OWASP break point"></li>
+		<li>There are two submission type. The one on the right of the red button is to submit and step to the next request and response. Another is to submit and continue to the next break point. A break point is when the user click on a button or input some texts and trigger a series of request and reponse. Since loading a page would require multiple request and response, such as requesting javascript, css, or other inclusion files. In this context, we only concern the request for the input box.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-submit.png" alt="packet submission"></li>
+		<li>Back to the browser and a success message is shown.<p>
+		<img src="/assets/2016-05-13-webgoat-http-basics-success.png" alt="success message on the browser"></li>
+	</ol>
+</div>
+<h3>Conclusion</h3>
+<div>
+	With the help of <a href="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project">OWASP ZAP</a>, we now could start to explorer the unsecure web application, <a href="https://github.com/WebGoat">WebGoat</a>.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://www.owasp.org/index.php/Main_Page">OWASP</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a></li>
+</ol>
