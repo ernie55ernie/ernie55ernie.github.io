@@ -1,0 +1,50 @@
+---
+layout: post
+title: "Git getting started"
+date: 2016-06-18 21:47:30
+category: git
+---
+<h3>Introduction</h3>
+<div>Here is a session about the version control system named Git. It's a free and open source distributed version control system. It's create by the Linux Torvalds who is the creator of the Linux kernel for the development of the kernel.</div>
+<h3>What is version control?</h3>
+<div>Imgine you are working at a final software final projects. After a series of revision, a disastrous error suddenly comes to you that you have to roll your code back to fifty steps before. But the "undo" isn't working as you think.<br>Imagine you are a graphic or web designer. You may want to keep every version of an image or template in order to compare different style in latter time. What would you do to record every steps of work ahead? Using different file names? Then you may have to store a incremental number of the same files and the directory of your project may look like this.<br>
+<img src="/assets/2016-06-18-git-getting-started.png" width="50%"><br>
+A better way is to use a version control system (VCS). It allows you to revert files back to a specific time. And also, it will give you more infomation about who last modified the content, when, where and even more.<br>
+There are three types of version control system:<br>
+<ol>
+	<li>Local version control system</li>
+	<div>It is a version control system that keeps patch sets from one change to another while working at local machine such rcs.<br><img src="http://iissnan.com/progit/book_src/figures/18333fig0101-tn.png">image from: <a href="http://iissnan.com/progit/html/en/ch1_1.html">pro git</a></div>
+	<li>Centralized version control system</li>
+	<div>While collaborate with other developers, a centralized version control system, such as CVS, subversion, and Perforce, is needed. There is a single server that contains all the versions of files.<br><img src="http://iissnan.com/progit/book_src/figures/18333fig0102-tn.png">image from: <a href="http://iissnan.com/progit/html/en/ch1_1.html">pro git</a></div>
+	<li>Distributed version control system</li>
+	<div>The above two version control system suffer from a big problem of curruption of the center server, that is single point of failure. Here, distributed version control system such as Git, Mercurial, Bazaar, or Darcs, provides redundancy that clients must mirror all the repository to their local machine.<br><img src="http://iissnan.com/progit/book_src/figures/18333fig0103-tn.png">image from: <a href="http://iissnan.com/progit/html/en/ch1_1.html">pro git</a></div>
+</ol></div>
+<h3>Git basics</h3>
+<div>
+	<ul>
+		<li>Nearly every operation is local</li>
+		<li>Git has integrity</li>
+		<li>Git generally only adds data</li>
+		<li>The three states</li>
+		<div>
+			The main thing to remember about Git is the three states. There are three main sections: the Git directory where Git stores the metadata and object database (.git), the working directory which is a single checkout of one version of the project, and the staging area is a simple in the Git directory.<br>The basic Git workflow goes something like this:
+			<ol>
+				<li>modify file in the working directory</li>
+				<li>stage the files, adding snapshots of them to the staging area</li>
+				<li>commit, which takes the file as they are in the staging area and stors the snapshot permanentky to the Git directory</li>
+			</ol>
+			<img src="http://iissnan.com/progit/book_src/figures/18333fig0106-tn.png">image from: <a href="http://iissnan.com/progit/html/en/ch1_1.html">pro git</a>
+		</div>
+	</ul>
+</div>
+<h3>Conclusion</h3>
+<div>
+	Here now, the basic ideas of Git is listed above and the following section should cover the basic operation of Git.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://git-scm.com">Git</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Linus_Torvalds">Linus Torvalds</a></li>
+	<li><a href="http://iissnan.com/progit/">pro git</a></li>
+</ol>
