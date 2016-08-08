@@ -1,0 +1,77 @@
+---
+layout: post
+title: "Installation of Kali Linux in Virtual Box"
+date: 2016-07-23 
+category: virtualbox
+---
+<h3>Introdcion</h3>
+<div>
+	With the growing development of virtualization and computing power, it becomes much easier to use any operating system you desired. But why would someone want to use another operating system? In my case, I have a host machine installed with Window 10, and I want to use some strong Linux tools to do some vulnerability analysis and forensics tools (more listed at <a href="http://tools.kali.org/tools-listing">Kali Linux Tools Listing</a>). Here I am demenstrating how to install a Kali Linux in Virtual Box in Window 10 operating system. Virtual box may be downloaded at <a href="https://www.virtualbox.org/wiki/Downloads">Download VirtualBox</a> and the operating system Kali Linux may be obtained at <a href="https://www.kali.org/downloads/">Download Kali Linux</a>.
+</div>
+<h3>Virtual box brief instructions</h3>
+<div>
+	<ol>
+		<li>
+		Select the type of the operating system to Linux, and the version to Debian. (64 or 32 bit depending on your Kali Linux version)<br>
+		<img src="/assets/Capture6.PNG"><br>
+		</li>
+		<li>
+		Memory size is dependent on your usage. Default is 768 MB for Debian Linux. Memory may be reconfigured after the installation. It will need at least 512 MB. Some discussion is available at <a href="http://superuser.com/questions/973925/why-is-the-recommended-memory-on-a-virtualbox-guest-os-512mb">Why is the recommand memory on a virtual box guest os 512mb</a>.<br>
+		<img src="/assets/Capture7.PNG"><br>
+		</li>
+		<li>
+		Default to this option is creation of a virtual hard disk. The creation would be done on the disk on your computer. A fold with the name of your virtual machine. (File -> Preference -> General -> Default Machine Folder)<br>
+		<img src="/assets/Capture8.PNG"><br>
+		</li>
+		<li>
+		VDI is may be referred to virtual desktop infrastructure. (3) It is a common implementation of remote desktop virtualization involves hosting multiple desktop operating system instances on a server hardware platform running a hyperviser. VMDK is used by many other virtualization products, in particular, by VMware.<br>
+		<img src="/assets/Capture9.PNG"><br>
+		</li>
+		<li>
+		A fixed-size image would create a folder which has roughly the same size as the virtual's disk capacity on your host machine. Note that the creation of a fixed-sized image would take a longer time. A dynamically allocated image would be small initially but the expension of the image file consumes additional computing resources.<br>
+		<img src="/assets/Capture10.PNG"><br>
+		</li>
+		<li>
+		In this step, remember increase the size of the virtual hard disk above 16G since the operating system would require at least 10G for the installation requirements. (7)<br>
+		<img src="/assets/Capture11.PNG"><br>
+		</li>
+		<li>
+		After creating of the virtual machine, click on the virtual machine you have just created. And a start-up disk option would pop up. Choose the iso file you have just downloaded (containing the Kali Linux operating system).<br>
+		<img src="/assets/Capture12.PNG"><br>
+		</li>
+		<li>
+		Use install or graphic install to install the operating system to the virtual machine. The previous three would only run a Kali Linux operating system in temporary. The files save in these mode would be maintained to the next opening.<br>
+		<img src="/assets/Capture13.PNG"><br>
+		</li>
+		<li>
+		Choose the appropriate keyboard configruation.<br>
+		<img src="/assets/Capture14.PNG"><br>
+		</li>
+		<li>
+		Set up the host name for your host machine to connect.<br>
+		<img src="/assets/Capture15.PNG"><br>
+		</li>
+		<li>
+		Partition your virtual disk. Remember to choose the Yes option in this window.<br>
+		<img src="/assets/Capture16.PNG"><br>
+		</li>
+		<li>
+		After a success installation the system will reboot automatically.<br>
+		<img src="/assets/Capture17.PNG"><br>
+		</li>
+	</ol>
+</div>
+<h3>Conclusion</h3>
+<div>
+	It's quite easy to install another operating system in your host machine. Only some requirements need to be awared of such as the minimum memory,  and requred disk ... etc.
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://www.hardwaresecrets.com/everything-you-need-to-know-about-the-intel-virtualization-technology/">Everything you need to know about the Intel virtualization technology</a></li>
+	<li><a href="https://www.kali.org/downloads/">Kali Linux Downloads</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Desktop_virtualization">Desktop virtualization</a></li>
+	<li><a href="https://www.virtualbox.org/manual/ch05.html">Disk image files (VDI, VMDK, VHD, VHD, HDD)</a></li>
+	<li><a href="http://superuser.com/questions/973925/why-is-the-recommended-memory-on-a-virtualbox-guest-os-512mb">Why is the recommand memory on a virtual box guest os 512mb</a></li>
+	<li><a href="http://tools.kali.org/tools-listing">Kali Linux Tools Listing</a></li>
+	<li><a href="http://docs.kali.org/installation/kali-linux-hard-disk-install">Kali Linux Installation Requirements</a></li>
+</ol>
