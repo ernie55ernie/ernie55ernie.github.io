@@ -1,0 +1,110 @@
+---
+layout: post
+title: "Web crawler on observation data using python"
+date: 2016-08-26 
+category: python
+---
+<h3>Introdcion</h3>
+<div>
+	Let's imagine a scenario that your company wants to download all the history and all the future data on the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. If we choose a manual approach, what steps we would go through? Possibly, open the options of cities and the options of stations and choose monthly data. Starting from August, 2013 to August, 2016, you would have to click through all the cities, all the stations, and all the data available. There are 126 stations and 37 months. If you are to use Excel to crawle the web page, there would be few steps to extract the important part of the web page.
+	First, copy the url for each station and each month.
+	<img src="/assets/web-crawler-on-observation-data-using-python-page-url.png">
+	Second, select the data tab and click on the from web button.
+	<img src="/assets/web-crawler-on-observation-data-using-python-excel.png">
+	Third, paste the url into the address input.
+	<img src="/assets/web-crawler-on-observation-data-using-python-from-web.png">
+	Observing the data read from the web. There are some useless rows.
+	<img src="/assets/web-crawler-on-observation-data-using-python-redundant.png">
+	Select the important part and paste to the your workspace.
+	<img src="/assets/web-crawler-on-observation-data-using-python-manual.png">
+	It's quite a hard work if we want to manually operate these steps. There is another way to acomplish the work. That is to write a web crawler.
+</div>
+<h3>Web page parameter</h3>
+<div>
+	To crawle through all the history data in the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. We first have observe the url when the result of a query is shown. For example, http://e-service.cwb.gov.tw/HistoryDataQuery/MonthDataController.do?command=viewMain&station=466910&stname=%25E9%259E%258D%25E9%2583%25A8&datepicker=2013-08 tells that there are 4 parameters in this request.
+	<ol>
+		<li>command : viewMain</li>
+		<li>station : 466910</li>
+		<li>stname : %25E9%259E%258D%25E9%2583%25A8</li>
+		<li>datepicker : 2013-08</li>
+	</ol>
+	Observing the parameters above, it is obviously that the station and the date is what really matters in the query. But how could we obtain a list of the available stations?<br>
+	Back to the web page for querying. We may see that the option for the stations is changed once the city option is altered. It's quite reasonable to infer that there must be a javascript code manipulating this form.
+	<img src="/assets/web-crawler-on-observation-data-using-python-code.png">
+	Look under the form. There is a script tag.
+	<img src="/assets/web-crawler-on-observation-data-using-python-json.png">
+	Copy the content in the stList and store in a file called <a href="/assets/keyfile.json">keyfile.json</a>.
+{% highlight javascript %}
+var stList = {
+			
+				"466880":
+					["板橋            ",
+					 "BANQIAO",
+					 "新北市    "
+					]
+					...
+{% endhighlight %}
+</div>
+<h3>Web crawler loop</h3>
+<div>
+{% highlight python %}
+# -*- coding: utf-8 -*-
+import urllib
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    from BeautifulSoup import BeautifulSoup
+import csv
+import chardet
+import json
+# variable for the crawling year.
+year = 2014
+# stations, station Chinese names, and cities.
+stations = []
+stnames = []
+cities = []
+# load the json file obtained from the web page.
+with open('keyfile.json') as data_file:    
+    keyfile = json.load(data_file)
+# iterate through all the stations.
+for key, value in keyfile.items():
+	stations.append(key)
+	stnames.append(value[2])
+	cities.append(value[0])
+# iterate through all the stations and month in a year.
+for i in range(0, len(stations)):
+	for month in range(1, 13):
+		url = 'http://e-service.cwb.gov.tw/HistoryDataQuery/MonthDataController.do?command=viewMain&station=' + str(stations[i]) + '&stname=&datepicker=%4d-%02d' % (year, month,)
+		print url
+		data = urllib.urlopen(url)
+		# use soup library to parse the html. Note that the lxml parameter is optional.
+		soup = BeautifulSoup(data, "lxml")
+		# select the table containing the data.
+		table = soup.find('table', {"id": "MyTable"})
+		# Let the city, station number, and station name be the start of a row.
+		rows = []
+		start = [cities[i].encode('utf8'), stations[i], stnames[i].encode('utf8'), month]
+		# Ignore the first two rows which is the header.
+		for row in table.find_all('tr')[2:]:
+			row_val = [val.text.replace(u'\xa0', u' ').encode('utf8') for val in row.find_all('td')]
+			rows.append(start + row_val)
+		# Append the result to a csv file
+		with open('output_file.csv', 'ab') as f:
+			writer = csv.writer(f)
+			writer.writerows(row for row in rows if row)
+{% endhighlight %}
+</div>
+<h3>Conclusion</h3>
+<div>
+	To run the program, determine what year and what range of month you are interested in and change the value year and range. Type python (the file name) and the crawler would start iterate through the list of stations and the specified months.
+	<img src="/assets/web-crawler-on-observation-data-using-python-run.png">
+	The result csv may have to be read by the data tab from text button because of the encoding problem.
+	<img src="/assets/web-crawler-on-observation-data-using-python-result.png">
+	Then the annoying copy-and-paste task would be automatically completed by a web crawler! In fact, there are more subtle problem I didn't discuss in this article, such as the encoding of the Chinese words and the invisible space &amp;nbsp;. The rest is leaved for your own discovery!
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a></li>
+	<li><a href="http://stackoverflow.com/questions/14167352/beautifulsoup-html-csv">beautifulSoup html csv</a></li>
+	<li><a href="http://stackoverflow.com/questions/10993612/python-removing-xa0-from-string">Python: Removing \xa0 from string?</a></li>
+</ol>
