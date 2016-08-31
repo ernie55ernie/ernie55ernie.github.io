@@ -6,7 +6,7 @@ category: python
 ---
 <h3>Introdcion</h3>
 <div>
-	Let's imagine a scenario that your company wants to download all the history and all the future data on the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. If we choose a manual approach, what steps we would go through? Possibly, open the options of cities and the options of stations and choose monthly data. Starting from August, 2013 to August, 2016, you would have to click through all the cities, all the stations, and all the data available. There are 126 stations and 37 months. If you are to use Excel to crawle the web page, there would be few steps to extract the important part of the web page.
+	Let's imagine a scenario that your company wants to download all the history and all the future data on the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. If we choose a manual approach, what steps we would go through? Possibly, open the options of cities and the options of stations and choose monthly data. Starting from August, 2013 to August, 2016, you would have to click through all the cities, all the stations, and all the data available. There are 126 stations and 37 months. If you are to use Excel to crawl the web page, there would be few steps to extract the important part of the web page.
 	First, copy the url for each station and each month.
 	<img src="/assets/web-crawler-on-observation-data-using-python-page-url.png">
 	Second, select the data tab and click on the from web button.
@@ -21,7 +21,7 @@ category: python
 </div>
 <h3>Web page parameter</h3>
 <div>
-	To crawle through all the history data in the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. We first have observe the url when the result of a query is shown. For example, http://e-service.cwb.gov.tw/HistoryDataQuery/MonthDataController.do?command=viewMain&station=466910&stname=%25E9%259E%258D%25E9%2583%25A8&datepicker=2013-08 tells that there are 4 parameters in this request.
+	To crawl through all the history data in the <a href="http://e-service.cwb.gov.tw/HistoryDataQuery/">CWB Observation Data Inquire System</a>. We first have observe the url when the result of a query is shown. For example, http://e-service.cwb.gov.tw/HistoryDataQuery/MonthDataController.do?command=viewMain&station=466910&stname=%25E9%259E%258D%25E9%2583%25A8&datepicker=2013-08 tells that there are 4 parameters in this request.
 	<ol>
 		<li>command : viewMain</li>
 		<li>station : 466910</li>
