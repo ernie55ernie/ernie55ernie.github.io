@@ -4,27 +4,20 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jglovier" %} /
-[jekyll-new](https://github.com/jglovier/jekyll-new)
+# Education
+* **Bachelor Degree of Science**
+  * Department of Engineering Science and Ocean Engineering, National Taiwan University, Taipei (2012-)
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+# Research interest
+* Cuda computing on 3d CT image reconstruction
+* Software defined network
+* Deep learning back propagation nerual network
 
-Seize the vulnerable time and code at once!
-The following is a piece of [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29) code
+# E-mail
+[ernie55ernie@yahoo.com.tw](ernie55ernie@yahoo.com.tw)
 
-{% highlight java %}
-	public class HelloWorld{
-		public static void main(String args[]){
-			System.out.println("Hello World!");
-		}
-	}
-{% endhighlight %}
+# Publication list
 
-Every learning of code comes from here.
-
-> May the force be with you
+* Conference papers
+  * [1] SDN-based Intelligent Firewalls and Load Balancers for Cloud Services
