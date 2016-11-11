@@ -21,3 +21,23 @@ permalink: /about/
 
 * Conference papers
   * [1] SDN-based Intelligent Firewalls and Load Balancers for Cloud Services
+  * [2] SDN-based distributed firewall
+
+# Course enrollment
+* Basic Computer Concept
+* Computer Programming
+* Data Structures
+* Object Oriented Programming Language
+* Numerical Methods
+* Digital Image Processing
+* Programming Languages
+* Software Design Patterns
+* Software Development Methods
+* Operating Systems
+* Database Management System
+* Finite Difference Method
+* Introduction to Computer Networks
+* Information Security
+* Data Mining
+* Parallel Programming
+* Computer Graphics
