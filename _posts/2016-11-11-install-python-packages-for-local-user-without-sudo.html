@@ -1,0 +1,121 @@
+---
+layout: post
+title: "Install python packages for local user without sudo"
+date: 2016-11-11 
+category: python
+---
+<h3>Introduction</h3>
+<div>
+	Sometimes we don't have the superuser competence on a server machine, but we need to install some packages in Python. How can we achieve this? 
+</div>
+<h3>Download Python</h3>
+<div>
+  Find the desired Python version in <a href="https://www.python.org/ftp/python/">Python ftp site</a> and download it to a local file.
+{% highlight shell %}
+[username@host filename]$ wget https://www.python.org/ftp/python/3.4.5/Python-3.4.5.tgz
+--2016-11-11 21:31:25--  https://www.python.org/ftp/python/3.4.5/Python-3.4.5.tgz
+Resolving www.python.org... 151.101.76.223, 2a04:4e42:12::223
+Connecting to www.python.org|151.101.76.223|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 19611207 (19M) [application/octet-stream]
+Saving to: “Python-3.4.5.tgz”
+ 
+100%[======================================>] 19,611,207  13.1M/s   in 1.4s
+ 
+2016-11-11 21:31:26 (13.1 MB/s) - “Python-3.4.5.tgz” saved [19611207/19611207]
+{% endhighlight %}
+  Change the access permission of the execution file in Python to executable.
+{% highlight shell %}
+[username@host filename]$ tar zxfv Python-3.4.5.tgz
+...
+[username@host python]$ find ~/filename/python -type d | xargs chmod 0755
+[username@host python]$ cd Python-3.4.5/
+{% endhighlight %}
+</div>
+<h3>Install Python</h3>
+<div>
+  Configure the installation directory.
+{% highlight shell %}
+[username@host Python-3.4.5]$ ./configure --prefix=$HOME/filename/python
+...
+[username@host Python-3.4.5]$ make
+...
+[username@host Python-3.4.5]$ make install
+...
+{% endhighlight %}
+</div>
+<h3>Change bash run command file</h3>
+<div>
+  Add the path of Python to the shell script that Bash runs whenever it is started interactively.
+{% highlight shell %}
+[username@host Python-3.4.5]$ vim ~/.bashrc
+{% endhighlight %}
+  Concate the path of local Python in front of the path variable.
+{% highlight shell %}
+export PATH=$HOME/filename/python/Python-3.4.5/:$PATH
+{% endhighlight %}
+  Reload the shell script.
+{% highlight shell %}
+[username@host Python-3.4.5]$ source ~/.bashrc
+{% endhighlight %}
+</div>
+<h3>Install pip locally</h3>
+<div>
+  Get the get-pip.py file from the web. And install pip for local user.
+{% highlight shell %}
+[username@host python]$ wget https://bootstrap.pypa.io/get-pip.py
+--2016-11-11 22:05:46--  https://bootstrap.pypa.io/get-pip.py
+Resolving bootstrap.pypa.io... 151.101.76.175
+Connecting to bootstrap.pypa.io|151.101.76.175|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1595408 (1.5M) [text/x-python]
+Saving to: “get-pip.py”
+ 
+100%[======================================>] 1,595,408   3.37M/s   in 0.5s
+ 
+2016-11-11 22:05:47 (3.37 MB/s) - “get-pip.py” saved [1595408/1595408]
+[username@host python]$ python get-pip.py --user
+[username@host python]$ vim ~/.bashrc
+{% endhighlight %}
+  Add the path of Python to the shell script that Bash runs whenever it is started interactively.<br>
+  Concate the path of local Python in front of the path variable.
+{% highlight shell %}
+export PATH=$HOME/.local/bin/:$PATH
+{% endhighlight %}
+  Reload the shell script.
+{% highlight shell %}
+[username@host python]$ source ~/.bashrc
+{% endhighlight %}
+</div>
+<h3>Install packages without sudo</h3>
+<div>
+  Now, the pip command can be used without sudo and the Python packages can be installed locally.
+{% highlight shell %}
+[username@host ~]$ pip install pandas
+Collecting pandas
+  Downloading pandas-0.19.1-cp34-cp34m-manylinux1_x86_64.whl (18.1MB)
+    100% |████████████████████████████████| 18.1MB 66kB/s
+Collecting numpy>=1.7.0 (from pandas)
+  Downloading numpy-1.11.2-cp34-cp34m-manylinux1_x86_64.whl (15.6MB)
+    100% |████████████████████████████████| 15.6MB 76kB/s
+Collecting python-dateutil>=2 (from pandas)
+  Downloading python_dateutil-2.6.0-py2.py3-none-any.whl (194kB)
+    100% |████████████████████████████████| 194kB 6.0MB/s
+Collecting pytz>=2011k (from pandas)
+  Downloading pytz-2016.7-py2.py3-none-any.whl (480kB)
+    100% |████████████████████████████████| 481kB 2.7MB/s
+Collecting six>=1.5 (from python-dateutil>=2->pandas)
+  Downloading six-1.10.0-py2.py3-none-any.whl
+Installing collected packages: numpy, six, python-dateutil, pytz, pandas
+Successfully installed numpy-1.11.2 pandas-0.19.1 python-dateutil-2.6.0 pytz-2016.7 six-1.10.0
+{% endhighlight %}
+</div>
+<h3>Conclusion</h3>
+<div>
+  After installation of local Python packages, now we can install any packages freely without influencing other users on the same machine.
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://superuser.com/questions/404592/chmod-equivalence-of-x-and-0755">Chmod equivalence of +x and 0755</a></li>
+	<li><a href="http://manpages.ubuntu.com/manpages/trusty/man1/xargs.1.html">Ubuntu Manpage: xargs</a></li>
+</ol>
