@@ -21,3 +21,6 @@ github_username:  ernie55ernie
 
 # Build settings
 markdown: kramdown
+
+gems:
+  - jekyll-sitemap
