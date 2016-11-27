@@ -1,0 +1,54 @@
+---
+layout: post
+title: "TRY2HACK wargame level 7"
+date: 2016-11-27 12:00
+categories: ctf
+---
+<h3>Introduction</h3>
+<div>
+	Level 5 and Level 6 in TRY2HACK requires the system library in the older version of Window operating systyem. While I'm using a Window 10 is not convenient to execute those two program, I skipped those two levels. (A solution for the incompatible version of operating system is using virtual machine.) These two levels mainly require the correct decompiler and <a href="http://vbdis4.angelfire.com/">DoDi's Visual Basic 4 Decompiler</a> is quite a good choice.
+</div>
+<h3>Level 7</h3>
+<div>
+	First, the browser check may be the checking of user agent in the HTTP header. There are various tools can be used including <a href="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project">OWASP</a>.
+	<img src="/assets/try2hack-wargame-level7-useragent.png" alt="browser check Microsoft Internet Explorer 7.66">
+	If you are using a <a href="https://www.google.com/chrome/">Google Chrome</a>, search for "chrome user agent" and <a href="https://chrome.google.com/webstore/detail/user-agent-switcher-for-c/djflhoibgkdhkhhcedjiklpkjnoahfmg">User-Agent Switcher for Chrome - Chrome Web Store - Google</a> will appear.
+	<img src="/assets/try2hack-wargame-level7-switcher.png" alt="User-Agent Switcher for Chrome">
+	After installation, right click on the icon of this extension, select option, and modify the version from 7 to 7.66.
+	<img src="/assets/try2hack-wargame-level7-version.png" alt="Option of the extension">
+	After modifying the version for Internet Explorer, click on the icon of the extension and change to Internet Explorer 7.
+	<img src="/assets/try2hack-wargame-level7-change.png" alt="Change the version of browser">
+	Oh! There goes another OS check!
+	<img src="/assets/try2hack-wargame-level7-os.png" alt="OS check">
+	Returning the user agent editting panel, you can see there is a portion of the string containing the information of operating system. Change Windows NT * ti Linux.
+	<img src="/assets/try2hack-wargame-level7-option.png" alt="Change the informantion of operating system">
+	Link check can be seen as a check in the field named referer of the HTTP header.
+	<img src="/assets/try2hack-wargame-level7-link.png" alt="Link check">
+	Search for "chrome referer control".
+	<img src="/assets/try2hack-wargame-level7-referercontrol.png" alt="">
+	After installation of this extension, right click on the page, select "create referer fliter to the site" and "open option", paste the url of level 7, and select custom to add a referer host.
+	<img src="/assets/try2hack-wargame-level7-refererhost.png" alt="referer host">
+	Success! There comes the link to the next level.
+	<img src="/assets/try2hack-wargame-level7-refresh.png" alt="success">
+</div>
+<h3>Conclusion</h3>
+<div>
+	The techniques needed in this level are
+	<ol>
+		<li>HTTP header fields</li>
+		<li>User-Agent</li>
+		<li>Referer</li>
+	</ol>
+	There are in fact various ways to modify the HTTP header of a request for the webpage. Here I only show one of them. There are also powerful browser extension in Firefox can manipulate and intercept browser request packages.
+</div>
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://vbdis4.angelfire.com/">DoDi's Visual Basic 4 Decompiler</a></li>
+	<li><a href="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project">OWASP</a></li>
+	<li><a href="https://www.google.com/chrome/">Google Chrome</a></li>
+	<li><a href="https://chrome.google.com/webstore/detail/user-agent-switcher-for-c/djflhoibgkdhkhhcedjiklpkjnoahfmg">User-Agent Switcher for Chrome - Chrome Web Store - Google</a></li>
+	<li><a href="http://stackoverflow.com/questions/2601372/what-is-the-standard-format-for-a-browsers-user-agent-string">What is the standard format for a browser's User-Agent string?</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/List_of_HTTP_header_fields">List of HTTP header fields</a></li>
+</ol>
+<!-- http://www.try2hack.nl/levels/level8-balnrg.xhtml -->
