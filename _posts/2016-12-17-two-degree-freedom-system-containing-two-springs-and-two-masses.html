@@ -1,0 +1,41 @@
+---
+layout: post
+title: "Two drgree of freedom system containing two springs and two masses"
+date: 2016-12-17
+category: python
+---
+<h3>Problem statement</h3>
+<div>Find the natural frequencies of the system shown in Figure, with $$m_1=m,\ m_2=2m,\ k_1=k,\ and\ k_2=2k$$
+Determine the response of the system when $$k=1000\ N/m,\ m=20\ kg$$
+and the initial values of the displacements of the masses $$m_1\ and\ m_2\ are\ 1\ and\ -1,\ respectively$$
+Note: figure and question is from Mechanical Vibrations Fifth Edition Chapter 5 Problem 5.5 Singiresu S. Rao</div>
+<h3>Static force balance</h3>
+<div>
+	$$ m_1\ddot x_1+k_1x_1+k_2(x_1-x_2)=0 $$
+	$$ m_2\ddot x_2-k_2(x_2-x_1)=0$$
+Formatting the equations in terms of x
+	$$ m_1\ddot x_1+(k_1+k_2)x_1-k_2x_2=0 $$
+	$$ m_2\ddot x_2-k_2x_1+k_2x_2=0$$
+Let $$ x=x_0e^{i\omega_nt} $$
+	$$ -M\ddot x \omega^2_n+Kx=0 $$
+Solving for the natural frequencies and the response of the system is just like solving the eigenvalue and eigenvector problem for matrix M and K.
+</div>
+{% include python-notebook.html name="two_degree_of_freedom_system_two_springs_hanging_two_masses" %}
+<h3>Concluding Remarks</h3>
+<div>
+	The eigenvalue and eigenvector solvers in numpy have one parameter for the left matrix. That is the right matrix is assumed to be an identity matrix.
+	$$ Ax=\lambda x$$
+	While eigenvalue and eigenvector solvers in scipy have more parameters including right and left matrix. So here the solver in scipy is used.
+	In the future, I am planning to draw the animation of response in principal and x coordinates.
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.linalg.eig.html#scipy.linalg.eig">Eigenvalue eigenvector problem solver in scipy</a></li>
+	<li><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.eig.html">Eigenvalue and eigenvector problem solver in numpy</a></li>
+	<li><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.matrix.transpose.html">Matrix transpose</a></li>
+	<li><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.sqrt.html">Matrix square root</a></li>
+	<li><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.inv.html">Matrix inverse</a></li>
+	<li><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html">Matrix product</a></li>
+	<li><a href="http://docs.sympy.org/dev/modules/matrices/expressions.html">Symbolic library</a></li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
