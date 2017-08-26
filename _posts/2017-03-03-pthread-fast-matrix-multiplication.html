@@ -1,0 +1,221 @@
+---
+layout: post
+title: "Pthread fast matrix multiplication"
+date: 2017-03-03
+category: parallel programming
+---
+<h3>Problem description</h3>
+<div>
+	<p>Matrix multiplication is the easiest parallelizable operations that can introduce a huge speedup gain when the matrixes have a large size. There are many libraries can help parallelizing matrix computations. POSIX Thread is a parallel execution model that exists independently from a language. It can programmer fine control over CPU threads in contrast to OpenMP and other high level libraries.</p>
+</div>
+<h4>matrix.h</h4>
+<div>
+	{% highlight c %}
+void multiply(int N, unsigned long A[][2048], unsigned long B[][2048], unsigned long C[][2048]);
+	{% endhighlight%}
+</div>
+<h4>matrix.c</h4>
+<div>
+	<p>This implementation splits the work of matrix multiplication by row. Let's say there are four threads (NUM_T = 4) and the size of the matrix is 4 (N = 4). Then for the first thread, its argument (struct arguments) start_row is 0 and end_row is 1.</p>
+	{% highlight c %}
+#include "matrix.h"
+#include <pthread.h>
+
+// Number of thread
+#define NUM_T 1
+
+// Global variable for the size of the square matrix
+int NG;
+
+// Global variable for the convinence for multiple process
+// to access matrix A, B, and C
+unsigned long (*AG)[2048];
+unsigned long (*BG)[2048];
+unsigned long (*CG)[2048];
+
+// Additional B temporary matrix is the tranpose of the B
+// matrix created for the faster row-wise access speed
+unsigned long BT[2048][2048];
+
+// arguments type created for pthread arguments
+typedef struct arguments{
+    int start_row;
+    int end_row;
+}arguments;
+
+// compute the multiplication of matrix rows specified
+// by the arguments defined by starting row and ending
+// row
+void* compute_row(void* args){
+    arguments* argument = (arguments*)args;
+    int start_row = argument->start_row;
+    int end_row = argument->end_row;
+    for(int i = start_row; i < end_row + 1; i++){
+        for (int j = 0; j < NG; j++) {
+            unsigned long sum = 0;    // overflow, let it go.
+            for (int k = 0; k < NG; k++)
+                sum += AG[i][k] * BT[j][k];
+            CG[i][j] = sum;
+        }
+    }
+    pthread_exit(NULL);
+}
+
+// multiple two square matrix, A and B, with size N
+// and return the value into C
+void multiply(int N, unsigned long A[][2048], 
+    unsigned long B[][2048], 
+    unsigned long C[][2048]) {
+    // assign matrix value and matrix size into local variables
+    NG = N;
+    AG = A;
+    BG = B;
+    CG = C;
+
+    // initialize pthread attribute value
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    
+    pthread_t thread_pool[NUM_T];
+    arguments args_pool[NUM_T];
+
+    // assign B matrix value into tranposed B temporary matrix
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < N; j++){
+            BT[j][i] = BG[i][j];
+        }
+    }
+
+    // if the number of matrix row is smaller than the total number of thread
+    // then use the number of matrix row as the number of spliting the work
+    int n_split = N < NUM_T ? N : NUM_T;
+    // calculate the number of work row in each split
+    int n_work = N < NUM_T ? 1 : N / NUM_T;
+
+    for (int i = 0; i < n_split; i++) {
+        arguments args;
+        // calculate the starting and ending index of the row
+        args.start_row = i * n_work;
+        args.end_row = args.start_row + n_work;
+        args_pool[i] = args;
+        // create a thread, store in the thread pool, and assign its work
+        // by argments pool
+        pthread_create(&thread_pool[i], &attr, compute_row, (void*) &args_pool[i]);
+    }
+
+    for(int i = 0; i < n_split; i++){
+        // wait for all threads to finish their jobs
+        pthread_join(thread_pool[i], NULL);
+    }
+    pthread_attr_destroy(&attr);
+}
+	{% endhighlight%}
+</div>
+<h4>main.c</h4>
+<div>
+	<p>Here, we consider two matrixes (A and B) with size N*N. For convenience, the matrixes are created from a sudo random number generator and the result of multiplication is hashed to a signature for verification. The first input is the size N, the second is the seed for matrix A, and the third is the seed for matrix B.</p>
+	{% highlight c %}
+#include <stdio.h>
+#include "matrix.h"
+ 
+// #define DEBUG
+#define UINT unsigned long
+#define MAXN 2048
+void rand_gen(UINT c, int N, UINT A[][MAXN]) {
+    UINT x = 2, n = N*N;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            x = (x * x + c + i + j)%n;
+            A[i][j] = x;
+        }
+    }
+}
+void print_matrix(int N, UINT A[][MAXN]) {
+    for (int i = 0; i < N; i++) {
+        fprintf(stderr, "[");
+        for (int j = 0; j < N; j++)
+            fprintf(stderr, " %u", A[i][j]);
+        fprintf(stderr, " ]\n");
+    }
+}
+UINT hash(UINT x) {
+    return (x * 2654435761LU);
+}
+UINT signature(int N, UINT A[][MAXN]) {
+    UINT h = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)
+            h = hash(h + A[i][j]);
+    }
+    return h;
+}
+static UINT A[MAXN][MAXN], B[MAXN][MAXN], C[MAXN][MAXN];
+int main() {
+    int N, S1, S2;
+    while (scanf("%d %d %d", &N, &S1, &S2) == 3) {
+        printf("%d %d %d\n", N, S1, S2);
+        rand_gen(S1, N, A);
+        rand_gen(S2, N, B);
+        multiply(N, A, B, C);
+#ifdef DEBUG
+        print_matrix(N, A);
+        print_matrix(N, B);
+        print_matrix(N, C);
+#endif
+        printf("%u\n", signature(N, C));
+    }
+    return 0;
+}
+	{% endhighlight%}
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://judgegirl.csie.org/problem/0/10080">10080. Fast Matrix Multiplication (pthread)</a></li>
+</ol>
+<!--
+1
+Subtask (0pt) 0.in
+Accepted (34 ms, 6528 KB)
+Subtask (50pt) 1.in
+Accepted (48 ms, 8448 KB)
+Subtask (20pt) 2.in
+Accepted (61 ms, 10496 KB)
+Subtask (20pt) 3.in
+Accepted (921 ms, 34176 KB)
+Subtask (10pt) 4.in
+Time Limit Exceeded (1016 ms, 58624 KB)
+2
+Subtask (0pt) 0.in
+Accepted (30 ms, 6656 KB)
+Subtask (50pt) 1.in
+Accepted (33 ms, 8448 KB)
+Subtask (20pt) 2.in
+Accepted (55 ms, 10496 KB)
+Subtask (20pt) 3.in
+Accepted (509 ms, 34304 KB)
+Subtask (10pt) 4.in
+Accepted (729 ms, 64896 KB)
+4
+Subtask (0pt) 0.in
+Accepted (32 ms, 6656 KB)
+Subtask (50pt) 1.in
+Accepted (28 ms, 8448 KB)
+Subtask (20pt) 2.in
+Accepted (62 ms, 10496 KB)
+Subtask (20pt) 3.in
+Accepted (314 ms, 34304 KB)
+Subtask (10pt) 4.in
+Accepted (372 ms, 64896 KB)
+8
+Subtask (0pt) 0.in
+Accepted (27 ms, 6528 KB)
+Subtask (50pt) 1.in
+Accepted (39 ms, 8448 KB)
+Subtask (20pt) 2.in
+Accepted (57 ms, 10496 KB)
+Subtask (20pt) 3.in
+Accepted (163 ms, 34432 KB)
+Subtask (10pt) 4.in
+Accepted (269 ms, 65024 KB)
+-->
