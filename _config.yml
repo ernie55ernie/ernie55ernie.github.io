@@ -24,3 +24,5 @@ markdown: kramdown
 
 gems:
   - jekyll-sitemap
+
+excerpt_separator: ""
