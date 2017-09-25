@@ -22,7 +22,7 @@ github_username:  ernie55ernie
 # Build settings
 markdown: kramdown
 
-gems:
+plugin:
   - jekyll-sitemap
 
 excerpt_separator: ""
