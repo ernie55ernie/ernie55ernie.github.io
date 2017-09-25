@@ -1,0 +1,137 @@
+---
+layout: post
+title: "Image contrast enhancement in Matlab"
+date: 2017-09-25
+category: image processing
+---
+
+<h1>Problem statement:</h1>
+
+<p>The main objective of this project is to use point processing to make the photos more beautiful. There are four pictures: moon, sunset, mountain, and sky tower.</p>
+
+<h1>1.</h1>
+
+<p>Moon is downloaded from the course website and it was taken outside of the Koo Chen-Fu Memorial Library of the NTU College of Social Sciences at night.</p>
+
+<h3>Observations:</h3>
+
+<p>The whole photo seems too dark. Plotting the histogram, we can see that most of the pixels have levels of brightness below 75. Also, there are also many noises scattering all around the photo.</p>
+
+<p><img width=624 height=232 id="Picture 6"
+src="/assets/IP_1_files/image001.jpg"> </p>
+
+<h3>Methods:</h3>
+
+<p><img width=576 height=336 id="Diagram 3"
+src="/assets/IP_1_files/image002.png"></p>
+
+<p>First, I apply a Gaussian filter to reduce some noise. Since there is only a few bright spot in the photo, I choose to use power law transformation with a gamma value lower than 1 to enhance the contrast of darker region.</p>
+
+<h3>Result:</h3>
+
+<p><img width=624 height=313 id="Picture 2"
+src="/assets/IP_1_files/image003.jpg"></p>
+
+<h1>2.</h1>
+
+<p>Sunset is downloaded from the course website and it was taken somewhere near the ocean.</p>
+
+<h3>Observations:</h3>
+
+<p>The bottom half of the photo seems too dark. Plotting the histogram, there are two groups of pixels: one has an average value 15 and the other has an average value 150. The details of the bottom half of the photo seem mixed together.</p>
+
+<p><img width=624 height=247 id="Picture 12"
+src="/assets/IP_1_files/image004.jpg"></p>
+
+<h3>Methods:</h3>
+
+<p><img width=576 height=336 id="Diagram 8"
+src="/assets/IP_1_files/image005.png"></p>
+
+<p>First, I apply a power law transformation with a gamma value lower than 1 to enhance the contrast of the bottom half of the photo. And then, in order to sharpen the details of the grass or whatever it is, I choose to use a negative of Laplacian filter.</p>
+
+<h3>Result:</h3>
+
+<p><img width=624 height=313 id="Picture 11"
+src="/assets/IP_1_files/image006.jpg"></p>
+
+<span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<h1>3.</h1>
+<p>Mountain was taken in February when my classmates and I travelled to Japan. We stayed at a hotel in front of Mount. Fuji.</p>
+
+<h3>Observations:</h3>
+
+<p>Since it was taken in the morning before the sun rose, the
+cherry blossoms and those scenes in the foreground are quite dark. Plotting the
+histogram, we can see that there are a large group of pixels with the level of
+brightness below 50.</p>
+
+<p><img width=624 height=140 id="Picture 14"
+src="/assets/IP_1_files/image007.jpg"></p>
+
+<h3>Methods:</h3>
+
+<p><img width=576 height=336 id="Diagram 4"
+src="/assets/IP_1_files/image008.png"></p>
+
+<p>First, I apply histogram equalization to enhance the contrast in the foreground. In order to blur some of the branches of the cherry blossoms, I choose to use an average filter with a size value 2*2 which is identical with a Gaussian filter with a size value 2*2 and with a sigma value 0.5. </p>
+
+<h3>Result:</h3>
+
+<p><img width=624 height=313 id="Picture 5"
+src="/assets/IP_1_files/image009.jpg"></p>
+
+<h1>4.</h1>
+<p>Sky tower was taken under the Tokyo sky tower.</p>
+
+<h3>Observations:</h3>
+
+<p>The heads surround the photo are too dark to recognize. Also, the details around the edges of those heads are a little sharp.</p>
+
+<p><img width=624 height=158 id="Picture 9"
+src="/assets/IP_1_files/image010.jpg"></p>
+
+<h3>Methods:</h3>
+
+<p>First, I apply a power law transformation to enhance the
+contrast of those heads. Afterward, I choose to use an average filter to blur
+some sharping edges.</p>
+
+<p><img width=576 height=336 id="Diagram 10"
+src="/assets/IP_1_files/image011.png"></p>
+
+<h3>Result:</h3>
+
+<p><img width=624 height=313 id="Picture 7"
+src="/assets/IP_1_files/image012.jpg"></p>
+
+<h1>Discussion and conclusion:</h1>
+
+<p>In the beginning, I was googling about some terms about
+noise detection or noise reduction and tried to find some ways to automate the
+beatifying process. There are various answers but most of them are focused in a
+specific kind of noise. Despite we may find a region on a photo that is not
+affected by the noise which is sometimes hard to determine and calculate the
+distribution of the noise, there is still human involvement in the process of adjusting
+the photo.</p>
+
+<p>Observing these photos, they all have a group of pixels with
+levels of brightness below 50. In the first case, most of levels of brightness
+are falling in the range of 0 to 50, so a contrast enhancement is needed. Since
+histogram equalization can create too many bright pixels while the scene should
+appear dark at night, a power law transformation is more appropriate to only
+enhance the contrast of the dark region. The similar reason applies to the second
+and the fourth case.</p>
+
+<p>In conclusion, adjustments on photo contrast can help these
+photos become more beautiful. Power law transformation is more suitable to
+enhance a part of a photo in most cases. Also, average filter and Gaussian
+filter shares similar functionality that blur a photo and remove random noises.
+In a small window size, they even have a same value (average filter with size
+2*2 and Gaussian filter with size 2*2 and with sigma 0.5). An average filter
+has a better performance than a Gaussian filter that uses convolutions, while
+Gaussian filter is better at separating frequencies which I will be investigate
+in the future work.</p>
