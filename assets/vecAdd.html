@@ -1,0 +1,254 @@
+<pre class="prettyprint">
+// Vector addition: C = 1/A + 1/B.
+// compile with the following command:
+//
+// nvcc -O3 -o vecAdd vecAdd.cu
+//
+// (for GTX970)
+// nvcc -arch=compute_52 -code=sm_52,sm_52 -O3 -m64 -o vecAdd vecAdd.cu
+//
+// (for GTX1060)
+// nvcc -arch=compute_61 -code=sm_61,sm_61 -O3 -m64 -o vecAdd vecAdd.cu
+
+
+// Includes
+#include <stdio.h>
+#include <stdlib.h>
+
+// Defines
+
+// Variables
+const int N = 6400;
+float h_A[N][N];   // host vectors
+float h_B[N][N];
+float h_C[N][N];
+float h_D[N][N];
+float* d_A;   // device vectors
+float* d_B;
+float* d_C;
+
+// Functions
+void RandomInit(float data[N][N]);
+
+/**
+ * Get parameters from STDIN.
+ */
+static void read_from_stdin(int *blockDimx, int *blockDimy, int *work)
+{
+    char *s, buf[1024];
+
+    fgets(buf, 1023, stdin);
+    if ((s = strchr(buf, '#')) != NULL) *s = '\0';
+    *blockDimx = atoi(buf);
+
+    fgets(buf, 1023, stdin);
+    if ((s = strchr(buf, '#')) != NULL) *s = '\0';
+    *blockDimy = atoi(buf);
+
+    fgets(buf, 1023, stdin);
+    if ((s = strchr(buf, '#')) != NULL) *s = '\0';
+    *work = atoi(buf);
+}
+
+// Device code
+__global__ void VecAdd(const float A[N][N], const float B[N][N], float C[N][N], int N, int work)
+{
+
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    int j = blockDim.y * blockIdx.y + threadIdx.y;
+    if (i < N / work && j < N / work){
+        for(int k = 0; k < work; ++k)
+            for(int l = 0; l < work; ++l)
+                C[i * work + k][j * work + l] = 1.0 / A[i * work + k][j * work + l] + 1.0 / B[i * work + k][j * work + l];
+    }
+    
+    __syncthreads();
+
+}
+
+// Host code
+
+int main(int argc, char* argv[])
+{
+    int gid = 0;
+    int blockDimx = 16;
+    int blockDimy = 16;
+    int work = 1;
+    read_from_stdin(&blockDimx, &blockDimy, &work);
+
+    printf("The number of work for each thread is %d\n", work);
+
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+
+    // scanf("%d", &gid);
+    err = cudaSetDevice(gid);
+    if(err != cudaSuccess){
+        printf("!!! Cannot select GPU with device ID = %d\n", gid);
+        exit(1);
+    }
+    // printf("Set GPU with device ID = %d\n", gid);
+
+    cudaSetDevice(gid);
+
+    // printf("Vector Addition: C = 1/A + 1/B\n");
+    int mem = 1024 * 1024 * 1024;     // Giga
+
+next:       
+    if(3 * N * N > mem){     // each real number takes 4 bytes
+      printf("The size of these 3 vectors cannot be fitted into 4 Gbyte\n");
+      goto next;
+    }
+    long size = N * N * sizeof(float);
+    
+    // Initialize input vectors
+
+    RandomInit(h_A);
+    RandomInit(h_B);
+
+    // Set the sizes of threads and blocks
+
+    dim3 threadsPerBlock(blockDimx, blockDimy);
+    printf("The number of thread is (%d, %d)\n", blockDimx, blockDimy);
+loop:
+    if(threadsPerBlock.x * threadsPerBlock.x > 1024){
+      printf("The number of threads per block must be less than 1024 ! \n");
+      goto loop;
+    }
+
+    dim3 blocksPerGrid(N / blockDimx / work, N / blockDimy / work);
+    printf("The number of blocks is (%d, %d)\n", blocksPerGrid.x, blocksPerGrid.y);
+    if(blocksPerGrid.x * blocksPerGrid.y > 2147483647){
+      printf("The number of blocks must be less than 2147483647 ! \n");
+      goto loop;
+    }
+
+    // create the timer
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    // start the timer
+    cudaEventRecord(start, 0);
+
+    // Allocate vectors in device memory
+
+    cudaMalloc((void**)&d_A, size);
+    cudaMalloc((void**)&d_B, size);
+    cudaMalloc((void**)&d_C, size);
+
+    // Copy vectors from host memory to device memory
+
+    cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
+    
+    // stop the timer
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float Intime;
+    cudaEventElapsedTime(&Intime, start, stop);
+    printf("Input time for GPU: %f (ms) \n", Intime);
+
+    // start the timer
+    cudaEventRecord(start, 0);
+
+    VecAdd<<<blocksPerGrid, threadsPerBlock>>>((float(*)[N])d_A, (float(*)[N])d_B, (float(*)[N])d_C, N, work);
+    
+    // stop the timer
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float gputime;
+    cudaEventElapsedTime(&gputime, start, stop);
+    printf("Processing time for GPU: %f (ms) \n", gputime);
+    printf("GPU Gflops: %f\n", 3 * N / (1000000.0 * gputime));
+    
+    // Copy result from device memory to host memory
+    // h_C contains the result in host memory
+
+    // start the timer
+    cudaEventRecord(start, 0);
+
+    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+
+    // stop the timer
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float Outime;
+    cudaEventElapsedTime(&Outime, start, stop);
+    printf("Output time for GPU: %f (ms) \n", Outime);
+
+    float gputime_tot;
+    gputime_tot = Intime + gputime + Outime;
+    printf("Total time for GPU: %f (ms) \n", gputime_tot);
+
+    // start the timer
+    cudaEventRecord(start, 0);
+
+    // to compute the reference solution
+    for(int i = 0; i < N; ++i)
+        for(int j = 0; j < N; ++j)
+            h_D[i][j] = 1.0 / h_A[i][j] + 1.0 / h_B[i][j];
+    
+    // stop the timer
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    float cputime;
+    cudaEventElapsedTime(&cputime, start, stop);
+    printf("Processing time for CPU: %f (ms) \n", cputime);
+    printf("CPU Gflops: %f\n", 3 * N / (1000000.0 * cputime));
+    printf("Speed up of GPU = %f\n", cputime / (gputime_tot));
+
+    // destroy the timer
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
+
+    // check result
+
+    printf("Check result:\n");
+    double sum = 0; 
+    double diff;
+    for(int i = 0; i < N; ++i){
+        for(int j = 0; j < N; ++j){
+            diff = abs(h_D[i][j] - h_C[i][j]);
+            sum += diff * diff; 
+        }
+    }
+    sum = sqrt(sum);
+    printf("norm(h_C - h_D) = %20.15e\n\n", sum);
+
+    printf("%d,%d,%d,%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f", 
+        work, 
+        blockDimy, 
+        blockDimy,
+        blocksPerGrid.x,
+        blocksPerGrid.y,
+        Intime,
+        gputime,
+        3 * N / (1000000.0 * gputime),
+        Outime,
+        gputime_tot,
+        cputime,
+        3 * N / (1000000.0 * cputime),
+        cputime / (gputime_tot),
+        sum
+        );
+    cudaDeviceReset();
+}
+
+
+// Allocates an array with random float entries.
+void RandomInit(float data[N][N])
+{
+    for(int i = 0; i < N; ++i)
+        for(int j = 0; j < N; ++j)
+            data[i][j] = rand() / (float)RAND_MAX;
+}
+</pre>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
