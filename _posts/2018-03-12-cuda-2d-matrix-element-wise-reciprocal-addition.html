@@ -1,0 +1,494 @@
+---
+layout: post
+title: "CUDA 2D matrix element-wise reciprocal addition"
+date: 2018-03-11
+category: parallel programming
+---
+<h3>Introduction</h3>
+<div>
+	Many matrix operations involves massive computations. If the size of the matrix huge, its compitations are usually the bottleneck of the program. GPU comes with a large amount of cores and it is very suitable for parallel programming. In this task, we are to parallel element-wise reciprocal addition for 2D matrics. $$C_{i,j}=\frac{1}{A_{i,j}}+\frac{1}{B_{i,j}}$$
+	where the dimensions of A, B, and C is N * N, and N = 6400.
+</div>
+<h3>Methods</h3>
+<div>
+	Declare the host vectors as static array, since static array have continuous memory in host memory and this is crucial to the memory copy from host to device. However, there ways to declare dynamic array with continuous memory in host memory and they can be found in <a href="http://www.trevorsimonton.com/blog/2016/11/16/transfer-2d-array-memory-to-cuda.html">transfer dynamic 2D array memory to CUDA, 2016</a>.
+</div>
+{% highlight c%}
+// Variables
+const int N = 6400;
+float h_A[N][N];   // host vectors
+float h_B[N][N];
+float h_C[N][N];
+float h_D[N][N];
+float* d_A;   // device vectors
+float* d_B;
+float* d_C;
+{% endhighlight %}
+<div>The parameter <strong>work</strong> is the number of computation each thread will do along a dimension.</div>
+{% highlight c%}
+// Device code
+__global__ void VecAdd(const float A[N][N], const float B[N][N], float C[N][N], int N, int work)
+{
+
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    int j = blockDim.y * blockIdx.y + threadIdx.y;
+    if (i < N / work && j < N / work){
+        for(int k = 0; k < work; ++k)
+            for(int l = 0; l < work; ++l)
+                C[i * work + k][j * work + l] = 1.0 / A[i * work + k][j * work + l] + 1.0 / B[i * work + k][j * work + l];
+    }
+    
+    __syncthreads();
+
+}
+{% endhighlight %}
+<div>Random initialize vector elements to between 0 and 1.</div>
+{% highlight c%}
+// Allocates an array with random float entries.
+void RandomInit(float data[N][N])
+{
+    for(int i = 0; i < N; ++i)
+        for(int j = 0; j < N; ++j)
+            data[i][j] = rand() / (float)RAND_MAX;
+}
+{% endhighlight %}
+<div></div>
+{% highlight c%}
+{% endhighlight %}
+<div>Full code can be obtained at <a href="/assets/vecAdd.html">here</a></div>
+<h3>Tuning block and grid size</h3>
+<div>
+	Since this code is running on a cluster with <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a> computing resource management system. GPU cards are <a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</a>. I have written two Python codes to do batch computing to test various parameters (block size, grid soze, and number of work for each thread) and combine outputs to a single csv for comparison.<p>
+	To reproduce the results, firstly run test_params.py. Wait for all jobs to complete. Lastly, run gather_results.py.
+</div>
+<h4>test_params.py</h4>
+{% highlight python%}
+import os
+import time
+testing_params = [(4, 4, 1), (8, 8, 1), (10, 10, 1), (16, 16, 1), (20, 20, 1), (32, 32, 1),
+	(16, 16, 2), (16, 16, 4), (16, 16, 16), (16, 16, 80)]
+for params in testing_params:
+	in_name = '{}_{}_{}_in'.format(params[0], params[1], params[2])
+	cmd_name = 'cmd_{}_{}_{}'.format(params[0], params[1], params[2])
+	with open(in_name, 'wb') as f:
+		f.write('{}\n{}\n{}#\n'.format(params[0], params[1], params[2]))
+	with open(cmd_name, 'wb') as f:
+		cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
+			'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
+			'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
+			'Initialdir=/work/username/directory\n\nArguments=./vecAdd_v2 {}_{}_{}_in {}_{}_{}_out\n\n'
+			'Notification=Always\nNotify_user=email@gmail.com\n\n'
+			'Queue\n\n').format(
+			params[0], params[1], params[2],
+			params[0], params[1], params[2])
+		f.write(cmd_content)
+	os.system('condor_submit {}'.format(cmd_name))
+	time.sleep(1)
+{% endhighlight %}
+<h4>gather_results.py</h4>
+{% highlight python%}
+import os
+import subprocess
+result_name = 'results.csv'
+with open(result_name, 'wb') as f:
+	f.write('work for each thread,'
+		'number of thread x,'
+		'number of thread y,'
+		'number of blocks x,'
+		'number of blocks y,'
+		'input time for GPU,'
+		'processing time for GPU (ms),'
+		'GPU Gflops,'
+		'output time for GPU (ms),'
+		'total time for GPU (ms),'
+		'processing time for CPU (ms),'
+		'CPU Gflops,'
+		'speed up of GPU,'
+		'norm(h_C - h_D)')
+	for file_name in os.listdir('./'):
+		if 'out' in file_name:
+			line = subprocess.check_output(['tail', '-1', file_name])
+			f.write(line + '\n')
+	f.close()
+{% endhighlight %}
+<h3>Results</h3>
+<div>
+	I have tested various parameters settings: number of work for each thread, dimension of threads, and dimension of blocks. Here, some columns are omitted: GPU Gflops, CPU Gflops to fit in this document.
+	<table style="width: 733px;" border="1" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>work for each thread</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p><strong>dimension of thread x and y</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p><strong>dimension of blocks x and y</strong></p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p><strong>input time for GPU</strong></p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p><strong>processing time for GPU (ms)</strong></p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p><strong>output time for GPU (ms)</strong></p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p><strong>total time for GPU (ms)</strong></p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p><strong>processing time for CPU (ms)</strong></p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p><strong>speed up of GPU</strong></p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p><strong>norm(h_C - h_D)</strong></p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>4</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>1600</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.09626</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>26.14269</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>90.63619</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>177.8751</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.3188</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.036928</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>8</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>800</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.12278</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>14.18016</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>91.81216</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>167.1151</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.2879</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.167894</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>10</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>640</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.04918</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>16.49891</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>92.22903</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>169.7771</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.9761</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.137956</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px; background-color: yellow;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>16</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>400</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>61.06547</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>12.70762</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>89.49069</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>163.2638</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>362.535</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>2.220548</p>
+		</td>
+		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>20</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>320</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.03123</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>15.13014</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>89.81895</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>165.9803</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.6187</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.184709</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>1</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>32</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>200</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.07587</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>14.31136</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>89.54723</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>164.9345</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.4345</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.197445</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>2</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>16</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>200</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.09696</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>11.56202</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>91.93604</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>164.595</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.6427</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.203243</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>4</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>16</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>100</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.10176</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>17.69344</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>89.79328</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>168.5885</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.7742</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>2.151833</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>16</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>16</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>25</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.11475</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>63.6985</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>89.61117</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>214.4244</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.4164</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>1.690182</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="width: 62px;" nowrap="nowrap">
+		<p><strong>80</strong></p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>16</p>
+		</td>
+		<td style="width: 76px;" nowrap="nowrap">
+		<p>5</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>61.04218</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>78.78506</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>92.21085</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>232.0381</p>
+		</td>
+		<td style="width: 77px;" nowrap="nowrap">
+		<p>362.2871</p>
+		</td>
+		<td style="width: 68px;" nowrap="nowrap">
+		<p>1.561326</p>
+		</td>
+		<td style="width: 73px;" nowrap="nowrap">
+		<p>0</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+	The best result is highlight in yellow. There are several intriguing facts that can be observed from the results:
+	<ol>
+		<li>GPU spends most of the time on memory copying. Input time and output time has dominated the total time of GPU. To be specific, the best result has spent (61.06547+89.49069)/163.2638 = <strong>92%</strong> of time on memory copying.</li>
+		<li>Alternating the number of dimension of blocks don’t have much influence on the speed up of GPU in this simple computation.</li>
+		<li>Increate the work for each thread can actually reduce speed up of GPU.</li>
+	</ol>
+</div>
+<h3>Conclusions</h3>
+<div>
+	From the results above, there are some conclusions can be drawn:
+	<ol>
+		<li>The total time of GPU computing is dominant by the time of memory copying between host and device. So it is critical to minimize the communication overhead.</li>
+		<li>Since this work only contains vector addition, a relative easy task, the fine-tuning of block sizes has no effect on the speed up. I’m looking forward to solve harder problems to observe the relations between these settings and speed up.</li>
+	</ol>
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://www.trevorsimonton.com/blog/2016/11/16/transfer-2d-array-memory-to-cuda.html">transfer dynamic 2D array memory to CUDA, 2016</a></li>
+	<li><a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a></li>
+	<li><a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
