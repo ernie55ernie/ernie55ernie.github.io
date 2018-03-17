@@ -1,0 +1,959 @@
+---
+layout: post
+title: "CUDA maximum value with parallel reduction"
+date: 2018-03-17
+category: parallel programming
+---
+<h3>Introduction</h3>
+<div>
+	In the computation of huge vectors, the processing time can can be overwhelming and unacceptable. If this computation is essential for a project or research, then it is desirable to use GPUs. GPU has a number of features making it superior than CPU in the paradigm of parallel programming. First, it comes with a large amount of CUDA cores (typically, hunderds or thousands). Second, it has shared memory, texture memory, and constant memory where programmers can specify the usage of these faster memory types. Today, we are finding the maximum value of an array with parallel reduction. The dimension of the array is 40960000.
+</div>
+<h3>Methods</h3>
+<div>
+	Finding the maximum value of an array involves comparison and reduction. Every thread in a block is responsible for finding the maximum value in the partial array with size 4096000 / (<strong>threadsPerBlock</strong> * <strong>blocksPerGrid</strong>). Here, <strong>threadsPerBlock</strong> is <strong>blockDim.x</strong> and <strong>blockPerGrid</strong> is <strong>gridDim.x</strong>. Shared memory is accessible to the same block of threads. If every thread in a block has finished finding the partial maximum and stored them into the shared cache, then they will synchronize and start to perform parallel reduction. Parallel reduction is a tree-based approach used within each thread block. A detailed explaination of parallel reduction can be found <a href="http://developer.download.nvidia.com/compute/cuda/1.1-Beta/x86_website/projects/reduction/doc/reduction.pdf">here</a>
+</div>
+{% highlight c%}
+// Device code
+__global__ void VecMax(const float* A, float* B, int N)
+{
+    extern __shared__ float cache[];
+
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    int cacheIndex = threadIdx.x;
+
+    float temp = RAND_MIN;  // register for each thread
+    while (i < N) {
+    	if(A[i] > temp)
+    		temp = A[i];
+        i += blockDim.x * gridDim.x;  
+    }
+   
+    cache[cacheIndex] = temp;   // set the cache value 
+
+    __syncthreads();
+
+    // perform parallel reduction, threadsPerBlock must be 2^m
+
+    int ib = blockDim.x / 2;
+    while (ib != 0) {
+      if(cacheIndex < ib && cache[cacheIndex + ib] > cache[cacheIndex])
+        cache[cacheIndex] = cache[cacheIndex + ib]; 
+
+      __syncthreads();
+
+      ib /= 2;
+    }
+    
+    if(cacheIndex == 0)
+      B[blockIdx.x] = cache[0];
+}
+{% endhighlight %}
+<div>Random initialize vector elements to between -1 and 1.</div>
+{% highlight c%}
+// Allocates an array with random float entries in (-1, 1)
+void RandomInit(float* data, int n)
+{
+    for (int i = 0; i < n; ++i)
+        data[i] = rand() / (float)RAND_MAX * 2.0 + RAND_MIN;
+}
+{% endhighlight %}
+<div></div>
+{% highlight c%}
+{% endhighlight %}
+<div>Full code can be obtained at <a href="/assets/vecMax.html">here</a></div>
+<h3>Tuning block and grid size</h3>
+<div>
+	Since this code is running on a cluster with <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a> computing resource management system. GPU cards are <a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</a>. In order to test a number of parameters (number of threads per block and number of blocks per grid) and combine outputs to a single csv for comparison, I have written two Python code.<p>
+	To reproduce the results, firstly run test_params.py. Wait for all jobs to complete. Lastly, run gather_results.py.
+</div>
+<h4>test_params.py</h4>
+{% highlight python%}
+import os
+import time
+size_of_array = 40960000
+testing_params = [(32, 4), (64, 4), (128, 4), (256, 4), (512, 4), (1024, 4),
+	(32, 16), (64, 16), (128, 16), (256, 16), (512, 16), (1024, 16),
+	(32, 32), (64, 32), (128, 32), (256, 32), (512, 32), (1024, 32),
+	(32, 64), (64, 64), (128, 64), (256, 64), (512, 64), (1024, 64), (32, 128), (64, 128),
+	(128, 128), (256, 128), (512, 128), (1024, 128)]
+for params in testing_params:
+	in_name = '{}_{}_in'.format(params[0], params[1])
+	cmd_name = 'cmd_{}_{}'.format(params[0], params[1])
+	with open(in_name, 'wb') as f:
+		f.write('{}\n{}\n{}\n'.format(size_of_array, params[0], params[1]))
+	with open(cmd_name, 'wb') as f:
+		cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
+			'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
+			'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
+			'Initialdir=/work/r06942066/hw2\n\nArguments=./vecMax {}_{}_in {}_{}_out\n\n'
+			'Notification=Always\nNotify_user=b01505025@g.ntu.edu.tw\n\n'
+			'Queue\n\n').format(
+			params[0], params[1],
+			params[0], params[1])
+		f.write(cmd_content)
+	os.system('condor_submit {}'.format(cmd_name))
+	time.sleep(1)
+{% endhighlight %}
+<h4>gather_results.py</h4>
+{% highlight python%}
+import os
+import subprocess
+result_name = 'results.csv'
+with open(result_name, 'wb') as f:
+	f.write('Size of the vector,'
+		'Number of threads per block,'
+		'Number of blocks per grid,'
+		'Input time for GPU,'
+		'Processing time for GPU (ms),'
+		'GPU Gflops,'
+		'Output time for GPU (ms),'
+		'Total time for GPU (ms),'
+		'Processing time for CPU (ms),'
+		'CPU Gflops,'
+		'Speed up of GPU,'
+		'|(h_G - h_C) / h_C|\n')
+	for file_name in os.listdir('./'):
+		if '_out' in file_name:
+			line = subprocess.check_output(['tail', '-1', file_name])
+			if not ',' in line:
+				continue
+			f.write(line + '\n')
+	f.close()
+{% endhighlight %}
+<h3>Results</h3>
+<div>
+	<p>I have tested various parameter: number of threads per block, and number of blocks per grid. Here, some columns are omitted: size of the vector, GPU Gflops, and CPU Gflops.</p>
+	<p>The three parameter settings of the greatest speed up are highlighted in yellow. The processing time of them is actually only less than 1.5 milliseconds and the IO has occupy about 96% of the total time for GPU.</p>
+	<p>For those configuration having more threads and blocks, their speed ups have saturated to 1.6. I would investigate two specific configurations with one fixed and another varied.</p>
+	The first case fixes the number of blocks per grid at 4 and varies the number of threads per block. When the number of threads per block is only 32, GPU performs worse than CPU. As the number of threads per block grows, GPU speed up also increases linearly.
+	<p><img src="/assets/2018-03-17-cuda-maximum-value-with-parallel-reduction-bpg4.PNG"/></p>
+	The second case fixes the number of threads per bock at 32 and varies the number of blocks per grid. At the start, GPU takes more time than CPU. As the number of blocks per grid rises, GPU speed up also grows linearly.
+	<p><img src="/assets/2018-03-17-cuda-maximum-value-with-parallel-reduction-tpb32.PNG"/></p>
+	The complete results are shown in the following table.
+	<table style="width: 100%;" border="1" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr style="height: 74px;">
+		<td style="height: 74px; width: 69px;">
+		<p><strong>Number of threads per block</strong></p>
+		</td>
+		<td style="height: 74px; width: 69px;">
+		<p><strong>Number of blocks per grid</strong></p>
+		</td>
+		<td style="height: 74px; width: 76px;">
+		<p><strong>Input time for GPU</strong></p>
+		</td>
+		<td style="height: 74px; width: 90px;">
+		<p><strong>Processing time for GPU (ms)</strong></p>
+		</td>
+		<td style="height: 74px; width: 77px;">
+		<p><strong>Output time for GPU (ms)</strong></p>
+		</td>
+		<td style="height: 74px; width: 77px;">
+		<p><strong>Total time for GPU (ms)</strong></p>
+		</td>
+		<td style="height: 74px; width: 91px;">
+		<p><strong>Processing time for CPU (ms)</strong></p>
+		</td>
+		<td style="height: 74px; width: 78px;">
+		<p><strong>Speed up of GPU</strong></p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>32</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.66525</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>14.84906</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.784064</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>52.29837</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.9841</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.223443</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>64</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.64186</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>7.573888</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.781984</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>44.99773</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.16451</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.42595</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.65101</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>3.833824</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.780832</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>41.26566</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.9816</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.55048</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.6024</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>2.076</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.788832</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>39.46723</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.97824</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.621047</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.6233</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.39744</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.774432</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>38.79517</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>61.05914</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.573885</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; background-color: yellow; width: 69px;">
+		<p><strong>1024</strong></p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 69px;">
+		<p>32</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 76px;">
+		<p>30.6088</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 90px;">
+		<p>1.484768</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 77px;">
+		<p>6.780704</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 77px;">
+		<p>38.87428</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 91px;">
+		<p>64.14608</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 78px;">
+		<p>1.650091</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>32</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.61383</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>7.575488</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.783584</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>44.9729</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.15702</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.426571</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>64</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.62464</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>3.831616</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.781024</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>41.23728</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.1552</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.555757</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.58659</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>2.165824</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.77504</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>39.52745</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>61.06656</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.544915</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.50822</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.382816</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.77904</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>38.67008</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>61.05878</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.578967</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>29.3</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.453376</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.724992</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>37.47837</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>51.59056</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.376542</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>1024</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>64</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>28.83965</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.252736</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.71024</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>36.80262</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>51.53123</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.400205</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>32</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>128</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.5961</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>3.837504</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.784896</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>41.2185</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.97549</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.552106</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>64</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>128</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.6297</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>2.05072</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.782528</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>39.46294</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.9983</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.621732</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="background-color: yellow; width: 69px; height: 35px;">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="background-color: yellow; width: 69px; height: 35px;">
+		<p>128</p>
+		</td>
+		<td style="background-color: yellow; width: 76px; height: 35px;">
+		<p>30.60554</p>
+		</td>
+		<td style="background-color: yellow; width: 90px; height: 35px;">
+		<p>1.283488</p>
+		</td>
+		<td style="background-color: yellow; width: 77px; height: 35px;">
+		<p>6.781856</p>
+		</td>
+		<td style="background-color: yellow; width: 77px; height: 35px;">
+		<p>38.67088</p>
+		</td>
+		<td style="background-color: yellow; width: 91px; height: 35px;">
+		<p>63.97818</p>
+		</td>
+		<td style="background-color: yellow; width: 78px; height: 35px;">
+		<p>1.654428</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>128</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.64755</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.481664</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.779744</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>38.90896</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.01881</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.645349</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>128</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.60602</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.3216</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.774528</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>38.70215</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>61.05629</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.577595</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; background-color: yellow; width: 69px;">
+		<p><strong>1024</strong></p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 69px;">
+		<p>128</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 76px;">
+		<p>30.65517</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 90px;">
+		<p>1.184672</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 77px;">
+		<p>6.780032</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 77px;">
+		<p>38.61987</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 91px;">
+		<p>63.98534</p>
+		</td>
+		<td style="height: 35px; background-color: yellow; width: 78px;">
+		<p>1.656798</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>32</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.60259</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>118.0691</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.768384</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>155.44</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.28551</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>0.413571</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>64</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.59501</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>58.89587</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.769696</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>96.26057</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.87818</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>0.663596</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.58115</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>30.31491</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.772544</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>67.66861</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>62.76544</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>0.927541</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.64448</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>14.90966</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.780608</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>52.33476</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.23821</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.227448</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>28.80144</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>7.557408</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.710016</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>43.06886</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>51.52883</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.196429</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>1024</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>4</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.56736</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>4.092448</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.776416</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>41.43623</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>61.06</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.47359</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>32</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.57306</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>30.28375</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.77616</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>67.63296</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>62.59197</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>0.925466</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>64</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.62096</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>14.82234</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.782272</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>52.22557</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.01981</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.225833</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.6225</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>7.58512</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.781632</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>44.98925</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.98637</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.422259</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.65683</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>3.836832</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.78352</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>41.27718</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>64.03978</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.551457</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.61443</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>2.098848</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.782048</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>39.49533</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.97792</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.619886</p>
+		</td>
+		</tr>
+		<tr style="height: 35px;">
+		<td style="height: 35px; width: 69px;">
+		<p><strong>1024</strong></p>
+		</td>
+		<td style="height: 35px; width: 69px;">
+		<p>16</p>
+		</td>
+		<td style="height: 35px; width: 76px;">
+		<p>30.87216</p>
+		</td>
+		<td style="height: 35px; width: 90px;">
+		<p>1.3448</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>6.785248</p>
+		</td>
+		<td style="height: 35px; width: 77px;">
+		<p>39.00221</p>
+		</td>
+		<td style="height: 35px; width: 91px;">
+		<p>63.89149</p>
+		</td>
+		<td style="height: 35px; width: 78px;">
+		<p>1.63815</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<h3>Conclusions</h3>
+<div>
+	From the results and discussions above, we can draw some conclusions:
+	<ol>
+		<li>The memory copying from host to device and from device to host is the dominant of the total time for GPU. Parallel reduction can help reduce the data transferring.</li>
+		<li>When the number of blocks per grid is relatively small, it is better to increase the number of threads per block.</li>
+		<li>When the number of threads per block is small, it is better to increase the number of blocks per grid.</li>
+	</ol>
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://developer.download.nvidia.com/compute/cuda/1.1-Beta/x86_website/projects/reduction/doc/reduction.pdf">Parallel reduction</a></li>
+	<li><a href="https://devtalk.nvidia.com/default/topic/526338/synchronize-all-blocks-in-cuda/">Synchronize all blocks in CUDA, 2016</a></li>
+	<li><a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a></li>
+	<li><a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</li>
+</ol>

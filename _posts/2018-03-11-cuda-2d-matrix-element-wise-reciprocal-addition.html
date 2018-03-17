@@ -114,358 +114,325 @@ with open(result_name, 'wb') as f:
 <h3>Results</h3>
 <div>
 	I have tested various parameters settings: number of work for each thread, dimension of threads, and dimension of blocks. Here, some columns are omitted: GPU Gflops, CPU Gflops to fit in this document.
-	<table style="width: 733px;" border="1" cellspacing="0" cellpadding="0">
+	<table border="1" width="100%" cellspacing="0" cellpadding="0">
 		<tbody>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>work for each thread</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p><strong>dimension of thread x and y</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p><strong>dimension of blocks x and y</strong></p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p><strong>input time for GPU</strong></p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p><strong>processing time for GPU (ms)</strong></p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p><strong>output time for GPU (ms)</strong></p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p><strong>total time for GPU (ms)</strong></p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p><strong>processing time for CPU (ms)</strong></p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p><strong>speed up of GPU</strong></p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p><strong>norm(h_C - h_D)</strong></p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>4</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>1600</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.09626</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>26.14269</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>90.63619</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>177.8751</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.3188</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.036928</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>8</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>800</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.12278</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>14.18016</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>91.81216</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>167.1151</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.2879</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.167894</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>10</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>640</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.04918</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>16.49891</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>92.22903</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>169.7771</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.9761</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.137956</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="78">
 		<p>16</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="78">
 		<p>400</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="70">
 		<p>61.06547</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="79">
 		<p>12.70762</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="70">
 		<p>89.49069</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="70">
 		<p>163.2638</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="79">
 		<p>362.535</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
+		<td style="width: 64px; background-color: yellow;" width="70">
 		<p>2.220548</p>
 		</td>
-		<td style="width: 76px; background-color: yellow;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>20</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>320</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.03123</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>15.13014</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>89.81895</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>165.9803</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.6187</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.184709</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>1</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>32</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>200</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.07587</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>14.31136</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>89.54723</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>164.9345</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.4345</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.197445</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>2</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>16</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>200</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.09696</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>11.56202</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>91.93604</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>164.595</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.6427</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.203243</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>4</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>16</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>100</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.10176</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>17.69344</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>89.79328</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>168.5885</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.7742</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>2.151833</p>
 		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
-		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>16</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>16</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>25</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.11475</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>63.6985</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>89.61117</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>214.4244</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.4164</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>1.690182</p>
-		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
 		</td>
 		</tr>
 		<tr>
-		<td style="width: 62px;" nowrap="nowrap">
+		<td width="64">
 		<p><strong>80</strong></p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>16</p>
 		</td>
-		<td style="width: 76px;" nowrap="nowrap">
+		<td width="78">
 		<p>5</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>61.04218</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>78.78506</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>92.21085</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>232.0381</p>
 		</td>
-		<td style="width: 77px;" nowrap="nowrap">
+		<td width="79">
 		<p>362.2871</p>
 		</td>
-		<td style="width: 68px;" nowrap="nowrap">
+		<td width="70">
 		<p>1.561326</p>
-		</td>
-		<td style="width: 73px;" nowrap="nowrap">
-		<p>0</p>
 		</td>
 		</tr>
 		</tbody>
