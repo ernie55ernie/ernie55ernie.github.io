@@ -1,0 +1,2311 @@
+---
+layout: post
+title: "CUDA Laplace equation on 2D lattice with texture memory"
+date: 2018-04-02
+category: parallel programming
+---
+<h3>Introduction</h3>
+<div>
+	This time we are going to use CUDA to parallel the iterative computation in Laplace equation. <a href="http://tutorial.math.lamar.edu/Classes/DE/LaplacesEqn.aspx">2-D Laplace's equation</a> is in the form of, 
+	$$\nabla^2u=\frac{\partial^2u}{\partial x^2}+\frac{\partial^2u}{\partial y^2}=0$$ If we consider a 2-D heat equation, 
+	$$\frac{\partial u}{\partial t}=k\nabla^2u+\frac{Q}{cp}$$ Laplace's equation appears when solving the equilibrium solution (time independent) if there is no source. Let's solve this equation on a rectangle given by, 
+	$$0\leq x\leq L, 0\leq y\leq H$$ For this geometry, the Laplace's equation with four boundary conditions will be, 
+	$$\nabla^2u=\frac{\partial^2u}{\partial x^2}+\frac{\partial^2u}{\partial y^2}=0$$ 
+	$$u(0,y)=g_1(y)\quad u(L,y)=g_2(y)$$ 
+	$$u(x,0)=f_1(x)\quad u(x,H)=f_2(x)$$ 
+	Here, we are going to use <a href="https://en.wikipedia.org/wiki/Relaxation_(iterative_method)">iterative method</a> to solve this boundary-value problem, in which the solution-function's values are specified on boundary of a domain; the problem is to compute a solution also on its interior. Modeling such problem of potential theory, u is a smooth real-valued function on the real numbers, its second derivative can be approximated by: $$\frac{\partial^2 u}{\partial x^2}=\frac{u(x-h)-2(u)+u(x+h)}{h^2}+O(h^2)$$ Using this in 2 dimensions for a function u of 2 arguments at the point (x, y), and solve for u(x, y) results in:
+	$$u(x,y)=\frac{1}{4}(u(x+h,y)+u(x,y+h)+u(x-h,y)+u(x,y-h)-h^2\nabla^2u(x,y))+O(h^4)$$
+	To approach the solution numerically on a 2-D grid with grid spacing h, the iterative method assigns the given values of function u to the grid points near the boundary and arbitrary values to the interior grid points, and repeatedly performs the assignment u:=u* on the interior points, where u* is defined by,
+	$$u^*(x,y)=\frac{1}{4}(u(x+h,y)+u(x,y+h)+u(x-h,y)+u(x,y-h)-h^2f(x,y))$$
+	util convergence.
+</div>
+<h3>Methods</h3>
+<div>
+	Since the condition for convergence depends on the difference of two consecutive iterations, there two texture memories. For each iteration of computation, the assignment of u:=u* are sent to the GPU. And the difference between two iterations are reduced to one value into shared memory by parallel reduction. A detailed explaination of parallel reduction can be found <a href="http://developer.download.nvidia.com/compute/cuda/1.1-Beta/x86_website/projects/reduction/doc/reduction.pdf">here</a>
+</div>
+{% highlight c%}
+__align__(8) texture<float>	texOld;	 // declare the texture
+__align__(8) texture<float>	texNew;
+
+
+__global__ void laplacianTex(float* phi_old, float* phi_new, float* C, bool flag)
+{
+	extern __shared__ float cache[];	 
+	float	t, l, c, r, b;	 // top, left, center, right, bottom
+	float	diff; 
+	int	site, ym1, xm1, xp1, yp1;
+
+	int Nx = blockDim.x * gridDim.x;
+	int Ny = blockDim.y * gridDim.y;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
+	int y = blockDim.y * blockIdx.y + threadIdx.y;
+	int cacheIndex = threadIdx.x + threadIdx.y * blockDim.x;	
+
+	site = x + y * Nx;
+
+	if((x == 0) || (x == Nx - 1) || (y == 0) || (y == Ny - 1)) {	
+	}
+	else {
+		xm1 = site - 1;	// x-1
+		xp1 = site + 1;	// x+1
+		ym1 = site - Nx;	 // y-1
+		yp1 = site + Nx;	 // y+1
+		if(flag){
+			b = tex1Dfetch(texOld, ym1);		// read d_old via texOld
+			l = tex1Dfetch(texOld, xm1);
+			c = tex1Dfetch(texOld, site);
+			r = tex1Dfetch(texOld, xp1);
+			t = tex1Dfetch(texOld, yp1);
+
+			phi_new[site] = 0.25 * (b + l + r + t);
+			diff = phi_new[site] - c;
+		}
+		else {
+			b = tex1Dfetch(texNew, ym1);	 // read d_new via texNew
+			l = tex1Dfetch(texNew, xm1);
+			c = tex1Dfetch(texNew, site);
+			r = tex1Dfetch(texNew, xp1);
+			t = tex1Dfetch(texNew, yp1);
+
+			phi_old[site] = 0.25 * (b + l + r + t);
+			diff = phi_old[site] - c;
+		}
+	}
+
+	// each thread saves its error estimate to the shared memory
+
+	cache[cacheIndex] = diff * diff;	
+	__syncthreads();
+
+	// parallel reduction in each block 
+
+	int ib = blockDim.x * blockDim.y / 2;	
+	while (ib != 0) {	
+		if(cacheIndex < ib)	
+			cache[cacheIndex] += cache[cacheIndex + ib];
+		__syncthreads();
+		ib /= 2;	
+	}
+
+	// save the partial sum of each block to C
+
+	int blockIndex = blockIdx.x + gridDim.x * blockIdx.y;
+	if(cacheIndex == 0)
+		C[blockIndex] = cache[0];	
+}
+{% endhighlight %}
+
+<div>Full code can be obtained at <a href="/assets/laplace.html">here</a></div>
+<h3></h3>
+<div>
+	While the code is compiled on a cluster with <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a> computing resource management system. GPU cards are <a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</a>. The following two Python codes to do batch computing to test various parameters (boundary conditions, block size, grid size) and combine outputs to a single csv for each boundary condition.<p>
+	To reproduce the results, firstly run test_params.py. Wait for all jobs to complete. Lastly, run gather_results.py.
+</div>
+<h4>test_params.py</h4>
+{% highlight python%}
+import os
+import time
+
+lattice_sizes = [32, 64, 128, 256, 512, 640]
+block_sizes = [4, 8, 16, 32]
+bcs = [(0.0, 0.0, 0.0, 1.0), (1.0, -1.0, -2.0, 5.0)]
+
+for lattice_size in lattice_sizes:
+	for block_size in block_sizes:
+		for bc in bcs:
+			in_name = '{}_{}_{}_{}_{}_{}_in'.format(lattice_size, block_size, bc[0], bc[1], bc[2], bc[3])
+			cmd_name = 'cmd_{}_{}_{}_{}_{}_{}'.format(lattice_size, block_size, bc[0], bc[1], bc[2], bc[3])
+			with open(in_name, 'wb') as f:
+				f.write('{} {}\n{} {}\n{} {} {} {}\n'.format(lattice_size, lattice_size, block_size, block_size, 
+					bc[0], bc[1], bc[2], bc[3]))
+			with open(cmd_name, 'wb') as f:
+				cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
+					'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
+					'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
+					'Initialdir=/work/r06942066/hw3\n\nArguments=./laplace {}_{}_{}_{}_{}_{}_in {}_{}_{}_{}_{}_{}_out\n\n'
+					'Notification=Always\nNotify_user=b01505025@g.ntu.edu.tw\n\n'
+					'Queue\n\n').format(
+					lattice_size, block_size, bc[0], bc[1], bc[2], bc[3],
+					lattice_size, block_size, bc[0], bc[1], bc[2], bc[3])
+				f.write(cmd_content)
+			os.system('condor_submit {}'.format(cmd_name))
+			time.sleep(1)
+{% endhighlight %}
+<h4>gather_results.py</h4>
+{% highlight python%}
+import os
+import subprocess
+bcs = [(0.0, 0.0, 0.0, 1.0), (1.0, -1.0, -2.0, 5.0)]
+for bc in bcs:
+	result_name = 'results_{}_{}_{}_{}.csv'.format(bc[0], bc[1], bc[2], bc[3])
+
+	with open(result_name, 'wb') as f:
+		f.write('Size of the 2D lattice (x),'
+			'Number of threads per block (x),'
+			'Input time for GPU (Texture) (ms),'
+			'Error for GPU (Texture),'
+			'Iteration of GPU (Texture),'
+			'Processing time for GPU (Texture) (ms),'
+			'GPU (Texture) Gflops,'
+			'Output time for GPU (Texture) (ms),'
+			'Total time for GPU (Texture) (ms),'
+			'Input time for GPU (ms),'
+			'Error for GPU,'
+			'Iteration of GPU,'
+			'Processing time for GPU (ms),'
+			'GPU Gflops,'
+			'Output time for GPU (ms),'
+			'Total time for GPU (ms),'
+			'Error for CPU,'
+			'Iteration of CPU,'
+			'Processing time for CPU (ms),'
+			'CPU Gflops,'
+			'Speed up of GPU (Texture),'
+			'Speed up of GPU\n')
+		for file_name in os.listdir('./'):
+			if '{}_{}_{}_{}_out'.format(bc[0], bc[1], bc[2], bcs[3]) in file_name:
+				line = subprocess.check_output(['tail', '-1', file_name])
+				if not ',' in line:
+					continue
+				f.write(line + '\n')
+		f.close()
+{% endhighlight %}
+<h3>Results</h3>
+<div>
+	I have tested different lattice sizes: 32, 64, 128, 256, 512, and 640, and block sizes: 4, 8, 16, 32. In this part, I only shows the result of the boundary condition: top is 1.0, and the other is 0.0. As a result, there are totally 24 rows and 22 columns (these columns are stated in the gather results part in methods section). Since the table is really large, it is split into three separate tables with GPU (texture), GPU and CPU.<br>
+	For the size of 2D lattice less than 128×128, CPU has a better performance than GPU with texture and GPU. Different from the previous homework, this time the memory copying time of input and output only have a little effect on the total, less than 2 milliseconds, comparing to the processing time 60-170000 milliseconds.<br>
+	While the sizes of 2D lattice are 128×128 and 256×256, GPU with device memory has a better performance the CPU and GPU with texture memory. When the size of 2D lattice is 128×128, the best configuration of number of threads per block is 16×16 and number of blocks per grid will be 8×8. While the size of 2D lattice is 256×256, the best setting of number of threads per block is 8×8 and number of blocks per grid will be 32×32.<br>
+	However, if the size of the 2d lattice grows over 512×512, texture memory has shown a substantial advantage over GPU and CPU without losing any error. When the size of 2D lattice is 512×512, the besting configuration of number of threads per block is 16×16 and number of blocks per grid will be 32×32. While the size of 2D lattice is 640×640, the best setting of number of threads per block is 8×8 and number of blocks per grid will be 80×80. The best speedup of CPU, GPU, and GPU with texture are highlighted in yellow.<br>
+	Here is the result for GPU with texture memory. The size of the 2D lattice (y) and the number of threads per block (y) is the same as the value of x, so they are omitted:
+	<table border="1" width="100%" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr>
+		<td width="64">
+		<p><strong>Size of the 2D lattice (x)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Number of threads per block (x)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Input time (ms)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Error</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Iteration </strong></p>
+		</td>
+		<td width="65">
+		<p><strong>Processing time (ms)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Gflops</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Output time (ms)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Total time (ms)</strong></p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0.53472</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>2606</p>
+		</td>
+		<td width="65">
+		<p>60.45296</p>
+		</td>
+		<td width="64">
+		<p>0.27158</p>
+		</td>
+		<td width="64">
+		<p>0.375648</p>
+		</td>
+		<td width="64">
+		<p>61.36333</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0.534208</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>2606</p>
+		</td>
+		<td width="65">
+		<p>59.2072</p>
+		</td>
+		<td width="64">
+		<p>0.277294</p>
+		</td>
+		<td width="64">
+		<p>0.370848</p>
+		</td>
+		<td width="64">
+		<p>60.11226</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0.540384</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>2606</p>
+		</td>
+		<td width="65">
+		<p>58.31558</p>
+		</td>
+		<td width="64">
+		<p>0.281534</p>
+		</td>
+		<td width="64">
+		<p>0.369632</p>
+		</td>
+		<td width="64">
+		<p>59.2256</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0.53168</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>2606</p>
+		</td>
+		<td width="65">
+		<p>67.27274</p>
+		</td>
+		<td width="64">
+		<p>0.244048</p>
+		</td>
+		<td width="64">
+		<p>0.371552</p>
+		</td>
+		<td width="64">
+		<p>68.17596</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0.472832</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>9745</p>
+		</td>
+		<td width="65">
+		<p>227.8239</p>
+		</td>
+		<td width="64">
+		<p>1.15097</p>
+		</td>
+		<td width="64">
+		<p>0.3424</p>
+		</td>
+		<td width="64">
+		<p>228.6391</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0.545952</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>9745</p>
+		</td>
+		<td width="65">
+		<p>221.5026</p>
+		</td>
+		<td width="64">
+		<p>1.183817</p>
+		</td>
+		<td width="64">
+		<p>0.381376</p>
+		</td>
+		<td width="64">
+		<p>222.4299</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0.54032</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>9745</p>
+		</td>
+		<td width="65">
+		<p>220.2206</p>
+		</td>
+		<td width="64">
+		<p>1.190708</p>
+		</td>
+		<td width="64">
+		<p>0.378624</p>
+		</td>
+		<td width="64">
+		<p>221.1395</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0.53952</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>9745</p>
+		</td>
+		<td width="65">
+		<p>281.0736</p>
+		</td>
+		<td width="64">
+		<p>0.932917</p>
+		</td>
+		<td width="64">
+		<p>0.378848</p>
+		</td>
+		<td width="64">
+		<p>281.992</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0.575232</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>35073</p>
+		</td>
+		<td width="65">
+		<p>1161.547</p>
+		</td>
+		<td width="64">
+		<p>3.355639</p>
+		</td>
+		<td width="64">
+		<p>0.41488</p>
+		</td>
+		<td width="64">
+		<p>1162.537</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0.575168</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>35073</p>
+		</td>
+		<td width="65">
+		<p>1033.322</p>
+		</td>
+		<td width="64">
+		<p>3.772042</p>
+		</td>
+		<td width="64">
+		<p>0.421888</p>
+		</td>
+		<td width="64">
+		<p>1034.319</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0.581408</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>35073</p>
+		</td>
+		<td width="65">
+		<p>1025.425</p>
+		</td>
+		<td width="64">
+		<p>3.801092</p>
+		</td>
+		<td width="64">
+		<p>0.417024</p>
+		</td>
+		<td width="64">
+		<p>1026.423</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0.517376</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>35073</p>
+		</td>
+		<td width="65">
+		<p>940.3292</p>
+		</td>
+		<td width="64">
+		<p>4.145073</p>
+		</td>
+		<td width="64">
+		<p>0.375488</p>
+		</td>
+		<td width="64">
+		<p>941.222</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0.727232</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>124611</p>
+		</td>
+		<td width="65">
+		<p>6201.993</p>
+		</td>
+		<td width="64">
+		<p>9.073829</p>
+		</td>
+		<td width="64">
+		<p>0.52672</p>
+		</td>
+		<td width="64">
+		<p>6203.247</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0.735008</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>124611</p>
+		</td>
+		<td width="65">
+		<p>4199.054</p>
+		</td>
+		<td width="64">
+		<p>13.40203</p>
+		</td>
+		<td width="64">
+		<p>0.559168</p>
+		</td>
+		<td width="64">
+		<p>4200.348</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0.66064</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>124611</p>
+		</td>
+		<td width="65">
+		<p>3460.476</p>
+		</td>
+		<td width="64">
+		<p>16.26245</p>
+		</td>
+		<td width="64">
+		<p>0.497312</p>
+		</td>
+		<td width="64">
+		<p>3461.634</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0.746048</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>124611</p>
+		</td>
+		<td width="65">
+		<p>4435.073</p>
+		</td>
+		<td width="64">
+		<p>12.68882</p>
+		</td>
+		<td width="64">
+		<p>0.548864</p>
+		</td>
+		<td width="64">
+		<p>4436.368</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>1.389184</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>423553</p>
+		</td>
+		<td width="65">
+		<p>75713.64</p>
+		</td>
+		<td width="64">
+		<p>10.18526</p>
+		</td>
+		<td width="64">
+		<p>1.18976</p>
+		</td>
+		<td width="64">
+		<p>75716.22</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>1.503232</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>423553</p>
+		</td>
+		<td width="65">
+		<p>45034.16</p>
+		</td>
+		<td width="64">
+		<p>17.12395</p>
+		</td>
+		<td width="64">
+		<p>1.272224</p>
+		</td>
+		<td width="64">
+		<p>45036.94</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>16</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>1.501248</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>0</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>423553</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="65">
+		<p>27503.4</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>28.03882</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>1.248928</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>27506.15</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>1.388832</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>423553</p>
+		</td>
+		<td width="65">
+		<p>33944.7</p>
+		</td>
+		<td width="64">
+		<p>22.71821</p>
+		</td>
+		<td width="64">
+		<p>1.164576</p>
+		</td>
+		<td width="64">
+		<p>33947.26</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>1.663968</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>619850</p>
+		</td>
+		<td width="65">
+		<p>169852.2</p>
+		</td>
+		<td width="64">
+		<p>10.39812</p>
+		</td>
+		<td width="64">
+		<p>1.705984</p>
+		</td>
+		<td width="64">
+		<p>169855.6</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>8</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>1.682016</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>0</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>619850</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="65">
+		<p>85307.44</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>20.70328</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>1.754656</p>
+		</td>
+		<td style="background-color: yellow; width: 64px;" width="64">
+		<p>85310.88</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>1.573088</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>619850</p>
+		</td>
+		<td width="65">
+		<p>71908.79</p>
+		</td>
+		<td width="64">
+		<p>24.56089</p>
+		</td>
+		<td width="64">
+		<p>1.502496</p>
+		</td>
+		<td width="64">
+		<p>71911.86</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>1.701472</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="64">
+		<p>619850</p>
+		</td>
+		<td width="65">
+		<p>98867.45</p>
+		</td>
+		<td width="64">
+		<p>17.86375</p>
+		</td>
+		<td width="64">
+		<p>1.638976</p>
+		</td>
+		<td width="64">
+		<p>98870.8</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+	Here is the result for GPU with device memory. The size of the 2D lattice (y) and the number of threads per block (y) is the same as the value of x, so they are omitted:
+	<table border="1" width="100%" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr>
+		<td width="66">
+		<p><strong>Size of the 2D lattice (x)</strong></p>
+		</td>
+		<td width="66">
+		<p><strong>Number of threads per block (x)</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Input time (ms)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Error</strong></p>
+		</td>
+		<td width="68">
+		<p><strong>Iteration</strong></p>
+		</td>
+		<td width="79">
+		<p><strong>Processing time (ms)</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Gflops</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Output time (ms)</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Total &nbsp;time (ms)</strong></p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>0.430368</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>44.80208</p>
+		</td>
+		<td width="70">
+		<p>0.366452</p>
+		</td>
+		<td width="70">
+		<p>0.344288</p>
+		</td>
+		<td width="70">
+		<p>45.57673</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="66">
+		<p>8</p>
+		</td>
+		<td width="70">
+		<p>0.43776</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>43.6656</p>
+		</td>
+		<td width="70">
+		<p>0.375989</p>
+		</td>
+		<td width="70">
+		<p>0.344096</p>
+		</td>
+		<td width="70">
+		<p>44.44746</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="66">
+		<p>16</p>
+		</td>
+		<td width="70">
+		<p>0.426784</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>43.69744</p>
+		</td>
+		<td width="70">
+		<p>0.375715</p>
+		</td>
+		<td width="70">
+		<p>0.343456</p>
+		</td>
+		<td width="70">
+		<p>44.46768</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>0.440608</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>64.35703</p>
+		</td>
+		<td width="70">
+		<p>0.255105</p>
+		</td>
+		<td width="70">
+		<p>0.344</p>
+		</td>
+		<td width="70">
+		<p>65.14163</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>0.378528</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>225.6186</p>
+		</td>
+		<td width="70">
+		<p>1.16222</p>
+		</td>
+		<td width="70">
+		<p>0.317824</p>
+		</td>
+		<td width="70">
+		<p>226.315</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="66">
+		<p>8</p>
+		</td>
+		<td width="70">
+		<p>0.43152</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>167.6807</p>
+		</td>
+		<td width="70">
+		<p>1.563796</p>
+		</td>
+		<td width="70">
+		<p>0.35088</p>
+		</td>
+		<td width="70">
+		<p>168.4631</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="66">
+		<p>16</p>
+		</td>
+		<td width="70">
+		<p>0.439424</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>172.7931</p>
+		</td>
+		<td width="70">
+		<p>1.517529</p>
+		</td>
+		<td width="70">
+		<p>0.349472</p>
+		</td>
+		<td width="70">
+		<p>173.582</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>0.437696</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>240.7429</p>
+		</td>
+		<td width="70">
+		<p>1.089205</p>
+		</td>
+		<td width="70">
+		<p>0.353376</p>
+		</td>
+		<td width="70">
+		<p>241.534</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>0.459712</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>967.6324</p>
+		</td>
+		<td width="70">
+		<p>4.028113</p>
+		</td>
+		<td width="70">
+		<p>0.361952</p>
+		</td>
+		<td width="70">
+		<p>968.454</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="66">
+		<p>8</p>
+		</td>
+		<td width="70">
+		<p>0.456672</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>901.0295</p>
+		</td>
+		<td width="70">
+		<p>4.325866</p>
+		</td>
+		<td width="70">
+		<p>0.370496</p>
+		</td>
+		<td width="70">
+		<p>901.8567</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="background-color: yellow; width: 66px;" width="66">
+		<p><strong>128</strong></p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="66">
+		<p>16</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>0.46256</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="64">
+		<p>0</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="68">
+		<p>35073</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="79">
+		<p>868.0142</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>4.490402</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>0.37264</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>868.8494</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>0.41152</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>785.0016</p>
+		</td>
+		<td width="70">
+		<p>4.965254</p>
+		</td>
+		<td width="70">
+		<p>0.3376</p>
+		</td>
+		<td width="70">
+		<p>785.7507</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>0.60864</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>5542.933</p>
+		</td>
+		<td width="70">
+		<p>10.15272</p>
+		</td>
+		<td width="70">
+		<p>0.444672</p>
+		</td>
+		<td width="70">
+		<p>5543.986</p>
+		</td>
+		</tr>
+		<tr>
+		<td style="background-color: yellow; width: 66px;" width="66">
+		<p><strong>256</strong></p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="66">
+		<p>8</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>0.613536</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="64">
+		<p>0</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="68">
+		<p>124611</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="79">
+		<p>3489.02</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>16.12941</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>0.436608</p>
+		</td>
+		<td style="background-color: yellow; width: 66px;" width="70">
+		<p>3490.07</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="66">
+		<p>16</p>
+		</td>
+		<td width="70">
+		<p>0.54944</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>3227.097</p>
+		</td>
+		<td width="70">
+		<p>17.43853</p>
+		</td>
+		<td width="70">
+		<p>0.406112</p>
+		</td>
+		<td width="70">
+		<p>3228.053</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>0.63232</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>3891.992</p>
+		</td>
+		<td width="70">
+		<p>14.45939</p>
+		</td>
+		<td width="70">
+		<p>0.454656</p>
+		</td>
+		<td width="70">
+		<p>3893.079</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>1.337792</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>96573.79</p>
+		</td>
+		<td width="70">
+		<p>7.98522</p>
+		</td>
+		<td width="70">
+		<p>0.872256</p>
+		</td>
+		<td width="70">
+		<p>96576</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="66">
+		<p>8</p>
+		</td>
+		<td width="70">
+		<p>1.45424</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>64176.78</p>
+		</td>
+		<td width="70">
+		<p>12.01623</p>
+		</td>
+		<td width="70">
+		<p>0.931552</p>
+		</td>
+		<td width="70">
+		<p>64179.16</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="66">
+		<p>16</p>
+		</td>
+		<td width="70">
+		<p>1.672544</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>59243.65</p>
+		</td>
+		<td width="70">
+		<p>13.0168</p>
+		</td>
+		<td width="70">
+		<p>0.93696</p>
+		</td>
+		<td width="70">
+		<p>59246.26</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>1.33168</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>66473.89</p>
+		</td>
+		<td width="70">
+		<p>11.60099</p>
+		</td>
+		<td width="70">
+		<p>0.84448</p>
+		</td>
+		<td width="70">
+		<p>66476.06</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="66">
+		<p>4</p>
+		</td>
+		<td width="70">
+		<p>1.717184</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>235964.7</p>
+		</td>
+		<td width="70">
+		<p>7.48478</p>
+		</td>
+		<td width="70">
+		<p>1.170912</p>
+		</td>
+		<td width="70">
+		<p>235967.5</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="66">
+		<p>8</p>
+		</td>
+		<td width="70">
+		<p>1.751296</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>112914.5</p>
+		</td>
+		<td width="70">
+		<p>15.64143</p>
+		</td>
+		<td width="70">
+		<p>1.165984</p>
+		</td>
+		<td width="70">
+		<p>112917.4</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="66">
+		<p>16</p>
+		</td>
+		<td width="70">
+		<p>1.562688</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>109190.2</p>
+		</td>
+		<td width="70">
+		<p>16.17493</p>
+		</td>
+		<td width="70">
+		<p>1.04288</p>
+		</td>
+		<td width="70">
+		<p>109192.8</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="66">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="66">
+		<p>32</p>
+		</td>
+		<td width="70">
+		<p>1.643424</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>148595.7</p>
+		</td>
+		<td width="70">
+		<p>11.88556</p>
+		</td>
+		<td width="70">
+		<p>1.157728</p>
+		</td>
+		<td width="70">
+		<p>148598.5</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+	Here is the result of CPU and the speedup of GPU with texture and GPU. The size of the 2D lattice (y) and the number of threads per block (y) is the same as the value of x, so they are omitted:
+	<table border="1" width="100%" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr>
+		<td width="64">
+		<p><strong>Size of the 2D lattice (x)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Number of threads per block (x)</strong></p>
+		</td>
+		<td width="64">
+		<p><strong>Error</strong></p>
+		</td>
+		<td width="68">
+		<p><strong>Iteration</strong></p>
+		</td>
+		<td width="79">
+		<p><strong>Processing time (ms)</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Gflops</strong></p>
+		</td>
+		<td width="78">
+		<p><strong>Speed up of GPU (Texture)</strong></p>
+		</td>
+		<td width="70">
+		<p><strong>Speed up of GPU</strong></p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>13.28211</p>
+		</td>
+		<td width="70">
+		<p>1.236084</p>
+		</td>
+		<td width="78">
+		<p>0.21645</p>
+		</td>
+		<td width="70">
+		<p>0.291423</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>12.53434</p>
+		</td>
+		<td width="70">
+		<p>1.309826</p>
+		</td>
+		<td width="78">
+		<p>0.208515</p>
+		</td>
+		<td width="70">
+		<p>0.282003</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>12.74694</p>
+		</td>
+		<td width="70">
+		<p>1.287979</p>
+		</td>
+		<td width="78">
+		<p>0.215227</p>
+		</td>
+		<td width="70">
+		<p>0.286656</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>32</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>2606</p>
+		</td>
+		<td width="79">
+		<p>12.75574</p>
+		</td>
+		<td width="70">
+		<p>1.287091</p>
+		</td>
+		<td width="78">
+		<p>0.1871</p>
+		</td>
+		<td width="70">
+		<p>0.195816</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>123.4744</p>
+		</td>
+		<td width="70">
+		<p>2.123667</p>
+		</td>
+		<td width="78">
+		<p>0.54004</p>
+		</td>
+		<td width="70">
+		<p>0.545586</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>150.6378</p>
+		</td>
+		<td width="70">
+		<p>1.740721</p>
+		</td>
+		<td width="78">
+		<p>0.677237</p>
+		</td>
+		<td width="70">
+		<p>0.894189</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>151.4719</p>
+		</td>
+		<td width="70">
+		<p>1.731136</p>
+		</td>
+		<td width="78">
+		<p>0.684961</p>
+		</td>
+		<td width="70">
+		<p>0.872624</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>64</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>9745</p>
+		</td>
+		<td width="79">
+		<p>151.1162</p>
+		</td>
+		<td width="70">
+		<p>1.735211</p>
+		</td>
+		<td width="78">
+		<p>0.535888</p>
+		</td>
+		<td width="70">
+		<p>0.625652</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>2185.981</p>
+		</td>
+		<td width="70">
+		<p>1.783059</p>
+		</td>
+		<td width="78">
+		<p>1.880353</p>
+		</td>
+		<td width="70">
+		<p>2.257186</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>2187.823</p>
+		</td>
+		<td width="70">
+		<p>1.781558</p>
+		</td>
+		<td width="78">
+		<p>2.115231</p>
+		</td>
+		<td width="70">
+		<p>2.42591</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>2293.807</p>
+		</td>
+		<td width="70">
+		<p>1.699242</p>
+		</td>
+		<td width="78">
+		<p>2.234758</p>
+		</td>
+		<td style="background-color: yellow; width: 70px;" width="70">
+		<p>2.640051</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>128</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>35073</p>
+		</td>
+		<td width="79">
+		<p>1798.081</p>
+		</td>
+		<td width="70">
+		<p>2.167718</p>
+		</td>
+		<td width="78">
+		<p>1.910369</p>
+		</td>
+		<td width="70">
+		<p>2.288361</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>32237.32</p>
+		</td>
+		<td width="70">
+		<p>1.745673</p>
+		</td>
+		<td width="78">
+		<p>5.196846</p>
+		</td>
+		<td width="70">
+		<p>5.814826</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>32830.42</p>
+		</td>
+		<td width="70">
+		<p>1.714136</p>
+		</td>
+		<td width="78">
+		<p>7.81612</p>
+		</td>
+		<td style="background-color: yellow; width: 70px;" width="70">
+		<p>9.40681</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>26357.79</p>
+		</td>
+		<td width="70">
+		<p>2.135074</p>
+		</td>
+		<td width="78">
+		<p>7.614263</p>
+		</td>
+		<td width="70">
+		<p>8.165229</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>256</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>124611</p>
+		</td>
+		<td width="79">
+		<p>33139.02</p>
+		</td>
+		<td width="70">
+		<p>1.698174</p>
+		</td>
+		<td width="78">
+		<p>7.469854</p>
+		</td>
+		<td width="70">
+		<p>8.512291</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>362858.6</p>
+		</td>
+		<td width="70">
+		<p>2.125244</p>
+		</td>
+		<td width="78">
+		<p>4.792349</p>
+		</td>
+		<td width="70">
+		<p>3.757233</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>425090.2</p>
+		</td>
+		<td width="70">
+		<p>1.814116</p>
+		</td>
+		<td width="78">
+		<p>9.4387</p>
+		</td>
+		<td width="70">
+		<p>6.623492</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>502324.2</p>
+		</td>
+		<td width="70">
+		<p>1.53519</p>
+		</td>
+		<td style="background-color: yellow; width: 78px;" width="78">
+		<p>18.26225</p>
+		</td>
+		<td width="70">
+		<p>8.47858</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>512</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>423553</p>
+		</td>
+		<td width="79">
+		<p>360227.9</p>
+		</td>
+		<td width="70">
+		<p>2.140764</p>
+		</td>
+		<td width="78">
+		<p>10.6114</p>
+		</td>
+		<td width="70">
+		<p>5.418911</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>4</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>997622.3</p>
+		</td>
+		<td width="70">
+		<p>1.770353</p>
+		</td>
+		<td width="78">
+		<p>5.873357</p>
+		</td>
+		<td width="70">
+		<p>4.227795</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>8</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>1178118</p>
+		</td>
+		<td width="70">
+		<p>1.499123</p>
+		</td>
+		<td style="background-color: yellow; width: 78px;" width="78">
+		<p>13.8097</p>
+		</td>
+		<td width="70">
+		<p>10.43345</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>16</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>834376.6</p>
+		</td>
+		<td width="70">
+		<p>2.116722</p>
+		</td>
+		<td width="78">
+		<p>11.60277</p>
+		</td>
+		<td width="70">
+		<p>7.641317</p>
+		</td>
+		</tr>
+		<tr>
+		<td width="64">
+		<p><strong>640</strong></p>
+		</td>
+		<td width="64">
+		<p>32</p>
+		</td>
+		<td width="64">
+		<p>0</p>
+		</td>
+		<td width="68">
+		<p>619850</p>
+		</td>
+		<td width="79">
+		<p>998127</p>
+		</td>
+		<td width="70">
+		<p>1.769458</p>
+		</td>
+		<td width="78">
+		<p>10.09527</p>
+		</td>
+		<td width="70">
+		<p>6.716939</p>
+		</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<h3>Conclusions</h3>
+<div>
+	This homework contains a lot of experiments on the different settings of lattice sizes and number of threads per block. Through the results, we can draw some insights into the optimal parameters of using a GPU to solve Laplace's equation on a 2-D lattice:
+	<ol>
+		<li>For Laplace equation on 2D lattice, the speedup of GPU appears when the size of lattice square is larger than 128×128.</li>
+		<li>The benefit of texture only appears when the size of lattice square grows larger than 512×512.</li>
+		<li>The best configuration for size of 2D lattice 512×512 is 16×16 number of threads per blocks in GPU with device memory when the boundary condition is (ϕ_top,ϕ_left,ϕ_right,ϕ_bottom)=(+1,-1,-2,+5).</li>
+	</ol>
+</div>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://tutorial.math.lamar.edu/Classes/DE/LaplacesEqn.aspx">2-D Laplace's equation</a></li>
+	<li><a href="http://developer.download.nvidia.com/compute/cuda/1.1-Beta/x86_website/projects/reduction/doc/reduction.pdf">Parallel reduction</a></li>
+	<li><a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a></li>
+	<li><a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>

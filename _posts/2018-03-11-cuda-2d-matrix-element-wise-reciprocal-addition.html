@@ -58,7 +58,7 @@ void RandomInit(float data[N][N])
 <div>Full code can be obtained at <a href="/assets/vecAdd.html">here</a></div>
 <h3>Tuning block and grid size</h3>
 <div>
-	Since this code is running on a cluster with <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a> computing resource management system. GPU cards are <a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</a>. I have written two Python codes to do batch computing to test various parameters (block size, grid soze, and number of work for each thread) and combine outputs to a single csv for comparison.<p>
+	Since this code is running on a cluster with <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a> computing resource management system. GPU cards are <a href="https://www.geforce.com/hardware/desktop-gpus/geforce-gtx-970">GeForce GTX 970</a>. I have written two Python codes to do batch computing to test various parameters (block size, grid size, and number of work for each thread) and combine outputs to a single csv for comparison.<p>
 	To reproduce the results, firstly run test_params.py. Wait for all jobs to complete. Lastly, run gather_results.py.
 </div>
 <h4>test_params.py</h4>
