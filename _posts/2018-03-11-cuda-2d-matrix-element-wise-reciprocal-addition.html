@@ -76,8 +76,7 @@ for params in testing_params:
 		cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
 			'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
 			'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
-			'Initialdir=/work/username/directory\n\nArguments=./vecAdd_v2 {}_{}_{}_in {}_{}_{}_out\n\n'
-			'Notification=Always\nNotify_user=email@gmail.com\n\n'
+			'Initialdir=/path/to/working/directory\n\nArguments=./vecAdd_v2 {}_{}_{}_in {}_{}_{}_out\n\n'
 			'Queue\n\n').format(
 			params[0], params[1], params[2],
 			params[0], params[1], params[2])
