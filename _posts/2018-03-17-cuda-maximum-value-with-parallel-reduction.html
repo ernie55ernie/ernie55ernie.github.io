@@ -85,8 +85,7 @@ for params in testing_params:
 		cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
 			'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
 			'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
-			'Initialdir=/work/r06942066/hw2\n\nArguments=./vecMax {}_{}_in {}_{}_out\n\n'
-			'Notification=Always\nNotify_user=b01505025@g.ntu.edu.tw\n\n'
+			'Initialdir=/path/to/working/directory\n\nArguments=./vecMax {}_{}_in {}_{}_out\n\n'
 			'Queue\n\n').format(
 			params[0], params[1],
 			params[0], params[1])
