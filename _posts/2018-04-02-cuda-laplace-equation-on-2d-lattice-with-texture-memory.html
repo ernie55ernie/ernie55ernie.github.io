@@ -122,8 +122,7 @@ for lattice_size in lattice_sizes:
 				cmd_content = ('Universe=vanilla\nExecutable=/opt/bin/runjob\nMachine_count=1\n\n'
 					'Output=condor.out\nError=condor.err\nLog=condor.log\n\n'
 					'Requirements=(MTYPE=="TEST")\n\nRequest_cpus=1\n\n'
-					'Initialdir=/work/r06942066/hw3\n\nArguments=./laplace {}_{}_{}_{}_{}_{}_in {}_{}_{}_{}_{}_{}_out\n\n'
-					'Notification=Always\nNotify_user=b01505025@g.ntu.edu.tw\n\n'
+					'Initialdir=/path/to/working/directory\n\nArguments=./laplace {}_{}_{}_{}_{}_{}_in {}_{}_{}_{}_{}_{}_out\n\n'
 					'Queue\n\n').format(
 					lattice_size, block_size, bc[0], bc[1], bc[2], bc[3],
 					lattice_size, block_size, bc[0], bc[1], bc[2], bc[3])
