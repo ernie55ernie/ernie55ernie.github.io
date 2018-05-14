@@ -11,7 +11,7 @@ category: mapreduce
         <ol>
                 <li>Split input: the input file would be splited in to M pieces of files (M is the number of mappers and the size of the splited files is typically 16 to 64 MB while corresponding to the data block size in Hadoop file system)</li>
                 <li>Start mappers: the worker machine who is assigned a map task reads the splited input file, gets the input key/value pairs, passes the pairs to the user-defiend map function, and generates the intermediate key/value pairs.</li>
-                <li>Metwork transfer: The intermedia key/value pairs is stored to the local disk on the worker machine and partitioned into R parts (R is the number of reducers).</li>
+                <li>Network transfer: The intermedia key/value pairs is stored to the local disk on the worker machine and partitioned into R parts (R is the number of reducers).</li>
                 <li>Start reducers: When all tasks assigned to the mappers are finished. A reducer worker would be notified by the master where the intermediate key/value pairs stores, use remote procedure calls to read the data from the local diskof the map workers, and sort all the pairs by the intermediate keys.</li>
                 <li>Reduces output: The reducers would iterate all the intermediate pairs and pass the key and the corresponding iteratable of intermediate values to the reduce function. The result is appended to a file in the global file system.</li>
                 <li>Master cleanup: When all tasks are finished, the master wakes up the user program and the control is back to the user code.</li>
@@ -70,7 +70,7 @@ while(tokenizer.hasMoreTokens()){
 </div>
 <h3>Reducer</h3>
 <div>
-        With each intermediate key, there are only two values would be collected from the two user in the intermediate key. Note that the same key and value objects are used on each invocation of the next() function so the text object would need a copy constructure to maintain the first value.
+        With each intermediate key, there are only two values would be collected from the two user in the intermediate key. Note that the same key and value objects are used on each invocation of the next() function so the text object would need a copy constructer to maintain the first value.
 {% highlight java %}
 public static class Reduce extends MapReduceBase
         implements Reducer<Text, Text, Text, Text>{
