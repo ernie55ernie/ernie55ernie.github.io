@@ -1,0 +1,108 @@
+---
+layout: post
+title: "Install Mininet and Ryu Controller"
+date: 2019-03-25
+categories: mininet ryu python
+---
+<h3>Introduction</h3>
+Mininet is an instant virtual network. It creates a realistic virtual network, running real kernel, switch and application code, on a single machine (VM, cloud or native), in seconds, with a single command. Ryu is a component-based software defined networking (SDN) framework. Ryu supports various protocols for managing network devices, such as OpenFlow. We can develop network application with Ryu controller and simulate inside Mininet. Let's start by installing <a href="http://mininet.org/">Mininet</a> and <a href="https://osrg.github.io/ryu/">Ryu</a>.
+<h3>Install Mininet</h3>
+There are four options to get started with Mininet:
+<ol>
+	<li><a href="http://mininet.org/download/#option-1-mininet-vm-installation-easy-recommended">Option 1: Mininet VM Installation</a></li>
+	<li><a href="http://mininet.org/download/#option-2-native-installation-from-source">Option 2: Native Installation from Source</a></li>
+	<li><a href="http://mininet.org/download/#option-3-installation-from-packages">Option 3: Installation from Packages</a></li>
+	<li><a href="http://mininet.org/download/#option-4-upgrading-an-existing-mininet-installation">Option 4: Upgrading an existing Miniet Installation</a></li>
+</ol>
+Option 1 is the easiest and most foolproof way of installing Mininet. However, the following section will follow option 2 and 3.<br/>
+
+First, to confirm which OS version you are running, run the command.
+{% highlight bash %}
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.04.5 LTS
+Release:	16.04
+Codename:	xenial
+{% endhighlight %}
+
+If you are one of the following OS, you can <a href="http://mininet.org/download/#option-3-installation-from-packages">install from packages</a>
+{% highlight bash %}
+Mininet 2.1.0 on Ubuntu 14.10: sudo apt-get install mininet
+Mininet 2.1.0 on Ubuntu 14.04: sudo apt-get install mininet
+Mininet 2.0.0 on Ubuntu 12.04: sudo apt-get install mininet/precise-backports
+{% endhighlight %}
+In my case, I'm using Ubuntu 16.04 so I have to <a href="http://mininet.org/download/#option-2-native-installation-from-source">install from source</a>. To install natively from source, first you need to get the source code.
+{% highlight bash %}
+$ git clone git://github.com/mininet/mininet
+{% endhighlight %}
+Note that the git command will check out the lastest version. If you want to run other release of Mininet you can checkout that version with the following command.
+{% highlight bash %}
+$ cd mininet
+$ git tag  # list available versions
+$ git checkout -b 2.2.2 2.2.2
+{% endhighlight %}
+Make a directory to place source/build trees.
+{% highlight bash %}
+$ mkdir build
+{% endhighlight %}
+The first option specifies the directory and the second option installs everything that is included in the Mininet VM, including dependencies like Open vSwitch as well as the additions like the OpenFlow wireshark dissector and POX. This command should take a while.
+{% highlight bash %}
+$ ./util/install.sh -s ./build/ -a
+{% endhighlight %}
+After successful installation, you can test with creating a network with tree topology of depth 2 and fanout 8 (i.e. 64 hosts connected to 9 switches), using Open vSwitch switches under the control of OpenFlow/Stanford reference controller, and runs the test to check connectivity between every pair of nodes with pingall.
+{% highlight bash %}
+$ sudo mn --switch ovs --controller ref --topo tree,depth=2,fanout=8 --test pingall
+{% endhighlight %}
+
+<h3>Install Ryu Controller</h3>
+Using pip3 command to install Ryu Controller is the easiest option. If you have pip3 already, you can skip the first command
+{% highlight bash %}
+$ sudo apt install python-pip3
+$ sudo pip3 install ryu
+{% endhighlight %}
+
+<h3>Test Ryu Controller with Simple Switch</h3>
+First, open a terminal and run Mininet with the following command. This starts a network emulation environment with 1 switch and 3 hosts.
+{% highlight bash %}
+$ sudo mn --topo single,3 --mac --controller remote --switch ovsk
+{% endhighlight %}
+
+Second, open another new terminal and run a <a href="https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch.py">simple switch controller</a>. This controller will flood a packet to all ports if the switching table has no record of the destination mac address and add a record which specifies the source mac address at in port.
+{% highlight bash %}
+$ ryu-manager ryu.app.simple_switch
+loading app ryu.app.simple_switch
+loading app ryu.controller.ofp_handler
+instantiating app ryu.app.simple_switch of SimpleSwitch
+instantiating app ryu.controller.ofp_handler of OFPHandler
+{% endhighlight %}
+After opening the Ryu controller, you can test the reachability between these three hosts.
+{% highlight bash %}
+mininet> pingall
+*** Ping: testing ping reachability
+h1 -> h2 h3 
+h2 -> h1 h3 
+h3 -> h1 h2 
+*** Results: 0% dropped (6/6 received)
+{% endhighlight %}
+In the terminal of the Ryu controller, you can see these packet in messages.
+{% highlight bash %}
+packet in 1 00:00:00:00:00:02 00:00:00:00:00:01 2
+packet in 1 00:00:00:00:00:01 00:00:00:00:00:02 1
+packet in 1 00:00:00:00:00:01 ff:ff:ff:ff:ff:ff 1
+packet in 1 00:00:00:00:00:03 00:00:00:00:00:01 3
+packet in 1 00:00:00:00:00:01 00:00:00:00:00:03 1
+packet in 1 00:00:00:00:00:02 ff:ff:ff:ff:ff:ff 2
+packet in 1 00:00:00:00:00:03 00:00:00:00:00:02 3
+packet in 1 00:00:00:00:00:02 00:00:00:00:00:03 2
+{% endhighlight %}
+
+<h3>Conclusion</h3>
+After installing Mininet and Ryu controller, you can go ahead and build your own Ryu applications. You can start from <a href="https://ryu.readthedocs.io/en/latest/developing.html">writing your Ryu application</a> with Python.
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://mininet.org/">Mininet</a></li>
+	<li><a href="https://osrg.github.io/ryu/">Ryu</a></li>
+	<li><a href="http://sdnhub.org/tutorials/ryu/">RYU Controller Tutorial</li>
+</ol>

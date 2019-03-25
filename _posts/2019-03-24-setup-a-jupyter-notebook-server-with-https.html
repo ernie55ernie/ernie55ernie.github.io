@@ -1,0 +1,73 @@
+---
+layout: post
+title: "Setup a public Jupyter Notebook Server with HTTPS"
+date: 2019-03-24
+category: python
+---
+<h3>Introduction</h3>
+The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. In this post, I will demonstrate how to setup a public Jupyter Notebook Server with self-signed HTTPs.
+<h3>Prerequisite</h3>
+<ul>
+	<li>Python3</li>
+	<li>pip3</li>
+</ul>
+<h3>Install and Setup Jupyter Notebook</h3>
+You can install Jupyter with pip3.
+{% highlight bash %}
+$ sudo pip3 install jupyter
+{% endhighlight %}
+
+Beyond the default configuration settings, you can configure a rich array of options to suit your workflow. To create a jupyter_notebook_config.py file in the .jupyter directory, with all the defaults commented out, use the following command:
+{% highlight bash %}
+$ jupyter notebook --generate-config
+{% endhighlight %}
+
+First prepare a hashed password using the function notebook.auth.security.passwd().
+{% highlight bash %}
+$ python3
+Python 3.5.2 (default, Nov 12 2018, 13:43:14) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from notebook.auth import passwd
+>>> passwd()
+Enter password: 
+Verify password:
+'sha1:67c9e60bb8b6:9ffede0825894254b2e042ea597d771089e11aed'
+>>> exit()
+{% endhighlight %}
+
+To use SSL for encrypted communication, a self-signed certificate can be generated with openssl.
+{% highlight bash %}
+$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mykey.key -out mycert.pem
+{% endhighlight %}
+
+Modify the generated configuration file.
+<ol>
+	<li>Copy the hashed password to c.NotebookApp.password</li>
+	<li>Set the full paths to the key file and the certification file</li>
+	<li>Set IP to '*' to binds on all interfaces for public server</li>
+</ol>
+{% highlight bash %}
+$ vim ~/.jupyter/jupyter_notebook_config.py
+c.NotebookApp.password = 'sha1:67c9e60bb8b6:9ffede0825894254b2e042ea597d771089e11aed'
+c.NotebookApp.keyfile = '/absolute/path/to/your/certificate/mykey.key'
+c.NotebookApp.certfile = '/absolute/path/to/your/certificate/mycert.pem'
+c.NotebookApp.ip = '*'
+{% endhighlight %}
+
+Move to your working directory and type the following command.
+{% highlight bash %}
+$ jupyter notebook
+{% endhighlight %}
+
+Now you can access your Jupyter Notebook with https://ip.to.your.server:8888/. Noted that the https at the front and the default port is 8888. Since the certification is self-signed, there will be a warning from the browser. Just click on Advance and Proceed to ip.to.your.server (unsafe) and you are ready to go.
+<img src='/assets/setup-a-jupyter-notebook-server-with-https-1.png'>
+
+<h3>Conclusion</h3>
+Jupyter Notebook has supprot for over 40 programming languages, including Python, R, Julia, and Scala. Now you can check out <a href="https://jupyter.readthedocs.io/en/latest/install-kernel.html">here</a>.
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://jupyter-notebook.readthedocs.io/en/stable/config_overview.html">Configuration Overview</a></li>
+	<li><a href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html#working-remotely">Running a notebook server</li>
+</ol>
