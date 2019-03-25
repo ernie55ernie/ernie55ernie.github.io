@@ -1,0 +1,95 @@
+---
+layout: post
+title: "Install Mininet and Ryu Controller"
+date: 2019-03-25
+category: mininet
+---
+<h3>Introduction</h3>
+
+<h3>Install Mininet</h3>
+{% highlight bash %}
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 16.04.5 LTS
+Release:	16.04
+Codename:	xenial
+{% endhighlight %}
+
+{% highlight bash %}
+$ uname -a
+Linux ubuntu 4.4.0-131-generic #157-Ubuntu SMP Thu Jul 12 15:51:36 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+{% endhighlight %}
+
+{% highlight bash %}
+$ git clone git://github.com/mininet/mininet
+{% endhighlight %}
+
+{% highlight bash %}
+$ git checkout -b 2.2.2 2.2.2
+{% endhighlight %}
+
+{% highlight bash %}
+$ mkdir build
+{% endhighlight %}
+
+This command should take a while.
+{% highlight bash %}
+$ ./util/install.sh -s ./build/ -a
+{% endhighlight %}
+
+{% highlight bash %}
+$ sudo mn --switch ovs --controller ref --topo tree,depth=2,fanout=8 --test pingall
+{% endhighlight %}
+
+<h3>Install Ryu Controller</h3>
+{% highlight bash %}
+$ sudo apt install python-pip3
+{% endhighlight %}
+
+{% highlight bash %}
+$ sudo pip3 install ryu
+{% endhighlight %}
+
+<h3>Test Ryu Controller wiht Simple Switch</h3>
+{% highlight bash %}
+$ sudo mn --topo single,3 --mac --controller remote --switch ovsk
+{% endhighlight %}
+
+{% highlight bash %}
+$ ryu-manager ryu.app.simple_switch
+loading app ryu.app.simple_switch
+loading app ryu.controller.ofp_handler
+instantiating app ryu.app.simple_switch of SimpleSwitch
+instantiating app ryu.controller.ofp_handler of OFPHandler
+{% endhighlight %}
+
+{% highlight bash %}
+mininet> pingall
+*** Ping: testing ping reachability
+h1 -> h2 h3 
+h2 -> h1 h3 
+h3 -> h1 h2 
+*** Results: 0% dropped (6/6 received)
+{% endhighlight %}
+
+{% highlight bash %}
+packet in 1 00:00:00:00:00:02 00:00:00:00:00:01 2
+packet in 1 00:00:00:00:00:01 00:00:00:00:00:02 1
+packet in 1 00:00:00:00:00:01 ff:ff:ff:ff:ff:ff 1
+packet in 1 00:00:00:00:00:03 00:00:00:00:00:01 3
+packet in 1 00:00:00:00:00:01 00:00:00:00:00:03 1
+packet in 1 00:00:00:00:00:02 ff:ff:ff:ff:ff:ff 2
+packet in 1 00:00:00:00:00:03 00:00:00:00:00:02 3
+packet in 1 00:00:00:00:00:02 00:00:00:00:00:03 2
+{% endhighlight %}
+
+<h3>Conclusion</h3>
+<div>
+	
+</div>
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://github.com/WebGoat/WebGoat/blob/master/README.MD">WebGoat README.MD</a></li>
+</ol>
