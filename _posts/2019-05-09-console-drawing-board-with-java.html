@@ -1,0 +1,181 @@
+---
+layout: post
+title: "Console Drawing Board with Java"
+date: 2019-05-09
+category: java
+---
+
+<h3>Introduction</h3>
+A drawing board is a kind of desk which can be used for any kind of drawing, writing or sketching on a sheet of paper. This program, <a href="https://github.com/ernie55ernie/ConsoleDrawingBoard">console drawing board</a>, is a Java program that provide a console interface and enable you to draw several figures, including rectangles and triangles.
+<h3>Prerequisite</h3>
+<ul>
+	<li><a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html?printOnly=1">Java SE Development 1.8</a></li>
+	<li><a href="https://www.eclipse.org/">Eclipse</a></li>
+</ul>
+<h3>Program Structure</h3>
+There are 5 classes, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Rectangle.java">Rectangle</a>, and <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Triangle.java">Triangle</a>. The entry point (main function) of this program is in <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a>.<br>
+
+The class, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a>, has four attributes:
+
+<ol>
+	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html">BufferReader</a> (<i>br</i>) which is reponsible for taking inputs from the user with <a href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html#readLine--">readLine</a> function</li>
+	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a> (<i>in</i>) which is the input string</li>
+	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintWriter.html">PrintWriter</a> (<i>pw</i>) which prints program messages</li>
+	<li><a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a> (<i>sm</i>) which manages and plots the figures of the drawing board</li>
+</ol>
+
+<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a> starts from running an infinite loop that waits for user input. There are 5 functions:
+
+<ol>
+	<li>Drawing: the user can draw a rectangle by specifying the width, height, the center of x, and the center of y or a triangle by providing the three vertices.</li>
+	<li>Erasing: the user can erase any drawn figure.</li>
+	<li>Centering: the user can center any drawn figure.</li>
+	<li>Example: there is a robot thread that trigger key board events to show the exmaple usage of this program.</li>
+	<li>Exit: exit this program</li>
+</ol>
+
+{% highlight java %}
+		sm.printScreen();
+
+		while (true) {
+			pw.printf("Welcome to the drawing board !\n1.draw\n2.erase\n3.center\n4.example\n5.exit : ");
+			try {
+				in = br.readLine();
+				if (in.equals("5"))
+					break;
+			} catch (IOException e) {
+				e.printStackTrace();
+				continue;
+			}
+			switch (in) {
+			case "1":
+				draw();
+				break;
+			case "2":
+				erase();
+				break;
+			case "3":
+				center();
+				break;
+			case "4":
+				example();
+				break;
+			default:
+				pw.printf("Wrong entry number : %s\n", in);
+				break;
+			}
+		}
+{% endhighlight %}
+
+<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a> keeps the information of the drawn <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure</a> in an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html">ArrayList</a> <i>fgs</i> on the drawing board and the information of the grid in an array <i>db</i> with the size of 50 * 50.
+
+{% highlight java %}
+public class ScreenManager {
+
+	public ScreenManager() {
+		pw = new PrintWriter(System.out, true);
+		db = new int[2500];
+		fgs = new ArrayList<Figure>();
+	}
+	
+	public void draw(int x,int y){
+		db[x+50*y]++;
+	}
+	
+	public void erase(int x,int y){
+		db[x+50*y]--;
+	}
+
+	public void addFig(Figure fg){
+		fgs.add(fg);
+		fg.draw(this);
+	}
+	
+	public void delFig(Figure fg){
+		fgs.remove(fg);
+		fg.erase(this);
+	}
+	
+	public ArrayList<Figure> getFigList(){
+		return fgs;
+	}
+	
+	public void printScreen() {
+		pw.print('+');
+		for (int i = 0;i<50;i++)pw.print((char)('-'+65248));
+		pw.println('+');
+		for (int i = 0; i < db.length; i++) {
+			if(i%50==0)pw.print('|');
+			if(db[i]>0)pw.print((char)('*'+65248));
+			else pw.print((char)12288);
+			if ((i+1)%50==0)
+				pw.println('|');
+		}
+		pw.print('+');
+		for (int i = 0;i<50;i++)pw.print((char)('-'+65248));
+		pw.println('+');
+	}
+	
+	protected ArrayList<Figure> fgs;
+
+	protected PrintWriter pw;
+
+	protected int[] db;
+}
+{% endhighlight %}
+
+<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure.java</a> is the parent class of different kind of figures, including <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Rectangle.java">Rectangle</a> and <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Triangle.java">Triangle</a>. It defines four abstract functions:
+<ol>
+	<li>Drawing</li>
+	<li>Erasing</li>
+	<li>Centering</li>
+	<li>Detail</li>
+</ol>
+
+{% highlight java %}
+public abstract class Figure extends Component{
+
+	public Figure(){
+		centerPoint = new Point( 0, 0);
+		name = "None";
+	}
+	
+	public Figure(String n,Point p){
+		centerPoint = new Point(p);
+		name = new String(n);
+	}
+	
+	abstract public void draw(ScreenManager sm);
+	
+	abstract public void erase(ScreenManager sm);
+	
+	abstract public void center(ScreenManager sm);
+	
+	abstract public void showDetail(PrintWriter pw);
+	
+	public String getName(){
+		return name;
+	}
+	
+	protected Point centerPoint;
+	
+	protected String name;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+}
+{% endhighlight %}
+
+<h3>Demonstration</h3>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CJoeA0b90B8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h3>Conclusion</h3>
+This simple console board drawing program can provide a basic template for more sophisticated console plotting program. 
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://github.com/ernie55ernie/ConsoleDrawingBoard">Console Drawing Board</a></li>
+</ol>
