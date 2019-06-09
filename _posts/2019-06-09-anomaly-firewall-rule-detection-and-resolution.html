@@ -1,0 +1,104 @@
+---
+layout: post
+title: "Anomaly Firewall Rule Detection and Resolution"
+date: 2019-06-09
+category: python
+---
+<h3>Introduction</h3>
+
+Firewall is an essential protective component in an enterprise or academic network environment. It filters packets, blocks malicious connections, and prevents internal hosts from attacks. However, as the number and complexity of firewall rules grow,
+there are conflicting behaviours between rules. Any error can cause unwanted traffic pass or blocking desired traffic. In the paper <a href="https://link.springer.com/chapter/10.1007/11805588_2">Abedin, M., et al.</a>, they have proposed <a href="https://github.com/ernie55ernie/Anomaly-Firewall-Rule-Detection-And-Resolution#relation-between-two-rules">four relations</a> between the rules: disjoint, exactly matching, inclusively matching, and correlated. Based on these relations, there are <a href="https://github.com/ernie55ernie/Anomaly-Firewall-Rule-Detection-And-Resolution#possible-anomalies-between-two-rules">three possible anomalies</a>: shadowing anomaly, correlation anomaly, and redundancy anomaly.</br>
+
+I've implemented the anomaly resolution algorithm in <a href="https://link.springer.com/chapter/10.1007/11805588_2">Abedin, M., et al.</a> for resolving for <a href="https://osrg.github.io/ryu-book/en/html/rest_firewall.html">Ryu restful firewall</a>. The code is held at <a href="https://github.com/ernie55ernie/Anomaly-Firewall-Rule-Detection-And-Resolution">this repository</a>.
+
+<h3>Program Structure</h3>
+
+There are four classes:
+<ol>
+	<li>RuleParser: an abstract class that holds a list of rules and defines an abstract function, <i>parse_file</i></li>
+	<li>SimpleRuleParser</li>
+	<li>Rule</li>
+	<li>AnomalyResolver</li>
+</ol>
+
+<h4>SimpleRuleParser</h4>
+<i>SimpleRuleParser</i> is an implementation of <i>RuleParser</i> that parses a firewall rules file in the following format:
+{% highlight bash %}
+priority. <direction, source IP, source port, destination IP, destination port, actions>
+{% endhighlight %}
+Each line is a firewall rule. You can implement <i>RuleParser</i> to support different format of firewall rules file.
+
+<h4>Rule</h4>
+<i>Rule</i> contains the following fields which are defined in <a href="https://osrg.github.io/ryu-book/en/html/rest_firewall.html#id10">Ryu restful firewall</a> and <a href="https://www.opennetworking.org/wp-content/uploads/2014/10/openflow-spec-v1.3.0.pdf">OpenFlow Specification</a>. In order to stay flexible, most of these fields are stored in string.
+{% highlight python %}
+	_fields_ = [('switch', STRING_TYPE),
+	 	# REST_SWITCHID, [ 'all' | Switch ID ]
+		('vlan', STRING_TYPE),
+		# REST_VLANID, [ 'all' | VLAN ID ]
+		('priority', ctypes.c_int),
+		# REST_PRIORITY, [ 0 - 65535 ]
+		('in_port', STRING_TYPE),
+		# REST_IN_PORT, [ 0 - 65535 ]
+		('dl_src', STRING_TYPE),
+		# REST_SRC_MAC, '<xx:xx:xx:xx:xx:xx>'
+		('dl_dst', STRING_TYPE),
+		# REST_DST_MAC, '<xx:xx:xx:xx:xx:xx>'
+		('dl_type', STRING_TYPE),
+		# REST_DL_TYPE, [ 'ARP' | 'IPv4' | 'IPv6' ]
+		('nw_src', STRING_TYPE),
+		# REST_SRC_IP, '<xxx.xxx.xxx.xxx/xx>'
+		('nw_dst', STRING_TYPE),
+		# REST_DST_IP, '<xxx.xxx.xxx.xxx/xx>'
+		('ipv6_src', STRING_TYPE),
+		# REST_SRC_IPV6, '<xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/xx>'
+		('ipv6_dst', STRING_TYPE),
+		# REST_DST_IPV6, '<xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/xx>'
+		('nw_proto', STRING_TYPE),
+		# REST_NW_PROTO, [ 'TCP' | 'UDP' | 'ICMP' | 'ICMPv6' ]
+		('tp_src', STRING_TYPE),
+		# REST_TP_SRC, [ 0 - 65535 ]
+		('tp_dst', STRING_TYPE),
+		# REST_TP_DST, [ 0 - 65535 ]
+		('direction', STRING_TYPE),
+		# [ 'IN' | 'OUT' ]
+		('actions', STRING_TYPE)
+		# REST_ACTION, [ 'ALLOW' | 'DENY' ]
+	]
+{% endhighlight %}
+When initializing a <i>Rule</i>, <i>_sanity_check</i> is called to check whether the string in each field is valid.</br>
+
+<i>disjoint</i>, <i>issubset</i>, and <i>contiguous</i> check the relations between two rules. <i>issubset</i> is inclusively matching in <a href="https://link.springer.com/chapter/10.1007/11805588_2">the paper</a>.
+
+<h4>AnomalyResolver</h4>
+
+<i>detect_anomalies</i> accepts a rules list and reports any detected anomaly.</br>
+
+<i>resolve_anomalies</i> follows the algorithm describe in <a href="https://link.springer.com/chapter/10.1007/11805588_2">the paper</a>. First, create a new rules list, <i>insert</i> old rules into it one by one, and check for redundancy.</br>
+
+<ul>
+	<li><i>insert</i> checks if a rule is disjoint with rules inside the new rules list. If not, <i>resolve</i> for these two rules.</li>
+	<li><i>resolve</i> performs anomaly detection and resolution by removing, reordering, or calling <i>split</i>.</li>
+	<li><i>split</i> extracts the parts of the rules which are disjoint to the two rules and creates a new rule with the common part.</li>
+</ul>
+
+<i>merge_contiguous_rules</i> first calls <i>construct_rule_tree</i>, and <i>merge</i> contiguous rules.</br>
+
+<ul>
+	<li><i>construct_rule_tree</i> creates a firewall rule tree.</li>
+	<li><i>tree_insert</i> inserts a rule into a node of the rule tree.</li>
+	<li><i>get_rule_tree_root</i></li>
+	<li><i>merge</i> merges edges of a node representing a contunous range.</li>
+	<li><i>cut_edge</i> removes an edge from the rule tree.</li>
+	<li><i>subtree_equal</i> checks if the subtree of an edges is equal to that of the other edge.</li>
+</ul>
+
+<h3>Conclusion</h3>
+
+Firewall rule anomalies can result in security breaches. However, manual detecting and resolving these anomalies is an error prone task. With <a href="https://link.springer.com/chapter/10.1007/11805588_2">this algorithm</a>, we can write a program that resolve any anomaly present in the firewall rules by reoder and split operations.
+
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://link.springer.com/chapter/10.1007/11805588_2">Detection and Resolution of Anomalies in Firewall Policy Rules</a></li>
+	<li><a href="https://github.com/ernie55ernie/Anomaly-Firewall-Rule-Detection-And-Resolution">Anomaly Firewall Rule Detection and Resolution</a></li>
+</ol>
