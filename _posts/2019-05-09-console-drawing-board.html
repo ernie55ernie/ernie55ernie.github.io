@@ -1,30 +1,30 @@
 ---
 layout: post
-title: "Console Drawing Board with Java"
+title: "Console Drawing Board"
 date: 2019-05-09
 category: java
 ---
 
 <h3>Introduction</h3>
-A drawing board is a kind of desk which can be used for any kind of drawing, writing or sketching on a sheet of paper. This program, <a href="https://github.com/ernie55ernie/ConsoleDrawingBoard">console drawing board</a>, is a Java program that provide a console interface and enable you to draw several figures, including rectangles and triangles.
+A drawing board is a kind of desk which can be used for any kind of drawing, writing or sketching on a sheet of paper. This program, <a href="https://github.com/ernie55ernie/Console-Drawing-Board">console drawing board</a>, is a Java program that provide a console interface and enable you to draw several figures, including rectangles and triangles.
 <h3>Prerequisite</h3>
 <ul>
 	<li><a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html?printOnly=1">Java SE Development 1.8</a></li>
 	<li><a href="https://www.eclipse.org/">Eclipse</a></li>
 </ul>
 <h3>Program Structure</h3>
-There are 5 classes, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Rectangle.java">Rectangle</a>, and <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Triangle.java">Triangle</a>. The entry point (main function) of this program is in <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a>.<br>
+There are 5 classes, <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/ConsoleBoard.java">ConsoleBoard</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/ScreenManager.java">ScreenManager</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Figure.java">Figure</a>, <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Rectangle.java">Rectangle</a>, and <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Triangle.java">Triangle</a>. The entry point (main function) of this program is in <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/ConsoleBoard.java">ConsoleBoard.java</a>.<br>
 
-The class, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a>, has four attributes:
+The class, <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/ConsoleBoard.java">ConsoleBoard.java</a>, has four attributes:
 
 <ol>
 	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html">BufferReader</a> (<i>br</i>) which is reponsible for taking inputs from the user with <a href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html#readLine--">readLine</a> function</li>
 	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a> (<i>in</i>) which is the input string</li>
 	<li><a href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintWriter.html">PrintWriter</a> (<i>pw</i>) which prints program messages</li>
-	<li><a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a> (<i>sm</i>) which manages and plots the figures of the drawing board</li>
+	<li><a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/ScreenManager.java">ScreenManager</a> (<i>sm</i>) which manages and plots the figures of the drawing board</li>
 </ol>
 
-<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/ConsoleBoard.java">ConsoleBoard.java</a> starts from running an infinite loop that waits for user input. There are 5 functions:
+<a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/ConsoleBoard.java">ConsoleBoard.java</a> starts from running an infinite loop that waits for user input. There are 5 functions:
 
 <ol>
 	<li>Drawing: the user can draw a rectangle by specifying the width, height, the center of x, and the center of y or a triangle by providing the three vertices.</li>
@@ -67,7 +67,7 @@ The class, <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawin
 		}
 {% endhighlight %}
 
-<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/ScreenManager.java">ScreenManager</a> keeps the information of the drawn <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure</a> in an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html">ArrayList</a> <i>fgs</i> on the drawing board and the information of the grid in an array <i>db</i> with the size of 50 * 50.
+<a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/ScreenManager.java">ScreenManager</a> keeps the information of the drawn <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Figure.java">Figure</a> in an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html">ArrayList</a> <i>fgs</i> on the drawing board and the information of the grid in an array <i>db</i> with the size of 50 * 50.
 
 {% highlight java %}
 public class ScreenManager {
@@ -124,7 +124,7 @@ public class ScreenManager {
 }
 {% endhighlight %}
 
-<a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Figure.java">Figure.java</a> is the parent class of different kind of figures, including <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Rectangle.java">Rectangle</a> and <a href="https://raw.githubusercontent.com/ernie55ernie/ConsoleDrawingBoard/master/src/fig/Triangle.java">Triangle</a>. It defines four abstract functions:
+<a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Figure.java">Figure.java</a> is the parent class of different kind of figures, including <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Rectangle.java">Rectangle</a> and <a href="https://raw.githubusercontent.com/ernie55ernie/Console-Drawing-Board/master/src/fig/Triangle.java">Triangle</a>. It defines four abstract functions:
 <ol>
 	<li>Drawing</li>
 	<li>Erasing</li>
@@ -174,8 +174,8 @@ public abstract class Figure extends Component{
 
 <h3>Conclusion</h3>
 This simple console board drawing program can provide a basic template for more sophisticated console plotting program. 
-<h3>Hostory</h3>
+<h3>History</h3>
 <h3>Reference</h3>
 <ol>
-	<li><a href="https://github.com/ernie55ernie/ConsoleDrawingBoard">Console Drawing Board</a></li>
+	<li><a href="https://github.com/ernie55ernie/Console-Drawing-Board">Console Drawing Board</a></li>
 </ol>
