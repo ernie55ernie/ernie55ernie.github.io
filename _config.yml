@@ -19,7 +19,7 @@ url: "http://ernie55ernie.github.io" # the base hostname & protocol for your sit
 twitter_username: b01505025
 github_username:  ernie55ernie
 
-theme: jekyll-theme-hacker
+# theme: jekyll-theme-hacker
 
 # Build settings
 markdown: kramdown
