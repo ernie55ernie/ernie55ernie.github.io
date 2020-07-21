@@ -1,0 +1,184 @@
+---
+layout: post
+title: "Setting Up ONOS Controller with Mininet"
+date: 2020-07-21
+category: sdn
+---
+<h3>Introduction</h3>
+In the previous post, <a href="/sdn/2019/03/25/install-mininet-and-ryu-controller.html">Install Mininet and Ryu Controller</a>, the software defined networking (SDN) controller is <a href="https://osrg.github.io/ryu/">Ryu</a>. It makes it easy for developers to create network management, control application, and prototyping. However, if you want to deploy SDN in a realistic network environment, it's better to use <a href="https://www.opennetworking.org/onos/">ONOS</a> and <a href="https://docs.opendaylight.org/en/stable-magnesium/user-guide/opendaylight-controller-overview.html">OpenDayLight</a> since they have better support for legacy network, a distributed model for the controller, very good modularity, and GUI. A complete comparison of SDN controllers can be found in <a href="https://www.researchgate.net/publication/340977508_Controller_selection_in_software_defined_networks_using_best-worst_multi-criteria_decision-making">Controller selection in software defined networks using best-worst multi-criteria decision-making</a>. This post demonstrates how to build a ONOS controller and connects the it to Mininet.
+
+<h3>Environments</h3>
+
+I'm running a Ubuntu VM with base memory 65536 MB and virtual disk image (VDI) 100 GB in VitrualBox. Mininet is installed with the following command:
+
+{% highlight bash %}
+$ sudo apt-get install mininet
+{% endhighlight %}
+
+Their versions are:
+
+<ol>
+	<li><a href="https://www.virtualbox.org/">VirtualBox</a> Version 6.0.18 r136238 (Qt5.6.2)</li>
+	<li><a href="https://ubuntu.com/">Ubuntu</a> 18.04.4 LTS</li>
+	<li><a href="http://mininet.org/">Mininet</a> 2.2.2</li>
+</ol>
+
+<h3>Building ONOS</h3>
+
+First, get <code>bridge-utils</code> for <code>LinuxBridge</code>.
+{% highlight bash %}
+$ sudo apt-get install bridge-utils
+{% endhighlight %}
+
+<h4>Installing Bazel on Ubuntu</h4>
+ONOS is built with <a href="https://bazel.build/">Bazel</a>. Follow the instructions <a href="https://docs.bazel.build/versions/master/install-ubuntu.html">here</a>, add Bazel distribution URL as a package source.
+{% highlight bash %}
+$ sudo apt install curl gnupg
+$ curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
+$ echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+{% endhighlight %}
+Install and update Bazel. Noted that I have to specify the Bazel version as 3.0.0 otherwise there would be errors when building ONOS.
+{% highlight bash %}
+$ sudo apt-get update && sudo apt-get install bazel-3.0.0
+{% endhighlight %}
+Install a JDK.
+{% highlight bash %}
+$ sudo apt-get install openjdk-11-jdk
+{% endhighlight %}
+
+<h4>Build ONOS from source</h4>
+<ol>
+	<li>Clone the code from the ONOS repository. I've also forked a fixed version of the repository <a href="https://github.com/ernie55ernie/onos">here</a>.
+{% highlight bash %}
+$ git clone https://gerrit.onosproject.org/onos
+{% endhighlight %}
+	</li>
+	<li>Add the ONOS developer environment to the bash profile.
+{% highlight bash %}
+$ cd onos
+$ cat << EOF >> ~/.bash_profile
+export ONOS_ROOT="`pwd`"
+source $ONOS_ROOT/tools/dev/bash_profile
+EOF
+$ . ~/.bash_profile
+{% endhighlight %}
+	</li>
+	<li>Build ONOS.
+{% highlight bash %}
+$ ./tools/build/onos-build build onos
+(omitting outputs ...)
+INFO: Elapsed time: 2699.299s, Critical Path: 111.21s
+INFO: 2490 processes: 2111 linux-sandbox, 2 local, 377 worker.
+INFO: Build completed successfully, 2654 total actions
+{% endhighlight %}
+	</li>
+</ol>
+
+<h3>Running ONOS with onos.py (Failed!)</h3>
+Originally, I was following the steps in <a href="https://wiki.onosproject.org/display/ONOS/Mininet+and+onos.py+workflow">Mininet and onos.py workflow</a>. However, as I came to <a href="https://wiki.onosproject.org/display/ONOS/Running+ONOS+with+onos.py">Running ONOS with onos.py</a>, it kept popping out error messages.
+{% highlight bash %}
+$ cd ~/onos/tools/dev/mininet
+$ sudo mn --custom onos.py --controller onos,1 --topo tree,2,2
+*** ONOS startup errors:
+<<2020-07-20T15:35:47,573 | ERROR | SCR Component Actor | onos-core-primitives             | 195 - org.onosproject.onos-core-primitives - 2.5.0.SNAPSHOT | bundle org.onosproject.onos-core-primitives:2.5.0.SNAPSHOT (195)[org.onosproject.store.atomix.impl.AtomixManager(66)] : The activate method has thrown an exception
+2020-07-20T15:35:47,652 | ERROR | FelixDispatchQueue | FrameworkEvent                   | 195 - 
+(omitting outputs ...)
+{% endhighlight %}
+The full error message can be found <a href="https://drive.google.com/file/d/11giLyJVSFILTmr3zDsV_DETl-ERljviy/view?usp=sharing">here</a>.
+
+After surveying on this error messages on these discussions:
+<ol>
+	<li><a href="https://groups.google.com/a/onosproject.org/forum/#!topic/onos-discuss/ZZWGWPpFf5M">Getting Errors, running ONOS using onos.py and Mininet</a></li>
+	<li><a href="https://groups.google.com/a/onosproject.org/forum/?utm_medium=email&utm_source=footer#!topic/onos-dev/Kq922aNr5uw">ONOS Developers › Forming a cluster using onos.py</a></li>
+	<li><a href="https://github.com/opennetworkinglab/onos/commit/45932c7a9c99470da4f946759050f7a4ceab8c4e">bug 7773 fixed</a></li>
+</ol>
+I still could not resolve the issues. As a result, 
+
+<h3>Running ONOS and Mininet separately (Succeeded!)</h3>
+<ol>
+	<li>Run ONOS locally on the development machine inside onos folder:
+{% highlight bash %}
+$ bazel run onos-local clean debug
+(omitting outputs ...)
+Updated node 127.0.0.1 state to READY
+{% endhighlight %}
+	</li>
+	<li>In another terminal, open ONOS CLI window and activate OpenFlow provider suite and reactive forwarding app.
+{% highlight bash %}
+$ ./tools/test/bin/onos localhost
+Welcome to Open Network Operating System (ONOS)!
+     ____  _  ______  ____     
+    / __ \/ |/ / __ \/ __/   
+   / /_/ /    / /_/ /\ \     
+   \____/_/|_/\____/___/     
+                               
+Documentation: wiki.onosproject.org      
+Tutorials:     tutorials.onosproject.org 
+Mailing lists: lists.onosproject.org     
+
+Come help out! Find out how at: contribute.onosproject.org 
+
+Hit '<tab>' for a list of available commands
+and '[cmd] --help' for help on a specific command.
+Hit '<ctrl-d>' or type 'logout' to exit ONOS session.
+
+ubuntu@root > app activate org.onosproject.openflow                     17:11:16
+Activated org.onosproject.openflow
+ubuntu@root > app activate org.onosproject.fwd                          17:11:52
+Activated org.onosproject.fwd
+{% endhighlight %}		
+	</li>
+	<li>In another terminal, start Mininet and pingall devices.
+{% highlight bash %}
+$ sudo mn --controller remote,ip=127.0.0.1 --topo torus,3,3
+*** Creating network
+*** Adding controller
+Connecting to remote controller at 127.0.0.1:6653
+*** Adding hosts:
+h1x1 h1x2 h1x3 h2x1 h2x2 h2x3 h3x1 h3x2 h3x3 
+*** Adding switches:
+s1x1 s1x2 s1x3 s2x1 s2x2 s2x3 s3x1 s3x2 s3x3 
+*** Adding links:
+(h1x1, s1x1) (h1x2, s1x2) (h1x3, s1x3) (h2x1, s2x1) (h2x2, s2x2) (h2x3, s2x3) (h3x1, s3x1) (h3x2, s3x2) (h3x3, s3x3) (s1x1, s1x2) (s1x1, s2x1) (s1x2, s1x3) (s1x2, s2x2) (s1x3, s1x1) (s1x3, s2x3) (s2x1, s2x2) (s2x1, s3x1) (s2x2, s2x3) (s2x2, s3x2) (s2x3, s2x1) (s2x3, s3x3) (s3x1, s1x1) (s3x1, s3x2) (s3x2, s1x2) (s3x2, s3x3) (s3x3, s1x3) (s3x3, s3x1) 
+*** Configuring hosts
+h1x1 h1x2 h1x3 h2x1 h2x2 h2x3 h3x1 h3x2 h3x3 
+*** Starting controller
+c0 
+*** Starting 9 switches
+s1x1 s1x2 s1x3 s2x1 s2x2 s2x3 s3x1 s3x2 s3x3 ...
+*** Starting CLI:
+mininet> pingall
+*** Ping: testing ping reachability
+h1x1 -> h1x2 h1x3 h2x1 h2x2 h2x3 h3x1 h3x2 h3x3 
+h1x2 -> h1x1 h1x3 h2x1 h2x2 h2x3 h3x1 h3x2 h3x3 
+h1x3 -> h1x1 h1x2 h2x1 h2x2 h2x3 h3x1 h3x2 h3x3 
+h2x1 -> h1x1 h1x2 h1x3 h2x2 h2x3 h3x1 h3x2 h3x3 
+h2x2 -> h1x1 h1x2 h1x3 h2x1 h2x3 h3x1 h3x2 h3x3 
+h2x3 -> h1x1 h1x2 h1x3 h2x1 h2x2 h3x1 h3x2 h3x3 
+h3x1 -> h1x1 h1x2 h1x3 h2x1 h2x2 h2x3 h3x2 h3x3 
+h3x2 -> h1x1 h1x2 h1x3 h2x1 h2x2 h2x3 h3x1 h3x3 
+h3x3 -> h1x1 h1x2 h1x3 h2x1 h2x2 h2x3 h3x1 h3x2 
+*** Results: 0% dropped (72/72 received)
+mininet> 
+{% endhighlight %}
+	</li>
+</ol>
+
+<p>Now, access ONOS GUI use <a href="http://localhost:8181/onos/ui">http://localhost:8181/onos/ui</a>.</p>
+
+<img src="/assets/setting-up-onos-controller-with-mininet-1.png" alt="Login ONOS GUI" width="50%">
+
+<p>The default username and password are karaf.</p>
+
+<img src="/assets/setting-up-onos-controller-with-mininet-2.png" alt="ONOS topology viewer" width="50%">
+
+<h3>Conclusion</h3>
+
+After setting up ONOS controller with Mininet, we can start to develop network mangement and control application on top of this environment. As the next step, I'm planning to integrate <a href="https://www.snort.org/">Snort</a> as an intrusion detection system (IDS) to conduct packet checking on network devices inside Mininet.
+
+<h3>Hostory</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="http://mininet.org/">Mininet</a></li>
+	<li><a href="https://www.opennetworking.org/onos/">ONOS</a></li>
+</ol>
