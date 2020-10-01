@@ -1,0 +1,116 @@
+---
+layout: post
+title: "Configurating HPE FlexFabric 5700 from Factory Setting with Console"
+date: 2020-09-29
+category: sdn
+---
+<h3>Introduction</h3>
+Accidentally, the switch, HPE FlexFabric 5700, in our laboratory has been resetted back to factory setting. This gives me a chance to study how to configure a switch with serial console. Usually, a switch that just comes out from the factory may have a web management port. You just have to connect your computer to the management port with a RJ-45 to RJ-45 connector and set your network settings to Dynamic Host Configuration Protocol (DHCP). After obtaining an IP, you can search what the IP of the DHCP server is and the management webpage is right there. However, when I connect to the management port, I've only got an IP of 169.*.*.* which means the DHCP is unavailable (more possibilities can be found <a href="https://windowsreport.com/computer-stuck-169-ip-address/#:~:text=Whenever%20you%20find%20your%20computer,DHCP%20server%20is%20temporarily%20unavailable&text=The%20computer%20itself%20was%20unable,and%20thus%20needs%20a%20reboot">here</a>). As a result, the only way to configure the switch is via serial console. The exact model of our switch is HPE FF 5700-32XGT-8XG-2QSFP+ Sw.
+
+<h3>Prerequisite</h3>
+
+In order to connect your computer to the console port of a switch, you will need the following serveral items:
+
+<ol>
+	<li>A console cable is an 8-core shielded cable, with a crimped RJ-45 connector at one end for connecting to the console port of the switch, and a DB-9 female connector at the other end for connecting to the serial port on the configuration terminal. <img src="/assets/configurating-hpe-flexfabric-5700-from-factory-setting-with-console-1.png" alt="A Console Cable" width="50%"> (From <a href="https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-c04406873">manual</a>)</li>
+	<li>A DB9 to USB cable (optional). As I don't have PC which has a DB9 port, it's necessary to prepare a DB9 to USB cable.</li>
+	<li>A PC. In my case, I use a Mac book pro.</li>
+	<li>Serial tool on PC. On windows, you can use <a href="https://www.putty.org/">putty</a> to connect to a serial port. On mac, I use <a href="https://apps.apple.com/us/app/serialtools/id611021963?mt=12">SerialTools</a> which is free software from app store.</li>
+</ol>
+
+<h3>Setting Up Connection</h3>
+
+<p>Since most of the switch doesn't have a power button, connecting the power supply means starting up the switch. Before powering up the switch, you will have to connect your PC to the console port and to configure the serial port connection on PC as the following image shows:
+<img src="/assets/configurating-hpe-flexfabric-5700-from-factory-setting-with-console-2.png" alt="Terminal Parameters" width="50%">(From <a href="https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-c04406873">manual</a>)</p>
+
+<p>After selecting the correct serial port to connect, the baud rate of 9600, the data bits of 8, and the stop bits of 1, you can plug in the power supply and you can see the startup of the switch as the following video. It will take several minutes.</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6CliyJcdeFw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h3>Configurating the Switch</h3>
+
+<ol>
+	<li>At first, you will be in user view. In this view, you can view the running status and statistics of the switch. In order to configure the switch, change to system view to set the system parameters.
+{% highlight bash %}
+<HPE> system-view
+{% endhighlight %}
+	</li>
+	<li>So far fans might have been kept spinning up, set up a prefered direction (port-to-power or power-to-port) for fans and they should spin down.
+{% highlight bash %}
+[HPE] fan prefer-direction slot 1 port-to-power
+{% endhighlight %}
+	</li>
+	<li>Next, set up the management interface for ssh and https access. Replace x.x.x.x with the desired IP and y.y.y.y with the IP of the gateway.
+{% highlight bash %}
+[HPE] interface M-GigabitEthernet0/0/0
+[HPE-M-GigabitEthernet0/0/0] description Management_GigE
+[HPE-M-GigabitEthernet0/0/0] ip address x.x.x.x 255.255.255.0	
+[HPE-M-GigabitEthernet0/0/0] quit
+[HPE] ip route-static 0.0.0.0 0.0.0.0 y.y.y.y
+{% endhighlight %}
+	</li>
+	<li>Add a new administrator user account for ssh and https access and replace yourpassword with your password.
+{% highlight bash %}
+[HPE] local-user manager class manage
+[HPE-luser-manage-manager] password simple yourpassword
+[HPE-luser-manage-manager] service-type ssh https
+[HPE-luser-manage-manager] authorization-attribute user-role network-admin
+[HPE-luser-manage-manager] authorization-attribute user-role network-operator
+[HPE-luser-manage-manager] quit
+[HPE] ssh server enable
+[HPE] ssh user manager service-type all authentication-type password
+[HPE] ip https  enable
+{% endhighlight %}
+	</li>
+	<li>Set up the access line for ssh access.
+{% highlight bash %}
+[HPE] line vty 0 4
+[HPE-line-vty0-4] authentication-mode scheme
+[HPE-line-vty0-4] user-role network-admin
+[HPE-line-vty0-4] protocol inbound ssh
+[HPE-line-vty0-4] idle-timeout 600 0
+[HPE-line-vty0-4] quit
+{% endhighlight %}
+	</li>
+	<li>Reboot the switch and save the configuration.
+{% highlight bash %}
+reboot
+{% endhighlight %}
+	</li>
+</ol>
+
+<p>While the ssh server of the switch uses an older cipher algorithm, you will have to specify the algorithm.</p>
+{% highlight bash %}
+% ssh username@ip
+Unable to negotiate with ip port 22: no matching cipher found. Their offer: aes128-cbc,aes256-cbc,3des-cbc,des-cbc
+% ssh -Q cipher
+3des-cbc
+aes128-cbc
+aes192-cbc
+aes256-cbc
+rijndael-cbc@lysator.liu.se
+aes128-ctr
+aes192-ctr
+aes256-ctr
+aes128-gcm@openssh.com
+aes256-gcm@openssh.com
+chacha20-poly1305@openssh.com
+% ssh -c 3des-cbc username@ip
+username@ip's password: 
+{% endhighlight %}
+
+<p>Here is the enabled web management interface.</p>
+<img src="/assets/configurating-hpe-flexfabric-5700-from-factory-setting-with-console-3.png" alt="Web Management Interface" width="50%">
+
+<h3>History</h3>
+<ul>
+	<li>29th Sep, 2020: Initial version</li>
+</ul>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://www.mybenke.org/?p=2316">How-To: Init HPE FF5700 FlexFabric Switches</a></li>
+	<li><a href="https://serverfault.com/questions/662376/default-gateway-config-in-flexfabric-5700">Default gateway config in FlexFabric 5700</a></li>
+	<li><a href="https://apps.apple.com/us/app/serialtools/id611021963?mt=12">SerialTools</a></li>
+	<li><a href="https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-c04406873">HPE FlexFabric 5700 Switch Series Installation Guide</a></li>
+	<li><a href="https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=emr_na-a00038317en_us">HPE FlexFabric 5700 Switch SeriesCommand References</a></li>
+</ol>
