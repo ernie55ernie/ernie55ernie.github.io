@@ -1,0 +1,76 @@
+---
+layout: post
+title: "Sequence of Caption and Label in Latex Table Matters"
+date: 2020-12-21
+category: miscellaneous
+---
+<h3>Introduction</h3>
+
+Once I was writing papers on <a href="https://www.overleaf.com/project">Overleaf</a>, I met an error about the numbering of tables in <i>Latex</i>. When referring several different tables, I've gotton the same numbering. After trying some alternatives of sequencing of the elements inside a table, I've found out that the order of caption and label can't be exchanged.
+
+<h3>Table in <i>Latex</i></h3>
+
+Tables are common elements in academic reports and scientific research papers. <i>Latex</i> provides a wide range of customization of tables, such changing sizes, combining cells, modifying the colors etc. The following code snapshot illustrates how to construct a basic table in <i>Latex</i>.
+
+{% highlight latex %}
+\begin{table}[h!]
+\centering
+\caption{Table 1.}
+\label{tab:1}
+\begin{tabular}{|c|c|c|}
+\hline
+ cell1 & cell2 & cell3 \\
+\hline
+ cell4 & cell5 & cell6 \\  
+\hline
+ cell7 & cell8 & cell9 \\
+\hline
+\end{tabular}
+\end{table}
+{% endhighlight %}
+
+This is a simple working example of a table from <a href="https://www.overleaf.com/learn/latex/tables">Tables</a>. \(h\) means the table will be placed <b>here</b> approximately. \(!\) indicates overriding the internal environment settings. The above is the correct way of using label afer caption and thus the table can be referred in the text.
+
+{% highlight latex %}
+\begin{table}[h!]
+\centering
+\label{tab:2}
+\caption{Table 2.}
+\begin{tabular}{|c|c|c|}
+\hline
+ cell1 & cell2 & cell3 \\ 
+\hline
+ cell4 & cell5 & cell6 \\  
+\hline
+ cell7 & cell8 & cell9 \\
+\hline
+\end{tabular}
+\end{table}
+{% endhighlight %}
+
+And for this example, label comes before caption. In the following <i>Latex</i> code, you can see three items inside the list have referred three table respectively.
+
+{% highlight latex %}
+\begin{enumerate}
+    \item Table \ref{tab:1} should be Table 1.
+    \item Table \ref{tab:2} should be Table 2.
+    \item Table \ref{tab:3} should be Table 3.
+\end{enumerate}
+{% endhighlight%}
+
+<p>After compilation, you can see that the reference of the second table is missing while the first and third table is referred nicely. This project can be accessed <a href="https://www.overleaf.com/read/tbkvryvbctyp">here</a>.</p>
+
+<img src="/assets/sequence-of-caption-and-label-in-latex-table-matters-1.png" alt="Table Test Project in Overleaf" width="50%">
+
+<h3>Conclusion</h3>
+
+Sometimes the bug in <i>Latex</i> is not easy to find out, partly because the rules of <i>Latex</i> compiler is not very clear to public and partly because the documentation of <i>Latex</i> contains too many details. As described in this article, the order of caption and label can cause the failure of the reference of tables and this doesn't show any compile error or other strange messages. Editting articles with <i>Latex</i> is just like coding other programming languages to me and such language characteristic can only be found in practices.
+
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://www.overleaf.com/learn/latex/tables">Tables</a></li>
+	<li><a href="https://www.overleaf.com/learn/latex/lists">Lists</a></li>
+	<li><a href="https://www.overleaf.com/read/tbkvryvbctyp">Table Test</a></li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
