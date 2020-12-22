@@ -1,0 +1,80 @@
+---
+layout: post
+title: "Laravel Homestead and Voyager on Window 10"
+date: 2020-12-22
+category: php
+---
+<h3>Introduction</h3>
+
+Recently, I've gotton a chance to update and maintain a website backed by <a href="https://laravel.com/">Laravel</a> and <a href="https://voyager.devdojo.com/">Voyager</a>. While coming across the installation of development environment of <a href="https://laravel.com/docs/8.x/homestead">Laravel Homestead</a>, I encounter several problems. This article shows all the steps I've done to successfully run the website.
+
+<h3>1. Hardware Virtualization</h3>
+
+<p>In order to run <a href="https://laravel.com/docs/8.x/homestead">Laravel Homestead</a> on Windows, enabling hardware virtualization is needed via tools like <a href="https://downloadcenter.intel.com/download/28539?v=t">	
+Intel® Processor Identification Utility</a> or the corresponded utility for AMD CPU.</p>
+
+<img src="/assets/laravel-homestead-and-voyager-window-10-1.png" alt="Intel Processor Identification Utility" width="50%">
+
+<p>After that, Hyper-V in Window Features is required in Control Panel. You will have you restart the computer to let these changes to take place.</p>
+
+<img src="/assets/laravel-homestead-and-voyager-window-10-2.png" alt="Window Feature Hyper-V" width="50%">
+
+<h3>2. VirtualBox and Vagrant</h3>
+
+Download <a href="https://www.virtualbox.org/">VirtualBox</a> and <a href="https://www.vagrantup.com/">Vagrant</a> and install them for the purpose of VM management.
+
+<h3>3. Git Bash</h3>
+
+Download <a href="https://git-scm.com/">Git Bash</a> and install it for the later Linux commands to be execute on Windows.
+
+<h3>4. Homestead</h3>
+
+Open git bash and input the following command to add Homestead to your Vagrant installation. 
+
+{% highlight bash %}
+vagrant box add laravel/homestead
+{% endhighlight %}
+
+Navigate to the root directory (~) or and directory you wanted to place Homestead VM, and then run the following command to clone the repository.
+
+{% highlight bash %}
+cd ~
+git clone https://github.com/laravel/homestead.git Homestead
+cd Homestead
+bash init.sh
+{% endhighlight %}
+
+Edit the configuration file (Homestead.yml) as you needed.
+
+<!-- <h3>5. ssh key (optional)</h3>
+
+{% highlight bash %}
+ssh-keygen -t rsa -C “my_email@example.com”
+{% endhighlight %} -->
+
+<h3>6. Symbolic Link (optional)</h3>
+
+<p>If there is an error message for symbolic link whle running the Laravel project, you will have to set up the rights for creating symbolic links for your user account. Run secpol.msc in Win+R.</p>
+
+<img src="/assets/laravel-homestead-and-voyager-window-10-3.png" alt="Run secpol.msc" width="50%">
+
+<p>Go to Local Policies -> User Rights Assignment -> create symbolic links and add your user to this property.</p>
+
+<img src="/assets/laravel-homestead-and-voyager-window-10-4.png" alt="Create Symbolic Links Properties" width="50%">
+
+<h3>Conclusion</h3>
+
+Despite of the errors throughout these steps, I can now start to develop new functions for the website which is written  <a href="https://laravel.com/">Laravel</a> and <a href="https://voyager.devdojo.com/">Voyager</a>.
+
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://tutsforweb.com/installing-laravel-homestead-on-windows-step-by-step/">Installing Laravel Homestead On Windows Step By Step Procedure With Explanation</a></li>
+	<li><a href="https://laracasts.com/discuss/channels/servers/how-to-change-php-version-in-homestead?page=0">How to change PHP version in homestead</a></li>
+	<li><a href="https://github.com/laravel/homestead/issues/1234">Removing packages</a></li>
+	<li><a href="https://stackoverflow.com/questions/61177995/laravel-packagemanifest-php-undefined-index-name">Laravel PackageManifest.php: Undefined index: name</a></li>
+	<li><a href="https://stackoverflow.com/questions/39496598/laravel-5-3-storagelink-symlink-protocol-error">Laravel 5.3 storage:link -> symlink(): Protocol error</a></li>
+	<li><a href="https://www.cnblogs.com/smallyi/p/12082295.html">Laravel -- window 10 symlink(): Protocol error 问题处理</a></li>
+	<li><a href="https://stackoverflow.com/questions/17895256/creating-symbolic-link-protocol-error">creating symbolic link: Protocol error</a></li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
