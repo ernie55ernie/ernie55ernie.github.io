@@ -1,0 +1,107 @@
+---
+layout: post
+title: "Solving WinError of Pytorch Error Loading caffe2_detectron_ops.dll"
+date: 2021-11-09
+category: python
+---
+<h3>Introduction</h3>
+
+When running new version of Pytorch with the CUDA 11.3 on Windows 10, I've encountered a strange error message: OSError: [WinError 127] The specified procedure could not be found. Error loading caffe2_detectron_ops.dll.
+
+<h3>Environments</h3>
+
+<ol>
+	<li>OS: Windows 10 Pro for WorkStation</li>
+	<li>Python: 3.8.11</li>
+	<li>Conda: 4.10.3</li>
+	<li>Pip: 21.0.1</li>
+	<li>Pytorch: 1.10.0</li>
+</ol>
+
+
+<h3>Pytorch Installation</h3>
+
+<p>I installed the Pytorch with the command provided on the official website of <a href="https://pytorch.org/">Pytorch</a>, selecing stable (1.10) Pytorch build, Windows OS, Conda package, Python language, CUDA 11.3 compute platform.</p>
+
+{% highlight bash %}
+PS > conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+Collecting package metadata (current_repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: C:\path\Anaconda3_64
+
+  added / updated specs:
+    - cudatoolkit=11.3
+    - pytorch
+    - torchaudio
+    - torchvision
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    pytorch-1.10.0             |py3.8_cuda11.3_cudnn8_0        1.44 GB  pytorch
+    pytorch-mutex-1.0          |             cuda           3 KB  pytorch
+    torchaudio-0.10.0          |       py38_cu113         2.1 MB  pytorch
+    torchvision-0.11.1         |       py38_cu113         8.8 MB  pytorch
+    ------------------------------------------------------------
+                                           Total:        1.46 GB
+
+The following NEW packages will be INSTALLED:
+
+  pytorch-mutex      pytorch/noarch::pytorch-mutex-1.0-cuda
+  torchaudio         pytorch/win-64::torchaudio-0.10.0-py38_cu113
+
+The following packages will be UPDATED:
+
+  cudatoolkit                           10.1.243-h74a9793_0 --> 11.3.1-h59b6b97_2
+  pytorch                     1.8.1-py3.8_cuda10.1_cudnn7_0 --> 1.10.0-py3.8_cuda11.3_cudnn8_0
+  torchvision                              0.9.1-py38_cu101 --> 0.11.1-py38_cu113
+
+
+Proceed ([y]/n)? y
+
+
+Downloading and Extracting Packages
+torchaudio-0.10.0    | 2.1 MB    | ############################################################################### | 100%
+pytorch-mutex-1.0    | 3 KB      | ############################################################################### | 100%
+torchvision-0.11.1   | 8.8 MB    | ############################################################################### | 100%
+pytorch-1.10.0       | 1.44 GB   | ############################################################################### | 100%
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+{% endhighlight %}
+
+<h3>Error Message</h3>
+
+<p>After successful installation of Pytorch, I ran a program which use Pytoch.</p>
+
+{% highlight bash %}
+(base) >python demo.py
+Traceback (most recent call last):
+  File "demo.py", line 5, in <module>
+    import torch
+  File "C:\path\Anaconda3_64\lib\site-packages\torch\__init__.py", line 124, in <module>
+    raise err
+OSError: [WinError 127] The specified procedure could not be found. Error loading "C:\path\Anaconda3_64\lib\site-packages\torch\lib\caffe2_detectron_ops.dll" or one of its dependencies.
+{% endhighlight %}
+
+<p>From the <a href="https://github.com/pytorch/pytorch/issues/35803">issue discussion</a> on Github, I found out that by deleting caffe2_detectron_ops.dll the error will disappear.</p>
+
+{% highlight bash %}
+C:\path\Anaconda3_64\Lib\site-packages\torch\lib\caffe2_detectron_ops.dll
+{% endhighlight %}
+
+<h3>Conclusion</h3>
+
+<p>In the same directory another file with similar name, caffe2_detectron_ops_gpu.dll, can be found, maybe it's because I installed a GPU version of Pytorch, caffe2_detectron_ops.dll shouldn't be loaded at all.</p>
+
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://github.com/pytorch/pytorch/issues/35803">FileNotFoundError - caffe2_detectron_ops.dll on Windows source build if Python 3.8 used</a></li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>

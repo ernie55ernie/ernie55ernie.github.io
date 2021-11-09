@@ -46,13 +46,46 @@ bash init.sh
 
 Edit the configuration file (Homestead.yml) as you needed.
 
-<!-- <h3>5. ssh key (optional)</h3>
+<h3>5. ssh key (optional)</h3>
+
+There is ssh-keygen tools in git bash.
 
 {% highlight bash %}
 ssh-keygen -t rsa -C “my_email@example.com”
-{% endhighlight %} -->
+{% endhighlight %}
 
 <h3>6. Multiple php version management (optional)</h3>
+
+In the terminal of Homestead, you can use <i>update-alternatives</i> to show the available php version installed.
+
+{% highlight bash %}
+vagrant@homestead:~$ update-alternatives --display php
+php - manual mode
+  link best version is /usr/bin/php8.0
+  link currently points to /usr/bin/php7.2
+  link php is /usr/bin/php
+  slave php.1.gz is /usr/share/man/man1/php.1.gz
+/usr/bin/php5.6 - priority 56
+  slave php.1.gz: /usr/share/man/man1/php5.6.1.gz
+/usr/bin/php7.0 - priority 70
+  slave php.1.gz: /usr/share/man/man1/php7.0.1.gz
+/usr/bin/php7.1 - priority 71
+  slave php.1.gz: /usr/share/man/man1/php7.1.1.gz
+/usr/bin/php7.2 - priority 72
+  slave php.1.gz: /usr/share/man/man1/php7.2.1.gz
+/usr/bin/php7.3 - priority 73
+  slave php.1.gz: /usr/share/man/man1/php7.3.1.gz
+/usr/bin/php7.4 - priority 74
+  slave php.1.gz: /usr/share/man/man1/php7.4.1.gz
+/usr/bin/php8.0 - priority 80
+  slave php.1.gz: /usr/share/man/man1/php8.0.1.gz
+{% endhighlight %}
+
+With <i>sudo update-alternatives --config php</i>, you can change the versions Homestead VM uses.
+
+{% highlight bash %}
+sudo update-alternatives --config php
+{% endhighlight %}
 
 <h3>7. Symbolic Link (optional)</h3>
 
@@ -66,11 +99,87 @@ ssh-keygen -t rsa -C “my_email@example.com”
 
 <h3>8. MySQL Workbench (optional)</h3>
 
+<p>With MySQL Workbench, you can input the appropriate connection settings and use the GUI to design your database. The default settings of Homestead database can be found here: <a href="https://laravel-guide.readthedocs.io/en/latest/homestead/#connecting-to-databases">Connecting To Databases</a>.</p>
+
+<img src="/assets/laravel-homestead-and-voyager-window-10-5.png" alt="" width="50%">
+
+<h3>9. Starting up Homestead</h3>
+
+Move the current working directory of git bash to Homestead and use the command <i>vagrant up</i> to start Homestead VM.
+
+{% highlight bash %}
+$ vagrant up
+Bringing machine 'homestead' up with 'virtualbox' provider...
+==> homestead: Checking if box 'laravel/homestead' version '9.7.2' is up to date...
+==> homestead: Clearing any previously set forwarded ports...
+==> homestead: Clearing any previously set network interfaces...
+==> homestead: Preparing network interfaces based on configuration...
+    homestead: Adapter 1: nat
+    homestead: Adapter 2: hostonly
+==> homestead: Forwarding ports...
+    homestead: 80 (guest) => 8000 (host) (adapter 1)
+    homestead: 443 (guest) => 44300 (host) (adapter 1)
+    homestead: 3306 (guest) => 33060 (host) (adapter 1)
+    homestead: 4040 (guest) => 4040 (host) (adapter 1)
+    homestead: 5432 (guest) => 54320 (host) (adapter 1)
+    homestead: 8025 (guest) => 8025 (host) (adapter 1)
+    homestead: 9600 (guest) => 9600 (host) (adapter 1)
+    homestead: 27017 (guest) => 27017 (host) (adapter 1)
+    homestead: 22 (guest) => 2222 (host) (adapter 1)
+==> homestead: Running 'pre-boot' VM customizations...
+==> homestead: Booting VM...
+==> homestead: Waiting for machine to boot. This may take a few minutes...
+    homestead: SSH address: 127.0.0.1:2222
+    homestead: SSH username: vagrant
+    homestead: SSH auth method: private key
+    homestead: Warning: Connection reset. Retrying...
+    homestead: Warning: Connection aborted. Retrying...
+==> homestead: Machine booted and ready!
+==> homestead: Checking for guest additions in VM...
+==> homestead: Setting hostname...
+==> homestead: Configuring and enabling network interfaces...
+==> homestead: Mounting shared folders...
+    homestead: /vagrant => C:/Users/path
+    homestead: /home/path => C:/path
+==> homestead: Detected mount owner ID within mount options. (uid: 1000 guestpath: /home/path)
+==> homestead: Detected mount group ID within mount options. (gid: 1000 guestpath: /home/path)
+==> homestead: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> homestead: flag to force provisioning. Provisioners marked to run always will still run.
+{% endhighlight %}
+
+You can use <i>vagrant ssh</i> to connect to Homestead VM.
+
+{% highlight bash %}
+$ vagrant ssh
+Welcome to Ubuntu 18.04.5 LTS (GNU/Linux 4.15.0-124-generic x86_64)
+
+ _                               _                 _
+| |                             | |               | |
+| |__   ___  _ __ ___   ___  ___| |_ ___  __ _  __| |
+| '_ \ / _ \| '_ ` _ \ / _ \/ __| __/ _ \/ _` |/ _` |
+| | | | (_) | | | | | |  __/\__ \ ||  __/ (_| | (_| |
+|_| |_|\___/|_| |_| |_|\___||___/\__\___|\__,_|\__,_|
+
+* Homestead v12.8.0 | Thanks for using Homestead
+* Settler v11.5.0
+
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+Last login: Wed Feb 17 06:14:06 2021 from 10.0.2.2
+vagrant@homestead:~$
+{% endhighlight %}
+
 <h3>Conclusion</h3>
 
 Despite of the errors throughout these steps, I can now start to develop new functions for the website which is written  <a href="https://laravel.com/">Laravel</a> and <a href="https://voyager.devdojo.com/">Voyager</a>.
 
 <h3>History</h3>
+<div>
+	First revision: add description - 2021/11/09
+</div>
 <h3>Reference</h3>
 <ol>
 	<li><a href="https://tutsforweb.com/installing-laravel-homestead-on-windows-step-by-step/">Installing Laravel Homestead On Windows Step By Step Procedure With Explanation</a></li>
