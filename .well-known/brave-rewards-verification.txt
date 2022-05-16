@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: ernie55ernie.github.io
+Token: dadccb6317a8fc8d96bb369326d81f21100eb5680cd05e1e84f03e37e0b77066
