@@ -26,6 +26,7 @@ markdown: kramdown
 
 plugin:
   - jekyll-sitemap
+  - jekyll-seo-tag
 
 excerpt_separator: ""
 
