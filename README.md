@@ -1,7 +1,7 @@
 # ernie55ernie.github.io
-Home page for some code project [http://ernie55ernie.github.io](https://ernie55ernie.github.io)
+Home page for [http://ernie55ernie.github.io](https://ernie55ernie.github.io)
 
-## 
+## Environment Installation
 ```bash
 bundle init
 bundle add jekyll
@@ -22,6 +22,11 @@ The correct version Jekyll will be installed as a dependency of the github-pages
 
 ```
 gem "webrick"
+```
+
+## Run Local Server
+```bash
+bundle exec jekyll serve
 ```
 
 ### Reference
