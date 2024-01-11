@@ -1,0 +1,172 @@
+---
+layout: post
+title: "Setting Up a SoftEther VPN Server on Windows 10: A Step-by-Step Guide"
+date: 2022-04-11
+category: miscellaneous
+---
+<h3>Introduction</h3>
+
+<p>In the digital age, privacy and security are paramount. 
+	Whether you're a business professional safeguarding sensitive data or an individual seeking to protect your online activities, setting up a VPN (Virtual Private Network) server is a crucial step towards achieving this security. 
+	This blog post is dedicated to guiding you through the process of setting up a <a href="https://www.softether.org/">SoftEther VPN</a> server on your Windows 10 system.</p>
+
+<p><a href="https://www.softether.org/">SoftEther VPN</a> is renowned for its versatility and strength, offering a free, open-source, cross-platform, multi-protocol VPN solution. 
+	In this guide, we will explore the benefits of using <a href="https://www.softether.org/">SoftEther VPN</a>, its compatibility with Windows 10, and provide a comprehensive, easy-to-follow tutorial on installing and configuring your own VPN server. 
+	By the end of this post, you will have a robust and secure VPN server, ensuring your online activities remain private and protected. Let's dive into the world of enhanced digital security with SoftEther on Windows 10.</p>
+
+<h3>Installation Guide</h3>
+
+<p>This guide assumes the user is familiar with basic networking concepts and has administrative access to the Windows 10 machine where the VPN server will be installed.</p>
+
+<ol>
+	<li>
+		<h4>Step 1: Launching the Setup Wizard</h4>
+		<p>Open the SoftEther VPN Setup Wizard to begin the installation. This initial screen provides an overview of SoftEther’s compatibility and capabilities.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-01.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 2: Selecting Components to Install</h4>
+		<p>Choose which components of the SoftEther VPN you wish to install. Options include the VPN Server, VPN Bridge, or the Server Manager for administration. For a basic server setup, select "SoftEther VPN Server".</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-02.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 3: Reviewing the End User License Agreement</h4>
+		<p>Carefully read the End User License Agreement (EULA). You must accept the terms of this license to use the SoftEther VPN software.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-03.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 4: Acknowledging Important Notices</h4>
+		<p>Pay attention to the Important Notices that advise on the powerful capabilities of the VPN software and warnings against misuse. These notes ensure that you understand the implications of using the software.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-04.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 5: Choosing the Installation Directory</h4>
+		<p>Select the directory where the SoftEther VPN Server will be installed. The default path is typically suitable for most installations.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-05.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 6: Confirming the Ready to Install Status</h4>
+		<p>Review your settings before installation. This is the final step before the setup begins the installation process on your machine.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-06.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 7: Completing the Installation</h4>
+		<p>Once the installation is complete, you may choose to start the SoftEther VPN Server Manager immediately. This tool will help you manage the server after setup.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-07.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 8: Initial VPN Server Manager Window</h4>
+		<p>Upon launching the VPN Server Manager, you will see the connection settings for your server. "localhost" indicates that the server is set up to be managed from the same machine it's installed on.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-08.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 9: Changing the Administrator's Password </h4>
+		<p>For security purposes, you should change the administrator's password from the default setting. This step is crucial to ensure the security of your VPN server.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-09.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 10: Password Change Confirmation</h4>
+		<p>After changing the password, you'll receive confirmation that it has been successfully updated. It's important to remember this password, as it is required to manage the VPN server.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-10.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 11: Choosing VPN Server Type</h4>
+		<p>Decide whether you want to configure a Remote Access VPN Server, which allows clients to connect to your network as if they were local, or a Site-to-Site VPN Server, which connects two or more remote networks.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-11.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 12: Confirming Initialization</h4>
+		<p>If you choose to set up a Site-to-Site VPN, you'll be prompted to initialize the settings. Confirm to proceed with the configuration.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-12.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 13: Naming the Virtual Hub</h4>
+		<p>Create a Virtual Hub on your VPN Server. This is a logical segmentation of your VPN and can be named according to your preference.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-13.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 14: Setting up Dynamic DNS</h4>
+		<p>Configure the Dynamic DNS function. This allows you to assign a hostname to your VPN server, which is particularly useful if you don't have a static IP address.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-14.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 15: Configuring L2TP/IPsec Settings</h4>
+		<p>Here you can enable the L2TP server function over IPsec, allowing connections from various devices, including smartphones and computers. This step is crucial for compatibility with clients that support L2TP.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-15.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 16: Enabling VPN Azure</h4>
+		<p>VPN Azure is a cloud service that helps you establish a VPN session if you are behind a NAT and don't have a global IP address. You can enable or disable it here.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-16.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 17: Completing Easy Setup Tasks</h4>
+		<p>This screen summarizes the setup tasks that need to be completed, such as creating user accounts and defining connections to destination VPN servers.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-17.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 18: Creating a User Account</h4>
+		<p>Set up user accounts with authentication methods. You can choose from anonymous, password, certificate, and other authentication types according to your security policy.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-18.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 19: Confirming User Creation</h4>
+		<p>After creating a new user, you'll receive a confirmation that the user has been successfully created. Ensure the details are correct and proceed.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-19.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 20: Managing Users</h4>
+		<p>The VPN Server Manager shows a list of users on the Virtual Hub. You can add, edit, or remove users and view their connection details from this interface.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-20.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 21: VPN Easy Setup Tasks</h4>
+		<p>After the initial setup, you are prompted to complete essential tasks such as creating a user to accept VPN connections, defining a connection to a destination VPN server, and setting up a local bridge for a site-to-site VPN.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-21.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 22: Manage VPN Server</h4>
+		<p>This screen shows the VPN Server Manager where you can manage virtual hubs, view connection status, handle advanced settings, and check the operational status of the server. </p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-22.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 23: Configuring Firewall Settings </h4>
+		<p>In the Windows Defender Firewall settings, you need to ensure that inbound rules allow traffic for the SoftEther VPN Server. This is essential for the server to receive connections from clients.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-23.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 24: Setting Firewall Properties</h4>
+		<p>Within the firewall rule properties, you can specify profiles, interface types, and edge traversal settings for the VPN server. "Allow edge traversal" is often enabled to allow traffic to pass through NAT devices. </p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-24.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 25: Configuring SecureNAT</h4>
+		<p>SecureNAT allows the VPN server to act as a virtual router with NAT and a DHCP server for the virtual network. This should be configured by users with detailed networking knowledge.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-25.png" alt="" width="50%">
+	</li>
+	<li>
+		<h4>Step 26: Enabling SecureNAT</h4>
+		<p>When you enable SecureNAT, a warning is shown emphasizing that SecureNAT is for advanced users. If you proceed, it will establish a virtual router within your VPN for better address management and routing capabilities.</p>
+		<img src="/assets/vpn-server-on-window-10-with-softether-26.png" alt="" width="50%">
+	</li>
+</ol>
+
+<h3>Conclusion</h3>
+
+<p>With the steps outlined in this guide, you've just navigated the complexities of setting up a SoftEther VPN Server on your Windows 10 machine. From installing the software to configuring the firewall, you've laid the groundwork for a secure and flexible network environment that caters to various scenarios, be it for remote access or connecting multiple sites.</p>
+
+<p>The strength of SoftEther VPN lies in its versatility and the rich set of features it offers, all without incurring the costs usually associated with enterprise VPN solutions. Whether you're looking to secure your internet connection, access resources remotely, or link together different network segments, SoftEther provides a reliable and robust platform to meet those needs.</p>
+
+<p>Remember, while the technical process might seem intricate, the peace of mind and security benefits that come with a properly configured VPN are invaluable. As you move forward, keep your server updated, monitor your connections, and adjust your configurations as your networking needs evolve.</p>
+
+<p>We hope this guide has been a valuable resource in your journey to enhanced network security and functionality. If you have any further questions or require more detailed explanations, the SoftEther community and documentation are excellent resources for ongoing support.</p>
+
+<p>Stay secure and connected!</p>
+
+<h3>History</h3>
+<h3>Reference</h3>
+<ol>
+	<li><a href="https://www.softether.org/">SoftEther VPN</a></li>
+	<li><a href="https://chat.openai.com/">ChatGPT, personal communication, January 11, 2024</a></li>
+</ol>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
