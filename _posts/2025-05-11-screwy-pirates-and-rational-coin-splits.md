@@ -2,114 +2,77 @@
 layout: post
 title: "Screwy Pirates and Rational Coin Splits"
 date: 2025-05-11
-category: Quantitative interview
+category: quantitative interview
 ---
 
 ## Screwy Pirates and Rational Coin Splits
 
-This is a classic logic puzzle rooted in game theory and rational behavior. The pirates are perfectly rational beings who prioritize survival, personal wealth, and, finally, a bloodthirsty preference for seeing others perish if all else is equal. The goal is to determine the final coin distribution that will be accepted under these rules.
+A classic logic puzzle involves a crew of five perfectly rational pirates attempting to divide 100 gold coins under a strict voting system. Their priorities: survival first, personal wealth second, and finally, maximizing the number of crewmates overboard if indifferent.
 
-## Setup
+### The Rules
 
-- **Pirates A, B, C, D, E** — listed in order of seniority, with A being the most senior.
-- **100 gold coins** to be distributed.
-- Each pirate votes; a proposal needs **at least 3 votes** to be accepted.
-- If rejected, the proposer dies and the next in seniority proposes a new split.
-- Each pirate prefers: 1) staying alive > 2) maximizing coins > 3) seeing others die.
+1. The most senior pirate proposes a split.
+2. All remaining pirates vote.
+3. A proposal passes with at least 50% (rounding up in case of odd pirates).
+4. If rejected, the proposer dies, and the next most senior pirate makes a new proposal.
 
-## Step-by-Step Reasoning
+Let’s label the pirates from A (most senior) to E (least senior).
 
-We work **backwards**, starting from the smallest group of pirates to build up a solution.
+## Working Backwards
 
-### 1 Pirate: Pirate E
-If only Pirate E is left, he gets **all 100 coins**. There's no one else.
+To understand what proposal pirate A should make, we analyze from the smallest group upward.
 
-**Split**:  
-- E: 100
+### 1 Pirate Left: Pirate E
+Only E remains. He keeps all **100 coins**. No vote needed.
 
-### 2 Pirates: Pirates D and E
-Pirate D must convince E. But E knows if D dies, he gets all 100. So D gives himself **0**, E **100**.
+### 2 Pirates Left: Pirates D and E
+Pirate D must get one vote (his own) to pass a proposal. He gives **100 coins to himself**, **0 to E**.
 
-E votes **no**, D dies.
+Split:  
+**D: 100, E: 0**
 
-**Resulting Split**:
-- E: 100
+### 3 Pirates: C, D, E
+C needs 2 votes. He has his own. He can **buy E’s vote** with 1 coin.
 
-### 3 Pirates: Pirates C, D, E
-Pirate C must get at least 2 votes. His own vote is 1; he needs **one more**.
+Split:  
+**C: 99, D: 0, E: 1**
 
-C knows that if he's thrown overboard, the split becomes:
-- D: 0
-- E: 100
+Why this works:
+- D would prefer C to die and revert to the 2-pirate case where he gets everything.
+- E gets 0 in the 2-pirate case, so 1 coin is better. He votes yes.
 
-So C bribes pirate D with **1 coin** (better than D's 0). E gets nothing.
+### 4 Pirates: B, C, D, E
+B needs 2 votes beyond his own. He gives **1 coin to D** (who would get 0 if B dies) to secure his support.
 
-**Split**:
-- C: 99  
-- D: 1  
-- E: 0
+Split:  
+**B: 99, C: 0, D: 1, E: 0**
 
-C and D vote yes.
+- C would prefer B dead, hoping for 99 coins in the 3-pirate scenario.
+- D prefers 1 over 0.
+- E gets nothing either way, but prefers B dead, so votes no.
+- B gets yes from himself and D.
 
-### 4 Pirates: Pirates B, C, D, E
-Pirate B needs 2 more votes.
+### 5 Pirates: A, B, C, D, E
+A needs 3 votes. He gives **1 coin to C** and **1 to E** (both get 0 in the 4-pirate case), securing their votes.
 
-If B dies, the split becomes:
-- C: 99  
-- D: 1  
-- E: 0
+Split:  
+**A: 98, B: 0, C: 1, D: 0, E: 1**
 
-So B bribes two pirates who would otherwise get nothing: E and D.
+- B would get 99 if A dies; votes no.
+- C gets 0 if A dies; votes yes.
+- D gets 1 if A dies; votes no.
+- E gets 0 if A dies; votes yes.
 
-Give:
-- D: 1 (same as before, no incentive change — maybe not helpful)
-- E: 1 (improvement from 0)
+With votes from A, C, and E, the proposal passes.
 
-Instead, to **minimize payment**, B can offer **1 coin to E** and **1 to C** (who gets nothing if B dies), because D already gets 1 if B dies, but C gets 99 and will be hard to sway. So B needs to pick the right 2 out of C, D, E.
+## Final Distribution
 
-Actually, best to bribe E and C, who get 0 if B dies.
-
-**Split**:
-- B: 98  
-- C: 1  
-- D: 0  
-- E: 1
-
-B, C, E vote yes.
-
-### 5 Pirates: Pirates A, B, C, D, E
-A needs 2 more votes.
-
-If A dies, the split is:
-- B: 98  
-- C: 1  
-- D: 0  
-- E: 1
-
-So A must bribe 2 pirates who get 0 if he dies — i.e., D and C.
-
-Offer:
-- D: 1 (better than 0)
-- C: 2 (better than 1)
-- E gets 0 either way
-
-**Split**:
-- A: 97  
-- B: 0  
-- C: 2  
-- D: 1  
-- E: 0
-
-Votes yes: A, C, D → 3 votes — proposal passes.
-
-## Final Split Accepted
-
-- A: 97  
-- B: 0  
-- C: 2  
-- D: 1  
-- E: 0
+**A: 98 coins**  
+**B: 0 coins**  
+**C: 1 coin**  
+**D: 0 coins**  
+**E: 1 coin**
 
 # Reference
 
-* [1] [Pirate Game - Wikipedia](https://en.wikipedia.org/wiki/Pirate_game)
+* [1] [Screwy Pirates Problem (Classic Logic)](https://en.wikipedia.org/wiki/Pirate_game)
