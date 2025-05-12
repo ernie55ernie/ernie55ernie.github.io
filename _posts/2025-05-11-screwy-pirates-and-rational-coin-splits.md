@@ -5,8 +5,6 @@ date: 2025-05-11
 category: quantitative interview
 ---
 
-## Screwy Pirates and Rational Coin Splits
-
 A classic logic puzzle involves a crew of five perfectly rational pirates attempting to divide 100 gold coins under a strict voting system. Their priorities: survival first, personal wealth second, and finally, maximizing the number of crewmates overboard if indifferent.
 
 ### The Rules

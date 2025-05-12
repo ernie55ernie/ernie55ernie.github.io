@@ -5,8 +5,6 @@ date: 2025-05-12
 category: quantitative interview
 ---
 
-## The Birthday Problem: Deduction by Dialogue
-
 This logical deduction puzzle, inspired by the famous “Cheryl’s Birthday,” revolves around narrowing down possibilities from a short conversation between two people with partial information.
 
 ### The Setup

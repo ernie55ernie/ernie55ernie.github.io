@@ -5,8 +5,6 @@ date: 2025-05-12
 category: quantitative interview
 ---
 
-## Bridge and Torch: Racing Against the Dark
-
 This classic puzzle tests our ability to optimize under constraints. Four people—A, B, C, and D—need to cross a bridge at night. They have only one torch, and at most two can cross at a time. The crossing speed of any pair is determined by the **slower** person.
 
 ### Crossing Times:
