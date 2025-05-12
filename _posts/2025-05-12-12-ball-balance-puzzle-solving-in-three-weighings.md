@@ -5,8 +5,6 @@ date: 2025-05-12
 category: quantitative interview
 ---
 
-## 12-Ball Balance Puzzle: Solving in Three Weighings
-
 This classic logic challenge asks: Can you identify a single defective ball—either heavier or lighter—from a set of 12, using only **three weighings** on a balance scale?
 
 The answer is **yes**, but it requires a precise and clever weighing strategy.
