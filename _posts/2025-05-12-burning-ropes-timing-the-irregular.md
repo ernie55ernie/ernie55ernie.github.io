@@ -5,8 +5,6 @@ date: 2025-05-12
 category: quantitative interview
 ---
 
-## Burning Ropes: Timing the Irregular
-
 This classic logic puzzle challenges you to measure **exactly 45 minutes** using just:
 
 - **2 ropes**, each taking exactly **1 hour** to burn end-to-end,

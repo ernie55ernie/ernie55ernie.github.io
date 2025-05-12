@@ -5,8 +5,6 @@ date: 2025-05-11
 category: quantitative interview
 ---
 
-## Tiger and Sheep: Parity, Predation, and Rationality
-
 Imagine 100 rational tigers and 1 lone sheep stranded on a magical island. The only food source is grass, which the sheep can eat, but the tigers prefer meat—and specifically, they’d love to eat the sheep. However, there's a catch:
 
 - If a tiger eats the sheep, **it becomes a sheep itself**.

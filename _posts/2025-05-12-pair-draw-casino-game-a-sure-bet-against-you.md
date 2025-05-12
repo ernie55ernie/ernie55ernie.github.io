@@ -5,8 +5,6 @@ date: 2025-05-12
 category: quantitative interview
 ---
 
-## Pair-Draw Casino Game: A Sure Bet Against You
-
 You’re in a casino offered a curious card game involving a standard 52-card deck. The rules seem simple—and tempting:
 
 ### Game Mechanics
