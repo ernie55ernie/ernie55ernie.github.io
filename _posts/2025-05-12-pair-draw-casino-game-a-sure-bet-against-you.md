@@ -37,15 +37,15 @@ Over many games, you’ll find that the number of **red-red pairs (your gain)** 
 
 The **expected number of red pairs** equals the **expected number of black pairs**. So, the **expected win** is $0.
 
-Moreover, the **dealer wins ties**, so your chances of actually **winning \$100** are **less than 50%**.
+Moreover, the **dealer wins ties**, so your chances of actually **winning \$100** are **0%**.
 
-Hence, the **expected value of the game is negative**.
+Hence, the **expected value of the game is zero**.
 
 ## Final Answer
 
 **The maximum fee you should pay is \$0.**
 
-Playing this game has negative expected value—it’s a cleverly disguised losing proposition.
+Playing this game has zero expected value—it’s a cleverly disguised losing proposition.
 
 # Reference
 
