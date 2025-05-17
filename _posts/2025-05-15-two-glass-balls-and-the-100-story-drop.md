@@ -8,11 +8,11 @@ category: quantitative interview
 You're given a famous optimization challenge:
 
 > A 100-story building, and **two identical glass balls**.  
-> There exists a **threshold floor \(X\)** such that:
-> - Balls **won’t break** if dropped from below \(X\),
-> - Balls **will break** if dropped from \(X\) or higher.
+> There exists a **threshold floor \\(X\\)** such that:
+> - Balls **won’t break** if dropped from below \\(X\\),
+> - Balls **will break** if dropped from \\(X\\) or higher.
 >
-> Your goal: Find **\(X\)** using the **fewest drops** possible in the **worst case**.
+> Your goal: Find **\\(X\\)** using the **fewest drops** possible in the **worst case**.
 
 ---
 
@@ -20,7 +20,7 @@ You're given a famous optimization challenge:
 
 - You get **two balls**.
 - If a ball breaks, it's **gone**.
-- You want to **minimize the maximum number of drops** needed to determine \(X\).
+- You want to **minimize the maximum number of drops** needed to determine \\(X\\).
 
 ---
 
@@ -28,7 +28,7 @@ You're given a famous optimization challenge:
 
 ### Linear Search:
 Drop the first ball starting from floor 1, 2, 3, ..., until it breaks.
-- Worst case: 100 drops (if \(X = 100\))
+- Worst case: 100 drops (if \\(X = 100\\))
 
 ### Binary Search:
 Drop from floor 50, then 25/75, etc.
@@ -46,14 +46,14 @@ The idea is to **balance risk** between balls:
 ### Why?
 
 You want the sum of drops to cover all 100 floors:
-\[
+\\[
 n + (n-1) + (n-2) + \cdots + 1 = \frac{n(n+1)}{2} \geq 100
-\]
+\\]
 
 Solving:
-\[
+\\[
 \frac{n(n+1)}{2} \geq 100 \Rightarrow n = 14
-\]
+\\]
 
 ### Step-by-Step Plan
 
@@ -70,7 +70,7 @@ Each step reduces the interval by 1, so in **worst-case**, you’ll need **14 dr
 
 Suppose it breaks at floor 60 (after 5 drops).
 
-You now know \(X\) is between 50 and 59.
+You now know \\(X\\) is between 50 and 59.
 
 Use the **second ball** to test linearly from 51, 52, ..., up to 59 → max 9 additional drops.
 

@@ -16,15 +16,15 @@ A seemingly broken clock presents a tidy little number theory challenge:
 
 The numbers on the clock are:
 
-\[
+\\[
 1 + 2 + \cdots + 12 = \frac{12 × 13}{2} = 78
-\]
+\\]
 
 So, if the clock breaks into **three pieces** with equal sums, each piece must sum to:
 
-\[
+\\[
 \frac{78}{3} = 26
-\]
+\\]
 
 ---
 

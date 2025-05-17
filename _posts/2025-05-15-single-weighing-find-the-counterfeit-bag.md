@@ -28,9 +28,9 @@ Take coins from each bag in a **distinct count**:
 - **10 coins from Bag 10**
 
 Now you have **55 coins total**:
-\[
+\\[
 1 + 2 + \cdots + 10 = \frac{10 × 11}{2} = 55
-\]
+\\]
 
 ---
 
@@ -38,9 +38,9 @@ Now you have **55 coins total**:
 
 If all coins were 10g:
 
-\[
+\\[
 55 × 10 = 550 \text{ grams}
-\]
+\\]
 
 Now place your 55 coins on the scale and **record the actual weight**.
 
@@ -48,24 +48,24 @@ Now place your 55 coins on the scale and **record the actual weight**.
 
 ## Step 3: Interpret the Difference
 
-Let the measured weight be \(W\). Then:
+Let the measured weight be \\(W\\). Then:
 
 - If one bag has **9g coins**, the total will be **less than 550**.
 - If one bag has **11g coins**, the total will be **more than 550**.
 
-Let the difference be \(|W - 550|\).  
+Let the difference be \\(|W - 550|\\).  
 This difference tells you **how many grams off** you are—i.e., **how many coins you took from the counterfeit bag**.
 
 Because you took a unique number of coins from each bag, this difference directly identifies the counterfeit bag.
 
-- If \(W = 548\), you're 2g short → Bag **2** is counterfeit (with 9g coins).
-- If \(W = 562\), you're 12g over → Bag **6** is counterfeit (with 11g coins).
+- If \\(W = 548\\), you're 2g short → Bag **2** is counterfeit (with 9g coins).
+- If \\(W = 562\\), you're 12g over → Bag **6** is counterfeit (with 11g coins).
 
 ---
 
 ## Final Answer
 
-> Take \(n\) coins from Bag \(n\) (1–10), weigh them all once.  
+> Take \\(n\\) coins from Bag \\(n\\) (1–10), weigh them all once.  
 > Compare total to 550g.  
 > The **difference (in grams)** tells you the **bag number** and whether it’s **lighter or heavier**.
 

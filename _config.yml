@@ -23,6 +23,8 @@ github_username:  ernie55ernie
 
 # Build settings
 markdown: kramdown
+kramdown:
+    math_engine: katex
 
 plugin:
   - jekyll-sitemap
