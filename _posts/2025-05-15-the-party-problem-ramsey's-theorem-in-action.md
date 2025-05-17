@@ -16,9 +16,9 @@ You’re at a small gathering with a twist of mathematics:
 
 This is a classic result from **Ramsey theory**, and specifically proves that:
 
-\[
+\\[
 R(3,3) = 6
-\]
+\\]
 
 ---
 
@@ -69,9 +69,9 @@ You’d then find either:
 
 This elegant result is a special case of **Ramsey’s Theorem**:
 
-\[
+\\[
 R(3,3) = 6
-\]
+\\]
 
 # Reference
 

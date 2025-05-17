@@ -11,9 +11,9 @@ This spatial puzzle blends volume computation with parity and tiling logic. Let'
 
 ### Step 1: Volume Check
 
-- Cube volume: \(6 × 6 × 6 = 216\) unit cubes
-- Each brick occupies: \(1 × 1 × 4 = 4\) unit cubes
-- 53 bricks cover: \(53 × 4 = 212\) unit cubes
+- Cube volume: \\(6 × 6 × 6 = 216\\) unit cubes
+- Each brick occupies: \\(1 × 1 × 4 = 4\\) unit cubes
+- 53 bricks cover: \\(53 × 4 = 212\\) unit cubes
 
 So, the total volume used would be **212**, leaving exactly **4 unit cubes empty**.
 
@@ -25,7 +25,7 @@ To go further, we analyze the **structure** of the cube and the constraints of p
 
 Color the cube in a **3D checkerboard pattern**: alternate black and white unit cubes such that adjacent cubes (in any direction) have opposite colors.
 
-In a \(6×6×6\) cube, this gives:
+In a \\(6×6×6\\) cube, this gives:
 - **108 black** and **108 white** cubes.
 
 ### Step 3: Brick Coverage Pattern
