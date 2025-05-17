@@ -36,19 +36,19 @@ So the **total number of chameleons remains constant**: 13 + 15 + 17 = 45.
 
 We look for a quantity that doesn’t change—an **invariant**.
 
-Let \( (R, G, B) \) denote the number of red, green, and blue chameleons.
+Let \\( (R, G, B) \\) denote the number of red, green, and blue chameleons.
 
 Key idea: Examine **differences mod 3**
 
 Let’s track:
 
-- \( G - R \mod 3 \)
-- \( B - G \mod 3 \)
+- \\( G - R \mod 3 \\)
+- \\( B - G \mod 3 \\)
 
 Let’s calculate the initial state:
 
-- \( G - R = 15 - 13 = 2 \mod 3 \)
-- \( B - G = 17 - 15 = 2 \mod 3 \)
+- \\( G - R = 15 - 13 = 2 \mod 3 \\)
+- \\( B - G = 17 - 15 = 2 \mod 3 \\)
 
 Let’s try some examples of a color change:
 
@@ -59,8 +59,8 @@ Let’s try some examples of a color change:
 - B ↑ by 2
 
 So:
-- \( G - R \) is unchanged (both ↓1 → difference unchanged)
-- \( B - G \) increases by 3 → same mod 3
+- \\( G - R \\) is unchanged (both ↓1 → difference unchanged)
+- \\( B - G \\) increases by 3 → same mod 3
 
 So both differences **mod 3 remain constant**.
 
@@ -70,25 +70,25 @@ So both differences **mod 3 remain constant**.
 
 Currently:
 
-- \( G - R \equiv 2 \mod 3 \)
-- \( B - G \equiv 2 \mod 3 \)
+- \\( G - R \equiv 2 \mod 3 \\)
+- \\( B - G \equiv 2 \mod 3 \\)
 
 If all chameleons were to become the same color (say all red), then:
 
-- G = 0, B = 0, R = 45 → \( G - R = -45 \equiv 0 \mod 3 \), contradiction.
+- G = 0, B = 0, R = 45 → \\( G - R = -45 \equiv 0 \mod 3 \\), contradiction.
 
 In fact, for **any** same-color state:
 
-- The differences G−R and B−G would be zero → \( \equiv 0 \mod 3 \)
+- The differences G−R and B−G would be zero → \\( \equiv 0 \mod 3 \\)
 
-But our current values are \( \equiv 2 \mod 3 \), and they **never change**.
+But our current values are \\( \equiv 2 \mod 3 \\), and they **never change**.
 
 ---
 
 ## Final Answer
 
 > **No**, it’s **not possible** for all chameleons to become the same color.  
-> The values \( G - R \mod 3 \) and \( B - G \mod 3 \) are **invariant**, and they **don’t equal 0** initially—so total unification is impossible.
+> The values \\( G - R \mod 3 \\) and \\( B - G \mod 3 \\) are **invariant**, and they **don’t equal 0** initially—so total unification is impossible.
 
 # Reference
 

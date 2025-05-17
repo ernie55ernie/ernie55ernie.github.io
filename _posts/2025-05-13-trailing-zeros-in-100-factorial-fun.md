@@ -21,9 +21,9 @@ To count the number of factors of 5 in $100!$:
 
 Calculate:
 
-- \(\left\lfloor \frac{100}{5} \right\rfloor = 20\)
-- \(\left\lfloor \frac{100}{25} \right\rfloor = 4\)
-- \(\left\lfloor \frac{100}{125} \right\rfloor = 0\)
+- \\(\left\lfloor \frac{100}{5} \right\rfloor = 20\\)
+- \\(\left\lfloor \frac{100}{25} \right\rfloor = 4\\)
+- \\(\left\lfloor \frac{100}{125} \right\rfloor = 0\\)
 
 ### Total:  
 \[
@@ -32,7 +32,7 @@ Calculate:
 
 ## Final Answer
 
-**There are 24 trailing zeros in \(100!\)**
+**There are 24 trailing zeros in \\(100!\\)**
 
 This technique generalizes to finding the number of trailing zeros in any factorial.
 

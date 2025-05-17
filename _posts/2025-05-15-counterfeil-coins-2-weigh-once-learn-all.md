@@ -27,9 +27,9 @@ That’s **three possible states per bag** → a **ternary** system!
 
 With 5 bags, the total number of weight configurations is:
 
-\[
+\\[
 3^5 = 243
-\]
+\\]
 
 So, we need a strategy that can distinguish between **243 different outcomes**—and we can encode all 243 in a **single ternary number**.
 
@@ -45,7 +45,7 @@ Take coins from each bag in these amounts:
 - **Bag 4** → 27 coins  
 - **Bag 5** → 81 coins
 
-These counts correspond to the **powers of 3**: \(3^0, 3^1, 3^2, 3^3, 3^4\)
+These counts correspond to the **powers of 3**: \\(3^0, 3^1, 3^2, 3^3, 3^4\\)
 
 ---
 
@@ -53,13 +53,13 @@ These counts correspond to the **powers of 3**: \(3^0, 3^1, 3^2, 3^3, 3^4\)
 
 If all coins were **10g**, then total weight would be:
 
-\[
+\\[
 1×10 + 3×10 + 9×10 + 27×10 + 81×10 = 1210 \text{ g}
-\]
+\\]
 
-Now suppose you perform a single weighing and get total weight \(W\).
+Now suppose you perform a single weighing and get total weight \\(W\\).
 
-Let the difference \(d = W - 1210\). Each 1g deviation corresponds to:
+Let the difference \\(d = W - 1210\\). Each 1g deviation corresponds to:
 
 - -1 per light coin (9g)
 -  0 per normal coin (10g)
@@ -71,10 +71,10 @@ Because you took different **multiples of coins** from each bag, each weight dev
 
 ## Step 4: Decode the Deviation
 
-Write \(d\) as a number in **balanced ternary** (digits = -1, 0, +1), using the weights:
-\[
+Write \\(d\\) as a number in **balanced ternary** (digits = -1, 0, +1), using the weights:
+\\[
 d = a×1 + b×3 + c×9 + d×27 + e×81
-\]
+\\]
 
 Each coefficient tells you whether that bag was:
 - **-1** → 9g coins

@@ -36,18 +36,18 @@ Done!
 
 ## Why It Works
 
-Let’s say in the 20 coins you picked for Pile A, **\( h \)** were originally heads-up.  
-Then there are \( 20 - h \) tails in Pile A.
+Let’s say in the 20 coins you picked for Pile A, **\\( h \\)** were originally heads-up.  
+Then there are \\( 20 - h \\) tails in Pile A.
 
-That means in Pile B (the remaining 980 coins), there must be **\( 20 - h \)** heads—because there are 20 total heads.
+That means in Pile B (the remaining 980 coins), there must be **\\( 20 - h \\)** heads—because there are 20 total heads.
 
-When you flip the **\( h \)** heads and **\( 20 - h \)** tails in Pile A, it becomes:
+When you flip the **\\( h \\)** heads and **\\( 20 - h \\)** tails in Pile A, it becomes:
 
-- \( h \) → tails  
-- \( 20 - h \) → heads
+- \\( h \\) → tails  
+- \\( 20 - h \\) → heads
 
-So now Pile A has exactly **\( 20 - h \)** heads.  
-Pile B already had \( 20 - h \) heads.
+So now Pile A has exactly **\\( 20 - h \\)** heads.  
+Pile B already had \\( 20 - h \\) heads.
 
 ### Result: Both piles now contain **the same number of heads**.
 

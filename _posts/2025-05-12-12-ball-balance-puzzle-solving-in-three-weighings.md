@@ -19,7 +19,7 @@ The answer is **yes**, but it requires a precise and clever weighing strategy.
 ## High-Level Strategy
 
 Each weighing on a balance scale gives **3 outcomes**: left heavier, right heavier, or balanced.  
-With 3 weighings, you have at most \( 3^3 = 27 \) unique outcome sequences.
+With 3 weighings, you have at most \\( 3^3 = 27 \\) unique outcome sequences.
 
 There are 12 possible balls × 2 defect types (heavier/lighter) = **24 possibilities** to distinguish.
 

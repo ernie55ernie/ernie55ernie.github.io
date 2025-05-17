@@ -17,8 +17,8 @@ Here's a classic puzzle with a beautiful answer rooted in modular arithmetic:
 
 For example:
 
-- 729 → \(7 + 2 + 9 = 18\), and \(18\) is divisible by 9 → ✅
-- 1234 → \(1 + 2 + 3 + 4 = 10\), and \(10\) is **not** divisible by 9 → ❌
+- 729 → \\(7 + 2 + 9 = 18\\), and \\(18\\) is divisible by 9 → ✅
+- 1234 → \\(1 + 2 + 3 + 4 = 10\\), and \\(10\\) is **not** divisible by 9 → ❌
 
 But **why** does this work?
 
@@ -26,32 +26,32 @@ But **why** does this work?
 
 ## Step-by-Step Proof (Base 10)
 
-Let a number \(N\) be written in decimal as:
+Let a number \\(N\\) be written in decimal as:
 
-\[
+\\[
 N = a_k \cdot 10^k + a_{k-1} \cdot 10^{k-1} + \cdots + a_1 \cdot 10 + a_0
-\]
+\\]
 
-We want to analyze \(N \mod 9\). Notice:
+We want to analyze \\(N \mod 9\\). Notice:
 
-\[
+\\[
 10 \equiv 1 \pmod{9},\quad 10^n \equiv 1^n \equiv 1 \pmod{9}
-\]
+\\]
 
 So:
 
-\[
+\\[
 N \equiv a_k + a_{k-1} + \cdots + a_1 + a_0 \pmod{9}
-\]
+\\]
 
-That is, \(N\) and the **sum of its digits** are congruent modulo 9.
+That is, \\(N\\) and the **sum of its digits** are congruent modulo 9.
 
 ---
 
 ## Therefore:
 
-- \(N \equiv \text{digit sum} \mod 9\)
-- So, \(N \equiv 0 \mod 9 \iff \text{digit sum} \equiv 0 \mod 9\)
+- \\(N \equiv \text{digit sum} \mod 9\\)
+- So, \\(N \equiv 0 \mod 9 \iff \text{digit sum} \equiv 0 \mod 9\\)
 
 ---
 
