@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Staircase Problem: How Many Ways Can the Rabbit Hop?"
-date: 2025-05-11
+date: 2025-05-18
 category: quantitative interview
 ---
 
