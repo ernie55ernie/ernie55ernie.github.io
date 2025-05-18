@@ -26,23 +26,23 @@ As you drive from point to point:
 
 Let’s define:
 
-- \(g_i\): amount of gas at station \(i\)
-- \(c_i\): cost to drive from \(i\) to \(i+1\)
-- Total gas: \(G = \sum g_i = \sum c_i = C\)
+- \\(g_i\\): amount of gas at station \\(i\\)
+- \\(c_i\\): cost to drive from \\(i\\) to \\(i+1\\)
+- Total gas: \\(G = \sum g_i = \sum c_i = C\\)
 
 Let:
-\[
+\\[
 \Delta_i = g_i - c_i
-\]
-You want to find an index \(s\) where starting the trip at \(s\) ensures your **running fuel balance** never dips below zero.
+\\]
+You want to find an index \\(s\\) where starting the trip at \\(s\\) ensures your **running fuel balance** never dips below zero.
 
 ---
 
 ## Step 2: Cumulative Deficit Insight
 
-Compute cumulative sum of \(\Delta_i\) as you go:
+Compute cumulative sum of \\(\Delta_i\\) as you go:
 
-- If total sum \(\sum \Delta_i = 0\), then at least **one place** must be the **lowest point** in the cumulative sum curve.
+- If total sum \\(\sum \Delta_i = 0\\), then at least **one place** must be the **lowest point** in the cumulative sum curve.
 - Starting **just after** that lowest point ensures that all cumulative fuel balances from that point onward stay **non-negative**.
 
 This ensures you **never run out of fuel**—you always get the gas you need just in time.
@@ -57,7 +57,7 @@ To find the index:
 2. Mark the position **where this balance is lowest**.
 3. Start at the next position—this guarantees you’ll finish the loop.
 
-This process takes **linear time \(O(N)\)**.
+This process takes **linear time \\(O(N)\\)**.
 
 ---
 
