@@ -23,9 +23,9 @@ You play a simple game against the house:
 - You and the dealer each get **one card**, no replacement.
 
 You want:
-\[
+\\[
 P(\text{your card rank} > \text{dealer's card rank})
-\]
+\\]
 
 ---
 
@@ -43,17 +43,17 @@ Instead of brute-force enumeration, let’s use a key insight:
 ## Step 3: Count Winning Pairs
 
 There are a total of:
-\[
+\\[
 52 × 51 = 2652 \text{ possible (ordered) card pairs}
-\]
+\\]
 
 Let’s compute how many of these result in **your rank > dealer’s rank**.
 
-There are 13 ranks, and for every pair of distinct ranks \( (r_i, r_j) \), there are:
+There are 13 ranks, and for every pair of distinct ranks \\( (r_i, r_j) \\), there are:
 
 - 4 × 4 = 16 ways to draw one card of each rank.
 
-Among the \(\binom{13}{2} = 78\) unordered rank pairs, **half** of the 16 × 78 = 1248 ordered pairs favor you (i.e., you have the higher rank), the other half favor the dealer.
+Among the \\(\binom{13}{2} = 78\\) unordered rank pairs, **half** of the 16 × 78 = 1248 ordered pairs favor you (i.e., you have the higher rank), the other half favor the dealer.
 
 So:
 - Total wins: **1248**
@@ -61,9 +61,9 @@ So:
 
 Hence, the probability of winning is:
 
-\[
+\\[
 \frac{1248}{2652} = \frac{8}{17}
-\]
+\\]
 
 ---
 
@@ -71,9 +71,9 @@ Hence, the probability of winning is:
 
 > The probability that your card beats the dealer’s in this single-draw game is:
 >
-> \[
+> \\[
 > \boxed{\frac{8}{17}}
-> \]
+> \\]
 
 # Reference
 

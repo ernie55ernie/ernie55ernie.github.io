@@ -7,7 +7,7 @@ category: quantitative interview
 
 You’re handed a sweet but tricky problem:
 
-> A chocolate bar is made of **6 rows** and **8 columns** of small \(1 \times 1\) squares — that’s **48 total pieces**.  
+> A chocolate bar is made of **6 rows** and **8 columns** of small \\(1 \times 1\\) squares — that’s **48 total pieces**.  
 > You want to split it into all individual squares.
 >
 > Each break splits **one piece** (which may be a rectangle) into **two smaller rectangles** along grid lines.
@@ -31,9 +31,9 @@ So, every time you break one piece into two, the total number of pieces increase
 
 To go from **1 piece → 48 pieces**, you need:
 
-\[
+\\[
 48 - 1 = 47 \text{ breaks}
-\]
+\\]
 
 This logic is **independent** of how you make the breaks—whether you go row by row, column by column, or randomly.
 
