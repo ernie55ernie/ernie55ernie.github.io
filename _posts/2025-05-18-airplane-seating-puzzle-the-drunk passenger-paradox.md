@@ -23,34 +23,34 @@ At first glance, this looks complicated—the drunk passenger disrupts the entir
 
 But there’s a surprising **pattern** hiding beneath the randomness.
 
-Let’s define \(P_n\) as the probability that passenger \(n\) finds seat \(n\) unoccupied when they board.
+Let’s define \\(P_n\\) as the probability that passenger \\(n\\) finds seat \\(n\\) unoccupied when they board.
 
-We want \(P_{100}\).
+We want \\(P_{100}\\).
 
 ---
 
 ## Step 2: Insight from Simpler Cases
 
-### Case \(n = 2\):
+### Case \\(n = 2\\):
 
 - Passenger 1 (drunk) picks randomly: seat 1 or seat 2
   - If they pick seat 1 → passenger 2 gets their seat.
   - If they pick seat 2 → passenger 2 gets a random one.
 
 So:
-- \(P_2 = \frac{1}{2}\)
+- \\(P_2 = \frac{1}{2}\\)
 
-### Case \(n = 3\):
+### Case \\(n = 3\\):
 
 Carefully working through possibilities, you find:
 
-- \(P_3 = \frac{1}{2}\)
+- \\(P_3 = \frac{1}{2}\\)
 
-And for \(n = 4, 5, \ldots, 100\), simulations and theory confirm:
+And for \\(n = 4, 5, \ldots, 100\\), simulations and theory confirm:
 
-\[
+\\[
 P_{100} = \frac{1}{2}
-\]
+\\]
 
 ---
 
@@ -76,9 +76,9 @@ There are two equally likely endpoints:
 
 > The probability that the last passenger gets their assigned seat is:
 >
-> \[
+> \\[
 > \boxed{\frac{1}{2}}
-> \]
+> \\]
 
 # Reference
 
