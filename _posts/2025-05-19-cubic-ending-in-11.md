@@ -1,89 +1,117 @@
 ---
 layout: post
-title: "Cubic Ending in 11"
+title: "Probability That a Cube Ends in 11"
 date: 2025-05-19
 category: quantitative interview
 ---
 
-We are given a problem of modular arithmetic involving probability:
+We are given a uniform random integer \\( x \\) from \\( 1 \\) to \\( 10^{12} \\), and are asked to compute the probability that the decimal representation of \\( x^3 \\) ends in the digits "11".
 
-> Let \\( x \\) be chosen uniformly at random from the integers \\( 1 \\) through \\( 10^{12} \\). What is the probability that the decimal representation of \\( x^3 \\) ends in the digits “11”?
-
-This is equivalent to computing:
-
-\\[
-\Pr(x^3 \equiv 11 \pmod{100}) = \frac{\#\{x \in \{1,\dots,10^{12}\} : x^3 \equiv 11 \pmod{100} \}}{10^{12}}
-\\]
-
-## Step 1: Reduce the Problem Modulo 100
-
-We must determine how many integers \\( x \in \{1, \dots, 10^{12}\} \\) satisfy:
+This is equivalent to determining the number of integers \\( x \in \{1, 2, \dots, 10^{12}\} \\) for which
 
 \\[
 x^3 \equiv 11 \pmod{100}
 \\]
 
-By the Chinese Remainder Theorem, we split this into two congruences:
+and dividing that count by \\( 10^{12} \\).
 
-- \\( x^3 \equiv 11 \pmod{4} \\)
-- \\( x^3 \equiv 11 \pmod{25} \\)
+## Modular Reduction Strategy
 
-## Step 2: Solve \\( x^3 \equiv 11 \pmod{4} \\)
+We aim to solve:
 
-Compute all cubes modulo 4:
+\\[
+x^3 \equiv 11 \pmod{100}
+\\]
 
-- \\( 0^3 = 0 \\)
+Since \\( 100 = 4 \times 25 \\), we solve this congruence modulo 4 and modulo 25 separately, and then combine the solutions using the Chinese Remainder Theorem (CRT).
+
+### Step 1: Modulo 4
+
+We examine all residues \\( x \mod 4 \\):
+
+- \\( 0^3 \equiv 0 \mod 4 \\)
+- \\( 1^3 \equiv 1 \mod 4 \\)
+- \\( 2^3 \equiv 8 \equiv 0 \mod 4 \\)
+- \\( 3^3 \equiv 27 \equiv 3 \mod 4 \\)
+
+So the possible cube residues mod 4 are \\( \{0, 1, 3\} \\). Thus, \\( x^3 \equiv 11 \equiv 3 \mod 4 \\) implies:
+
+\\[
+x \equiv 3 \mod 4
+\\]
+
+### Step 2: Modulo 25
+
+We need:
+
+\\[
+x^3 \equiv 11 \mod 25
+\\]
+
+Try small values:
+
 - \\( 1^3 = 1 \\)
-- \\( 2^3 = 8 \equiv 0 \\)
-- \\( 3^3 = 27 \equiv 3 \\)
+- \\( 2^3 = 8 \\)
+- \\( 3^3 = 27 \\)
+- ...
+- \\( 16^3 = 4096 \equiv 4096 \mod 25 = 4096 - 25 \times 163 = 4096 - 4075 = 21 \\)
+- \\( 17^3 = 4913 \equiv 4913 - 25 \times 196 = 4913 - 4900 = 13 \\)
+- \\( 18^3 = 5832 \equiv 5832 - 5825 = 7 \\)
+- \\( 19^3 = 6859 \equiv 6859 - 6825 = 34 \mod 25 = 9 \\)
+- \\( 20^3 = 8000 \equiv 8000 \mod 25 = 0 \\)
+- \\( 21^3 = 9261 \equiv 9261 - 9250 = 11 \\)
 
-So cube residues mod 4 are {0, 1, 3}. Since 11 ≡ 3 mod 4, this is possible.
+Success! \\( x \equiv 21 \mod 25 \\) is a solution.
 
-## Step 3: Solve \\( x^3 \equiv 11 \pmod{25} \\)
+Verify uniqueness:
+Since the cube map modulo 25 is not injective, we check if there are other solutions.
 
-Try all residues mod 25 (or use computational aid). Only one solution exists:
+Try:
+- \\( x = 71 \\): then \\( x = 25 \cdot 2 + 21 = 71 \\)
+- \\( x^3 = 71^3 = (70 + 1)^3 = 343000 + 3 \cdot 4900 + 3 \cdot 70 + 1 = 357911 \\)
+- Ends in 11 ✔️
 
-\\[
-x \equiv 21 \pmod{25} \Rightarrow x^3 \equiv 11 \pmod{25}
-\\]
+So \\( x \equiv 21 \mod 25 \\) yields \\( x^3 \equiv 11 \mod 100 \\) if and only if \\( x \equiv 3 \mod 4 \\)
 
-## Step 4: Use Chinese Remainder Theorem
+Use CRT to combine:
 
-We want \\( x \equiv a \pmod{100} \\) such that:
+Find \\( x \mod 100 \\) such that:
 
-- \\( x^3 \equiv 3 \pmod{4} \\)
-- \\( x \equiv 21 \pmod{25} \\)
+- \\( x \equiv 3 \mod 4 \\)
+- \\( x \equiv 21 \mod 25 \\)
 
-We check which \\( x \equiv 21 \pmod{25} \\) gives \\( x^3 \equiv 3 \pmod{4} \\). Try:
-
-- \\( x = 21 \\Rightarrow x \equiv 1 \pmod{4}, x^3 \equiv 1 \pmod{4} \\)
-- \\( x = 46 \\Rightarrow x \equiv 2 \pmod{4}, x^3 \equiv 0 \pmod{4} \\)
-- \\( x = 71 \\Rightarrow x \equiv 3 \pmod{4}, x^3 \equiv 3 \pmod{4} \\) ✅
-
-So only \\( x \equiv 71 \pmod{100} \\) satisfies \\( x^3 \equiv 11 \pmod{100} \\).
-
-## Step 5: Count the Solutions
-
-In \\( 1 \leq x \leq 10^{12} \\), every 100 integers will contain exactly one that satisfies \\( x \equiv 71 \pmod{100} \\).
-
-So there are:
+Let \\( x = 25k + 21 \\). Plug into first congruence:
 
 \\[
-\frac{10^{12}}{100} = 10^{10}
+25k + 21 \equiv 3 \mod 4 \Rightarrow k \equiv 2 \mod 4
 \\]
 
-satisfying values. Therefore, the probability is:
+So \\( k = 4m + 2 \\), thus:
+
+\\[
+x = 25k + 21 = 25(4m + 2) + 21 = 100m + 71
+\\]
+
+Therefore, all solutions are:
+
+\\[
+x \equiv 71 \mod 100
+\\]
+
+## Final Probability
+
+Among \\( 1 \\) to \\( 10^{12} \\), every 100th number satisfies \\( x \equiv 71 \mod 100 \\). Hence, there are:
+
+\\[
+\left\lfloor \frac{10^{12}}{100} \right\rfloor = 10^{10}
+\\]
+
+such integers, and the probability is:
 
 \\[
 \frac{10^{10}}{10^{12}} = \boxed{\frac{1}{100}}
 \\]
 
-## Final Answer
-
-\\[
-\boxed{\frac{1}{100}}
-\\]
-
-# Reference
+## Reference
 
 * [1] [Probability that cubic of integer ends with 11](https://math.stackexchange.com/questions/3988843/probability-that-cubic-of-integer-ends-with-11)
