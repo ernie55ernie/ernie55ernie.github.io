@@ -23,9 +23,9 @@ What is the **expected total payout** from this process?
 
 We compute \\( E \\) using a recursive expectation. Consider the expected value of the first roll:
 
-\[
+\\[
 E = \sum_{i=1}^{6} \frac{1}{6} \left[\text{earn } i + \text{continue or stop}\right]
-\]
+\\]
 
 Break it into two parts:
 
@@ -34,30 +34,30 @@ Break it into two parts:
 
 ### Compute Explicitly:
 
-\[
+\\[
 E = \frac{1}{6}(1 + 2 + 3) + \frac{1}{6}[(4 + E) + (5 + E) + (6 + E)]
-\]
+\\]
 
-\[
+\\[
 E = \frac{6}{6} + \frac{1}{6}(15 + 3E) = 1 + \frac{15}{6} + \frac{3E}{6}
 = \frac{21}{6} + \frac{1}{2}E
-\]
+\\]
 
 Now solve for \\( E \\):
 
-\[
+\\[
 E = \frac{21}{6} + \frac{1}{2}E
 \Rightarrow \frac{1}{2}E = \frac{21}{6}
 \Rightarrow E = \frac{42}{6} = \boxed{7}
-\]
+\\]
 
 ---
 
 ## Final Answer
 
-\[
+\\[
 \boxed{7}
-\]
+\\]
 
 So the **expected total payout** under this stopping rule is **7 dollars**.
 
