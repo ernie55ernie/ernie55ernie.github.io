@@ -22,7 +22,7 @@ We want to compute:
 This is equivalent to asking for the **volume** of the region:
 
 \\[
-\left\{ (x_1, \dots, x_n) \in [0,1]^n : x_1 + x_2 + \cdots + x_n \le 1 \right\}
+{ (x_1, \dots, x_n) \in [0,1]^n : x_1 + x_2 + \cdots + x_n \le 1 }
 \\]
 
 This region is the **standard n-dimensional simplex** within the unit cube.
