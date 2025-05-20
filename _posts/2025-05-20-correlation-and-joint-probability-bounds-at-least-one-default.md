@@ -34,8 +34,8 @@ P(A \cup B) = 0.5 + 0.3 - P(A \cap B)
 
 To bound this, we need bounds on \\( P(A \cap B) \\).
 
-- **Minimum** of \\( P(A \cap B) \\): \\( \max(0, P(A) + P(B) - 1) = \max(0, 0.5 + 0.3 - 1) = \boxed{0.0} \)
-- **Maximum** of \\( P(A \cap B) \\): \\( \min(P(A), P(B)) = \boxed{0.3} \)
+- **Minimum** of \\( P(A \cap B) \\): \\( \max(0, P(A) + P(B) - 1) = \max(0, 0.5 + 0.3 - 1) = \boxed{0.0} \\)
+- **Maximum** of \\( P(A \cap B) \\): \\( \min(P(A), P(B)) = \boxed{0.3} \\)
 
 ### Therefore:
 
