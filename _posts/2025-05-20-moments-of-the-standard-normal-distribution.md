@@ -9,7 +9,7 @@ Let \\( X \sim N(0,1) \\) be a **standard normal** random variable. We are asked
 
 \\[
 E[X^n] \quad \text{for } n = 1, 2, 3, 4
-\]
+\\]
 
 ---
 
@@ -19,7 +19,7 @@ For a random variable \\( X \\), the \\( n \\)-th **raw moment** is:
 
 \\[
 \mu_n' = E[X^n]
-\]
+\\]
 
 For the standard normal, the moments can be derived either by integrating against the density or using known properties of the distribution.
 
@@ -31,7 +31,7 @@ For the standard normal, the moments can be derived either by integrating agains
 
 \\[
 E[X] = 0
-\]
+\\]
 
 (because the normal is symmetric about zero)
 
@@ -41,7 +41,7 @@ E[X] = 0
 
 \\[
 E[X^2] = \text{Var}(X) + (E[X])^2 = 1 + 0 = 1
-\]
+\\]
 
 ---
 
@@ -49,7 +49,7 @@ E[X^2] = \text{Var}(X) + (E[X])^2 = 1 + 0 = 1
 
 \\[
 E[X^3] = 0
-\]
+\\]
 
 (odd moment of a symmetric distribution around 0)
 
@@ -61,13 +61,13 @@ The fourth moment of a standard normal is:
 
 \\[
 E[X^4] = 3
-\]
+\\]
 
 This comes from the identity for the fourth moment of a normal variable:
 
 \\[
 E[X^4] = 3\sigma^4 \quad \text{when } X \sim N(0, \sigma^2)
-\]
+\\]
 
 ---
 
@@ -80,7 +80,7 @@ E[X^2] = 1,\quad
 E[X^3] = 0,\quad
 E[X^4] = 3
 }
-\]
+\\]
 
 ---
 
