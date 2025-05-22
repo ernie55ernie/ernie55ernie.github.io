@@ -43,25 +43,26 @@ def multiply_by_7(x):
 
 ---
 
-### 3. Probability Simulation with a Fair Coin
+### 3. Simulating Arbitrary Probability with a Coin
 
-**Question**: Given a fair coin, simulate an event with arbitrary probability \\( 0 < p < 1 \\).
+**Problem**: Use a fair coin to simulate an event with probability \\( 0 < p < 1 \\), where \\( p \\) is specified as \\( p = 0.p\_1 p\_2 p\_3 \dots \\) in binary.
 
-**Answer**: Use the **probability tree** method:
+**Solution**:
 
-* Generate uniform \\( U \in [0,1] \\) using coin flips (binary digits)
-* Accept if \\( U < p \\), else reject
-
-Alternatively, if \\( p \\) is rational, say \\( p = \frac{m}{n} \\):
+Repeatedly flip a fair coin and compare the binary expansion of \\( p \\) with the coin outcomes:
 
 ```python
-import random
-
-def simulate_p(m, n):
-    return random.randint(1, n) <= m
+def coin_flip_prob(p_binary):
+    for digit in p_binary:
+        coin = random.randint(0, 1)
+        if coin < int(digit):
+            return True
+        elif coin > int(digit):
+            return False
+    return True  # if tie, default to win
 ```
 
-This simulates probability \\( \frac{m}{n} \\) using only fair coin–based random integers.
+This method ensures that the win probability matches \\( p \\) exactly.
 
 ---
 
@@ -93,7 +94,7 @@ After 18 hours:
 | ------------------------ | ------------------------------------------ |
 | Power of 2               | \\( x > 0 \\) and \\( x & (x - 1) == 0 \\) |
 | Multiply by 7            | \\( (x << 3) - x \\)                       |
-| Arbitrary Probability    | Simulate \\( U < p \\) via coin flips      |
+| Arbitrary Coin Probability | Bitwise comparison with coin flips                 |
 | Poisoned Wine (1000, 10) | Use binary coding and 10 mice as bits      |
 
 ---
