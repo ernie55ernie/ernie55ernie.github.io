@@ -5,8 +5,6 @@ date: 2025-05-24
 category: quantitative interview
 ---
 
-## Digit Puzzle: What’s Missing in \\( 2^{29} \\)?
-
 ### The Puzzle
 
 The number \\( 2^{29} \\) is a 9-digit number where **each digit appears exactly once**, except **one digit is missing**.
@@ -37,7 +35,7 @@ If we can compute the **sum of the digits** of \\( 2^{29} \\), then the **missin
 
 The **digital root** or digit sum modulo 9 is congruent to the number modulo 9:
 
-- \\( 2^3 = 8 \Rightarrow 2^6 = 64 \Rightarrow 2^9 = 512 \)
+- \\( 2^3 = 8 \Rightarrow 2^6 = 64 \Rightarrow 2^9 = 512 \\)
 - But easier: \\( 2^6 = 64 \equiv 1 \mod 9 \\), so the cycle repeats every 6
 
 Now:
