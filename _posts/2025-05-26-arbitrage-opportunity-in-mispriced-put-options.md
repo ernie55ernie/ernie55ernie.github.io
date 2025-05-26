@@ -71,4 +71,4 @@ This portfolio costs **nothing** to set up and yields a **non-negative payoff**,
 
 # Reference
 
-* [1] (Options Arbitrage Opportunities via Put-Call Parity)[https://www.investopedia.com/articles/optioninvestor/05/011905.asp]
+* [1] [Options Arbitrage Opportunities via Put-Call Parity](https://www.investopedia.com/articles/optioninvestor/05/011905.asp)
