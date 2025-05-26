@@ -5,7 +5,7 @@ date: 2025-05-26
 category: quantitative interview
 ---
 
-Let \\( W_t \\\) be a standard Wiener process (Brownian motion), and define
+Let \\( W_t \\) be a standard Wiener process (Brownian motion), and define
 
 \\[
 X_t = \int_0^t W_\tau\,d\tau.
@@ -15,7 +15,7 @@ We answer two questions:
 
 ---
 
-### 1. Distribution of \\( X_t \\\)
+### 1. Distribution of \\( X_t \\)
 
 The process \\( X_t \\) is a stochastic integral of Brownian motion with respect to Lebesgue measure (not Itô). It can be evaluated in distribution as follows:
 
