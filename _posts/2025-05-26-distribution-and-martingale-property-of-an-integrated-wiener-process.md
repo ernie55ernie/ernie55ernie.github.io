@@ -2,7 +2,7 @@
 layout: post
 title: "Distribution and Martingale Property of an Integrated Wiener Process"
 date: 2025-05-26
-category: stochastic-processes
+category: quantitative interview
 ---
 
 Let \\( W_t \\\) be a standard Wiener process (Brownian motion), and define
@@ -95,4 +95,4 @@ So \\( X_t \\) is **not** a martingale.
 
 # Reference
 
-* [1] Øksendal, B. (2003). *Stochastic Differential Equations*.
+* [1] [Wiener process](https://en.wikipedia.org/wiki/Wiener_process)
