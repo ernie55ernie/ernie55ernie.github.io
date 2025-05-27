@@ -2,7 +2,7 @@
 layout: post
 title: "C++ Implementations of the Fibonacci Function"
 date: 2025-05-26
-category: programming
+category: quantitative interview
 ---
 
 We present three ways to compute the \\( n \\)-th Fibonacci number in C++:
