@@ -2,7 +2,7 @@
 layout: post
 title: "Expected Flips Until First Head"
 date: 2025-05-27
-category: quantitative interviewy
+category: quantitative interview
 ---
 
 We consider two versions of the problem:

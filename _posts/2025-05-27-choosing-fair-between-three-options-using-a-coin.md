@@ -2,7 +2,7 @@
 layout: post
 title: "Choosing Fairly Between Three Options Using a Coin"
 date: 2025-05-27
-category: quantitative interviewy
+category: quantitative interview
 ---
 
 Alice wants to pick **one of three desserts**, each with **equal probability**, using **only a coin**. We consider two versions:
