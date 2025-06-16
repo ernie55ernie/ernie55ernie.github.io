@@ -5,8 +5,6 @@ date: 2025-06-16
 category: trading
 ---
 
-## Relative Strength Strategies for Investing
-
 **Author**: Mebane T. Faber
 **Affiliation**: Cambria Investment Management, Inc.
 **Publication Year**: 2010
