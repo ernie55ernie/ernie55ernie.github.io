@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "The Momentum of News"
+title: "Research Paper The Momentum of News"
 date: 2025-06-17
 category: trading
 ---
