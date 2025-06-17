@@ -11,7 +11,7 @@ category: trading
 - **Craig W. Holden** – Kelley School of Business, Indiana University  
 - **Stacey E. Jacobsen** – Cox School of Business, Southern Methodist University  
 
-### Year: 2011
+### Publication Year: 2011
 
 ---
 
@@ -58,4 +58,4 @@ This paper is a classic in behavioral finance and market microstructure. It not 
 
 # Reference
 
-* [1] Penny Wise, Dollar Foolish: Buy-Sell Imbalances On and Around Round Numbers (https://ssrn.com/abstract=1569922)
+* [1] Penny Wise, Dollar Foolish: Buy-Sell Imbalances On and Around Round Numbers (https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1569922)

@@ -59,4 +59,4 @@ Faber’s work is notable for translating academic momentum concepts into clear,
 
 # Reference
 
-* [1] [Relative Strength Strategies for Investing](https://ssrn.com/abstract=1585517)
+* [1] [Relative Strength Strategies for Investing](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1585517)

@@ -5,8 +5,6 @@ date: 2025-06-17
 category: trading
 ---
 
-## Predictability of Industry Returns After M&A Announcements
-
 ### Summary
 
 In this 2006 study, authors **Christian Funke, Timo Gebken, Lutz Johanning, and Gaston Michel** investigate whether **industries exhibit predictable return patterns following merger and acquisition (M&A) announcements**. The paper finds that industries with **positive reactions to M&A announcements tend to continue performing well**, while those with **negative reactions tend to underperform**. This behavior suggests a **systematic drift in industry returns**, hinting at **market underreaction** to industry-wide information.
@@ -52,4 +50,4 @@ This paper provides compelling evidence that **merger announcements carry predic
 
 ### Reference
 
-* [1] [Predictability of Industry Returns After M&A Announcements - SSRN](https://ssrn.com/abstract=887289)
+* [1] [Predictability of Industry Returns After M&A Announcements - SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=887289)
