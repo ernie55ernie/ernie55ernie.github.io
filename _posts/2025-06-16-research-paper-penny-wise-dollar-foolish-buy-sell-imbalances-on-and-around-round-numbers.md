@@ -50,6 +50,26 @@ This paper investigates how stock traders use round numbers as cognitive referen
 
 ---
 
+## Potential Issues in Implementing Strategies Based on This Paper
+
+### 1. **Market Microstructure Evolution**
+- Tick size has changed post-2006 (e.g., sub-pennying, fragmentation), possibly diluting round-number clustering.
+- Increased use of algorithms and HFT may reduce manual trader biases, affecting strategy longevity.
+
+### 2. **Data Latency and Real-Time Execution**
+- Identifying and executing trades near round numbers requires real-time quote processing.
+- Latency in data feeds or order placement can erode potential profit margins, especially in high-volume stocks.
+
+### 3. **Order Classification Ambiguity**
+- Buy/sell classification based on quote midpoint can introduce noise due to mid-quote trades or stale quotes.
+- Misclassification risk increases in volatile markets or during quote flickering.
+
+### 4. **Cross-Market Generalization**
+- Effects observed in U.S. equity markets may not fully translate to emerging markets or assets with different tick sizes.
+- Cultural or institutional differences (e.g., retail vs. institutional dominance) can affect trader psychology and round number sensitivity.
+
+---
+
 ## Reflection
 
 This paper is a classic in behavioral finance and market microstructure. It not only diagnoses a widespread trader bias but also demonstrates its systematic, measurable impact on market behavior and returns. The authors' rigorous approach and practical implications make this a foundational reference for anyone developing short-term trading signals based on behavioral patterns. Its insights are easily translatable into algorithmic strategies and applicable across asset classes and regions.
