@@ -44,6 +44,42 @@ The authors construct a **zero-cost trading strategy** — going long on industr
 - **Method:**  
   The authors compute **five-day CARs** around each M&A announcement using a **modified market model** and track **equal-weighted industry returns**. They use **Fama-French adjustments**, **rolling portfolio formation**, and **Fama-MacBeth regressions** for robustness.
 
+
+### Potential Issues and Clarifications
+
+#### 1. Market Inefficiency Interpretation
+- **Lack of full consideration of transaction costs**:
+  - Frequent monthly rebalancing can reduce net profitability.
+  - Real-world execution costs and liquidity limits may erode returns.
+- **Assumes widespread investor inattention**:
+  - Institutional investors may already factor in such reactions.
+  - Strategy may not scale without impacting market prices.
+
+#### 2. Strategy Scalability and Implementation
+- **Requires dynamic, monthly industry-level portfolio shifts**:
+  - Operationally intensive and cost-heavy for real-world application.
+  - Susceptible to slippage in thinly traded industry components.
+- **Equal-weighting may not reflect investable strategies**:
+  - Market-cap weighting could yield different (possibly lower) returns.
+  - Larger stocks dominate in practice due to liquidity and accessibility.
+
+#### 3. Use of Historical Data (1985–2002)
+- **Outdated market conditions and structure**:
+  - Current M&A landscapes and market microstructure have evolved.
+  - Algorithmic trading and speed advantages could negate effect.
+- **Changes in regulation and disclosure**:
+  - Post-SOX and Dodd-Frank environment alters corporate behavior.
+  - Information dissemination is now faster and more transparent.
+
+#### 4. Risk Factor Adjustments
+- **Relies on size and book-to-market controls only**:
+  - May omit relevant modern factors (e.g., momentum, quality, volatility).
+  - Fama-French three-factor model may not fully capture risk exposures.
+- **Statistical significance vs. economic significance**:
+  - Strategy alpha is significant, but actual risk-adjusted returns may vary.
+  - Omitted variable bias or data-snooping could inflate t-stats.
+
+
 ### Reflection
 
 This paper provides compelling evidence that **merger announcements carry predictive power beyond the firm level**, extending to **industry-wide effects**. The strategy's consistent outperformance — particularly from short positions — challenges the notion of market efficiency. While the strategy may face **implementation barriers like transaction costs and liquidity**, the **strength and persistence** of the return patterns suggest real **trading and forecasting value** for practitioners and researchers alike.

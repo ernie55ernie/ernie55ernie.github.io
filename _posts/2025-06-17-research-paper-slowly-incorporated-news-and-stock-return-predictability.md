@@ -29,6 +29,28 @@ This paragraph presents **strong empirical support** for a trading strategy that
 - **Stock Data Fields**: Monthly returns, firm size, trading volume, media coverage, analyst coverage, Google Search Volume Index, Bloomberg AIA
 - **Control Variables**: Size, Book-to-Market ratio, Momentum, Beta, Idiosyncratic Volatility, Illiquidity
 
+## Potential Issues and Supporting Details
+
+1. **News Sentiment Interpretation Reliability**
+
+   * Sentiment scores depend on dictionary-based methods which may not capture context-specific meanings.
+   * Ambiguous or domain-specific words can be misclassified, reducing the accuracy of sentiment scoring.
+
+2. **Temporal Alignment of News and Returns**
+
+   * The monthly aggregation may dilute the real-time impact of breaking news.
+   * Intraday or daily frequency data could yield more precise insights but are not considered.
+
+3. **Market Reaction Assumptions**
+
+   * Assumes homogenous investor behavior towards news, which overlooks variation in investor sophistication.
+   * Limited attention might not uniformly apply across all market conditions or firm types.
+
+4. **Data Skewness and Coverage Bias**
+
+   * News volume is unevenly distributed across firms, skewing results toward large-cap stocks.
+   * Early years of data (pre-1995) have less news coverage, potentially impacting robustness across time.
+
 ### Reflection
 
 This research offers a novel perspective on **information dissemination in financial markets**. By identifying when markets underreact to news, the paper provides a **practical framework for constructing profitable trading strategies**. It bridges insights from behavioral finance—like limited attention—and empirical asset pricing, suggesting that **market inefficiencies persist** even in the face of accessible information. The robustness of findings across time periods, sentiment measures, and transaction cost estimates underscores the **practical implications** for institutional and algorithmic traders.
