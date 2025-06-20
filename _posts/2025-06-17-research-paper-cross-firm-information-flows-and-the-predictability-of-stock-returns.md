@@ -46,6 +46,30 @@ The regression analysis uses lagged returns of stock pairs and market return to 
 
 ---
 
+## Potential Issues
+
+### 1. **False Discovery of Leaders**
+
+* **Noise from Estimation**: Statistical noise in Granger regressions may falsely identify leaders.
+* **Fat-tailed Distributions**: The use of t-statistics (cutoff = 2.0) leads to roughly 150 false leaders per stock, as actual distribution of coefficients is non-normal.
+
+### 2. **Non-Stationarity in Returns**
+
+* **Time-varying Relationships**: Leader-follower dynamics may shift over time, affecting predictive validity.
+* **Decay of Signal**: Effectiveness of leader signals diminishes beyond a one-month horizon, limiting long-term utility.
+
+### 3. **Data Mining Risk**
+
+* **Out-of-Sample Testing**: Although attempted, repetitive data slicing may still yield spurious patterns.
+* **Scrambled Data Test**: While helpful, it doesn’t entirely eliminate concerns of overfitting due to retrospective analysis.
+
+### 4. **Limited Applicability in Real-World Trading**
+
+* **Transaction Costs**: Weekly strategies require high turnover, incurring significant trading costs.
+* **Scalability**: Profitability may not scale due to market impact and capacity limits, especially for large portfolios.
+
+---
+
 ## Reflection
 
 This paper makes a significant contribution to the understanding of cross-firm information diffusion and its practical implications for return predictability. It departs from standard approaches by not relying on structural firm links and instead applies a data-driven method to detect predictive stock pairs. The study's demonstration of exploitable trading strategies based on leader-follower signals challenges the efficient market hypothesis and opens pathways for quantitative investors to develop new models.

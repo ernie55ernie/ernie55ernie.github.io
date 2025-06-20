@@ -53,6 +53,24 @@ This paper presents practical, quantitative methods aimed at enhancing risk-adju
   * Asset Types: U.S. Stocks, Foreign Stocks, Bonds, Commodities, REITs
   * Data Fields: Monthly total returns, including dividends
 
+### Potential Issues
+
+1. **Overfitting and Lack of Out-of-Sample Testing**
+   - Strategy is tailored to historical data without formal out-of-sample validation.
+   - Heavy reliance on one data source (French-Fama) for equity sectors.
+
+2. **Transaction Costs and Tax Implications**
+   - Paper ignores taxes and commissions in base simulations.
+   - Real-world implementations could face 70–100% portfolio turnover annually, reducing net returns.
+
+3. **Assumes Perfect Execution**
+   - Assumes exact execution at month-end prices, with no slippage or bid-ask spread.
+   - Does not account for liquidity constraints in historical data, especially before ETFs existed.
+
+4. **Risk of Regime Change**
+   - The model assumes that momentum will continue to outperform into the future.
+   - Structural changes in markets or regulations may impact strategy efficacy.
+
 ### Reflection
 
 Faber’s work is notable for translating academic momentum concepts into clear, executable strategies for individual investors. The empirical rigor over long time periods across both U.S. sectors and global assets, combined with realistic strategy enhancements like dynamic hedging, make this paper both informative and practical. While the exclusion of real-world costs needs attention, the overall framework provides a solid foundation for further customization and implementation in live portfolios.

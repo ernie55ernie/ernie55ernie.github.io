@@ -42,6 +42,28 @@ The study utilizes data from the S\&P 1500 index from 1994 to 2013, obtained fro
 * **Balance Sheet Metrics**: Total assets (AT), market value of equity (MVE)
 * **Cash Flow Components**: Accounts receivable changes (RECCH), tax payments (TXT, TXACH, TXDC), financing and non-operating items (XINT, SPI, DO, XI)
 
+## Potential Issues
+
+### 1. **Complexity of Direct Method Reconstruction**
+
+* Requires transforming indirect statements not natively reported by companies.
+* Relies on granular data fields often aggregated or inconsistently disclosed across firms.
+
+### 2. **Sample Selection Bias**
+
+* Focus on S\&P 1500 excludes microcap or international stocks.
+* Limiting the sample may affect generalizability beyond large U.S. firms.
+
+### 3. **Data Availability and Reporting Lags**
+
+* Uses lagged accounting data to prevent look-ahead bias.
+* Still assumes timely and accurate disclosure from firms, which may vary.
+
+### 4. **Interpretability and Implementation for Practitioners**
+
+* Investors may struggle to replicate the disaggregated DMCF process.
+* Requires robust data infrastructure and advanced modeling skills.
+
 ## Reflection
 
 This paper offers a compelling argument for shifting focus from accounting profits to disaggregated cash flows in equity analysis. The authors demonstrate that direct cash flows better capture the economic reality of firms' operations and future prospects. For quantitative investors and portfolio managers, incorporating these insights could lead to more robust alpha generation. The evidence is clear: follow the cash.

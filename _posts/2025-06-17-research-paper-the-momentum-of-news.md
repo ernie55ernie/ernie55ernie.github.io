@@ -40,6 +40,28 @@ The authors apply a trading strategy based on news sentiment scores and find tha
   - Market data: returns, beta, size, analyst coverage, institutional holdings
   - Categorization into hard vs. soft news
 
+### Potential Issues and In-depth Analysis
+
+1. **Reliability of Sentiment Scores**
+
+   * **Opaque Algorithms**: RavenPack's scoring process is proprietary, making it a 'black box' and hard to independently validate.
+   * **Replication Challenge**: Although a simpler sentiment score is tested, the original results rely heavily on a non-transparent system.
+
+2. **Attribution to Fundamentals**
+
+   * **Causality Ambiguity**: The link between sentiment and fundamentals could be endogenous—better fundamentals attract positive media, rather than sentiment driving performance.
+   * **Measure Proxy Limitations**: Use of ROA and earnings surprise may not fully encapsulate the complex drivers behind fundamental performance.
+
+3. **Market Reaction Interpretation**
+
+   * **Behavioral Biases Assumption**: The analysis attributes underreaction to investors without direct behavioral evidence.
+   * **Alternative Explanations**: Factors like transaction costs, risk constraints, and institutional trading behavior could also contribute to observed return patterns.
+
+4. **Generalizability of Results**
+
+   * **Market-Specific Bias**: Data is U.S.-centric and may not hold across different regulatory or informational environments.
+   * **Time Frame Dependence**: The 2000–2016 period includes unique market cycles (dot-com bust, 2008 crisis) possibly impacting general applicability.
+
 ### Reflection
 
 This study presents compelling evidence that market participants do not fully incorporate information from news patterns into prices. It bridges behavioral finance and information theory by showing that **predictable patterns in news**—rooted in real firm fundamentals—are **not efficiently priced**, providing both a **trading edge** and a deeper understanding of financial market anomalies.
