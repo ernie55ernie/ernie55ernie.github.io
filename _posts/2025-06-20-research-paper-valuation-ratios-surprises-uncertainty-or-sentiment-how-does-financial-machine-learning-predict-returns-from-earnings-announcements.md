@@ -3,7 +3,7 @@ layout: post
 title: "Research Paper Valuation Ratios, Surprises, Uncertainty or Sentiment: How Does Financial Machine Learning Predict Returns From Earnings Announcements?"
 date: 2025-06-20
 category: trading
------------------
+---
 
 ### Authors
 
