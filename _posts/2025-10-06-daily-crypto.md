@@ -8,7 +8,7 @@ category: crpyto
 **Market Summary**
 Bitcoin (BTC) traded at \$123,586, down 1.23% over the past 24 hours, while Ethereum (ETH) declined 0.87% to \$4,527.32. The overall crypto market cap fell from \$4.26 trillion to \$4.22 trillion (-0.95%) on 06:00 UTC (14:00 Asia/Taipei). Top altcoin gainer Astar (ASTR) surged +28.05%.[^1]
 
-**Derivatives \& Stablecoin Flows**
+**Derivatives & Stablecoin Flows**
 Bitcoin futures open interest across all venues soared past \$220 billion as of October 3, driven by institutional inflows at CME (\$39 billion) and offshore markets. Crypto short-position liquidations reached \$115 million in one hour early October, fueling BTC and ETH rallies. Stablecoin market capitalization remains stable near \$150 billion, with Tether (USDT) dominating circulation.[^2][^3]
 
 **High-Impact News**
@@ -24,20 +24,20 @@ Bitcoin futures open interest across all venues soared past \$220 billion as of 
 - CME’s 24/7 trading rollout for crypto futures and options slated early 2026.[^3]
 - CEX.IO named Best Overall Exchange of 2025 for its global reach and advanced order types.[^6]
 
-**Regulatory \& Government Actions**
+**Regulatory & Government Actions**
 
 - US government shutdown (since October 1) delays SEC ETF decisions and economic data releases, heightening “dovish Fed + ETF” narrative.[^4]
 - OCC expected to decide on Ripple Labs’ federal banking charter, potentially bridging banks and blockchain.[^4]
 - FOMC minutes due October 8 will inform interest-rate cut pacing, crucial for crypto risk assets.[^4]
 
-**Research \& White Papers**
+**Research & White Papers**
 
 - New deep-stacking forecast model using Bitcoin hashrate and wavelet denoising improves short-term price prediction accuracy (arXiv 2501.13136).[^7]
 - Coinbase Research’s October Market Positioning report highlights growing retail versus institutional sentiment divergence in BTC and ETH holdings.[^8]
 
 **Social Media Signals**
 
-- Bitcoin’s Fear \& Greed Index on Twitter averages 82/100 bullish; 51.4% of tweets bullish versus 13.1% bearish in past 24 hours (243,030 tweets analyzed, as of October 5).[^9]
+- Bitcoin’s Fear & Greed Index on Twitter averages 82/100 bullish; 51.4% of tweets bullish versus 13.1% bearish in past 24 hours (243,030 tweets analyzed, as of October 5).[^9]
 - Whale-tracker Polymarket bets on Fed rate cut and BTC/USD new highs at \$126 000.
 
 **Security Incidents**
