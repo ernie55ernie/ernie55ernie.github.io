@@ -168,7 +168,7 @@ The crypto market maintained mixed momentum on October 9, with a total market ca
 
 [^54]: https://www.fintechanddigitalassets.com/2025/08/sec-and-cftc-launch-crypto-initiatives-to-revamp-regulations-and-promote-innovation/
 
-[^55]: https://www.binance.th/en/announcement/new-cryptocurrency-listing|delisting/211b9bec8c984074b2feb9d6d4c68e18
+[^55]: https://www.binance.th/en/announcement/new-cryptocurrency-listing%7Cdelisting/211b9bec8c984074b2feb9d6d4c68e18
 
 [^56]: https://thehackernews.com/2025/10/threatsday-bulletin-ms-teams-hack-mfa.html
 
