@@ -228,13 +228,13 @@ category: crpyto
 
 [^77]: https://www.fxleaders.com/news/2025/10/07/pi-network-risks-20-drop-as-14m-tokens-move-off-okx-exchange/
 
-[^78]: https://www.binance.th/en/aboutus/new-cryptocurrency-listing|delisting/a1375f7370f74bd3a83bd12f4d186bab
+[^78]: https://www.binance.th/en/aboutus/new-cryptocurrency-listing%7Cdelisting/a1375f7370f74bd3a83bd12f4d186bab
 
 [^79]: https://www.antiersolutions.com/blogs/how-kraken-and-bybit-are-listing-tokenized-us-stocks-and-what-it-means-for-crypto-exchange-development/
 
 [^80]: https://cryptoadventure.com/binance-pulls-in-record-14-8b-net-inflow-in-q3/
 
-[^81]: https://www.binance.th/en/announcement/new-cryptocurrency-listing|delisting/97491c80c204404fa83ac2b592d9ebb3
+[^81]: https://www.binance.th/en/announcement/new-cryptocurrency-listing%7Cdelisting/97491c80c204404fa83ac2b592d9ebb3
 
 [^82]: https://www.lw.com/en/us-crypto-policy-tracker/regulatory-developments
 
