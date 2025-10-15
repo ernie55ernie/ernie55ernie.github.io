@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 8, 2025"
+title: "Daily Crypto Market Brief - Crypto Pulls Back: BTC ~$122K, ETH -5% as $688M Longs Liquidated"
 date: 2025-10-08
 category: crpyto
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 14, 2025"
+title: "Daily Crypto Market Brief - BTC ~$112K as $755M ETF Outflows Hit; Powell Looms, Stablecoins at $310B"
 date: 2025-10-14
 category: crpyto
 ---
@@ -104,7 +104,7 @@ category: crpyto
 
 [^13]: https://www.kaupr.io/en-us/news/stablecoins-surpass-300-billion-market-cap-amid-usd-stability-and-crypto-growth
 
-[^14]: https://www.imfconnect.org/content/dam/imf/News and Generic Content/GMM/Special Features/GMM Special Feature - Crypto Monitor October 2025.pdf
+[^14]: https://www.imfconnect.org/content/dam/imf/News%20and%20Generic%20Content/GMM/Special%20Features/GMM%20Special%20Feature%20-%20Crypto%20Monitor%20October%202025.pdf
 
 [^15]: https://www.reuters.com/world/asia-pacific/after-record-crypto-crash-rush-hedge-against-another-freefall-2025-10-13/
 

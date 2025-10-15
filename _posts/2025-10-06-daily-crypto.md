@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 6, 2025"
+title: "Daily Crypto Market Brief - Crypto Market Pauses After Record Week as Bitcoin Consolidates Below $124K and Token Unlocks Loom"
 date: 2025-10-06
 category: crpyto
 ---

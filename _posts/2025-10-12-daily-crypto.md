@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 12, 2025"
+title: "Daily Crypto Market Brief - Post-Crash Consolidation: BTC ~$111K as Altcoins Lag"
 date: 2025-10-12
 category: crpyto
 ---
