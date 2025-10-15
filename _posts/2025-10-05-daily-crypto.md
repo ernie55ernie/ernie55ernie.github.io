@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 5, 2025"
+title: "Daily Crypto Market Brief - Bitcoin Breaks $125K as ETF Inflows and Stablecoin Surge Push Crypto Market to $4.3T"
 date: 2025-10-05
 category: crpyto
 ---

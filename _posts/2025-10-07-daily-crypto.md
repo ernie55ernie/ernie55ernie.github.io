@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 7, 2025"
+title: "Daily Crypto Market Brief - Bitcoin Near ATH as ETF Inflows Lift Crypto to $4.27T"
 date: 2025-10-07
 category: crpyto
 ---

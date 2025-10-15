@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - October 10, 2025"
+title: "Daily Crypto Market Brief - BTC Holds ~$121K as Options Expire; ETF Inflows Persist"
 date: 2025-10-10
 category: crpyto
 ---
