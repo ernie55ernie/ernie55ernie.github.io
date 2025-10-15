@@ -30,37 +30,37 @@ But **can he do better**?
 
 ## Clever Strategy: Use a Random Threshold
 
-Bob chooses a random number \( r \) from a known continuous distribution on \( (0,1) \), say **uniformly at random**.
+Bob chooses a random number \\( r \\) from a known continuous distribution on \\( (0,1) \\), say **uniformly at random**.
 
 Then his strategy is:
 
-> If the number he sees is **less than \( r \)**, guess it is the **smaller** number.  
-> If it is **greater than \( r \)**, guess it is the **larger** number.
+> If the number he sees is **less than \\( r \\)**, guess it is the **smaller** number.  
+> If it is **greater than \\( r \\)**, guess it is the **larger** number.
 
 ---
 
 ### Why This Works
 
-Let the two hidden numbers be \( a < b \). Bob randomly picks one of them to inspect. There are two cases:
+Let the two hidden numbers be \\( a < b \\). Bob randomly picks one of them to inspect. There are two cases:
 
-- If he sees \( a \):
-  - He guesses **"smaller"** if \( a < r \) — which is correct.
-- If he sees \( b \):
-  - He guesses **"larger"** if \( b > r \) — which is also correct.
+- If he sees \\( a \\):
+  - He guesses **"smaller"** if \\( a < r \\) — which is correct.
+- If he sees \\( b \\):
+  - He guesses **"larger"** if \\( b > r \\) — which is also correct.
 
-Each has probability \( \frac{1}{2} \), so:
+Each has probability \\( \frac{1}{2} \\), so:
 
 \\[
 P(\text{correct}) = \frac{1}{2}P(r > b) + \frac{1}{2}P(r < a)
 \\]
 
-Because \( r \sim \text{Uniform}(0,1) \), these probabilities are \( 1 - b \) and \( a \), so:
+Because \\( r \sim \text{Uniform}(0,1) \\), these probabilities are \\( 1 - b \\) and \\( a \\), so:
 
 \\[
 P(\text{correct}) = \frac{1}{2}(1 - b + a)
 \\]
 
-Since \( a < b \), we have:
+Since \\( a < b \\), we have:
 
 \\[
 P(\text{correct}) > \frac{1}{2}
@@ -72,11 +72,7 @@ Thus, **Bob beats 50% accuracy**, regardless of what numbers Alice chooses!
 
 ## Conclusion
 
-\\[
-\boxed{
-\text{Yes — by comparing the revealed number to a random threshold, Bob can win more than 50% of the time.}
-}
-\\]
+Yes — by comparing the revealed number to a random threshold, Bob can win more than 50% of the time.
 
 This works because the strategy **introduces external randomness** to exploit the structure of the problem.
 

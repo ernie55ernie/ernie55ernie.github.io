@@ -25,16 +25,16 @@ The Fibonacci sequence satisfies:
 
 \\[
 \begin{pmatrix}
-F_{n+1} \\
+F_{n+1} ,
 F_n
 \end{pmatrix}
 =
 \begin{pmatrix}
-1 & 1 \\
+1 & 1 ,
 1 & 0
 \end{pmatrix}^n
 \begin{pmatrix}
-1 \\
+1 ,
 0
 \end{pmatrix}.
 \\]
@@ -43,11 +43,11 @@ Thus, to compute \\( a_{100} = F_{101} \\), we need to compute the top-left entr
 
 \\[
 \begin{pmatrix}
-1 & 1 \\
+1 & 1 ,
 1 & 0
 \end{pmatrix}^{100}
 \begin{pmatrix}
-1 \\
+1 ,
 0
 \end{pmatrix}.
 \\]
@@ -56,12 +56,12 @@ Let \\( M = \begin{pmatrix} 1 & 1 \\ 1 & 0 \end{pmatrix} \\). Then,
 
 \\[
 \begin{pmatrix}
-F_{101} \\
+F_{101} ,
 F_{100}
 \end{pmatrix}
 = M^{100}
 \begin{pmatrix}
-1 \\
+1 ,
 0
 \end{pmatrix}.
 \\]

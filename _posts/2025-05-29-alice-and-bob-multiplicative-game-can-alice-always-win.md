@@ -11,7 +11,7 @@ Players: Alice and Bob
 They take turns choosing one number at a time from the following set, **without replacement**:
 
 \\[
-\left\{ \frac{1}{16},\ \frac{1}{8},\ \frac{1}{4},\ 1,\ 2,\ 4,\ 8,\ 16 \right\}
+{ \frac{1}{16},\ \frac{1}{8},\ \frac{1}{4},\ 1,\ 2,\ 4,\ 8,\ 16}
 \\]
 
 The first player to obtain **three numbers whose product is 1** wins.
