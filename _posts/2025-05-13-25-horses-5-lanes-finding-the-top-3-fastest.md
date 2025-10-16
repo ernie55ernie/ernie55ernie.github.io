@@ -75,4 +75,4 @@ Race these 5 horses and take the **top 2 finishers**—those are the **2nd and 3
 
 # Reference
 
-* [1] [Puzzle 9 | (Find the fastest 3 horses)](https://www.geeksforgeeks.org/puzzle-9-find-the-fastest-3-horses/)
+* [1] [Puzzle 9 \| (Find the fastest 3 horses)](https://www.geeksforgeeks.org/puzzle-9-find-the-fastest-3-horses/)

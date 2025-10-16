@@ -86,4 +86,4 @@ Total: 5 + 9 = 14
 
 # Reference
 
-* [1] [Egg Dropping Puzzle | DP-11](https://www.geeksforgeeks.org/egg-dropping-puzzle-dp-11/)
+* [1] [Egg Dropping Puzzle \| DP-11](https://www.geeksforgeeks.org/egg-dropping-puzzle-dp-11/)

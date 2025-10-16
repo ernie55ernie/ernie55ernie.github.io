@@ -13,11 +13,11 @@ These trailing zeros come from **factors of 10** in the factorial. Each 10 comes
 
 ## Step-by-Step Count
 
-To count the number of factors of 5 in $100!$:
+To count the number of factors of 5 in \\(100!\\):
 
-\[
+\\[
 \left\lfloor \frac{100}{5} \right\rfloor + \left\lfloor \frac{100}{25} \right\rfloor + \left\lfloor \frac{100}{125} \right\rfloor + \cdots
-\]
+\\]
 
 Calculate:
 
@@ -26,9 +26,9 @@ Calculate:
 - \\(\left\lfloor \frac{100}{125} \right\rfloor = 0\\)
 
 ### Total:  
-\[
+\\[
 20 + 4 = 24
-\]
+\\]
 
 ## Final Answer
 
