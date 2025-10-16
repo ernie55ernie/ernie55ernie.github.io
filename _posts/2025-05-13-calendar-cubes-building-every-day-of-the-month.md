@@ -57,4 +57,4 @@ We want to distribute the digits among the cubes such that all combinations for 
 
 # Reference
 
-* [1] [Facebook Interview Puzzle || Two Cubes Calendar || Logic Questions Asked At Facebook Interviews](https://www.youtube.com/watch?v=NoLAPLIiNIU)
+* [1] [Facebook Interview Puzzle \|\| Two Cubes Calendar \|\| Logic Questions Asked At Facebook Interviews](https://www.youtube.com/watch?v=NoLAPLIiNIU)

@@ -55,4 +55,4 @@ With clever timing and heat detection, you can determine exactly which switch co
 
 # Reference
 
-* [1] [Puzzle 7 | (3 Bulbs and 3 Switches)](https://www.geeksforgeeks.org/puzzle-7-3-bulbs-and-3-switches/)
+* [1] [Puzzle 7 \| (3 Bulbs and 3 Switches)](https://www.geeksforgeeks.org/puzzle-7-3-bulbs-and-3-switches/)
