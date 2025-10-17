@@ -9,9 +9,9 @@ category: quantitative interview
 
 Two players, **M** and **N**, play a series of games:
 
-- M starts with \\( \$1 \\)
-- N starts with \\( \$2 \\)
-- Total capital is \\( \$3 \\)
+- M starts with \\( \\$1 \\)
+- N starts with \\( \\$2 \\)
+- Total capital is \\( \\$3 \\)
 
 At each step:
 
@@ -22,7 +22,7 @@ The game continues until one player is ruined.
 
 ### Question:
 
-What is the probability that **M** wins (i.e., reaches \\( \$3 \\)) before being ruined?
+What is the probability that **M** wins (i.e., reaches \\( \\$3 \\)) before being ruined?
 
 ---
 

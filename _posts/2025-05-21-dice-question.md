@@ -62,21 +62,39 @@ We can set up the following equations:
 Solving Equation 1:
 
 \\[
-p_0 - \frac{29}{36} p_0 = \frac{1}{36} + \frac{6}{36} p_1 \\
-\Rightarrow \frac{7}{36} p_0 = \frac{1}{36} + \frac{6}{36} p_1 \\
+p_0 - \frac{29}{36} p_0 = \frac{1}{36} + \frac{6}{36} p_1
+\\]
+\\[
+\Rightarrow \frac{7}{36} p_0 = \frac{1}{36} + \frac{6}{36} p_1
+\\]
+\\[
 \Rightarrow 7 p_0 = 1 + 6 p_1 \quad \text{(Equation 3)}
 \\]
 
 Substitute Equation 2 into Equation 3:
 
 \\[
-7 p_0 = 1 + 6 \left( \frac{1}{36} + \frac{29}{36} p_0 \right ) \\
-\Rightarrow 7 p_0 = 1 + \frac{6}{36} + \frac{174}{36} p_0 \\
-\Rightarrow 7 p_0 = \frac{42}{36} + \frac{174}{36} p_0 \\
-\Rightarrow 7 p_0 - \frac{174}{36} p_0 = \frac{42}{36} \\
-\Rightarrow \left(7 - \frac{174}{36}\right) p_0 = \frac{42}{36} \\
-\Rightarrow \left(\frac{252 - 174}{36}\right) p_0 = \frac{42}{36} \\
-\Rightarrow \frac{78}{36} p_0 = \frac{42}{36} \\
+7 p_0 = 1 + 6 \left( \frac{1}{36} + \frac{29}{36} p_0 \right )
+\\]
+\\[
+\Rightarrow 7 p_0 = 1 + \frac{6}{36} + \frac{174}{36} p_0
+\\]
+\\[
+\Rightarrow 7 p_0 = \frac{42}{36} + \frac{174}{36} p_0
+\\]
+\\[
+\Rightarrow 7 p_0 - \frac{174}{36} p_0 = \frac{42}{36}
+\\]
+\\[
+\Rightarrow \left(7 - \frac{174}{36}\right) p_0 = \frac{42}{36}
+\\]
+\\[
+\Rightarrow \left(\frac{252 - 174}{36}\right) p_0 = \frac{42}{36}
+\\]
+\\[
+\Rightarrow \frac{78}{36} p_0 = \frac{42}{36}
+\\]
+\\[
 \Rightarrow p_0 = \frac{42}{78} = \frac{7}{13}
 \\]
 

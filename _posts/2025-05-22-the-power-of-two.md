@@ -102,4 +102,4 @@ After 18 hours:
 ## Reference
 
 * [1] [Bit manipulation tricks – Hacker’s Delight](https://graphics.stanford.edu/~seander/bithacks.html)
-* [2] [Puzzle 19 | (Poison and Rat)](https://www.geeksforgeeks.org/puzzle-19-poison-and-rat/)
+* [2] [Puzzle 19 \| (Poison and Rat)](https://www.geeksforgeeks.org/puzzle-19-poison-and-rat/)
