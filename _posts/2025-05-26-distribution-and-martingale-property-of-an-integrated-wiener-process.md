@@ -63,7 +63,10 @@ X_t = \int_0^t W_\tau\,d\tau = \int_0^s W_\tau\,d\tau + \int_s^t W_\tau\,d\tau =
 Then,
 
 \\[
-\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mid \mathcal{F}_s \right].
+a = \int_s^t W_\tau\,d\tau, 
+\\]
+\\[
+\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}[ a \mid \mathcal{F}_s ].
 \\]
 
 However, for \\( \tau > s \\), \\( W_\tau \\) is not \\( \mathcal{F}_s \\)-measurable. In fact,
@@ -75,7 +78,22 @@ However, for \\( \tau > s \\), \\( W_\tau \\) is not \\( \mathcal{F}_s \\)-measu
 so:
 
 \\[
-\mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mid \mathcal{F}_s \right] = \int_s^t \mathbb{E}[W_\tau \mid \mathcal{F}_s]\,d\tau = \int_s^t W_s\,d\tau = (t - s)W_s.
+a = \int_s^t W_\tau\,d\tau, 
+\\]
+\\[
+b = \mathbb{E}[W_\tau \mid \mathcal{F}_s],
+\\]
+\\[
+\mathbb{E}[ a \mid \mathcal{F}_s ]
+\\]
+\\[
+ = \int_s^t b \,d\tau
+\\]
+\\[
+ =\int_s^t W_s\,d\tau
+\\]
+\\[
+= (t - s)W_s
 \\]
 
 Therefore,

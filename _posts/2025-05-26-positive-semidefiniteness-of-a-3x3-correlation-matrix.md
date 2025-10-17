@@ -9,10 +9,12 @@ We are given the symmetric matrix:
 
 \\[
 \Sigma =
+\\]
+\\[
 \begin{pmatrix}
-1 & 0.6 & -0.3 \\
-0.6 & 1 & \rho \\
--0.3 & \rho & 1
+1 & 0.6 & -0.3,
+0.6 & 1 & \rho,
+-0.3 & \rho & 1,
 \end{pmatrix}
 \\]
 
@@ -40,9 +42,11 @@ To be PSD, **all leading principal minors** must be nonnegative.
 
 \\[
 \begin{vmatrix}
-1 & 0.6 \\
-0.6 & 1
+1 & 0.6,
+0.6 & 1,
 \end{vmatrix}
+\\]
+\\[
 = 1 - 0.6^2 = 1 - 0.36 = 0.64 > 0
 \\]
 
@@ -50,9 +54,9 @@ To be PSD, **all leading principal minors** must be nonnegative.
 
 \\[
 \det(\Sigma) =
-1(1 \cdot 1 - \rho^2)
-- 0.6(0.6 \cdot 1 - \rho \cdot (-0.3))
-+ (-0.3)(0.6 \cdot \rho - 1 \cdot (-0.3))
+\\]
+\\[
+1(1 \cdot 1 - \rho^2) - 0.6(0.6 \cdot 1 - \rho \cdot (-0.3)) + (-0.3)(0.6 \cdot \rho - 1 \cdot (-0.3))
 \\]
 
 Expanding and simplifying:

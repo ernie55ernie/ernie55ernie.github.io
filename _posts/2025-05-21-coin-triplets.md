@@ -11,23 +11,23 @@ We analyze the expected number of coin tosses required to first observe specific
 
 #### 1. Expected Tosses Until HHH
 
-Let \( E_n \) denote the expected number of tosses to achieve \( n \) consecutive heads. The recurrence relation is:
+Let \\( E_n \\) denote the expected number of tosses to achieve \\( n \\) consecutive heads. The recurrence relation is:
 
-\[
+\\[
 E_n = 2E_{n-1} + 2 \quad \text{with} \quad E_1 = 2
-\]
+\\]
 
 Solving this recurrence yields:
 
-\[
+\\[
 E_n = 2^{n+1} - 2
-\]
+\\]
 
-Therefore, for \( n = 3 \):
+Therefore, for \\( n = 3 \\):
 
-\[
+\\[
 E_3 = 2^{4} - 2 = 16 - 2 = 14
-\]
+\\]
 
 So, the expected number of tosses to get HHH is **14**.
 

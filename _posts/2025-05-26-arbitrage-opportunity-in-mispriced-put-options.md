@@ -33,7 +33,7 @@ We can exploit this using the following **zero-cost portfolio**:
 This results in **no initial cost**:
 
 \\[
-3 \cdot \$4 - 2 \cdot \$6 = \$12 - \$12 = \$0
+3 \cdot \\$4 - 2 \cdot \\$6 = \\$12 - \\$12 = \\$0
 \\]
 
 ### Payoff at Maturity
@@ -59,8 +59,10 @@ Hence:
 
 \\[
 V(S_T) = 
+\\]
+\\[
 \begin{cases}
-0 & \text{if } S_T \geq 30 \\
+0 & \text{if } S_T \geq 30, 
 S_T & \text{if } S_T < 30
 \end{cases}
 \\]
