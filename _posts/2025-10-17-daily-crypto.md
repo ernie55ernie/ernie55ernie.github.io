@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Crypto Market Sinks: BTC ~$106K, $1.2B Liquidated, ETFs Face Record $536M Outflows"
+title: "Daily Crypto Market Brief - Crypto Bleeds: $1.2B Liquidations, ETF Outflows"
 date: 2025-10-17
 category: crpyto
 ---

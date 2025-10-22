@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - BTC Near $119K, ETH +6% Lead Post-Crash Rebound Amid Strong ETF Inflows"
+title: "Daily Crypto Market Brief - Crypto Rebounds; ETF Inflows, ETH Leads"
 date: 2025-10-13
 category: crpyto
 ---

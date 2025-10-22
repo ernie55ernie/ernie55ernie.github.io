@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Post-Crash Consolidation: BTC ~$111K as Altcoins Lag"
+title: "Daily Crypto Market Brief - Tariff Shock: $19B Liquidations, ETF Inflows Persist"
 date: 2025-10-12
 category: crpyto
 ---

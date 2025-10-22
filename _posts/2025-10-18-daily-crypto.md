@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - BTC/ETH slip ~1.5% as funding hits 3-year lows; North Korea’s 2025 crypto theft tops $2B; U.S. BTC ETFs bleed $1.2B this week"
+title: "Daily Crypto Market Brief - Crypto Slips; Shorts Crowded, ETF Outflows"
 date: 2025-10-18
 category: crpyto
 ---
