@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - BTC holds ~$107K as weekly ETF outflows top $1.2B; ETH ~$3.9K; stablecoins hit fresh highs on Ethereum; CME debuts SOL/XRP options; bx wallet flaw puts 120k BTC addresses at risk"
+title: "Daily Crypto Market Brief - Crypto Drifts Lower; ETF Outflows, Leverage Reset"
 date: 2025-10-19
 category: crpyto
 ---
@@ -28,7 +28,7 @@ Twenty-seven blockchain and crypto companies secured over \$2.5 billion in Octob
 Coinbase on October 15 (16:45 UTC) added Binance Coin (BNB) to its listing roadmap, nine days after Arca CIO Jeff Dorman published a critique arguing Coinbase lists "the absolute worst assets" while ignoring top performers like BNB, LEO, TRX, and HYPE. Roadmap inclusion does not guarantee listing; Coinbase stated trading will be announced separately once liquidity and compliance requirements are satisfied. BNB functions as the native gas token for BNB Chain and supports staking, token launches, and governance. **Source:** Coinbase Markets (X, Oct 15, 2025 UTC), CoinDesk. **Risk: Medium—potential competitive shift; no immediate price impact.**[^29]
 
 **SEC-CFTC harmonization initiative targets crypto clarity {Low risk}**
-On September 5, 2025, SEC Chair Paul Atkins and CFTC Acting Chair Caroline Pham issued a joint harmonization statement announcing a September 29 roundtable to reduce duplicative regulations and provide "innovation exemptions" for peer-to-peer trading of spot crypto assets, derivatives, and DeFi protocols. The SEC's Spring 2025 Regulatory Agenda contemplates rulemakings on digital asset trading, custody, dealer definitions, and transfer agent modernization. CFTC Acting Chair Pham emphasized "getting back to basics" and right-sizing Dodd-Frank rules. Phemex reported the initiative as a boost for Bitcoin and crypto adoption. **Source:** SEC/CFTC press releases (Sept 5, 2025), Latham \& Watkins. **Risk: Low—long-term positive regulatory clarity; near-term impact minimal.**[^30][^31][^32][^33]
+On September 5, 2025, SEC Chair Paul Atkins and CFTC Acting Chair Caroline Pham issued a joint harmonization statement announcing a September 29 roundtable to reduce duplicative regulations and provide "innovation exemptions" for peer-to-peer trading of spot crypto assets, derivatives, and DeFi protocols. The SEC's Spring 2025 Regulatory Agenda contemplates rulemakings on digital asset trading, custody, dealer definitions, and transfer agent modernization. CFTC Acting Chair Pham emphasized "getting back to basics" and right-sizing Dodd-Frank rules. Phemex reported the initiative as a boost for Bitcoin and crypto adoption. **Source:** SEC/CFTC press releases (Sept 5, 2025), Latham & Watkins. **Risk: Low—long-term positive regulatory clarity; near-term impact minimal.**[^30][^31][^32][^33]
 
 **CME launches XRP and Solana futures options; inaugural trades executed {Low risk}**
 CME Group on October 14, 2025, announced the first trades of options on XRP and Solana (SOL) futures, with initial participants including Wintermute, Galaxy Digital, Cumberland DRW, and SuperState. The products cover daily, monthly, and quarterly expiries for SOL, Micro SOL, XRP, and Micro XRP futures. CME Global Head of Crypto Products Giovanni Vicioso cited "growing institutional demand for diverse crypto investment and hedging strategies". **Source:** CME Group press release (Oct 14, 2025). **Risk: Low—expands hedging tools; supports institutional adoption.**[^34]
@@ -41,11 +41,11 @@ France's Prudential Supervision and Resolution Authority (ACPR) is conducting wi
 
 ## Exchanges
 
-- **Binance:** Announced Astra Nova (RVV) availability on Binance Alpha and Futures (Oct 18); launched ZEROBASE (ZBT) on Alpha/Futures and HODLer Airdrops with retroactive BNB Simple Earn subscriptions (Oct 17); added Yield Basis (YB) on Earn, Buy Crypto, Convert, Margin \& Futures (Oct 15); launched USDⓈ-margined LABUSDT and RIVERUSDT perpetual contracts (Oct 17). **Source:** Binance Support (Oct 15–17, 2025).[^37]
+- **Binance:** Announced Astra Nova (RVV) availability on Binance Alpha and Futures (Oct 18); launched ZEROBASE (ZBT) on Alpha/Futures and HODLer Airdrops with retroactive BNB Simple Earn subscriptions (Oct 17); added Yield Basis (YB) on Earn, Buy Crypto, Convert, Margin & Futures (Oct 15); launched USDⓈ-margined LABUSDT and RIVERUSDT perpetual contracts (Oct 17). **Source:** Binance Support (Oct 15–17, 2025).[^37]
 - **Coinbase:** Added BNB to listing roadmap (Oct 15, 16:45 UTC); launched "The Blue Carpet" consolidated listings experience with direct access to listings team and asset-page customization. **Source:** Coinbase Markets (Oct 15, 2025 UTC).[^29]
 - **OKX:** Listed perpetual futures for KGEN (Oct 18, 04:30 UTC); converted ZBT pre-market futures to standard perpetuals (Oct 17, 13:00–16:00 UTC); listed ZORA/USDⓈ and ZORA spot trading (Oct 17, 14:00 UTC); listed perpetual futures for PROVE and spot trading for PROVE (Succinct) and DOOD (Doodles). **Source:** OKX Announcements (Oct 17–18, 2025 UTC).[^38][^39]
 - **Bybit:** Updated risk limits for TOWNSUSDT perpetual contracts (Oct 18); delisted KUSDT perpetual contract (Oct 18); renamed Mon Protocol (MON) to MONPRO (Oct 17); changed funding rate intervals for ZBTUSDT perpetuals (Oct 17); listed ZBTUSDT and EVAAUSDT perpetual contracts with 50x and 25x leverage respectively (Oct 17). **Source:** Bybit Announcements (Oct 17–19, 2025).[^40]
-- **Kraken \& Bybit:** Launched 60+ tokenized U.S. stocks via xStocks (Backed Finance), offering 24/5 trading, zero commissions, and real share backing; MiFID II compliant for EU users. **Source:** CoinCentral (June 29, 2025). *(Note: outside 72-hour window but included for completeness.)*[^41]
+- **Kraken & Bybit:** Launched 60+ tokenized U.S. stocks via xStocks (Backed Finance), offering 24/5 trading, zero commissions, and real share backing; MiFID II compliant for EU users. **Source:** CoinCentral (June 29, 2025). *(Note: outside 72-hour window but included for completeness.)*[^41]
 
 
 ## Regulation/Law

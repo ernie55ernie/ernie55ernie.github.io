@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - BTC ~$111K, ETH ~$4K as deleveraging drags crypto to ~$3.8T; ETFs mixed, DOJ’s $15B BTC seizure and Coinbase’s BNB roadmap headline a choppy week"
+title: "Daily Crypto Market Brief - ETFs Mixed; Crypto Slips After Historic Liquidations"
 date: 2025-10-16
 category: crpyto
 ---
