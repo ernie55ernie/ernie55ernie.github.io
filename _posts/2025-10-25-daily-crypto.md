@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Uptober grinds on: BTC ~$111K; HK OKs SOL ETF; Selig tapped for CFTC; ETF flows turn positive"
+title: "Daily Crypto Market Brief - BTC $111K, HK SOL ETF, Selig Named CFTC"
 date: 2025-10-25
 category: crpyto
 ---
