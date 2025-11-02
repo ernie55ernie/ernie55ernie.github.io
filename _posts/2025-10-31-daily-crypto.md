@@ -5,14 +5,6 @@ date: 2025-10-31
 category: crpyto
 ---
 
-# Crypto Market Daily Brief: October 31, 2025
-
-**Timestamp:** October 31, 2025, 11:42 PM CST / November 1, 2025, 5:42 AM UTC (Asia/Taipei timezone)
-**Coverage Window:** October 30–31, 2025 (48 hours for headlines); selected regulatory/research items back 7–14 days
-**Confidence Level:** High; all items verified at primary sources or official announcements.
-
-***
-
 ## Market Overview (24-Hour Snapshot)
 
 **Prices & Market Cap**
