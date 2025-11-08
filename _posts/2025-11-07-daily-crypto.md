@@ -14,7 +14,7 @@ category: crpyto
 - **Major alts:** SOL \$154.92 (-2.78%), BNB \$957.28 (+0.39%), XRP \$2.197 (-4.84%), DOGE \$0.1614 (-1.0%), ADA \$0.5354 (-0.85%).
 - **Total market cap:** \$3.37T (CoinMarketCap), down ~1.72% from prior 24h, but showing first stabilization after four-day slide.[^2][^4][^3]
 
-**Derivatives \& Funding:**[^5][^6][^7]
+**Derivatives & Funding:**[^5][^6][^7]
 
 - **Funding rates:** Annualized ~10%, well below 2023 peaks (80%) and 2024 end-levels (40%), indicating reduced speculative leverage.[^5]
 - **Open interest:** Down to \$24.9B from Oct highs; \$25B decline since peak reflects deleveraging.[^8]
@@ -32,9 +32,9 @@ category: crpyto
 
 ***
 
-### **Top Headlines (What \& Why It Matters)**
+### **Top Headlines (What & Why It Matters)**
 
-1. **Bitcoin \& Ethereum ETFs Snap 6-Day Outflow Streak (Nov 6, ~16:00 ET/21:00 UTC)**[^15][^16][^17][^18]
+1. **Bitcoin & Ethereum ETFs Snap 6-Day Outflow Streak (Nov 6, ~16:00 ET/21:00 UTC)**[^15][^16][^17][^18]
     - **BTC ETFs:** \$240M net inflow, led by BlackRock IBIT (\$112M) and Fidelity FBTC (\$61.6M). First positive flow since Oct 28; cumulative outflows Oct 29–Nov 5 totaled ~\$2.05B.[^17][^15]
     - **ETH ETFs:** \$12.5M inflow, with ETHA (\$8M) and FETH (\$4.9M) offsetting ETHE's \$3.5M outflow.[^16][^15]
     - **Why it matters:** Signals institutional "buy-the-dip" behavior near \$100K BTC support, though flow reversal is fragile. Total BTC ETF AUM now \$135.4B (6.73% of BTC market cap).[^19][^16]
@@ -46,12 +46,12 @@ category: crpyto
     - **Impact:** ETH briefly fell 9% on Nov 3 to ~\$3,600; market liquidations exceeded \$1B/24h (\$85M in ETH positions).[^22]
     - *Source:* Balancer team (preliminary report), CNBC (Krebs interview), Lookonchain, Gizmodo.
     - **Risk Label:** **High** – Highlights persistent DeFi smart-contract risk; \$120M+ lost since security audits cleared code in 2021.[^23][^20]
-3. **Trump \& US Crypto Policy: "Bitcoin Superpower" Agenda Advances (Sept–Nov 2025)**[^24][^25][^26]
+3. **Trump & US Crypto Policy: "Bitcoin Superpower" Agenda Advances (Sept–Nov 2025)**[^24][^25][^26]
     - **SEC-CFTC Joint Statement (Sept 2, 2025):** Clarified that registered exchanges (NSE, DCM, FBOT) may list "certain spot crypto commodity products" without prohibition; agencies will "promptly" review applications.[^25][^26][^27]
     - **Strategic Bitcoin Reserve:** Executive order mandates storage of seized BTC/ETH (vs. selling), dubbed "digital Fort Knox."[^24]
     - **GENIUS Act (July 2025):** Establishes stablecoin reserve-backing framework, mandates full audits; combined with SEC Project Crypto / CFTC Crypto Sprint to integrate digital assets into TradFi.[^26][^25]
     - **Why it matters:** 172 public companies now hold BTC (up 40% YTD); normalization of institutional custody + ETF infrastructure.[^28][^19]
-    - *Source:* SEC/CFTC press releases, White House digital asset policy tracker, Latham \& Watkins analysis.
+    - *Source:* SEC/CFTC press releases, White House digital asset policy tracker, Latham & Watkins analysis.
     - **Risk Label:** **Low** – Regulatory clarity supporting long-term adoption.
 4. **AI-Powered Crypto Malware Uses LLMs at Runtime (Reported Nov 7, 2025)**[^29]
     - **Threat:** Google Threat Intelligence Group identified 5 malware families (PROMPTFLUX, PROMPTSTEAL, UNC1069/Masan) using Gemini/Qwen models to generate obfuscated wallet-theft scripts, multilingual phishing, and locate encrypted wallet data.[^29]
@@ -71,13 +71,13 @@ category: crpyto
     - **Delistings:** Binance, Crypto.com, Coinbase, Kraken removed non-compliant stablecoins (USDT, WBTC, PAX, PAXG) for EEA users; USDC/EURI remain available.[^34][^33]
     - *Source:* ESMA public statement (Jan 2025), Forensic Risk, BMA Legal, EU Official Journal.
     - **Risk Label:** **Low** – Clear compliance path for EU-focused projects; fragmentation risk diminishing.
-7. **Taiwan FSC Accelerates Crypto Custody Pilot \& AML Enforcement (Q4 2024–Nov 2025)**[^38][^39][^40][^41]
+7. **Taiwan FSC Accelerates Crypto Custody Pilot & AML Enforcement (Q4 2024–Nov 2025)**[^38][^39][^40][^41]
     - **Custody pilot:** Q1 2025 launch targeting institutional/professional investors; 3 private banks enrolled.[^38]
     - **AML registration:** Deadline moved to Sept 2025 (from Jan 2025); non-compliance = \$156K fine + 2 yrs imprisonment.[^39][^38]
     - **Draft VASP Bill:** FSC plans to submit to Executive Yuan by June 2025; VASP Association (24 members) issued 7 self-regulatory codes (Nov 2024–Jan 2025).[^41][^39]
-    - *Source:* Taiwan FSC, Central News Agency, Leet \& Tsai, Crystal Intelligence, ZhongYin Lawyer.
+    - *Source:* Taiwan FSC, Central News Agency, Leet & Tsai, Crystal Intelligence, ZhongYin Lawyer.
     - **Risk Label:** **Low** – Phased approach fosters compliance culture; Taiwan positioned as "next major crypto market."[^38]
-8. **Tether Partners with KraneShares \& Bitfinex Securities for Tokenized Capital Markets (Nov 5)**[^24]
+8. **Tether Partners with KraneShares & Bitfinex Securities for Tokenized Capital Markets (Nov 5)**[^24]
     - **Collaboration:** Integrates Tether's Hadron tokenization platform, KraneShares' fund management, and Bitfinex Securities' regulated El Salvador exchange.[^24]
     - **Market forecast:** Tokenized securities to grow from ~\$30B (2025) to \$10T (2030).[^24]
     - **Product plans:** Blockchain-based ETPs to launch via partnership.[^24]
@@ -103,7 +103,7 @@ category: crpyto
     - *Trends:* DeFi, Layer 2, and AI infrastructure projects prioritized; BNB Chain integration preferred.[^44]
     - *Source:* Coinspeaker, Binance announcements.
     - **Risk Label:** Low – Typical exchange activity.
-- **Kraken \& Coinbase MiCA Expansion:**[^45]
+- **Kraken & Coinbase MiCA Expansion:**[^45]
     - **Kraken:** Full EEA passporting active (June 25, 2025) via Central Bank of Ireland license; 450+ assets, \$1.37B daily volume.[^45]
     - **Coinbase, Bybit:** Also secured MiCA licenses; Crypto.com received in-principle approval.[^45]
     - *Source:* Finance Magnates (Aug 11), Kraken X post.
@@ -117,7 +117,7 @@ category: crpyto
 1. **US: SEC-CFTC Harmonization Roundtable (Sept 29, 2025) + Spot Crypto Clarification (Sept 2)**[^27][^25][^26]
     - **Harmonization Statement (Sept 5):** Joint commitment to "innovation exemptions" for DeFi peer-to-peer trading, perpetual contracts onshoring, 24/7 trading, and portfolio margining.[^25]
     - **Spring 2025 Regulatory Agendas:** SEC (Chair Atkins) prioritizes crypto custody/trading clarity; CFTC (Acting Chair Pham) reopens event-contract comment period.[^25]
-    - *Source:* Latham \& Watkins analysis, SEC/CFTC press releases.
+    - *Source:* Latham & Watkins analysis, SEC/CFTC press releases.
     - **Risk Label:** Low – Pro-innovation pivot consolidating.
 2. **EU: MiCA Market Abuse RTS Enter Force (Sept 9, 2025)**[^46]
     - **Delegated Regulation 2025/885:** Specifies systems/controls, reporting templates, and inter-authority cooperation on market abuse.[^46]
@@ -126,7 +126,7 @@ category: crpyto
 3. **Taiwan: Anti-Fraud Laws for VASPs Pass (July 12, 2024, full effect Nov 2024–2025)**[^40][^39][^41]
     - **Registration requirement:** All domestic/foreign VASPs must register by Sept 2025 or face \$156K fine + 2 yrs jail.[^39][^40]
     - **Self-regulation:** Taiwan VASP Association (24 exchanges) issued 7 codes covering charter, compliance, operations (Nov 2024–Jan 2025).[^41]
-    - *Source:* Taiwan FSC, Legislative Yuan, Leet \& Tsai.
+    - *Source:* Taiwan FSC, Legislative Yuan, Leet & Tsai.
     - **Risk Label:** Low – Clear compliance framework.
 4. **Singapore: MAS Licensing Deadline Extended (May 30, 2025)**[^34]
     - **Requirement:** Firms serving overseas clients must hold FSMA license by June 30, 2025 (no transition period post-deadline).[^34]
@@ -250,7 +250,7 @@ category: crpyto
 
 - **Market data:** Binance, CoinMarketCap, CoinGecko, YCharts, CoinDesk, MetaMask, Crypto.news
 - **ETF flows:** Farside Investors, SoSoValue, BeInCrypto, Bitbo, Bloomberg
-- **Regulation:** SEC.gov, CFTC.gov, ESMA, Taiwan FSC, EU Official Journal, Latham \& Watkins
+- **Regulation:** SEC.gov, CFTC.gov, ESMA, Taiwan FSC, EU Official Journal, Latham & Watkins
 - **Research:** a16z Crypto, Glassnode, Chainalysis, TRM Labs, LSEG
 - **Security:** Google GTIG, Bolster AI, Lookonchain, Gizmodo, CNBC
 - **Exchange notices:** Binance, Bybit, Kraken official announcement pages
