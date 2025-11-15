@@ -26,10 +26,12 @@ markdown: kramdown
 kramdown:
     math_engine: katex
 
-plugin:
+url: "https://ernie55ernie.github.io/"
+plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
 excerpt_separator: ""
 
 include: [".well-known"]
+
