@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - "
+title: "Daily Crypto Market Brief - Crypto Slumps to 6-Month Lows Amid ETF Outflows"
 date: 2025-11-17
 category: crpyto
 ---
