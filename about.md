@@ -5,6 +5,7 @@ permalink: /about/
 ---
 # Personal Profile
 
+| <img src="/assets/head.jpg" alt="Head" style="width: 200px;"/> | **Name** Ernie Chang<br>**Motto** Excellence through Diversity<br>**Hobby** Research, Swimming, Bicycling<br>**Field** Quant;Cybersecurity;Aritificial Intelligence |
 
 # Education
 * **Bachelor Degree of Science**
@@ -29,4 +30,4 @@ permalink: /about/
 * [8] [An Efficient Dynamic Rule Placement for Distributed Firewall in SDN](https://ieeexplore.ieee.org/abstract/document/9322233/)
 
 # E-mail
-[b01505025@g.ntu.edu.tw](b01505025@g.ntu.edu.tw)
+[ernie55ernie@gmail.com](ernie55ernie@gmail.com)
