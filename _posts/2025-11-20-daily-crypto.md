@@ -36,7 +36,7 @@ Pi Network's affiliate PiBit Ltd submitted MiCA Whitepaper to ESMA (Nov 19). Con
 Filecoin launched Filecoin Onchain Cloud (Nov 18) at DePIN Day Buenos Aires. Provides verifiable storage, rapid retrieval, programmable on-chain payments. Early integrations: ENS, Monad, Safe, KYVE, Storacha. Mainnet scheduled Jan 2026. Addresses centralized cloud outages; built on Filecoin's decentralized storage network. Developers can compose auditable, conditional-payment services.
 
 **{Medium Impact}** **New Hampshire Approves First Bitcoin-Backed Municipal Bond**[^11][^12][^13]
-New Hampshire Business Finance Authority authorized **\$100M** Bitcoin-backed municipal bond (Nov 17–18). No state/taxpayer risk; BTC custodied by BitGo with 160% collateral ratio and automatic liquidation triggers at 130% threshold. Issued by WaveRose Depositor; designed by Wave Digital Assets \& Rosemawr Management. First U.S. state-level digital asset collateral in municipal debt. May unlock pathway for Bitcoin into \$140T global bond markets.
+New Hampshire Business Finance Authority authorized **\$100M** Bitcoin-backed municipal bond (Nov 17–18). No state/taxpayer risk; BTC custodied by BitGo with 160% collateral ratio and automatic liquidation triggers at 130% threshold. Issued by WaveRose Depositor; designed by Wave Digital Assets & Rosemawr Management. First U.S. state-level digital asset collateral in municipal debt. May unlock pathway for Bitcoin into \$140T global bond markets.
 
 **{Low–Medium Impact}** **Coinbase Adds World Mobile Token (WMTX) to Listing Roadmap**[^14][^15]
 Coinbase added World Mobile Token (WMTX) to roadmap (Nov 19). Listing contingent on liquidity, market-maker participation, and technical readiness. WMTX deployed on Coinbase's Base L2; roadmap inclusion signals future exchange support and expanded market exposure.
@@ -54,14 +54,14 @@ Binance, Coinbase, Kraken, OKX, Bybit, Deribit: Status pages show operational. B
 
 ***
 
-### Government / Law \& Regulation
+### Government / Law & Regulation
 
 **{US — SEC/CFTC}**
 
 - SEC Chair Atkins' Project Crypto roadmap reaffirms intent to clarify token taxonomy and establish safe harbors for digital asset offerings (Nov 12 remarks).[^17]
 - OIRA signaled formal SEC rule proposals on crypto asset trading and Securities Exchange Act amendments planned for 2026.[^16]
 - Senate CFTC confirmation hearings reflect Democratic focus on capacity, anti-money laundering, and safeguard parity with TradFi (Nov 19).[^18]
-- Bipartisan CFTC Bill (Boozman–Booker) drafted to consolidate crypto oversight under CFTC, pending Senate Agriculture \& Banking Committee review.[^19]
+- Bipartisan CFTC Bill (Boozman–Booker) drafted to consolidate crypto oversight under CFTC, pending Senate Agriculture & Banking Committee review.[^19]
 
 **{EU — MiCA}**
 
@@ -77,7 +77,7 @@ Binance, Coinbase, Kraken, OKX, Bybit, Deribit: Status pages show operational. B
 
 ***
 
-### Research \& Technical Reports
+### Research & Technical Reports
 
 **{Medium Impact}** **VanEck Mid-November 2025 Bitcoin ChainCheck**[^21]
 Analysis of BTC on-chain metrics and perp funding dynamics. Notes "minnow" class (100–1000 BTC holders) accumulating +9% (6mo), +23% (12mo). Basis trades (e.g., Ethena \$14B → \$8.3B TVL collapse) artificially depress funding rates; funding rate indicator temporarily unreliable. Highlights funding rate volatility post-Oct 9 liquidations.
