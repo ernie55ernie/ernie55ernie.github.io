@@ -13,7 +13,7 @@ category: crpyto
 - Stablecoin landscape is structurally dominated by USDT and USDC (over 90% market share), and recent commentary highlights USDT supply above 180B USD equivalent; no large, discrete supply shocks or depegs are flagged in the last 24–48 hours, so stablecoin flows appear directionally supportive but not singularly market‑moving today.[^9][^10][^11][^12]
 
 
-## Top Headlines (What \& Why it matters)
+## Top Headlines (What & Why it matters)
 
 - **Derivatives leverage reset continues – near‑neutral funding, lighter OI (Risk: Medium).**
     - On‑chain and derivatives analytics highlight that, following a recent “leverage purge” where more than 8B USD equivalent of futures positions were liquidated, BTC and major altcoin open interest across Binance, Bybit and OKX remains materially below prior peaks.[^7][^6]
