@@ -28,7 +28,7 @@ category: crpyto
 
 - **Funding rates**: Shifted from bearish to neutral across major exchanges (Binance, Deribit, Bybit, OKX, Kraken). BTC funding ~0.01%, ETH ~0.01%—typical baseline equilibrium, no extreme bias.[^7]
 - **24h liquidations**: \$318M across all assets (Dec 12). Larger cumulative: \$400M in forced closures over past few days, driven by BTC rejection at \$92.8–\$93.9k and thin December liquidity.[^9][^7]
-- **Options expiry (Dec 12, 8:00 UTC)**: \$4.5B BTC \& ETH notional expired.[^8]
+- **Options expiry (Dec 12, 8:00 UTC)**: \$4.5B BTC & ETH notional expired.[^8]
     - BTC: Max pain \$90,000; put-to-call ratio 1.10 (balanced, near-term containment expected).
     - ETH: Max pain \$3,100; put-to-call ratio 1.22 (put premium higher; protective demand noted).
 
@@ -36,13 +36,13 @@ category: crpyto
 
 ### Top Headlines (Primary-Source Verified)
 
-**1. Coinbase Plans Dec 17 Reveal: Prediction Markets \& Tokenized Equities — {High}**[^10][^11][^12]
+**1. Coinbase Plans Dec 17 Reveal: Prediction Markets & Tokenized Equities — {High}**[^10][^11][^12]
 
 - **Event**: Coinbase will announce **prediction markets** and **tokenized equities** on December 17, 2025 (livestream showcase).
 - **Details**: Tokenized stocks built in-house; prediction markets will enable event-outcome trading (e.g., real-world binary bets).
 - **Regulatory note**: May attract SEC scrutiny; both products blur traditional/crypto boundaries.
 - **Market reaction**: COIN stock fell 2.2% to \$269.02 on Dec 12 despite bullish news—profit-taking or regulatory caution.
-- **Why it matters**: Signals exchange expansion into real-world event derivatives \& securities tokenization; competitive pressure on prediction-market platforms \& traditional brokers.
+- **Why it matters**: Signals exchange expansion into real-world event derivatives & securities tokenization; competitive pressure on prediction-market platforms & traditional brokers.
 
 **2. Ribbon Finance Exploited for \$2.7M; Oracle Config Flaw — {Medium}**[^13]
 
@@ -58,7 +58,7 @@ category: crpyto
 - **Balancer**: Integer division rounding error in low-value swap logic allowed 65-swap MEV extraction, draining ~\$20M from pools.
 - **Yearn**: Legacy yETH code bug enabled attacker to mint 235T tokens, siphoning real assets via Balancer liquidity → ~\$50M net TVL loss.
 - **Cumulative**: November 2025 hacks = \$168M. YTD 2025 exceeds \$2.5B (Feb \$1.48B, May \$240M, Oct \$19B largest event).
-- **Takeaway**: Even "battle-tested" protocols (Balancer operational since 2020, 10+ audits; Yearn since 2020) face critical risk from legacy code \& decimal/precision misconfigurations.
+- **Takeaway**: Even "battle-tested" protocols (Balancer operational since 2020, 10+ audits; Yearn since 2020) face critical risk from legacy code & decimal/precision misconfigurations.
 
 **4. SEC/CFTC Regulatory Harmonization Push; CFTC Gains Spot Crypto Authority — {Medium}**[^15][^16]
 
@@ -74,7 +74,7 @@ category: crpyto
 - **MAS Singapore** (Nov 2025): Finalized stablecoin regulatory framework; CBDC wholesale trials underway (DBS, OCBC, UOB live settlement tested). Guide on tokenized capital markets products published.
 - **EU MiCA** (Dec 30, 2024 full phase-in): Q1 2025 compliance deadline for non-MiCA ART/EMT de-listing on EU CASPs.
 
-**6. Bitcoin \& Ethereum ETFs Volatile; Weekly Inflows Offset Daily Pullbacks — {Low}**[^20][^21]
+**6. Bitcoin & Ethereum ETFs Volatile; Weekly Inflows Offset Daily Pullbacks — {Low}**[^20][^21]
 
 - **Dec 12 flows (24h)**: BTC ETFs –\$33.5M (net); ETH ETFs +\$62.0M (net).
 - **Dec 4–12 (7d cumulative)**: BTC +\$329.5M; ETH +\$131.1M—solid weekly momentum despite daily chop.
@@ -86,12 +86,12 @@ category: crpyto
 
 - **Kraken**: No incidents reported (Dec 13, 2025).[^22]
 - **Coinbase, Binance, Bybit, OKX, Kraken, Deribit**: All operational; no major outage notices in past 72h.
-- **Cloudflare service degradation (Nov 18)**: Resolved; BitMEX \& Kraken had temporary front-end issues; on-chain operations unaffected. AWS network congestion (Oct 20) also mitigated.[^23]
-- **Midnight (NIGHT) Binance Alpha launch** (Dec 9, 2025): Large circulation (16.6B, 69% unlocked); Dec 11 unlock pressure from OKX boost (120M) \& flash profit (400M tokens). Binance, OKX, Bybit, Kraken, Gate, KuCoin, HTX listed.[^24]
+- **Cloudflare service degradation (Nov 18)**: Resolved; BitMEX & Kraken had temporary front-end issues; on-chain operations unaffected. AWS network congestion (Oct 20) also mitigated.[^23]
+- **Midnight (NIGHT) Binance Alpha launch** (Dec 9, 2025): Large circulation (16.6B, 69% unlocked); Dec 11 unlock pressure from OKX boost (120M) & flash profit (400M tokens). Binance, OKX, Bybit, Kraken, Gate, KuCoin, HTX listed.[^24]
 
 ***
 
-### Government / Law \& Regulation
+### Government / Law & Regulation
 
 **United States**
 
@@ -111,7 +111,7 @@ category: crpyto
 
 ***
 
-### Research \& Technical Reports
+### Research & Technical Reports
 
 **Recent (Last 14 Days)**
 
@@ -132,7 +132,7 @@ category: crpyto
 **Critical**
 
 - **Ribbon Finance (formerly Aevo) / Opyn Oracle Exploit — \$2.7M — Dec 13, 2025**[^13]
-    - Malicious actor exploited decimal precision bug in freshly-upgraded oracle; fraudulent oToken creation \& settlement loop.
+    - Malicious actor exploited decimal precision bug in freshly-upgraded oracle; fraudulent oToken creation & settlement loop.
     - **Recovery**: On-chain forensics underway; no announcement of recovery attempt or insurance payout yet.
     - **Status**: Unresolved; protocol shutdown or restart likely pending review.
 
@@ -144,12 +144,12 @@ category: crpyto
 
 ***
 
-### Social \& Sentiment
+### Social & Sentiment
 
 **Official Accounts (Verified)**
 
 - **Coinbase** (X/CEO): Teasing Dec 17 event; excited tone, regulatory-adjacent cautious wording ("new products shipping").
-- **Ribbon Finance** (X): Acknowledged exploit; initiated incident review \& post-mortem (not yet published as of writing).
+- **Ribbon Finance** (X): Acknowledged exploit; initiated incident review & post-mortem (not yet published as of writing).
 - **Glassnode, Messari**: Neutral, data-focused tone on retail resurgence and DeFi growth; no hype.
 - **Kraken, Binance, OKX**: Routine product/feature announcements; no systemic warnings.
 
@@ -163,7 +163,7 @@ category: crpyto
 
 ### What to Watch (Next 24–72h)
 
-1. **Coinbase Dec 17 Showcase** — 2 major product launches (prediction markets + tokenized equities) could reshape on-chain event trading \& securities tokenization; regulatory response TBD.
+1. **Coinbase Dec 17 Showcase** — 2 major product launches (prediction markets + tokenized equities) could reshape on-chain event trading & securities tokenization; regulatory response TBD.
 2. **Ribbon Finance / Opyn Protocol Recovery** — Expect post-mortem report; insurance/cover activation decision; potential contagion if other oracle-dependent protocols face similar decimal bugs.
 3. **FOMC/Macro Catalysts** — Year-end Fed guidance, Treasury yield moves, equity index rebalancing could drive crypto volatility (BTC needs to break \$93k or support \$89k).
 4. **\$4.5B Options Expiry (Dec 12, 8:00 UTC already occurred)** — Settlement complete; next major expiry likely late Dec. Monitor put/call skew for Jan 2026 opens.
