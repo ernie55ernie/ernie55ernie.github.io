@@ -61,7 +61,7 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 **Why it matters:**
 
 - **Smart contract risk reaffirmed:** An arithmetic bug in the custom contract combined with unsecured helper functions remains the critical attack surface for DeFi protocols. This aligns with 2025 trends: access control exploits account for 59% of DeFi losses YTD, and smart contract vulnerabilities 8%.[^22]
-- **Recovery feasibility \& precedent:** The multi-protocol coordination demonstrated DeFi maturity and responsiveness; however, the 26% recovery rate within 48 hours underscores the limited recourse once funds enter privacy mixers or are converted to non-traceable assets.
+- **Recovery feasibility & precedent:** The multi-protocol coordination demonstrated DeFi maturity and responsiveness; however, the 26% recovery rate within 48 hours underscores the limited recourse once funds enter privacy mixers or are converted to non-traceable assets.
 - **Operational continuity:** Yearn Finance's V2 and V3 vaults (the core products serving the majority of users) remained unaffected. Only the isolated legacy yETH stableswap pool was targeted, limiting contagion.
 - **Market psychology impact:** ETH price dropped to \$3,024 on initial panic reports; the subsequent recovery to \$3,145+ reflects both relief at Yearn's swift response and renewed risk appetite. L1 volatility spiked noticeably.
 **Mitigation status:** Yearn's war room remains active with ChainSecurity audit partners; ongoing investigation continues. Approximately \$6M in stolen funds remain in the attacker's wallet, primarily in staked ETH derivatives not yet laundered.
@@ -75,12 +75,12 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 **Why it matters:**
 
 - **Systemic phishing risk persists:** The breach mechanism—phishing access to hot-wallet signing infrastructure—mirrors the February 2025 Bybit attack (Lazarus Group, \$1.4B ETH stolen). This indicates that institutional-grade phishing remains a primary attack vector despite heightened awareness.
-- **Regulatory \& reputational pressure:** Korean authorities are investigating; CEO Oh Kyung-seok publicly acknowledged the breach to maintain credibility. This is critical for a South Korean-regulated exchange, where confidence directly impacts regional retail participation.
+- **Regulatory & reputational pressure:** Korean authorities are investigating; CEO Oh Kyung-seok publicly acknowledged the breach to maintain credibility. This is critical for a South Korean-regulated exchange, where confidence directly impacts regional retail participation.
 - **Operational friction for traders:** Mandatory address regeneration and staged reopening reduce user throughput. Korean traders are shifting volume to competing venues (Bithumb, OKX, other regional platforms), fragmenting liquidity temporarily.
 - **Custody risk narrative:** The incident reinforces the ongoing custody risk for retail users holding assets on centralized exchanges, despite regulatory oversight. Many traders are responding by activating self-custody or diversifying across multiple platforms.
 
 
-### 6. **SEC-CFTC Regulatory Harmonization Initiative \& CFTC Digital Assets Pilot Program** {Low–Medium Risk}
+### 6. **SEC-CFTC Regulatory Harmonization Initiative & CFTC Digital Assets Pilot Program** {Low–Medium Risk}
 
 **Date:** September 5 (joint statement) / December 8 (pilot launch), 2025
 **What:** SEC Chair Paul Atkins and CFTC Acting Chair Caroline D. Pham issued a joint statement on regulatory harmonization and announced a September 29 joint agency roundtable. Subsequently, on December 8, the CFTC Acting Chair announced the launch of a digital assets pilot program allowing futures commission merchants (FCMs) to accept Bitcoin, Ethereum, and USDC as customer margin collateral in derivatives markets. The CFTC also issued guidance on tokenized collateral and withdrew outdated requirements per the GENIUS Act.[^24][^25][^26]
@@ -143,7 +143,7 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 
 ***
 
-## Government / Law \& Regulation
+## Government / Law & Regulation
 
 ### United States
 
@@ -166,13 +166,13 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 - **Japan (FSA):** Regulatory roadmap for crypto derivatives and spot trading under development; no major enforcement actions in the past 7 days.
 
 
-### Enforcement \& Investigation
+### Enforcement & Investigation
 
 - **ICIJ Investigation (Published Nov 27, 2025):** Binance, OKX, Coinbase, and Kraken implicated in money-laundering flows post-compliance settlements. Binance received \$408M in USDT from Huione (AML-violating entity) after its plea deal; OKX received \$226M. Both committed compliance monitors/consultants; exchanges claim active law enforcement cooperation.[^29]
 
 ***
 
-## Research \& Technical Reports
+## Research & Technical Reports
 
 ### Layer 2 / Ethereum Scaling
 
@@ -181,17 +181,17 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 - **Academic research (2024–2025):** Rollups lack a public mempool compared to Ethereum L1, making MEV extraction less transparent. Cross-chain bridges remain the primary interoperability risk, accounting for \$1.5B+ in stolen funds across 2025.[^34]
 
 
-### Bitcoin Ordinals \& Inscriptions
+### Bitcoin Ordinals & Inscriptions
 
 - **Wiedenmann et al., Journal of British Blockchain Association (Dec 3–4, 2025):** Analysis of 67.3M inscriptions recorded between December 2022 and March 2024. BRC-20 tokens account for 77.7% of inscription volume; text inscriptions 16.2%; images 3.5%. Inscription transactions represented 34.6% of all Bitcoin transactions during the observed period. Blockspace consumption peaked at 60% in February 2023. **Key finding:** Inscriptions are the primary driver of post-Ordinals block size increase; the network absorbed the increased activity through SegWit and Taproot upgrades, resulting in elevated fees but stable throughput.[^35][^36]
 
 
-### DeFi Security \& Exploit Trends
+### DeFi Security & Exploit Trends
 
 - **Hacken / CertiK Year-End 2025 Reports:** DeFi losses have reached \$3.1B+ in H1 2025 alone, already surpassing 2024's full-year total of \$2.85B. **Attack vectors:** Access control exploits account for 59% of losses; smart contract vulnerabilities 8%; reentrancy bugs \$325M; oracle manipulation 13%. Solana ecosystem is disproportionately targeted due to high transaction throughput and fewer mature security tools.[^19][^27][^22]
 
 
-### Community \& Social Sentiment
+### Community & Social Sentiment
 
 - **Blockchain Reporter (Dec 15, 2025):** Solana leads social media engagement with 58.8K posts and 14.7M interactions in a single day, largely driven by the Solana Breakpoint conference (Abu Dhabi, Dec 11). XRP maintains strong community momentum despite bearish technical patterns. **Implication:** Community strength and protocol adoption narratives can decouple from short-term price action, suggesting long-term sentiment remains constructive.[^37]
 
@@ -211,7 +211,7 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 
 ## What to Watch (Next 24–72 Hours)
 
-### 1. **Macro US Economic Data \& Fed Signals**
+### 1. **Macro US Economic Data & Fed Signals**
 
 - Market awaiting December PCE (Personal Consumption Expenditures), PPI (Producer Price Index), and jobless claims for rate-path clarity. Crypto frequently inverts 24–48 hours post-data surprise. Monitor Fed speakers mid-week for hawkish/dovish tilts. **Impact window:** Tuesday–Thursday UTC.
 
@@ -221,7 +221,7 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 - BTC oscillating near \$88.4K–\$93.6K range. Break above \$90.5K could spark \$2K+ rally; failure to hold \$88K may trigger liquidation cascade to \$85K. RSI at 44 (bearish bias remains); 50-day EMA at \$95.6K overhead resistance.[^6]
 
 
-### 3. **Ethereum Momentum \& Layer 2 Catalysts**
+### 3. **Ethereum Momentum & Layer 2 Catalysts**
 
 - ETH reclaimed \$3.1K support; MACD approaching buy signal. Watch for Linea token TGE updates, Base/Arbitrum governance votes, zkSync protocol upgrades. L2 TVL inflows could reignite alt season if BTC stabilizes above \$90K.
 
@@ -231,12 +231,12 @@ USDT institutional flows remain steady (\$30–50B weekly transfer volumes); Bin
 - Upbit listing (live 09:30 UTC Dec 15) driving retail FOMO in KRW markets. Typical post-listing volatility ±20–30%; watch for whale distribution if price rallies >50% intraday. Solana ecosystem sentiment amplified by Breakpoint conference community energy.
 
 
-### 5. **Yearn Recovery Progress \& Broader DeFi Risk Appetite**
+### 5. **Yearn Recovery Progress & Broader DeFi Risk Appetite**
 
 - Ongoing clawback operations; new recovered asset announcements expected. YFI token recovering from exploit-related sell-off; protocol health narratives critical for market sentiment. DeFi TVL remains sub-\$100B; watch for renewed institutional risk-taking if Yearn recovery exceeds \$5M threshold.
 
 
-### 6. **Bitcoin \& Ethereum ETF Flows**
+### 6. **Bitcoin & Ethereum ETF Flows**
 
 - December 12: IBIT +\$51M, FBTC ±\$0M, ARKB ±\$0M (modest inflows). GBTC remains net negative YTD. Watch for institutional re-entry post-macro clarity; ETF flows typically lead spot markets 24–48 hours.
 
