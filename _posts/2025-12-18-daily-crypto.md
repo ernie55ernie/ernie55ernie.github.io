@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Crypto Stabilizes Near $88K as SEC Closes Aave Probe"
+title: "Daily Crypto Market Brief - Bitcoin Consolidates as ETF Inflows Rebound and Risks Rise"
 date: 2025-12-18
 category: crpyto
 ---
@@ -15,7 +15,7 @@ Funding rates remained stable across major perpetual exchanges, with SGX Crypto 
 **Bitcoin ETF Flows**[^6][^7]
 Spot Bitcoin ETFs rebounded sharply on December 17 with \$457 million in net inflows, reversing two days of outflows totaling \$635 million. Fidelity's FBTC led with \$391 million in inflows, bringing its total net assets to \$12.4 billion, while BlackRock's IBIT attracted \$111 million. However, weekly net flows remain negative at −\$177 million.[^7][^6]
 
-**Whale & On-Chain Activity**[^8][^9]
+**Whale \& On-Chain Activity**[^8][^9]
 A major Ethereum whale accumulated 12,405 additional ETH, bringing its long position to 203,000 ETH (totaling \$695 million across BTC, ETH, and SOL). Despite aggressive buying, the position shows an unrealized loss of \$70.1 million, indicating dollar-cost averaging into weakness. Separately, on-chain data flagged substantial Ethereum movements into Binance ahead of President Trump's address on December 17, historically associated with selling pressure.[^9][^8]
 
 ***
@@ -43,7 +43,7 @@ A major Ethereum whale accumulated 12,405 additional ETH, bringing its long posi
 **7. Trump's December 17 Address to Nation Largely Bypasses Crypto; On-Chain Activity Suggests Risk-Off Positioning**[^20][^9]
 {Low} — President Trump delivered a 9 PM EST nationwide address on December 17 focusing on domestic policy achievements but provided no material crypto commentary. Prediction market interest in crypto mentions reached only \$11,000 in volume compared to \$21,000 for general politics. On-chain data showed large Ethereum movements to Binance ahead of the speech, signaling potential de-risking.[^9][^20]
 
-**8. OKX Announces Perpetual Futures Discontinuation & Wallet Upgrade**[^21]
+**8. OKX Announces Perpetual Futures Discontinuation \& Wallet Upgrade**[^21]
 {Low} — OKX announced on December 17 the discontinuation of BTC/USDT- and ETH/USDT-margined expiry futures. The exchange also rolled out gas-free stablecoin transfers on X Layer via its OKX Wallet. Additionally, position tier adjustments for TRUTH/USDT perpetual were announced for December 18.[^21]
 
 ***
@@ -63,7 +63,7 @@ A major Ethereum whale accumulated 12,405 additional ETH, bringing its long posi
 
 ***
 
-### Government, Law & Regulation (Last 7 Days)
+### Government, Law \& Regulation (Last 7 Days)
 
 **US (SEC/CFTC)**[^22][^19]
 
@@ -84,15 +84,15 @@ A major Ethereum whale accumulated 12,405 additional ETH, bringing its long posi
 
 ***
 
-### Research & Technical Reports
+### Research \& Technical Reports
 
-**Balancer & Yearn November 2025 Exploits Analysis**[^23]
+**Balancer \& Yearn November 2025 Exploits Analysis**[^23]
 Balancer suffered a \$116 million cross-chain exploit due to a precision loss bug in composable stable pools; Yearn's legacy yETH lost \$29.8 million to unlimited minting. Notably, Balancer had undergone 10+ security audits before the breach, underscoring the persistent fragility of complex DeFi design, even among long-standing protocols. Venus protocol's governance was able to freeze \$3 million in attacker assets, exemplifying improved mitigation infrastructure.
 
 **Chainalysis 2025 Crypto Theft Report**[^14]
 The annual report identifies four key trends: DPRK persistence, escalating centralized exchange losses, rising personal wallet compromises, and a divergence in DeFi hacking patterns (lower losses despite growing TVL, reflecting security maturation).
 
-**Bybit Forensics & Lazarus Campaign Updates**[^12][^13]
+**Bybit Forensics \& Lazarus Campaign Updates**[^12][^13]
 North Korean Lazarus Group has cashed out \$300 million of the \$1.5 billion Bybit theft through multi-layer obfuscation (DEX aggregators, privacy bridges, and decentralized liquidity pools), demonstrating the sophistication of state-sponsored money-laundering operations.
 
 ***
@@ -107,7 +107,7 @@ Lazarus Group has successfully converted ~\$300 million of the \$1.5 billion Byb
 
 ***
 
-### Social & Sentiment (Official Accounts)
+### Social \& Sentiment (Official Accounts)
 
 **Trump December 17 Address**[^20][^9]
 
@@ -127,10 +127,10 @@ Lazarus Group has successfully converted ~\$300 million of the \$1.5 billion Byb
 ### What to Watch (Next 24–72 Hours)
 
 1. **Bitcoin Range Breakout** — Key support at \$85,000; resistance at \$88.5–\$90,000. A break in either direction could establish year-end momentum.[^4]
-2. **ETF Flow Finalization & Friday Auction** — December 18 Bitcoin ETF data due by December 20 (via Farside Investors). Bid-ask dynamics into week-end could reveal institutional positioning.
-3. **Bybit Fund Recovery & Lazarus Tracking** — Continued forensics on \$300+ million already cashed out; potential law enforcement announcements or asset seizures.
+2. **ETF Flow Finalization \& Friday Auction** — December 18 Bitcoin ETF data due by December 20 (via Farside Investors). Bid-ask dynamics into week-end could reveal institutional positioning.
+3. **Bybit Fund Recovery \& Lazarus Tracking** — Continued forensics on \$300+ million already cashed out; potential law enforcement announcements or asset seizures.
 4. **MiCA Compliance Deadline (Italy, Dec 25)** — Final compliance window for Italian crypto firms; migration of non-compliant venues may create temporary liquidity shifts.
-5. **Protocol Airdrops & Token Unlocks** — ODOS (Dec 20), Sophon (Dec 18), STREAM (Dec 17 live); potential volatility in affected pools and derivative positioning.
+5. **Protocol Airdrops \& Token Unlocks** — ODOS (Dec 20), Sophon (Dec 18), STREAM (Dec 17 live); potential volatility in affected pools and derivative positioning.
 
 ***
 
