@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Crypto Volumes Slide as Stablecoins Hold Steady"
+title: "Daily Crypto Market Brief - Bitcoin Reclaims $89K as Year-End Volatility Builds"
 date: 2025-12-22
 category: crpyto
 ---
@@ -15,7 +15,7 @@ category: crpyto
 | **XRP** | \$1.9177 | −1.27% | Receiving selective ETF inflows despite spot weakness |
 | **TON** | ~\$1.40 | Flat (vol +41.7% YoY) | Trading volume surge signals renewed interest [^2] |
 
-**Derivatives \& Flows:**
+**Derivatives & Flows:**
 
 - Futures open interest: ~\$130B (up 60 bps on Dec 21)[^3]
 - BTC OI: \$60B | ETH OI: \$38B
@@ -23,11 +23,11 @@ category: crpyto
 - Bitcoin ETF net outflows: \$158M (Friday; cumulative inflow \$57.41B)[^4]
 - Ethereum ETF outflows: \$76M (7 consecutive days; cumulative inflow \$12.44B)[^4]
 - Stablecoin supply: USDT/USDC flows suggest cautious positioning into year-end
-- **Sentiment:** Fear \& Greed Index 25 (up from 20; Extreme Fear zone)[^5]
+- **Sentiment:** Fear & Greed Index 25 (up from 20; Extreme Fear zone)[^5]
 
 ***
 
-### **TOP HEADLINES (What Moved Markets \& Why)**
+### **TOP HEADLINES (What Moved Markets & Why)**
 
 **1. zkPass (ZKP) Coinbase Listing Sparks 85%+ Rally | [HIGH IMPACT]**
 
@@ -104,13 +104,13 @@ category: crpyto
 
 ***
 
-### **GOVERNMENT \& REGULATION**
+### **GOVERNMENT & REGULATION**
 
 **U.S. (SEC/CFTC):**
 
 - **CFTC Chair Confirmation:** Senate confirmed Michael Selig on December 18, 2025 (replacing Acting Chair Caroline Pham)[^16]
 - **SEC Custody Guidance:** Division of Trading and Markets released FAQs on crypto-asset custody by broker-dealers (Dec 17)[^17]
-- **CFTC Swap Rules:** Final rule approved (Dec 18) codifying business conduct \& documentation standards; harmonizes with SEC/MSRB frameworks[^16]
+- **CFTC Swap Rules:** Final rule approved (Dec 18) codifying business conduct & documentation standards; harmonizes with SEC/MSRB frameworks[^16]
 - **Staking Safe Harbor:** IRS issued Rev. Proc. 2025-31 (Nov 10); safe harbor for trusts to stake crypto while maintaining "investment trust" status[^18]
 
 **EU (MiCA/ESMA):**
@@ -126,7 +126,7 @@ category: crpyto
 
 ***
 
-### **RESEARCH \& TECHNICAL REPORTS**
+### **RESEARCH & TECHNICAL REPORTS**
 
 **Limited material in 14-day window.** Most recent academic work predates window (price prediction models, volatility analysis from Q1–Q3 2025). No significant white papers or standards drafts (IETF/W3C) published today.
 
@@ -145,7 +145,7 @@ category: crpyto
 
 ***
 
-### **SOCIAL \& SENTIMENT SIGNALS**
+### **SOCIAL & SENTIMENT SIGNALS**
 
 - **Protocol/Exchange official X accounts:**
     - Binance: Neutral/factual market updates[^5]
