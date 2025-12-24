@@ -6,11 +6,11 @@ category: crpyto
 ---
 ### MARKET OVERVIEW (24H)
 
-**Spot Prices \& Sentiment**
+**Spot Prices & Sentiment**
 
 Bitcoin consolidated near \$87,434–\$88,088, down 0.7–2.4% over 24 hours as the market braced for a record \$28.5 billion options expiry on December 26. Ethereum fell 2.4–2.6% to \$2,959–\$2,987, while Solana declined 1.3–3.0% to \$124.27–\$124.80. Total crypto market capitalization slipped 0.8–2.4% to \$3.06–\$3.07 trillion.[^1][^2][^3][^4][^5]
 
-The Crypto Fear \& Greed Index fell to 24, holding in **Extreme Fear** territory, indicating defensive positioning despite intraday volatility that briefly pushed Bitcoin above \$90,000 before retracing. Notable altcoin leaders included LUMIA (+28%), PORTAL (+16%), and DOLO (+15%), while XRP, BNB, ADA, and DOGE shed 1.5–2.0% each.[^2][^6][^1]
+The Crypto Fear & Greed Index fell to 24, holding in **Extreme Fear** territory, indicating defensive positioning despite intraday volatility that briefly pushed Bitcoin above \$90,000 before retracing. Notable altcoin leaders included LUMIA (+28%), PORTAL (+16%), and DOLO (+15%), while XRP, BNB, ADA, and DOGE shed 1.5–2.0% each.[^2][^6][^1]
 
 **Derivatives Activity**
 
@@ -66,7 +66,7 @@ U.S. Bitcoin spot ETF flows turned mixed: the week ended December 13 saw \$286.6
 
 ***
 
-### GOVERNMENT / LAW \& REGULATION
+### GOVERNMENT / LAW & REGULATION
 
 **United Kingdom – FCA Crypto Regulatory Framework (Dec 15–16)**
 The UK Financial Conduct Authority finalized three consultation papers establishing the regulatory perimeter for cryptoasset firms under FSMA. Key proposals include:[^16][^15]
@@ -80,7 +80,7 @@ Response deadline: February 12, 2026; implementation target: October 2027. **Pri
 **European Union – MiCA Implementation Status**
 The EU's Markets in Crypto-Assets (MiCA) Regulation reached full effect January 1, 2025. As of December 2025, over 90 crypto asset service providers (CASPs) are authorized, and euro-denominated stablecoins are diversifying. Divergent national implementation persists, but ESMA and EBA continue issuing harmonization guidance through regulatory technical standards (RTS) and implementing technical standards (ITS). **Primary source**: Chainalysis 2025 Crypto Regulatory Round-Up.[^29]
 
-**United States – CFTC Spot Crypto Trading \& SEC Staking Safe Harbor**
+**United States – CFTC Spot Crypto Trading & SEC Staking Safe Harbor**
 The CFTC announced on December 4, 2025, that spot cryptocurrency products may begin trading on federally registered futures exchanges (designated contract markets, or DCMs), advancing "Project Crypto." The SEC is expected to release its promised "innovation exception" guidance in January 2026 (delayed from December). Additionally, the IRS issued Rev. Proc. 2025-31 on November 10, providing a safe harbor for trusts to maintain "investment trust" status while staking crypto assets. **Primary source**: CFTC announcement (December 4); JDSupra legal summary.[^30][^31]
 
 **Taiwan – FSC Regulatory Status Quo**
@@ -91,11 +91,11 @@ The U.S. Securities and Exchange Commission terminated its four-year investigati
 
 ***
 
-### RESEARCH \& TECHNICAL REPORTS
+### RESEARCH & TECHNICAL REPORTS
 
 - **Ethereum Fusaka Technical Specifications**: NOWNodes published post-upgrade analysis confirming increased blob capacity (gradual rollout over two weeks), PeerDAS activation, and validator load reduction. No security incidents post-implementation.[^18]
 - **Chainalysis 2025 Crypto Theft Analysis**: Annual report identifies \$3.4 billion in crypto theft YTD, with North Korean threat actors claiming \$2.02 billion (51% YoY increase). Notable finding: DeFi hacks suppressed despite rising total value locked (TVL), indicating improving security practices. Venus Protocol's swift 12-hour recovery (September 2025) exemplifies evolving incident response capabilities.[^21]
-- **Aave Governance \& Legal Framework**: Multiple governance blogs analyzed the brand asset transfer proposal's precedent implications for DeFi organizational structures and token value accrual.[^13][^12]
+- **Aave Governance & Legal Framework**: Multiple governance blogs analyzed the brand asset transfer proposal's precedent implications for DeFi organizational structures and token value accrual.[^13][^12]
 - **No new academic white papers or major protocol specifications released December 16–23.**
 
 ***
@@ -131,7 +131,7 @@ The Solana network came under one of the most powerful DDoS attacks in history, 
     - **Impact**: Low–Medium structural impact; choppy consolidation likely.
 4. **Macro Headwinds Persist**
     - **Bank of Japan Rate Hike**: 0.75% tightens global liquidity; risk-off environment favors gold, silver (ATHs reached) over risk assets.
-    - **U.S. Equity Santa Rally**: S\&P 500 on longest monthly gain streak since 2018; tech leadership may attract capital from crypto, creating near-term headwind.
+    - **U.S. Equity Santa Rally**: S&P 500 on longest monthly gain streak since 2018; tech leadership may attract capital from crypto, creating near-term headwind.
     - **Trade Friction (US–EU)**: Commodity prices elevated; geopolitical premium persists.
 5. **Post-Holiday Catalysts (Early 2026)**
     - **MSCI Decision (Jan 15, 2026)**: Potential impact on digital asset treasury companies' inclusion in indices.
@@ -140,7 +140,7 @@ The Solana network came under one of the most powerful DDoS attacks in history, 
 
 ***
 
-### CONFIDENCE \& CAVEATS
+### CONFIDENCE & CAVEATS
 
 **High Confidence**: All price data, ETF flows (Farside/CoinOTag), Deribit options positioning, FCA consultation papers, Aave governance vote timing, and Uniswap proposal passage verified at primary sources (official announcements, exchanges, regulator portals, Snapshot).
 
