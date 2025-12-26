@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - ETF Outflows, OKX Perp Delistings, Coinbase OP Incident"
+title: "Daily Crypto Market Brief - Bitcoin Steady, Altcoins Weak, Options OI Elevated"
 date: 2025-12-25
 category: crpyto
 ---
