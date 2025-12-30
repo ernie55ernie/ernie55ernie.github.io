@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Trust Wallet Breach Spurs Post-Holiday Crypto Caution"
-date: 2025-12-28
+title: "Daily Crypto Market Brief - Trust Wallet Breach and Flow Exploit Shake Markets"
+date: 2025-12-29
 category: crpyto
 ---
 
