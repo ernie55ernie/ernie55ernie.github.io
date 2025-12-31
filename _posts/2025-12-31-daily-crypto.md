@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Daily Crypto Market Brief - Year-End Selloff as Trust Wallet Fallout Lingers"
+title: "Daily Crypto Market Brief - Stablecoin Surge as Politics and Security Drive Risk"
 date: 2025-12-31
 category: crpyto
 ---
