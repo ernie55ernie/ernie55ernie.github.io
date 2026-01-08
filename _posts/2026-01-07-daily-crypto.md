@@ -5,7 +5,7 @@ date: 2026-01-07
 category: crpyto
 ---
 
-Market Overview (24h)
+Market Overview
 
 - As of 2026-01-07 00:00 UTC, Bitcoin is around 93.7k USD, down ~0.3% day-on-day, with BTC dominance near 59%, indicating a still BTC-led market despite consolidation.[^1][^2]
 - Derivatives remain **bullish**: BTC perpetual funding on major venues has recently printed in the +0.5–0.7% annualized range, with Deribit-specific BTC funding reported above 30% annualized and large call OI around the 100k strike into January expiries, signaling positioning for upside and elevated leverage.[^3][^4][^5]
