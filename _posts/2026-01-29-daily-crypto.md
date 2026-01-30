@@ -4,7 +4,7 @@ title: "Daily Crypto Market Brief - SEC-CFTC Talks, CLARITY Markup, Options Expi
 date: 2026-01-29
 category: crpyto
 ---
-### **Market Overview (24h)**
+### **Market Overview**
 
 Bitcoin holds near **\$88,900–\$89,400** amid persistent selling pressure, down **0.80%** over the past 24 hours. Ethereum trades in a **\$2,943–\$3,006** range with a **–0.47% to –0.62%** decline, breaking below key moving average support. Total crypto market capitalization reflects broad sector weakness driven by stablecoin deceleration and tactical profit-taking. Bitcoin Dominance remains elevated at ~59%, signaling capital flight to top-tier assets.[^1][^2][^3][^4][^5]
 
