@@ -7,9 +7,9 @@
 
 # Site settings
 title: Ernie's Leisure Code
-email: b01505025@g.ntu.edu.tw
+email: ernie55enrie@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  Ernie Chang is a quantitative researcher specializing in high-frequency trading, market microstructure modeling, and adversarial machine learning. His work spans alpha signal development, execution modeling, and large-scale data pipeline engineering. Ernie has designed and optimized a wide range of production-grade alphas—leveraging LOB dynamics, spectral and flow-toxicity features, and federated learning frameworks—and has contributed research such as FINISH for decentralized malware detection, published in leading IEEE journals. Ernie combines rigorous academic research with practical systems engineering, building fast, reliable, and scalable analytics for real-world trading environments.
+  Ernie Chang is a quantitative researcher and PhD candidate working at the intersection of high-frequency trading, market microstructure, and machine learning. His work spans execution-aware alpha modeling, reinforcement learning for trading strategies, and adversarial perspectives on network security, with publications in leading IEEE venues.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://ernie55ernie.github.io" # the base hostname & protocol for your site
 twitter_username: b01505025
