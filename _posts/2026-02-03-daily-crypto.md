@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rebounds as ETFs Show Early Signs of Reentry"
-date: 2026-02-02
+date: 2026-02-03
 category: crpyto
 ---
 ## **MARKET OVERVIEW (24H)**
