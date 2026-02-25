@@ -28,19 +28,19 @@ Boundary conditions are set as follows:
 We also define a matrix \\( B \\) that contains the **bet sizes** for each intermediate state. It satisfies:
 
 \\[
-P(i+1, j) = P(i, j) + B(i, j) \quad \text{(3.205)}
+P(i+1, j) = P(i, j) + B(i, j)
 \\]
 \\[
-P(i, j+1) = P(i, j) - B(i, j) \quad \text{(3.206)}
+P(i, j+1) = P(i, j) - B(i, j)
 \\]
 
 Adding and subtracting these gives us:
 
 \\[
-P(i, j) = \frac{1}{2}(P(i+1, j) + P(i, j+1)) \quad \text{(3.207)}
+P(i, j) = \frac{1}{2}(P(i+1, j) + P(i, j+1))
 \\]
 \\[
-B(i, j) = \frac{1}{2}(P(i+1, j) - P(i, j+1)) \quad \text{(3.208)}
+B(i, j) = \frac{1}{2}(P(i+1, j) - P(i, j+1))
 \\]
 
 These recursive equations allow us to compute \\( P \\) and \\( B \\) by working backward from the terminal states.
@@ -62,12 +62,12 @@ P =
 
 \\[
 B = 
-\{\begin{matrix}
+\begin{matrix}
 31.25 & 31.25 & 25 & 12.5\cr
 31.25 & 37.5 & 37.5 & 25\cr
 25 & 37.5 & 50 & 50\cr
 12.5 & 25 & 50 & 100\cr
-\end{matrix}\}
+\end{matrix}
 \\]
 
 ### First Game Betting Strategy
