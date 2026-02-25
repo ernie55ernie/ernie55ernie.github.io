@@ -60,11 +60,7 @@ This is a real-world example of the **inspection paradox** or **sampling bias** 
 
 ## Conclusion
 
-\\[
-\boxed{
 The train that arrives first 80% of the time may not be more frequent—it just benefits from a favorable timing offset when you arrive randomly.
-}
-\\]
 
 # Reference
 
