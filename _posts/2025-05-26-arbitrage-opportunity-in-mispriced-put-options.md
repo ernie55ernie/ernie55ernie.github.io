@@ -58,10 +58,10 @@ Let's analyze key intervals:
 Hence:
 
 \\[
-V(S_T) = \begin{cases}
+V(S_T) = \begin{dcases}
 0 &\text{if } S_T \geq 30 \\
 S_T &\text{if } S_T < 30
-\end{cases}
+\end{dcases}
 \\]
 
 ### Conclusion
