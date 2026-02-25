@@ -34,11 +34,10 @@ Each ant:
 So the time for a given ant to fall off is:
 
 \\[
-T = 
-\cases{
-x & \text{with probability } \frac{1}{2},
-1 - x & \text{with probability } \frac{1}{2}
-}
+T = \begin{cases}
+x &\text{with probability } \frac{1}{2} \\
+1 - x &\text{with probability } \frac{1}{2}
+\end{cases}
 \\]
 
 Thus, the time for all ants to fall off is:
