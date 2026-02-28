@@ -12,9 +12,9 @@ We are given the symmetric matrix:
 \\]
 \\[
 \begin{pmatrix}
-1 & 0.6 & -0.3,
-0.6 & 1 & \rho,
--0.3 & \rho & 1,
+1 & 0.6 & -0.3\cr
+0.6 & 1 & \rho\cr
+-0.3 & \rho & 1\cr
 \end{pmatrix}
 \\]
 
