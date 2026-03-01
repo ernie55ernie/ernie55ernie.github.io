@@ -62,7 +62,7 @@ V(S_T) =
 \\]
 \\[
 \begin{cases}
-0 &\text{if } S_T \geq 30,
+0 &\text{if } S_T \geq 30\cr
 S_T &\text{if } S_T < 30
 \end{cases}
 \\]
