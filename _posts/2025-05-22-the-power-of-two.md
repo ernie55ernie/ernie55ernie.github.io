@@ -92,7 +92,7 @@ After 18 hours:
 
 | Problem                  | Key Idea                                   |
 | ------------------------ | ------------------------------------------ |
-| Power of 2               | \\( x > 0 \\) and \\( x & (x - 1) == 0 \\) |
+| Power of 2               | \\( x > 0 \\) and \\( x \& (x - 1) == 0 \\) |
 | Multiply by 7            | \\( (x << 3) - x \\)                       |
 | Arbitrary Coin Probability | Bitwise comparison with coin flips                 |
 | Poisoned Wine (1000, 10) | Use binary coding and 10 mice as bits      |
