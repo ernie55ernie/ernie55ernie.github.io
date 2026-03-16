@@ -21,7 +21,7 @@ In 5-card poker, the odds of specific hands reveal the beautiful combinatorics o
 There are:
 
 \\[
-\binom{52}{5} = 2,\!598,\!960 \text{ possible 5-card hands}
+\binom{52}{5} = 2,598,960 \text{ possible 5-card hands}
 \\]
 
 We'll calculate the number of favorable hands for each case and divide by this total.
@@ -38,7 +38,7 @@ We'll calculate the number of favorable hands for each case and divide by this t
 \text{Favorable hands} = 13 \times 48 = 624
 \\]
 \\[
-\text{Probability} = \frac{624}{2,\!598,\!960} \approx \boxed{0.000240}
+\text{Probability} = \frac{624}{2,598,960} \approx \boxed{0.000240}
 \\]
 
 ---
@@ -51,10 +51,10 @@ We'll calculate the number of favorable hands for each case and divide by this t
 - Choose **2 suits** from 4: \\(\binom{4}{2} = 6\\)
 
 \\[
-\text{Favorable hands} = 13 \times 4 \times 12 \times 6 = 3,\!744
+\text{Favorable hands} = 13 \times 4 \times 12 \times 6 = 3,744
 \\]
 \\[
-\text{Probability} = \frac{3,\!744}{2,\!598,\!960} \approx \boxed{0.001440}
+\text{Probability} = \frac{3,744}{2,598,960} \approx \boxed{0.001440}
 \\]
 
 ---
@@ -67,10 +67,10 @@ We'll calculate the number of favorable hands for each case and divide by this t
 - Choose any 1 suit for that card: 4
 
 \\[
-\text{Favorable hands} = 78 \times 6 \times 6 \times 11 \times 4 = 123,\!552
+\text{Favorable hands} = 78 \times 6 \times 6 \times 11 \times 4 = 123,552
 \\]
 \\[
-\text{Probability} = \frac{123,\!552}{2,\!598,\!960} \approx \boxed{0.047539}
+\text{Probability} = \frac{123,552}{2,598,960} \approx \boxed{0.047539}
 \\]
 
 ---
