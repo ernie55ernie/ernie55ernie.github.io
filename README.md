@@ -33,6 +33,7 @@ bundle exec jekyll serve
 
 - [Creating a GitHub Pages site with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll)
 - [Jekyll serve fails on Ruby 3.0](https://github.com/jekyll/jekyll/issues/8523)
+- [Symbols and Functions in KaTeX](https://utensil-site.github.io/available-in-katex/)
 
 ## Solved Environment Problems
 - [Could not find commonmarker-0.17 1.3 in any of the sources](https://github.com/jekyll/jekyll/issues/7274)
