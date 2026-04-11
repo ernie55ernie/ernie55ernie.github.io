@@ -40,5 +40,13 @@ permalink: /about/
 * [14] [Toward Trustworthy Artificial Intelligence: An Integrated Framework Approach Mitigating Threats](https://ieeexplore.ieee.org/abstract/document/10660603)
 * [15] [P4USE: P4-Based User Equipment Fingerprinting for Mitigating DoS Signaling Attacks on the 5 G Control Plane](https://ieeexplore.ieee.org/abstract/document/11365964)
 
+# Professional Service
+* Journal article reviewer
+  * IEEE Transactions on Fuzzy Systems (1 manuscripts reviewed)
+  * Journal of Ambient Intelligence and Humanized Computing (1 manuscripts reviewed)
+  * The Journal of Supercomputing (2 manuscripts reviewed)
+  * International Journal of Data Science and Analytics (1 manuscripts reviewed)
+  * Frontiers in Artificial Intelligence, section AI in Business (1 manuscripts reviewed)
+
 # E-mail
 [ernie55ernie@zohomail.com](ernie55ernie@zohomail.com)
