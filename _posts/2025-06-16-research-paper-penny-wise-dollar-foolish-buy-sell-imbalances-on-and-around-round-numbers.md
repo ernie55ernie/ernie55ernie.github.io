@@ -78,4 +78,4 @@ This paper is a classic in behavioral finance and market microstructure. It not 
 
 # Reference
 
-* [1] Penny Wise, Dollar Foolish: Buy-Sell Imbalances On and Around Round Numbers (https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1569922)
+* [1] [Penny Wise, Dollar Foolish: Buy-Sell Imbalances On and Around Round Numbers](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1569922)
