@@ -47,6 +47,7 @@ permalink: /about/
   * The Journal of Supercomputing (2 manuscripts reviewed)
   * International Journal of Data Science and Analytics (1 manuscripts reviewed)
   * Frontiers in Artificial Intelligence, section AI in Business (1 manuscripts reviewed)
+  * Scientific Reports (1 manuscripts reviewed)
 
 # E-mail
 [ernie55ernie@zohomail.com](ernie55ernie@zohomail.com)
