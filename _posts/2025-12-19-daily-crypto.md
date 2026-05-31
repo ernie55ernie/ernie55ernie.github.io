@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BOJ Hike Sparks Crypto Whipsaw and Liquidation Wave"
 date: 2025-12-19
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

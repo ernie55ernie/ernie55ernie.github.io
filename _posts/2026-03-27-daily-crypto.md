@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Pullback Amid Fear and Regulatory Shifts"
 date: 2026-03-27
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

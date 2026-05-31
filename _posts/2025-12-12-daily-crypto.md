@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Slips on Hawkish Fed as Kwon Sentenced"
 date: 2025-12-12
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

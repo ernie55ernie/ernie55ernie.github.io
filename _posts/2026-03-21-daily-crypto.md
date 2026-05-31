@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds Near 70K"
 date: 2026-03-21
-category: crpyto
+category: crypto
 ---
 
 # Market Overview (24h)

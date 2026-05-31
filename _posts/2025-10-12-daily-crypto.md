@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Tariff Shock: $19B Liquidations, ETF Inflows Persist"
 date: 2025-10-12
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

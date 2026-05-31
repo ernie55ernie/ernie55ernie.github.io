@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Holds Above $90K Ahead of CLARITY Vote"
 date: 2026-01-13
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24H)
 

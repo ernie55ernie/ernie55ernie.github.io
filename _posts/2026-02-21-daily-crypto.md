@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Altcoin Rotation Builds as Market Stays Quiet"
 date: 2026-02-21
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

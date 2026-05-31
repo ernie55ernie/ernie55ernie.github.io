@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Post-Liquidation Chop as Leverage Resets Across Crypto"
 date: 2025-12-07
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

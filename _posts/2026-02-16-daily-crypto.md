@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Ethereum Shifts Leadership, Security Dashboard Launches"
 date: 2026-02-16
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Solana Surges as Tokenized Bond Issuance Advances"
 date: 2025-12-15
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

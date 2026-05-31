@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC 106K Rebound; Altcoins, Privacy Surge"
 date: 2025-11-10
-category: crpyto
+category: crypto
 ---
 
 ## Daily Cryptocurrency Market Brief

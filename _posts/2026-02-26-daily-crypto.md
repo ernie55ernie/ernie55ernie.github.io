@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Rebounds as Tokenization Race Accelerates"
 date: 2026-02-26
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

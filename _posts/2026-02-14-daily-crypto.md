@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - CLARITY Act Looms as Crypto Rebounds"
 date: 2026-02-14
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

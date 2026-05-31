@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - SEC-CFTC Talks, CLARITY Markup, Options Expiry Loom"
 date: 2026-01-29
-category: crpyto
+category: crypto
 ---
 ### **Market Overview**
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin ETFs Bleed While SGX Debuts Crypto Perps"
 date: 2025-11-24
-category: crpyto
+category: crypto
 ---
 ## **Market Overview (24h)**
 

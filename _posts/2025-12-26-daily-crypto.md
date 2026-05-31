@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Holds $88K as Record Options Expire"
 date: 2025-12-26
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

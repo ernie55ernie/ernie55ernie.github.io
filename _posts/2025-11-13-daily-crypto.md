@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds $100K; XRP ETF Goes Live"
 date: 2025-11-13
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

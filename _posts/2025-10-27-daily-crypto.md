@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rallies on US-China Thaw, Fed Cut Bets"
 date: 2025-10-27
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

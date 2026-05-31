@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Holds $71K as ETF Momentum Builds"
 date: 2026-03-15
-category: crpyto
+category: crypto
 ---
 
 # Market Overview (24h)

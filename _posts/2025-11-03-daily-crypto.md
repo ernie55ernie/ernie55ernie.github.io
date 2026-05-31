@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Market Slides: Liquidations Spike, Balancer Exploited"
 date: 2025-11-03
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

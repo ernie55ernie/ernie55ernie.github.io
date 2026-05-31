@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Fusaka Upgrade, Upbit Hack and Fed Jitters Shape Crypto"
 date: 2025-12-04
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

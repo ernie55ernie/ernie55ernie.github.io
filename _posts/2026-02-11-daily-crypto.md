@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Risk-Off Slide as Tether Backs LayerZero"
 date: 2026-02-11
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Capitulation: Bitcoin Wipes Out 2025 Gains"
 date: 2025-11-18
-category: crpyto
+category: crypto
 ---
 ### Market Overview (24h)
 

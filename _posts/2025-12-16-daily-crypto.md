@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slides Below $87K as Macro Jitters Hit Crypto"
 date: 2025-12-16
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

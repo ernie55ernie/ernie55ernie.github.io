@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Stabilizes as Leverage Resets and Regulation Tightens"
 date: 2025-11-25
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

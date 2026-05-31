@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC ~$119K, ETH Outperforms as $5.3B Options Expire"
 date: 2025-10-09
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

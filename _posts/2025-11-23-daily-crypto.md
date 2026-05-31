@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Rebounds as Cardano Recovers and Alt ETFs Surge"
 date: 2025-11-23
-category: crpyto
+category: crypto
 ---
 ### Market Overview (24h to 48h)
 

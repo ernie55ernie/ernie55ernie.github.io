@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Stablecoin Surge as Politics and Security Drive Risk"
 date: 2025-12-31
-category: crpyto
+category: crypto
 ---
 
 ## MARKET OVERVIEW (24H)

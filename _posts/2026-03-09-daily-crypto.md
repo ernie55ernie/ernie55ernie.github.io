@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Slips as Policy Fights Cloud Outlook"
 date: 2026-03-09
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

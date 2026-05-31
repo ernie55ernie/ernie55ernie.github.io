@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Breaks $80K as Liquidations Surge, Fear Spikes"
 date: 2026-02-01
-category: crpyto
+category: crypto
 ---
 
 ### **MARKET OVERVIEW**

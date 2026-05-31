@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC rebounds; leverage flushed, Fed in focus"
 date: 2025-10-20
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h) — Monday, October 20, 21:36 UTC (05:36 Taipei)**

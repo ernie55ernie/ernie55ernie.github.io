@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Liquidation Cascade Hits BTC, Regulators Signal Policy Shift"
 date: 2026-01-30
-category: crpyto
+category: crypto
 ---
 ### **MARKET OVERVIEW**
 

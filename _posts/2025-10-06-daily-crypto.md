@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Soft Session; Record OI, CME 24/7 Plan"
 date: 2025-10-06
-category: crpyto
+category: crypto
 ---
 
 **Market Summary**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Tether Buys Bitcoin as Regulation Tightens"
 date: 2026-01-01
-category: crpyto
+category: crypto
 ---
 ### MARKET OVERVIEW (24h Snapshot)
 

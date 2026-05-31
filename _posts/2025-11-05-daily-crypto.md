@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Tests $100K as $2B Liquidations Hit"
 date: 2025-11-05
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview (24h)**

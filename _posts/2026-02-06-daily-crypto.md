@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Capitulation as BTC Breaks $63K, Liquidations Surge"
 date: 2026-02-06
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

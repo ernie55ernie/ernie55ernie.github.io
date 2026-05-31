@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Coinbase Tokenized Stocks Loom as Ribbon Hack Shakes DeFi"
 date: 2025-12-13
-category: crpyto
+category: crypto
 ---
 ### Market Overview (24h)
 

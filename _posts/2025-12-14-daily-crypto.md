@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Ethereum Shanghai Goes Live as BTC Holds $90K"
 date: 2025-12-14
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

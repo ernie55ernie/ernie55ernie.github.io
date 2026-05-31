@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Pauses Slide as Leverage and ETF Risks Build"
 date: 2025-11-19
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

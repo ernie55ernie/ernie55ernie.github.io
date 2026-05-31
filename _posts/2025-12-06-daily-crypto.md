@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Pulls Back as Derivatives Signal Range-Bound BTC"
 date: 2025-12-06
-category: crpyto
+category: crypto
 ---
 Market Overview (24h)
 

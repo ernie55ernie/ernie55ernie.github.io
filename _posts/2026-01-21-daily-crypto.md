@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Breaks $90K as Crypto Risk-Off Deepens"
 date: 2026-01-21
-category: crpyto
+category: crypto
 ---
 
 ### **MARKET OVERVIEW**

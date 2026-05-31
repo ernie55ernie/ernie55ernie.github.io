@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Steady as Rules Shift"
 date: 2026-03-18
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

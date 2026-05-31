@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slips as Institutions Expand Crypto Access"
 date: 2026-01-17
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview**

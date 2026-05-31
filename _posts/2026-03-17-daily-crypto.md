@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Lift Crypto, Risks Remain"
 date: 2026-03-17
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC dips; leverage flushed, ETF outflows, Ark L2"
 date: 2025-10-21
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BitGo Debut, MiCA Push, and US Regulatory Signals"
 date: 2026-01-23
-category: crpyto
+category: crypto
 ---
 
 ### MARKET OVERVIEW

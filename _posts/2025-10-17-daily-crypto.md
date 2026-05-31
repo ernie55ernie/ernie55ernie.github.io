@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Bleeds: $1.2B Liquidations, ETF Outflows"
 date: 2025-10-17
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Slides Below $100K; Options Expiry Looms"
 date: 2025-11-14
-category: crpyto
+category: crypto
 ---
 
 ## Market Snapshot & Price Action

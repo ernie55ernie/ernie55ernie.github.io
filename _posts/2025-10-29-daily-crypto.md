@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Steadies Pre-Fed; BNB Jumps, ETF Momentum"
 date: 2025-10-29
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h to UTC)

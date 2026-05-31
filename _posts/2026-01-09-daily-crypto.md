@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Steady as Truebit Hack Shocks DeFi"
 date: 2026-01-09
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

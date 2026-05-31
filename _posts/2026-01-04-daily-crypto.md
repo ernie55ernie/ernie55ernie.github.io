@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Lift Crypto Above Key Levels"
 date: 2026-01-04
-category: crpyto
+category: crypto
 ---
 
 ### MARKET OVERVIEW

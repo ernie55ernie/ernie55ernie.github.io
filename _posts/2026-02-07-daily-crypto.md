@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Relief Rally Despite ETF Outflows and Regulatory Tightening"
 date: 2026-02-07
-category: crpyto
+category: crypto
 ---
 Market Overview (24h)
 

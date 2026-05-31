@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Deleveraging Deepens as Bitcoin Slips Below $80K"
 date: 2026-02-04
-category: crpyto
+category: crypto
 ---
 
 ### **MARKET OVERVIEW**

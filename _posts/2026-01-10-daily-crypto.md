@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Steady as US Crypto Regulation Nears Vote"
 date: 2026-01-10
-category: crpyto
+category: crypto
 ---
 
 **Market Overview (24h)**

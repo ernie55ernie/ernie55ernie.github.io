@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC $111K, HK SOL ETF, Selig Named CFTC"
 date: 2025-10-25
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

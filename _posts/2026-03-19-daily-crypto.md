@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rally on ETF Flows & Policy Shifts"
 date: 2026-03-19
-category: crpyto
+category: crypto
 ---
 
 # Market Overview (24h)

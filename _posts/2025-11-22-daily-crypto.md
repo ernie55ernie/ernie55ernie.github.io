@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Bounces, ETF Flows Turn Green Amid Ongoing Fear"
 date: 2025-11-22
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

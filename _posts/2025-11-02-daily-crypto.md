@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds $110K; ETFs Rebound, Hacks Plunge"
 date: 2025-11-02
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

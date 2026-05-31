@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Consolidates as Altcoins Outperform"
 date: 2026-02-19
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

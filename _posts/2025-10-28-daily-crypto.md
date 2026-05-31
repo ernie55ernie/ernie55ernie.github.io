@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Markets Consolidate Pre-FOMC; HBAR Soars on ETF Debut"
 date: 2025-10-28
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds $100K, ETFs Inflow, DeFi Risks Persist"
 date: 2025-11-08
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

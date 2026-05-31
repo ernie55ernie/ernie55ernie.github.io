@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - SEC Tokenization Push and CFTC Spot Crypto Shift"
 date: 2025-12-08
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

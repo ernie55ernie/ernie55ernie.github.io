@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Steadies After Hawkish Fed Cut and Outflows"
 date: 2025-12-11
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h Snapshot)

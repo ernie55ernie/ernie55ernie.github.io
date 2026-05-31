@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Dips as Binance Launches Gold Perps"
 date: 2026-01-08
-category: crpyto
+category: crypto
 ---
 Market Overview (24h)
 

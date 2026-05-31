@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Memecoins Rip as USDC Liquidity Rises"
 date: 2026-02-15
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

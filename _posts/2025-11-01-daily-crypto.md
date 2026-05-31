@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Around $110K; XRP Pops, Derivatives Surge"
 date: 2025-11-01
-category: crpyto
+category: crypto
 ---
 
 **Spot Market Performance (24h)**

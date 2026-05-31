@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Near $96K as ETH Jumps on ETF Inflows"
 date: 2026-01-14
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview

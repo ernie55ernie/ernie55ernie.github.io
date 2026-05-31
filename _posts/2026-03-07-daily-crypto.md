@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Kraken Fed Access Meets Crypto Pullback"
 date: 2026-03-07
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

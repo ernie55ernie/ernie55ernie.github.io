@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Consolidates as ETF Inflows Support BTC"
 date: 2026-03-01
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

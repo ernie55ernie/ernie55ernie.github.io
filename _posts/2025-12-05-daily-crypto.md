@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Steady as SEC Project Crypto Shapes Outlook"
 date: 2025-12-05
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Outflows, Quantum Push, Key Support Test"
 date: 2026-01-25
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview**

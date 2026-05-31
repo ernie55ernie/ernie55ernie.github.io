@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Slips; CFTC Bill, UNI Overhaul, CPI Ahead"
 date: 2025-11-11
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24 Hours)**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC ~$112K as $755M ETF Outflows Hit; Powell Looms, Stablecoins at $310B"
 date: 2025-10-14
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

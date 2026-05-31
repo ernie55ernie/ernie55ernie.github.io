@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Consolidates as Derivatives Turn Risk-On"
 date: 2026-02-17
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

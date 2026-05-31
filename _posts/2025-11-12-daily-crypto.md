@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds $102K; XRP ETF Nears, SOL Inflows"
 date: 2025-11-12
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

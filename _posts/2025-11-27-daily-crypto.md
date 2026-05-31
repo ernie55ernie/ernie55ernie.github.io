@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Rebounds Above 90K Amid Upbit Hack, Senate Bill"
 date: 2025-11-27
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

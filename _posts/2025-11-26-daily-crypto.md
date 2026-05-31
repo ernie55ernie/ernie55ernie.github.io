@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Outflows, Balancer Hack and Naver-Upbit Mega Deal"
 date: 2025-11-26
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Outflows Persist as CME Goes 24/7"
 date: 2026-02-20
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

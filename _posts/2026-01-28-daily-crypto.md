@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Fed Decision Day: BTC Range, Options, Asia Curbs"
 date: 2026-01-28
-category: crpyto
+category: crypto
 ---
 ## Market Overview
 

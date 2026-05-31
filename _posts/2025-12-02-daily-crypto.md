@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Deleveraging, Tether Downgrade and DeFi Hacks Rock Crypto"
 date: 2025-12-02
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

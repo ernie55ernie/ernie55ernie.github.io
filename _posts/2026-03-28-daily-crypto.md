@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Market Stabilizes Amid Mixed Signals"
 date: 2026-03-28
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

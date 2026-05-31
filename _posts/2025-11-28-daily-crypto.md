@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Markets Mixed as BTC Slips, ETH and BNB Rise"
 date: 2025-11-28
-category: crpyto
+category: crypto
 ---
 ### **Market Overview (24h)**
 

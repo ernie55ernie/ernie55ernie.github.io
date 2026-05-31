@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slides Toward $70K as Risk-Off Persists"
 date: 2026-02-05
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

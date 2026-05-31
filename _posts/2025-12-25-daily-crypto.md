@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Steady, Altcoins Weak, Options OI Elevated"
 date: 2025-12-25
-category: crpyto
+category: crypto
 ---
 ### **Market Overview (24h)**
 
