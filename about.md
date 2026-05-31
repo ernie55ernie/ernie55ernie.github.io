@@ -8,10 +8,10 @@ permalink: /about/
 | <img src="/assets/head.jpg" alt="Head" style="width: 200px;"/> | **Name** Ernie Chang<br>**Motto** Excellence through Diversity<br>**Hobby** Research, Swimming, Bicycling<br>**Field** Quant;Cybersecurity;Artificial Intelligence |
 
 # Experience / Education
-* **Quantative Researcher**
+* **Quantitative Researcher**
   * Kronos Research (2025-)
 * **Doctor of Philosophy**
-  * Doctoral Program in Cyber Security of Electrical Engineering, National Taiwan Univerity, Taipei (2021-2026)
+  * Doctoral Program in Cyber Security of Electrical Engineering, National Taiwan University, Taipei (2021-2026)
 * **Master Degree of Science**
   * Graduate Institute of Communication Engineering, National Taiwan Univerity, Taipei (2017-2019)
 * **Bachelor Degree of Science**
