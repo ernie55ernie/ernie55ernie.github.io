@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slides as ETF Outflows and Hacks Deepen Fear"
 date: 2025-11-21
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview (24h)**

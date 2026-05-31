@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Year-End Selloff as Trust Wallet Fallout Lingers"
 date: 2025-12-30
-category: crpyto
+category: crypto
 ---
 ### **Market Overview (24h)**
 

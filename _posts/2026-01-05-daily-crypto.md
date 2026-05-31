@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Near $93K as ETFs Reignite Risk Appetite"
 date: 2026-01-05
-category: crpyto
+category: crypto
 ---
 
 ### **MARKET OVERVIEW**

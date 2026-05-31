@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - DeFi Shock, Slow Grind"
 date: 2026-03-24
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

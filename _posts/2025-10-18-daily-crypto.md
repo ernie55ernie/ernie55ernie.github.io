@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Slips; Shorts Crowded, ETF Outflows"
 date: 2025-10-18
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview (24h)**

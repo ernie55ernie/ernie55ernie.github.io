@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Slides as OKX, ETFs Lift Structure"
 date: 2026-03-08
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

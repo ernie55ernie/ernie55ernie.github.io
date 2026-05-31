@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - SAFU Buys BTC as Markets Rebound on Stablecoin Liquidity"
 date: 2026-02-09
-category: crpyto
+category: crypto
 ---
 Market Overview (24h)
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Hovers Near Lows as ETF Outflows Persist"
 date: 2026-02-02
-category: crpyto
+category: crypto
 ---
 
 ## MARKET OVERVIEW

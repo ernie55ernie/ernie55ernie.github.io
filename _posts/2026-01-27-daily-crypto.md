@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Relief Bounce, Alt ETF Race, Fed Looms"
 date: 2026-01-27
-category: crpyto
+category: crypto
 ---
 
 ### **MARKET OVERVIEW**

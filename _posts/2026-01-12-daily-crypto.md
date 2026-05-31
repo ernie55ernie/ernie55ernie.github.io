@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Steady as U.S. Crypto Vote Looms"
 date: 2026-01-12
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

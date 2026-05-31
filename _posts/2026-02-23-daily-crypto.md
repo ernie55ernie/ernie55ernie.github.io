@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slides Below 65K Amid Tariff Shock"
 date: 2026-02-23
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

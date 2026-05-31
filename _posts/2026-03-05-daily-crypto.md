@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC 73K: Kraken Fed Rails, ETF Inflows, US Perps Near"
 date: 2026-03-05
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

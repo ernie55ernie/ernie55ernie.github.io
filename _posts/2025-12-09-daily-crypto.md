@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - FOMC Looms, SEC Clears Ondo, Eyes Privacy Rules"
 date: 2025-12-09
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview**

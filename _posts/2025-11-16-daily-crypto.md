@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Holds $95K as ETH Rebounds"
 date: 2025-11-16
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

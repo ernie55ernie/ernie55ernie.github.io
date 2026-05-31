@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Pauses as Upbit Hack Fuels Security Jitters"
 date: 2025-11-30
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

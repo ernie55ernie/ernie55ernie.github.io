@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Bleed, PQ Pivot, Fed Week Volatility"
 date: 2026-01-26
-category: crpyto
+category: crypto
 ---
 ### **MARKET OVERVIEW**
 

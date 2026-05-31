@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slides as Tariff Fears Spark Crypto Risk-Off"
 date: 2026-01-20
-category: crpyto
+category: crypto
 ---
 
 ## **MARKET OVERVIEW (24H)**

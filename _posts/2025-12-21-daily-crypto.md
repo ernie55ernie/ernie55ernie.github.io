@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Volumes Slide as Stablecoins Hold Steady"
 date: 2025-12-21
-category: crpyto
+category: crypto
 ---
 ### **MARKET OVERVIEW (24H)**
 

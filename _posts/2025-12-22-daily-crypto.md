@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Reclaims $89K as Year-End Volatility Builds"
 date: 2025-12-22
-category: crpyto
+category: crypto
 ---
 ### **MARKET OVERVIEW**
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Stabilizes After Crash as Liquidity Drains Deepen"
 date: 2026-01-31
-category: crpyto
+category: crypto
 ---
 
 ## MARKET OVERVIEW

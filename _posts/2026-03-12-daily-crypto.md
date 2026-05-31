@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BlackRock ETHB Debuts as Crypto Steadies"
 date: 2026-03-12
-category: crpyto
+category: crypto
 ---
 **Market Overview (24h)**
 

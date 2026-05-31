@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rebounds as Stablecoins Hit Record High"
 date: 2026-03-10
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

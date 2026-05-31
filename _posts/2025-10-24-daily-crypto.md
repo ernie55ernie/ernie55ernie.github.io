@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Rises; CPI Today, JPM Collateral, CZ Pardon"
 date: 2025-10-24
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

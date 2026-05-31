@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Return as BTC Holds 70K"
 date: 2026-02-10
-category: crpyto
+category: crypto
 ---
 
 **Market Overview (24h)**

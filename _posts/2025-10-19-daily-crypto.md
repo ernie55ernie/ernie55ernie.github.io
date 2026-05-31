@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Drifts Lower; ETF Outflows, Leverage Reset"
 date: 2025-10-19
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

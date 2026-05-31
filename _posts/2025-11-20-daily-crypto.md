@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Holds Support as Solana ETFs Drive Rotation"
 date: 2025-11-20
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

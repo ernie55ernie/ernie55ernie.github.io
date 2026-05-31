@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Rebounds as CFTC Pilot and Fed Loom"
 date: 2025-12-10
-category: crpyto
+category: crypto
 ---
 ### **Market Overview (24h)**
 

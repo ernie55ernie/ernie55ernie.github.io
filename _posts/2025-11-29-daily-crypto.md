@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Steady Near 90K Amid CME Outage Calm"
 date: 2025-11-29
-category: crpyto
+category: crypto
 ---
 ### **Market Overview**
 

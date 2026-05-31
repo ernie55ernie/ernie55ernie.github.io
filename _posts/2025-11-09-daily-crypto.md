@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Near $100K: Whale Dump, ETF Outflows, DeFi Woes"
 date: 2025-11-09
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

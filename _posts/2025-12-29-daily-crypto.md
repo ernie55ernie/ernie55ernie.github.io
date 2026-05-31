@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Trust Wallet Breach and Flow Exploit Shake Markets"
 date: 2025-12-29
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

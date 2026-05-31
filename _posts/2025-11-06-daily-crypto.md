@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Market Rebounds: BTC $103K, Ripple & ZEC Surge"
 date: 2025-11-06
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

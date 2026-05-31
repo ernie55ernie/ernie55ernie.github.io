@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - China Crackdown and DeFi Hack Hit Crypto"
 date: 2025-12-01
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

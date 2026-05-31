@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Options Expiry Lifts Crypto Into 2026"
 date: 2026-01-02
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview

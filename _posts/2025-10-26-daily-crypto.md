@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Rises as US-China Thaw Sparks Crypto Rebound"
 date: 2025-10-26
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

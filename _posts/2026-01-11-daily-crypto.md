@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Consolidates as Senate Vote Nears"
 date: 2026-01-11
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BNB ETF Filing, Fed Watch, Stablecoin Shift"
 date: 2026-01-24
-category: crpyto
+category: crypto
 ---
 ### **Market Overview (24h)**
 

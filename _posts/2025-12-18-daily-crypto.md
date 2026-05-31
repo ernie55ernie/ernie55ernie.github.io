@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Consolidates as ETF Inflows Rebound and Risks Rise"
 date: 2025-12-18
-category: crpyto
+category: crypto
 ---
 ### Market Overview (24h Snapshot)
 

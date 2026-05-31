@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Return as Crypto Rebounds"
 date: 2026-02-27
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

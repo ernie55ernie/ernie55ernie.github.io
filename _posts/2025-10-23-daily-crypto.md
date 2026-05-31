@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Steadies; ETFs Rebound, CPI Looms"
 date: 2025-10-23
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Flat as DOJ, Tether Crack Down on USDT"
 date: 2026-01-18
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview (24H)**

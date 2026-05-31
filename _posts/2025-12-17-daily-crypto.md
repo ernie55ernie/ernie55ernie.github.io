@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Stabilizes Near $88K as SEC Closes Aave Probe"
 date: 2025-12-17
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

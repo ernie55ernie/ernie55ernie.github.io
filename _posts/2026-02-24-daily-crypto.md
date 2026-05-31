@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Slips as IoTeX Hack Fallout Lingers"
 date: 2026-02-24
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

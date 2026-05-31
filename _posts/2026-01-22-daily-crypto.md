@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BitGo IPO and Clarity Act Shape Crypto Outlook"
 date: 2026-01-22
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview

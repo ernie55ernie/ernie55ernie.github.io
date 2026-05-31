@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Altcoin Bounce Despite Elevated Security Risks"
 date: 2026-03-02
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

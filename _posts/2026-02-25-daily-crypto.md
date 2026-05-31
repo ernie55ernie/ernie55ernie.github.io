@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Drifts Lower as Markets Turn Quiet"
 date: 2026-02-25
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

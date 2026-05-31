@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Holds $95K as CLARITY Delay Weighs"
 date: 2026-01-16
-category: crpyto
+category: crypto
 ---
 ### Market Overview
 

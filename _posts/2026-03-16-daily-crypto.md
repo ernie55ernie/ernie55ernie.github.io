@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rally, ETF Flows, DeFi Risks"
 date: 2026-03-16
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Consolidation Amid Regulatory Clarity and Market Volatility"
 date: 2026-03-23
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

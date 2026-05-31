@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Tariff Shock Slams Crypto: Record $19B Liquidations as BTC Rebounds to ~$112K"
 date: 2025-10-11
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

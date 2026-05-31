@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETFs Mixed; Crypto Slips After Historic Liquidations"
 date: 2025-10-16
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

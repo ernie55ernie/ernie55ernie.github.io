@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - DeFi Shock: $1.37B Liquidations, BTC Near $104K"
 date: 2025-11-04
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h Snapshot)

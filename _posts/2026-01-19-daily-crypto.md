@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Tariff Fears Hit Bitcoin Despite Strong ETF Inflows"
 date: 2026-01-19
-category: crpyto
+category: crypto
 ---
 ## MARKET OVERVIEW (24H)
 

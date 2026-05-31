@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Holds as Derivatives Signal Caution"
 date: 2026-03-13
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

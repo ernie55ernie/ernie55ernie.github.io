@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Lift BTC; CFTC Perps, FATF Stablecoin Warning"
 date: 2026-03-04
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

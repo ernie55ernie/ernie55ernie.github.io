@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Institutions Accumulate as Bitcoin Stays Under Pressure"
 date: 2026-02-18
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

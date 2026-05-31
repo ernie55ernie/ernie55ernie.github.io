@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Leverage Builds Amid Consolidation"
 date: 2026-01-07
-category: crpyto
+category: crypto
 ---
 
 Market Overview

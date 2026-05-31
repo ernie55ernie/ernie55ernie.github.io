@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Near $97K as CLARITY Vote Drives Volatility"
 date: 2026-01-15
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

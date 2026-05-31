@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Awaits Jan 15 Regulatory Catalyst"
 date: 2026-01-03
-category: crpyto
+category: crypto
 ---
 ## **Market Overview (24h)**
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Steady as Crypto Holds Near $2.4T"
 date: 2026-03-14
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24h)

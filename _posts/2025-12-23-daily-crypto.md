@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Deribit Expiry Looms as Crypto Holds Extreme Fear"
 date: 2025-12-23
-category: crpyto
+category: crypto
 ---
 ### MARKET OVERVIEW (24H)
 

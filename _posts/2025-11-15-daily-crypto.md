@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Slides to $94K; ETFs See Heavy Outflows"
 date: 2025-11-15
-category: crpyto
+category: crypto
 ---
 
 ### Market Overview (24h)

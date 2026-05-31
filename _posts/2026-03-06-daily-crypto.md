@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC Near 70K as ETF Flows Whipsaw"
 date: 2026-03-06
-category: crpyto
+category: crypto
 ---
 ## Market Overview
 

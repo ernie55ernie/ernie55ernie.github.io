@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - BTC ~$112.5K in ‘Fear’ Zone; ETFs Mixed, Stablecoins Top $300B"
 date: 2025-10-15
-category: crpyto
+category: crypto
 ---
 
 ## **Market Overview (24h)**

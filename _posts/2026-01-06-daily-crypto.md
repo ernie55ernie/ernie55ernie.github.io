@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Bitcoin Near $95K as XRP Leads Altcoin Surge"
 date: 2026-01-06
-category: crpyto
+category: crypto
 ---
 ### **MARKET OVERVIEW**
 

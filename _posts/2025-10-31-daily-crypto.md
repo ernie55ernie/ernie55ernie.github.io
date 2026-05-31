@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Halloween Options Expiry: Crypto Slips, Policy Tailwinds"
 date: 2025-10-31
-category: crpyto
+category: crypto
 ---
 
 ## Market Overview (24-Hour Snapshot)

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Rebounds as ETF Outflows Persist"
 date: 2025-12-20
-category: crpyto
+category: crypto
 ---
 ### Market Overview
 

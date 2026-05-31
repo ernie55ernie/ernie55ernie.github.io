@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Aztec TGE Sparks Volatility Amid Regulatory Shifts"
 date: 2026-02-12
-category: crpyto
+category: crypto
 ---
 
 Market Overview (24h)

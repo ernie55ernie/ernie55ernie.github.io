@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - Crypto Dips; Fed Pauses Cuts, Options Expiry Looms"
 date: 2025-10-30
-category: crpyto
+category: crypto
 ---
 
 ### **Market Overview (24h)**

@@ -2,7 +2,7 @@
 layout: post
 title: "Daily Crypto Market Brief - ETF Inflows Fuel BTC Near 70k, ETH Roadmap Boost"
 date: 2026-03-03
-category: crpyto
+category: crypto
 ---
 ## Market Overview (24h)
 
