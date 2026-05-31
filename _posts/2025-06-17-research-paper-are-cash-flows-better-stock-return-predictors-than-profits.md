@@ -3,7 +3,7 @@ layout: post
 title: "Research Paper Are Cash Flows Better Stock Return Predictors Than Profits?"
 date: 2025-06-17
 category: trading
------------------
+---
 
 ### Summary
 

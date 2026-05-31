@@ -22,7 +22,6 @@ markdown: kramdown
 kramdown:
     math_engine: katex
 
-url: "https://ernie55ernie.github.io/"
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
