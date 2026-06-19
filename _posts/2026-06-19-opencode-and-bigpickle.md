@@ -1,67 +1,647 @@
 ---
 layout: post
-title: "OpenCode and BigPickle"
+title: "OpenCode and BigPickle: Open-Source Coding Agent and Free Stealth Model"
 date: 2026-06-19
 category: llm
 ---
 
+# OpenCode and BigPickle: Open-Source Coding Agent and Free Stealth Model
+
 ## Executive Summary
 
-OpenCode is a mature, fast-moving open-source coding agent centered on a terminal-first workflow, but it now spans a desktop app, IDE extension, headless HTTP server, JS/TS SDK, GitHub Actions integration, LSP support, and MCP-based tool extension. Its strongest differentiators are provider-agnostic model access, a granular permission system, built-in primary and subagent roles, and a configuration system that works at user, project, organization, and managed-enterprise levels. The core repository is MIT-licensed, and the project was showing `v1.17.8` as the latest release on June 17, 2026, with recent release notes focused on MCP reliability, OpenAI-compatible tool schema fixes, and faster session timelines. citeturn2view2turn14view0turn6view7turn12view5turn12view4
+OpenCode is an open-source AI coding agent designed around a terminal-first workflow, while also supporting desktop, IDE, GitHub Actions, server, SDK, and MCP-based integrations. It is best understood as a local, provider-agnostic coding-agent runtime rather than just another chat interface for code.
 
-BigPickle is not documented as a conventional public model with a model card; OpenCode describes it only as a **stealth model** that is **free on OpenCode for a limited time**. Officially, the practical facts that are clear today are: model ID `opencode/big-pickle`, `chat/completions` endpoint family, 200k context, 32k output, zero token price during the free period, and a privacy exception stating that collected data **may be used to improve the model** during that period. That makes BigPickle attractive as a zero-cost large-context option, but much weaker than named alternatives on provenance, compliance due diligence, and predictability. citeturn23view0turn19view0turn24view0
+BigPickle is a stealth model currently available through OpenCode for free for a limited time. It is attractive because it gives users a large-context, zero-cost coding model inside OpenCode. However, because it is a stealth model, its exact provider, training background, and model card are not publicly disclosed. That makes it useful for experimentation, but risky for confidential code or production-critical decisions.
 
-The most sensible practical posture is: use **OpenCode** when you want a local-first, model-flexible coding agent with strong operator control; use **BigPickle** when cost is the main constraint and the task is exploratory, non-sensitive, and easy to validate. Avoid BigPickle for regulated or confidential code, and avoid relying on it as your sole production model until you have validated its behavior on your repository, because community issue reports in 2026 include rule-following failures, premature stopping, unexpected language drift, and transient routing or compatibility bugs after upgrades. citeturn12view1turn6view2turn24view0turn20view0turn20view1turn20view2turn20view3
+The practical recommendation is simple:
 
-## Overview
+Use **OpenCode** as a serious open-source coding-agent environment.
 
-OpenCode describes itself as an open-source AI coding agent available as a terminal interface, desktop app, and IDE extension. The public product page also emphasizes LSP support, multi-session work, share links, GitHub Copilot login, ChatGPT Plus/Pro login, and access to “75+” providers through Models.dev, including local models. In practice, that places OpenCode between a classic terminal pair-programmer and a more extensible agent platform. citeturn2view0turn2view1turn6view7
+Use **BigPickle** as a free, temporary, large-context exploration model.
 
-Architecturally, OpenCode has a relatively clean split: a user-facing shell surface area (TUI, CLI, IDE, desktop, GitHub workflow, web/headless server), a configurable agent layer, and an execution layer that combines providers, built-in tools, LSP, MCP tools, and project-local state. The agent layer includes two built-in primary agents—**Build** and **Plan**—and several built-in subagents such as **General**, **Explore**, and **Scout**. Build is the full-access default; Plan is intentionally restricted and asks before edits or bash execution. citeturn12view1turn7view4
+Do **not** treat BigPickle as a fully vetted production model unless you have tested it carefully on your own repository and are comfortable with the privacy and reliability trade-offs.
+
+---
+
+## 1. What Is OpenCode?
+
+OpenCode is an open-source AI coding agent. Its core idea is to let developers work with AI directly inside their normal engineering environment: terminal, editor, repository, and automation pipeline.
+
+Unlike a simple chatbot, OpenCode can inspect files, edit code, run shell commands, use language-server information, call tools, and connect to many different model providers. This makes it closer to a coding-agent operating layer.
+
+OpenCode supports several usage surfaces:
+
+- Terminal UI
+- Command-line one-shot mode
+- Desktop app
+- IDE extension
+- GitHub Actions integration
+- Headless server mode
+- JavaScript / TypeScript SDK
+- MCP server integrations
+- Local and hosted model providers
+
+The important point is that OpenCode is not tied to one model vendor. It can use models from many providers through its provider system. This is one of its biggest advantages compared with more closed coding-agent tools.
+
+---
+
+## 2. OpenCode Architecture
+
+At a high level, OpenCode has four layers:
+
+```mermaid
+flowchart TD
+    User[Developer] --> UI[OpenCode UI Layer]
+    UI --> Agent[Agent Layer]
+    Agent --> Tools[Tool Layer]
+    Agent --> Models[Model Provider Layer]
+    Tools --> Repo[Local Repository]
+    Tools --> Shell[Shell Commands]
+    Tools --> LSP[Language Server]
+    Tools --> MCP[MCP Tools]
+    Models --> Hosted[Hosted Models]
+    Models --> Local[Local Models]
+````
+
+The user interacts through the terminal, desktop app, IDE, GitHub, or server API. OpenCode then routes the task through its agent layer. The agent can read files, edit files, search the repo, run commands, use LSP context, or call MCP tools.
+
+This design gives OpenCode three important properties:
+
+1. **Model flexibility**
+   You are not locked into one model provider.
+
+2. **Local workflow compatibility**
+   OpenCode works inside your existing repo and development environment.
+
+3. **Agentic execution**
+   It can move beyond suggestions and actually perform multi-step engineering work.
+
+---
+
+## 3. Built-In Agent Modes
+
+OpenCode includes different agent roles. The two most important are:
+
+### Build Mode
+
+Build is the default implementation-oriented agent. It is intended for writing code, editing files, running commands, and completing engineering tasks.
+
+Use Build mode when you already know what you want changed and you are comfortable letting the agent operate on the repository.
+
+Example tasks:
+
+```text
+Refactor this module to remove duplicated validation logic.
+```
+
+```text
+Implement this API endpoint and add tests.
+```
+
+```text
+Fix the failing unit test and explain the root cause.
+```
+
+### Plan Mode
+
+Plan is more cautious. It is better for analysis, architecture review, and task decomposition. It should be used before making large edits.
+
+Example tasks:
+
+```text
+Analyze this repository and propose how to add OAuth login.
+```
+
+```text
+Find the main risk areas before we migrate this service to async I/O.
+```
+
+```text
+Read the codebase and explain where order matching logic lives.
+```
+
+A good OpenCode workflow is:
 
 ```mermaid
 flowchart LR
-    U[User surfaces<br/>TUI / CLI / Desktop / IDE / GitHub Actions] --> A[OpenCode core]
-    A --> AG[Agents<br/>Build / Plan / subagents]
-    A --> T[Built-in tools<br/>read / edit / write / bash / grep / glob / web / todo]
-    A --> L[LSP servers]
-    A --> M[MCP servers]
-    A --> P[Providers via AI SDK + Models.dev]
-    P --> Z[OpenCode Zen / Go]
-    P --> X[Anthropic / OpenAI / local / others]
-    T --> R[Local repo and workspace]
-    L --> R
-    M --> E[External services]
+    A[Open repo] --> B[Run /init]
+    B --> C[Use Plan mode]
+    C --> D[Review proposed approach]
+    D --> E[Switch to Build mode]
+    E --> F[Edit code]
+    F --> G[Run tests]
+    G --> H[Review diff]
 ```
 
-That architecture is reflected directly in the docs. OpenCode uses the AI SDK and Models.dev for provider support; built-in tools include bash, edit, write, read, grep, glob, experimental LSP access, patching, todo management, and web tools; MCP servers can be local or remote and become available alongside built-in tools; and a headless `opencode serve` command exposes an OpenAPI HTTP interface that the SDK can drive programmatically. citeturn6view7turn21view1turn6view3turn12view5turn12view4
+This is safer than starting directly with implementation, especially in large or unfamiliar repositories.
 
-A useful nuance is that OpenCode’s “privacy-first” positioning is real but conditional. The site and enterprise docs say OpenCode does not store your code or context data, and Enterprise is positioned around keeping code and data inside your own infrastructure. However, credentials are stored locally in `~/.local/share/opencode/auth.json`, sessions and logs are stored in local app directories, and the share feature explicitly syncs conversation history to OpenCode servers and exposes it publicly to anyone with the link until you unshare it. That means the secure default is viable, but it is not the only operating mode. citeturn6view6turn6view7turn11view2turn13view0turn13view1
+---
 
-OpenCode’s licensing position is straightforward for the core product: the GitHub repository is MIT-licensed. The more important licensing and policy complexity comes from the model layer, because OpenCode can broker access to third-party models, and Zen’s hosted offerings are governed by service terms and provider-specific data handling. That distinction matters especially for BigPickle, whose upstream identity is intentionally undisclosed. citeturn2view2turn11view1turn24view0
+## 4. What Is BigPickle?
 
-A concise map of official links is below.
+BigPickle is a stealth model available through OpenCode. OpenCode describes it as free for a limited time.
 
-| Resource | What it covers |
-|---|---|
-| OpenCode project site citeturn2view1 | Product overview, install surfaces, privacy positioning |
-| Docs home citeturn2view0 | Installation, configuration, usage, integrations |
-| GitHub repo citeturn2view2 | Source, license, releases, issues, community |
-| Download page citeturn1search4 | CLI, desktop beta, extensions |
-| Zen docs citeturn2view4 | Hosted models, pricing, privacy, BigPickle details |
-| Go docs citeturn11view5 | Low-cost open-model subscription |
-| Models.dev provider page citeturn19view0 | Model metadata such as context, output, and capabilities |
+The important known points are:
 
-A minimal “latest available at time of research” setup looks like this. OpenCode documents install via shell script or package managers, then provider login, project initialization, and model selection through the TUI. BigPickle can be selected through Zen and, in config form, uses the `opencode/<model-id>` naming format. citeturn3view1turn8view0turn22view2turn23view0
+* Model ID: `opencode/big-pickle`
+* It is available through OpenCode / OpenCode Zen.
+* It is free for a limited time.
+* It has a large context window.
+* It is intended for coding-agent usage.
+* It is a stealth model, meaning the exact model identity is not publicly disclosed.
+* During the free period, data may be used to improve the model.
+
+The last two points are the most important caveats.
+
+BigPickle is not like using a clearly named model such as Claude, GPT, Gemini, Qwen, DeepSeek, or Kimi, where the model family and provider are explicitly known. With BigPickle, you are using a model whose identity is intentionally hidden.
+
+That does not automatically mean it is bad. It means due diligence is harder.
+
+---
+
+## 5. Why BigPickle Is Interesting
+
+BigPickle is interesting because coding agents can become expensive quickly.
+
+A coding agent does not only send your current prompt. It may also send:
+
+* File contents
+* Search results
+* Previous conversation state
+* Tool outputs
+* Test logs
+* Stack traces
+* Dependency context
+* Agent instructions
+* Repository-specific rules
+
+This can consume many tokens. A free large-context model is therefore attractive for exploratory coding work.
+
+BigPickle is especially useful when you want to do broad analysis before spending money on a premium model.
+
+For example:
+
+```text
+Explore this repository and summarize the architecture.
+```
+
+```text
+Find all places where authentication logic is implemented.
+```
+
+```text
+Read the main trading strategy files and explain the data flow.
+```
+
+```text
+Generate a migration plan from this old API structure to the new one.
+```
+
+These tasks can require a lot of context but may not need the most expensive model.
+
+---
+
+## 6. Practical Use Cases for OpenCode
+
+### 6.1 Repository Understanding
+
+OpenCode is very useful for understanding an unfamiliar codebase.
+
+Good prompts:
+
+```text
+Explain the architecture of this repository.
+```
+
+```text
+Where does request authentication happen?
+```
+
+```text
+Trace the data flow from ingestion to final output.
+```
+
+```text
+Find the files most relevant to the matching engine.
+```
+
+This is one of the safest uses because the agent can mostly read and summarize before making edits.
+
+---
+
+### 6.2 Refactoring
+
+OpenCode can help perform multi-file refactors.
+
+Example:
+
+```text
+Refactor the duplicated validation logic into a shared helper.
+Make the smallest safe change and run the relevant tests.
+```
+
+This is stronger than manually asking a chatbot for a patch because OpenCode can inspect the real repository and apply edits directly.
+
+However, this should still be reviewed carefully. Agent-generated refactors can introduce subtle behavior changes.
+
+---
+
+### 6.3 Test Generation
+
+OpenCode is useful for generating tests around existing behavior.
+
+Example:
+
+```text
+Add tests for this module before changing the implementation.
+Focus on edge cases and current behavior.
+```
+
+This is often a good use case because tests create a safety net before further agentic edits.
+
+---
+
+### 6.4 Debugging
+
+OpenCode can read error logs, inspect code, and propose fixes.
+
+Example:
+
+```text
+This test is failing. Find the root cause and propose a minimal fix.
+```
+
+For debugging, OpenCode is especially useful when it can run the failing test locally and iterate.
+
+---
+
+### 6.5 Documentation
+
+OpenCode can create or improve documentation based on actual code.
+
+Example:
+
+```text
+Read the implementation and update the README with accurate setup instructions.
+```
+
+This is a relatively low-risk task and a good place to use cheaper models.
+
+---
+
+### 6.6 GitHub Automation
+
+OpenCode can be connected to GitHub workflows. This allows it to help with:
+
+* Issue triage
+* Pull request review
+* Automated code changes
+* CI-based agent tasks
+* Comment-triggered agent workflows
+
+This is useful for teams that want to move from local AI assistance to repeatable engineering automation.
+
+However, GitHub automation should be configured conservatively. Running an agent inside CI with repository permissions can create security and quality risks if not properly sandboxed.
+
+---
+
+### 6.7 Internal Engineering Tools
+
+Because OpenCode supports server and SDK usage, teams can build internal workflows around it.
+
+Examples:
+
+* Internal code review assistant
+* Repo migration helper
+* Test failure explainer
+* Documentation updater
+* Security checklist assistant
+* Release-note generator
+* Codebase search interface
+
+This is where OpenCode starts becoming more like an agent platform than a single coding assistant.
+
+---
+
+## 7. Practical Use Cases for BigPickle
+
+BigPickle should be treated differently from OpenCode itself. OpenCode is the tool. BigPickle is one model option inside that tool.
+
+BigPickle is best for:
+
+### 7.1 Cheap Exploration
+
+Use it when you want to inspect a large repo without spending premium-model tokens.
+
+Example:
+
+```text
+Explore this repo and summarize the top-level architecture.
+```
+
+### 7.2 First-Pass Planning
+
+Use it to produce an initial plan, then ask a stronger model or human reviewer to validate the plan.
+
+Example:
+
+```text
+Create a migration plan for replacing this config system.
+Do not edit files yet.
+```
+
+### 7.3 Large-Context Search
+
+Use it when the task requires reading many files but the output does not need to be perfect.
+
+Example:
+
+```text
+Find all code paths related to order cancellation.
+```
+
+### 7.4 Draft Documentation
+
+Use it for low-risk writing tasks.
+
+Example:
+
+```text
+Draft internal documentation for this module based on the source code.
+```
+
+### 7.5 Model Comparison
+
+Use it as a baseline when comparing coding models.
+
+Example workflow:
+
+```text
+Ask BigPickle for a plan.
+Ask Claude / GPT / Gemini / Qwen for the same plan.
+Compare correctness, precision, and risk.
+```
+
+This can be useful because BigPickle is free during the promotional period.
+
+---
+
+## 8. Caveats for OpenCode
+
+### 8.1 Agentic Tools Can Modify Real Code
+
+OpenCode can edit files and run commands. This is powerful but risky.
+
+Always use version control. Before giving the agent broad permissions, make sure your repository is clean:
 
 ```bash
-curl -fsSL https://opencode.ai/install | bash
-cd /path/to/project
-opencode
-/connect
-/models
-/init
+git status
 ```
+
+A safer workflow is:
+
+```bash
+git checkout -b agent/open-code-test
+opencode
+```
+
+Then review the diff:
+
+```bash
+git diff
+```
+
+---
+
+### 8.2 Shell Access Needs Guardrails
+
+If the agent can run shell commands, it can potentially run dangerous commands.
+
+Examples of risky actions:
+
+```bash
+rm -rf
+```
+
+```bash
+git reset --hard
+```
+
+```bash
+curl ... | bash
+```
+
+```bash
+npm install unknown-package
+```
+
+```bash
+pip install unknown-package
+```
+
+Use ask-before-run permissions for shell commands, especially in important repositories.
+
+---
+
+### 8.3 MCP Tools Expand the Attack Surface
+
+MCP integration is powerful because it allows OpenCode to call external tools and services.
+
+But every new tool increases the attack surface.
+
+Risks include:
+
+* Tool misuse
+* Prompt injection through external data
+* Leaking sensitive context
+* Excessive context consumption
+* Unexpected side effects
+* Confused-deputy problems
+
+Only connect MCP servers that you trust.
+
+---
+
+### 8.4 Share Features Can Leak Context
+
+If a tool has a share feature, assume shared sessions may contain sensitive information unless proven otherwise.
+
+Coding-agent conversations often include:
+
+* Source code
+* Stack traces
+* Secrets accidentally printed in logs
+* Internal architecture
+* Customer-specific behavior
+* Private file paths
+* Business logic
+
+Do not share sessions from private repositories unless you have reviewed the content.
+
+---
+
+### 8.5 Fast-Moving Project Risk
+
+OpenCode is active and evolving quickly. That is good because bugs get fixed and features improve.
+
+But fast-moving tools can also introduce:
+
+* Breaking changes
+* Provider routing bugs
+* Model compatibility issues
+* Config changes
+* Permission behavior changes
+* Integration regressions
+
+For serious team usage, pin versions and test upgrades before rolling them out broadly.
+
+---
+
+## 9. Caveats for BigPickle
+
+BigPickle has sharper caveats than OpenCode itself.
+
+### 9.1 Stealth Model Means Limited Due Diligence
+
+The biggest issue is model transparency.
+
+Because BigPickle is a stealth model, users do not know enough about:
+
+* Exact provider
+* Training data policy
+* Model family
+* Safety tuning
+* Evaluation results
+* Long-term availability
+* Enterprise compliance posture
+
+This makes it hard to approve for regulated or sensitive environments.
+
+---
+
+### 9.2 Free Period Is Temporary
+
+BigPickle is free for a limited time.
+
+That means workflows built around it may break economically later.
+
+Possible future outcomes:
+
+* It becomes paid.
+* It disappears.
+* Rate limits change.
+* Context limits change.
+* Quality changes.
+* The model is replaced by another stealth model.
+
+Do not build a production workflow that assumes BigPickle will remain free forever.
+
+---
+
+### 9.3 Data May Be Used to Improve the Model
+
+This is the most important privacy caveat.
+
+During the free period, OpenCode states that collected data may be used to improve the model.
+
+That means you should avoid sending:
+
+* Proprietary source code
+* Customer data
+* Secrets
+* API keys
+* Trading strategies
+* Internal infrastructure details
+* Security-sensitive logs
+* Unreleased product code
+* Regulated data
+
+A safe rule:
+
+Use BigPickle only on code you would be comfortable sending to a third-party model-improvement pipeline.
+
+---
+
+### 9.4 Reliability May Vary
+
+Community reports have mentioned BigPickle issues such as:
+
+* Not following repository instructions reliably
+* Stopping responses early
+* Overthinking simple tasks
+* Producing unexpected language output
+* Becoming unstable after certain client upgrades
+* Having compatibility or routing problems
+
+These reports do not mean BigPickle is unusable. They mean it should be validated before being trusted.
+
+For serious work, compare BigPickle output against a stronger named model or human review.
+
+---
+
+### 9.5 Not Ideal for Final Production Edits
+
+BigPickle is better as an exploration model than a final authority.
+
+Good use:
+
+```text
+Find possible approaches to refactor this module.
+```
+
+Riskier use:
+
+```text
+Rewrite this payment service and commit the result.
+```
+
+For final production edits, use stronger guardrails:
+
+* Plan mode first
+* Small diffs
+* Tests
+* Human review
+* Named model comparison
+* CI validation
+
+---
+
+## 10. Recommended Workflow
+
+A practical workflow is to combine OpenCode and BigPickle with different levels of trust.
+
+```mermaid
+flowchart TD
+    A[Start task] --> B{Sensitive repo?}
+    B -->|Yes| C[Use named trusted model]
+    B -->|No| D[Use BigPickle for exploration]
+    D --> E[Generate plan]
+    E --> F[Review plan]
+    F --> G{High-risk change?}
+    G -->|Yes| H[Switch to stronger named model]
+    G -->|No| I[Use OpenCode Build mode]
+    H --> I
+    I --> J[Run tests]
+    J --> K[Review diff]
+    K --> L[Commit manually]
+```
+
+The key idea is to separate:
+
+* **Cheap exploration**
+* **Implementation**
+* **Validation**
+* **Final review**
+
+BigPickle can help with the first step. It should not automatically own the whole pipeline.
+
+---
+
+## 11. Suggested Permission Setup
+
+For safer OpenCode usage, start with conservative permissions.
+
+Example:
 
 ```json
 {
@@ -71,79 +651,129 @@ opencode
     "*": "ask",
     "read": "allow",
     "grep": "allow",
-    "glob": "allow"
+    "glob": "allow",
+    "edit": "ask",
+    "write": "ask",
+    "bash": "ask"
   }
 }
 ```
 
-## Use Cases
+This lets the agent read and search freely, but asks before edits and shell commands.
 
-OpenCode is best understood as a **controlled coding agent runtime**, not just a chat front end. The cleanest entry pattern is to start in **Plan** mode for repo analysis and risk-free exploration, then switch to **Build** for edits once the implementation path is clear. This works especially well because `/init` creates an `AGENTS.md` file after analyzing the project, and the docs explicitly recommend committing that file so the agent can better learn project structure and conventions over time. citeturn12view1turn3view1
+For sensitive repositories, do not use BigPickle as the default model:
 
-A sensible interactive workflow looks like this:
-
-```mermaid
-flowchart TD
-    S[Open repo] --> C[/connect provider]
-    C --> M[/models select model]
-    M --> I[/init create AGENTS.md]
-    I --> P[Use Plan agent to inspect architecture]
-    P --> B[Switch to Build for implementation]
-    B --> T[Run tests or lint with bash]
-    T --> G[Optionally export to GitHub workflow or share]
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "*": "ask",
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "edit": "ask",
+    "write": "ask",
+    "bash": "ask"
+  }
+}
 ```
 
-That pattern fits several concrete scenarios. First, **large-repository comprehension**: use Plan plus `@general` or `@explore` to search files, trace dependencies, and draft a change plan without granting silent write access. Second, **interactive implementation**: use Build with read/edit/bash access, plus LSP if enabled, to make precise edits and run validation commands. Third, **GitHub workflow automation**: the official GitHub integration supports issue triage, feature implementation, and PR review inside GitHub Actions runners by commenting `/opencode` or `/oc`, or by wiring scheduled or issue/PR-triggered workflows. Fourth, **embedded or programmatic control**: `opencode serve` plus `@opencode-ai/sdk` can be used to build custom interfaces, wrappers, or internal workflow automation. citeturn7view4turn21view1turn12view3turn12view4turn12view5
+Then manually select a trusted model provider.
 
-For a terminal-first analyst workflow, the non-interactive CLI is useful for scripting and one-shot checks:
+---
 
-```bash
-opencode run "Explain how authentication works in this repo"
-opencode run "Search for race conditions in src/auth and summarize risks"
+## 12. When To Use OpenCode + BigPickle
+
+Use this combination when:
+
+* You are exploring an open-source repo.
+* You want cheap large-context analysis.
+* You are doing first-pass planning.
+* You need codebase summarization.
+* You are drafting documentation.
+* You are comparing model behavior.
+* You are working on non-sensitive side projects.
+* You want to reduce premium-model token cost.
+
+Example:
+
+```text
+Use BigPickle to inspect the repo and create a plan.
+Do not edit files.
+After the plan, list the files that would need to change.
 ```
 
-The docs explicitly position `opencode run` for scripting, automation, and quick answers without launching the full TUI. citeturn8view0
+This is a good prompt because it limits the model to analysis.
 
-For IDE-centered teams, OpenCode’s extension flow is intentionally light. The IDE docs say it works with VS Code, Cursor, and related editors that support terminals; running `opencode` in the integrated terminal can auto-install the extension, and keyboard shortcuts can insert file references into the conversation. This makes OpenCode comparatively attractive when you want the agent runtime to remain outside any one editor vendor’s proprietary stack. citeturn9view0
+---
 
-For repository automation, OpenCode’s GitHub integration is stronger than many users initially realize. The docs describe issue triage, branch-and-PR generation, PR review, line-specific review comments, and secure execution inside GitHub’s own runners. That gives OpenCode a practical path from local experimentation to CI-mediated automation without switching tools. citeturn12view3turn9view4
+## 13. When Not To Use BigPickle
 
-BigPickle fits a narrower but still useful set of scenarios. Because it is free, has a 200k context window, supports reasoning, tool calling, structured output, and temperature control through the OpenCode provider catalog, it is well suited as a **large-context fallback** for architectural exploration, initial repo indexing, rough implementation planning, and broad search-heavy sessions where cost would otherwise dominate tool choice. The best use is exploratory and disposable: tasks where human review is expected and model provenance is not a gating requirement. citeturn19view0turn24view0
+Avoid BigPickle when:
 
-## Comparisons
+* The repository is private and sensitive.
+* The code contains trade secrets.
+* The task involves customer data.
+* The task involves credentials or infrastructure.
+* You need model provenance.
+* You need enterprise compliance approval.
+* You need stable long-term pricing.
+* You need highly reliable instruction following.
+* You are making high-risk production changes.
 
-OpenCode’s closest competitors are not all trying to solve the same problem. The table below is intentionally pragmatic.
+In these cases, use OpenCode with a named, approved model instead.
 
-| Agent | Positioning | Key contrast with OpenCode | License and current public status | Use when | Avoid when |
-|---|---|---|---|---|---|
-| **OpenCode** | Terminal-first coding agent with desktop, IDE, GitHub, HTTP server, SDK, MCP, permissions, and provider flexibility. citeturn2view0turn6view7turn12view5turn12view4 | Broadest mix of local control, provider-agnostic access, and operator guardrails. | MIT; repo shows latest `v1.17.8` on Jun 17, 2026. citeturn2view2turn14view0 | You want one runtime for terminal, editor, GitHub, and internal automation. | You need a slower-moving, narrower tool surface with fewer moving parts. |
-| **Aider** | Terminal AI pair programmer focused on code editing with broad LLM support and repo mapping. citeturn17view2 | Simpler and more opinionated; less of an agent platform, more of a terminal copilot. | Apache-2.0; repo showed `v0.86.0` on Aug 9, 2025. citeturn17view2turn15search17 | You want minimal setup and a focused terminal editing workflow. | You need first-class MCP/server/enterprise-style configuration layers. |
-| **Cline** | Autonomous coding agent as SDK, IDE extension, and CLI. citeturn17view3 | Stronger editor-centric identity; OpenCode is more terminal-native and permission-explicit. | Apache-2.0; repo showed CLI `v3.0.27` on Jun 17, 2026. citeturn17view3 | You want an agent that lives primarily inside the editor and CI/CD. | You prefer a terminal-native workflow and explicit permission gating as a first-class primitive. |
-| **OpenHands** | Self-hosted developer control center for agents and automations across local, remote, and cloud backends. citeturn17view0 | Stronger on always-on orchestration and multi-backend automation; heavier operational footprint. | Core MIT with source-available enterprise/cloud components documented separately. citeturn16search12turn17view1 | You need persistent agents, cloud backends, Slack/GitHub automation, or team control centers. | You want a lighter local install and tighter terminal loop. |
-| **Goose** | Native open-source general-purpose agent for desktop, CLI, and API, not limited to coding. citeturn17view4 | Broader general-agent ambition; OpenCode is more coding-specific and workflow-opinionated. | Apache-2.0; part of the Agentic AI Foundation. citeturn17view4 | You want one local agent for code, research, writing, and automation. | You want a coding-specialized agent with stronger built-in repo/permissions conventions. |
+---
 
-BigPickle is harder to compare on model lineage because OpenCode intentionally does not disclose its upstream identity. The operational comparison below is therefore about what is actually documented today.
+## 14. Comparison With Other Coding Agents
 
-| Model | What is officially known | Practical reading | Use when | Avoid when |
-|---|---|---|---|---|
-| **BigPickle** | Stealth model; `opencode/big-pickle`; `chat/completions`; 200k context / 32k output; free for a limited time; data may be used to improve the model during the free period. citeturn23view0turn19view0turn24view0 | Cheapest large-context option in OpenCode, but the least transparent on provenance. | Large-context exploration, draft plans, low-risk prototyping, fallback routing. | Confidential code, compliance-sensitive teams, or tasks requiring auditable model provenance. |
-| **DeepSeek V4 Flash Free** | Free during limited period; `chat/completions`; 200k / 128k in the OpenCode provider catalog; data may be used to improve the model during the free period. citeturn23view0turn19view0turn24view0 | Better documented family name and much larger output budget than BigPickle. | Cost-sensitive coding sessions needing longer outputs. | Same privacy caveat as other free-collection models. |
-| **MiMo-V2.5 Free** | Free during limited period; 200k / 32k in the provider catalog; data may be used to improve the model during the free period. citeturn24view0turn19view0 | Similar output envelope to BigPickle, but disclosed family name. | Alternative free model for benchmarking against BigPickle on your repo. | Sensitive code or production-critical unattended edits. |
-| **North Mini Code Free** | Free during limited period; 256k / 64k in the provider catalog; provider-specific retention and improvement notice warns against personal or confidential data. citeturn24view0turn19view0 | The strongest official warning among the free options. | Code-focused experiments on non-sensitive repos. | Any repo with proprietary or regulated content. |
-| **Claude Sonnet 4.5** | Named model; `messages`; pricing known; 1M context / 64k output in OpenCode’s provider catalog. citeturn23view3turn19view0turn24view0 | Higher-cost but much easier to justify for quality, provenance, and enterprise review. | High-value implementation, production code review, and stricter instruction following. | Cost-constrained exploratory work where a free model is good enough. |
+OpenCode competes with tools such as Aider, Cline, OpenHands, Continue, Goose, and Claude Code.
 
-My recommendation is straightforward: if you want **one default setup**, use **OpenCode + a named premium model for production work**, and keep **BigPickle** as a **free exploration or overflow model** rather than the authoritative model for final edits. That recommendation is an inference from OpenCode’s documented permission model and BigPickle’s limited disclosure plus the 2026 issue pattern. citeturn6view2turn24view0turn20view0turn20view1turn20view2turn20view3
+The main difference is its combination of:
 
-## Caveats
+* Open-source core
+* Terminal-first workflow
+* Provider flexibility
+* Agent modes
+* Permissions
+* MCP support
+* GitHub integration
+* SDK / server usage
+* Desktop and IDE support
 
-The biggest caveat with OpenCode is not that it lacks capability, but that it exposes a lot of power. By default, tools are enabled, and tool behavior is governed by a permission system that can allow, ask, or deny individual actions. That is excellent for advanced users, but it means poor defaults or permissive configurations can give the model broad file and shell access. In addition, MCP tools consume context, and the docs explicitly warn that some MCP servers can add enough tokens to exceed context limits. citeturn6view0turn6view2turn6view3
+Aider is simpler and very strong for terminal pair-programming. Cline is more editor-centered. OpenHands is heavier and more platform-like. Goose is broader and more general-purpose. Claude Code is polished but more tied to Anthropic’s ecosystem.
 
-A second caveat is privacy mode drift. OpenCode says it does not store your code or context data in normal operation, but several features change the data surface materially: local auth and session storage live on disk, the share feature uploads conversation history to OpenCode servers, and shared conversations remain accessible until explicitly unshared. For organizations, this argues strongly for disabling share by policy unless there is a deliberate collaboration need. citeturn6view6turn11view2turn13view0turn13view1
+OpenCode’s appeal is that it gives developers more control over the model and workflow.
 
-BigPickle has a sharper privacy caveat still. OpenCode’s Zen docs explicitly carve BigPickle out from the normal zero-retention statement and say that, during the free period, collected data may be used to improve the model. Combined with the fact that it is a stealth model with no public model card in the official materials, that creates a real compliance and procurement risk. The important point is not that the model is necessarily unsafe, but that official due-diligence artifacts are materially thinner than for named model families. That last sentence is an inference from the documented “stealth” status and absence of further public disclosure in official docs. citeturn24view0
+---
 
-On reliability, OpenCode itself looks healthy as a project. The repo is large, active, and ships frequent releases; the latest public release on June 17, 2026 included fixes around MCP behavior, provider compatibility, and session performance, and the docs were updated on June 18, 2026. That is a sign of responsiveness, but it also suggests a rapidly evolving surface area where regressions are realistic. The BigPickle-specific issue history reinforces this: public reports in 2026 mention ignoring `AGENTS.md` rules, stopping early in plan-like tasks, verbose or unstable reasoning, unexpected Chinese output, and at least one version-specific routing error after a client upgrade. citeturn14view0turn9view0turn20view0turn20view1turn20view2turn20view3
+## 15. Final Assessment
 
-On community and support status, OpenCode appears strong for an open-source agent: the main repo shows very large adoption, active releases, Discord presence, a growing ecosystem around plugins and themes, and community integrations. The ecosystem itself is now substantive enough that “OpenCode” should be thought of as a platform, not just a binary. That is an advantage if you want extensibility, but a risk if you need a conservative, low-change operational baseline. citeturn3view3turn2view2turn21view0turn14view0
+OpenCode is easy to recommend for developers who want an open-source coding agent with strong provider flexibility and a terminal-native workflow. It is especially attractive for technical users who want more control than closed coding assistants provide.
 
-The concise bottom line is this: **OpenCode is easy to recommend; BigPickle is easy to experiment with, but not yet easy to standardize on.** OpenCode’s core is transparent, permissively licensed, and operationally versatile. BigPickle is currently valuable mostly because it is free and large-context, not because it is well-documented. For serious teams, that distinction should drive deployment policy. citeturn2view2turn24view0turn19view0
+BigPickle is useful, but in a narrower way. Its value comes from being free, large-context, and integrated into OpenCode. Its weakness is that it is a stealth model with limited transparency and explicit data-use caveats during the free period.
+
+The best mental model is:
+
+**OpenCode is the durable tool. BigPickle is the temporary cheap model.**
+
+Use OpenCode as part of your real development workflow.
+
+Use BigPickle for low-risk exploration, planning, and experimentation.
+
+Do not use BigPickle as the default model for sensitive or production-critical engineering work unless your team has explicitly accepted the privacy, reliability, and provenance trade-offs.
+
+---
+
+## References
+
+* OpenCode official site: [https://opencode.ai/](https://opencode.ai/)
+* OpenCode documentation: [https://opencode.ai/docs/](https://opencode.ai/docs/)
+* OpenCode GitHub repository: [https://github.com/anomalyco/opencode](https://github.com/anomalyco/opencode)
+* OpenCode Zen documentation: [https://opencode.ai/docs/zen/](https://opencode.ai/docs/zen/)
+* OpenCode provider metadata on Models.dev: [https://models.dev/providers/opencode](https://models.dev/providers/opencode)
+* OpenCode permissions documentation: [https://opencode.ai/docs/permissions/](https://opencode.ai/docs/permissions/)
+* OpenCode agents documentation: [https://opencode.ai/docs/agents/](https://opencode.ai/docs/agents/)
+* OpenCode tools documentation: [https://opencode.ai/docs/tools/](https://opencode.ai/docs/tools/)
+* OpenCode GitHub integration documentation: [https://opencode.ai/docs/github/](https://opencode.ai/docs/github/)
+* OpenCode MCP documentation: [https://opencode.ai/docs/mcp-servers/](https://opencode.ai/docs/mcp-servers/)
