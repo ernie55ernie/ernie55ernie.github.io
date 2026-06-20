@@ -19,7 +19,9 @@ permalink: /about/
 
 # Research interest
 * High Frequency Trading
-* Federated Learning, Software Defined Network
+* Artificial Intelligence
+* Federated Learning
+* Software Defined Network
 * Medical Imaging
 
 # Publication list
