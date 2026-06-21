@@ -3,7 +3,7 @@ layout: post
 title: "Sharpe Ratio: Definition, Formula, and Examples"
 date: 2026-06-21
 category: trading
-----
+---
 
 ## Executive Summary
 
