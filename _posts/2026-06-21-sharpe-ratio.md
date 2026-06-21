@@ -214,13 +214,13 @@ For this reason, the examples below use simple returns.
 ```mermaid
 flowchart TD
 A[Choose data frequency and sample window] --> B[Convert risk-free rate to the same frequency]
-B --> C[Calculate excess return: x_t = r_p,t - r_f,t]
+B --> C[Calculate excess return]
 C --> D[Calculate average excess return]
 C --> E[Calculate volatility of excess returns]
 D --> F[Sharpe Ratio = Average Excess Return / Volatility]
 E --> F
 F --> G{Annualize?}
-G --> H[If approximately i.i.d.: multiply by sqrt(m)]
+G --> H[If approximately i.i.d.: multiply by sqrt of periods per year]
 G --> I[If serially correlated: use autocorrelation adjustment]
 ```
 
