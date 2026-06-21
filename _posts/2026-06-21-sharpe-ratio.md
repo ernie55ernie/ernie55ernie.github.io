@@ -211,7 +211,7 @@ For this reason, the examples below use simple returns.
 
 ## Calculation Workflow
 
-```mermaid id="f57ayg"
+```mermaid
 flowchart TD
 A[Choose data frequency and sample window] --> B[Convert risk-free rate to the same frequency]
 B --> C[Calculate excess return: x_t = r_p,t - r_f,t]
