@@ -13,7 +13,7 @@ When William F. Sharpe introduced the concept in 1966, he called it the **reward
 
 However, the Sharpe Ratio is useful only when interpreted carefully. It treats risk as standard deviation, which means it penalizes upside and downside volatility symmetrically. This can be misleading for skewed returns, fat-tailed distributions, option-like payoffs, illiquid assets, smoothed returns, and strategies with nonlinear downside risk.
 
-A particularly important caveat is that **a monthly Sharpe Ratio cannot generally be annualized simply by multiplying it by $\sqrt{12}$**. That shortcut is valid only under restrictive assumptions, especially independent and identically distributed returns. When returns are serially correlated, annualized Sharpe can be materially overstated. Andrew Lo's classic work shows that some hedge fund Sharpe Ratios may be overstated by as much as 65% when serial correlation is ignored.
+A particularly important caveat is that **a monthly Sharpe Ratio cannot generally be annualized simply by multiplying it by sqrt(12)**. That shortcut is valid only under restrictive assumptions, especially independent and identically distributed returns. When returns are serially correlated, annualized Sharpe can be materially overstated. Andrew Lo's classic work shows that some hedge fund Sharpe Ratios may be overstated by as much as 65% when serial correlation is ignored.
 
 The practical conclusion is straightforward: **the Sharpe Ratio is a good first-pass screening tool, but it should not be the sole basis for investment judgment**. For long-tail, nonlinear, actively managed, or benchmark-relative strategies, it should be combined with other metrics such as Sortino Ratio, Treynor Ratio, Information Ratio, Jensen's Alpha, maximum drawdown, and rolling-window stability analysis.
 
@@ -62,8 +62,8 @@ $$
 
 where:
 
-* $r_{p,t}$ is the portfolio or asset return in period $t$,
-* $r_{f,t}$ is the risk-free rate in the same period, currency, and frequency.
+* r_p,t is the portfolio or asset return in period t.
+* r_f,t is the risk-free rate in the same period, currency, and frequency.
 
 If the risk-free rate is treated as constant over the sample, the excess return is often written as:
 
@@ -90,7 +90,7 @@ This is the theoretical or population Sharpe Ratio. In practice, this true value
 
 ### Sample Formula
 
-Given historical excess returns $x_1, x_2, \ldots, x_n$, the sample mean excess return is:
+Given historical excess returns x_1, x_2, ..., x_n, the sample mean excess return is:
 
 $$
 \bar{x}=\frac{1}{n}\sum_{t=1}^{n}x_t
@@ -133,16 +133,16 @@ $$
 SR_{\text{ann}} \approx \sqrt{m}, SR_{\text{per}}
 $$
 
-where $m$ is the number of periods per year.
+where m is the number of periods per year.
 
 Common values are:
 
-| Data Frequency | Common Periods Per Year $m$ | Approximate Annualized Sharpe |
-| -------------- | --------------------------: | ----------------------------: |
-| Daily          |     Around 252 trading days |  $\sqrt{252},SR_{\text{day}}$ |
-| Weekly         |             Around 52 weeks |  $\sqrt{52},SR_{\text{week}}$ |
-| Monthly        |                   12 months | $\sqrt{12},SR_{\text{month}}$ |
-| Quarterly      |                  4 quarters |       $2,SR_{\text{quarter}}$ |
+| Data Frequency | Common Periods Per Year | Approximate Annualized Sharpe |
+| -------------- | ----------------------: | ----------------------------: |
+| Daily          | Around 252 trading days |      sqrt(252) × daily Sharpe |
+| Weekly         |         Around 52 weeks |      sqrt(52) × weekly Sharpe |
+| Monthly        |               12 months |     sqrt(12) × monthly Sharpe |
+| Quarterly      |              4 quarters |          2 × quarterly Sharpe |
 
 This shortcut is common, but it depends heavily on the assumption that returns are not serially correlated.
 
@@ -158,22 +158,22 @@ $$
 
 where:
 
-* $q=T/t$,
-* $\rho_k$ is the $k$-th order autocorrelation of excess returns.
+* q equals T divided by t.
+* rho_k is the k-th order autocorrelation of excess returns.
 
-When all autocorrelations are zero, the formula collapses back to the familiar $\sqrt{q}$ rule. But when autocorrelation is positive, simple square-root annualization may overstate the true annualized Sharpe Ratio.
+When all autocorrelations are zero, the formula collapses back to the familiar sqrt(q) rule. But when autocorrelation is positive, simple square-root annualization may overstate the true annualized Sharpe Ratio.
 
 ## Converting the Risk-Free Rate
 
 The risk-free rate must be converted to the same frequency as the return data.
 
-If the annual risk-free rate is $y_f$, the equivalent per-period risk-free rate is:
+If the annual risk-free rate is y_f, the equivalent per-period risk-free rate is:
 
 $$
 r_{f,\text{per}} = (1+y_f)^{1/m}-1
 $$
 
-Conversely, if the per-period risk-free rate is $r_{f,\text{per}}$, its annualized equivalent is:
+Conversely, if the per-period risk-free rate is r_f,per, its annualized equivalent is:
 
 $$
 r_{f,\text{ann}} = (1+r_{f,\text{per}})^m-1
@@ -183,7 +183,7 @@ The purpose is to ensure that returns and risk-free rates are comparable in the 
 
 ## Simple Returns vs. Log Returns
 
-If simple returns $R_t$ are used, multi-period returns compound multiplicatively:
+If simple returns R_t are used, multi-period returns compound multiplicatively:
 
 $$
 1+R_t(k)=\prod_{j=0}^{k-1}(1+R_{t-j})
@@ -214,13 +214,13 @@ For this reason, the examples below use simple returns.
 ```mermaid
 flowchart TD
 A[Choose data frequency and sample window] --> B[Convert risk-free rate to the same frequency]
-B --> C[Calculate excess return: x_t = r_p,t - r_f,t]
+B --> C[Calculate excess return]
 C --> D[Calculate average excess return]
 C --> E[Calculate volatility of excess returns]
 D --> F[Sharpe Ratio = Average Excess Return / Volatility]
 E --> F
 F --> G{Annualize?}
-G --> H[If approximately i.i.d.: multiply by sqrt(m)]
+G --> H[If approximately i.i.d.: multiply by sqrt of periods per year]
 G --> I[If serially correlated: use autocorrelation adjustment]
 ```
 
@@ -232,20 +232,20 @@ Assume:
 * Monthly risk-free rate is fixed at 0.2%.
 * Transaction costs and taxes are ignored.
 
-| Month | Asset Monthly Return $r_t$ | Excess Return $x_t=r_t-r_f$ |
-| ----: | -------------------------: | --------------------------: |
-|     1 |                       3.0% |                        2.8% |
-|     2 |                       1.5% |                        1.3% |
-|     3 |                      -1.0% |                       -1.2% |
-|     4 |                       2.5% |                        2.3% |
-|     5 |                       0.5% |                        0.3% |
-|     6 |                       1.8% |                        1.6% |
-|     7 |                      -1.2% |                       -1.4% |
-|     8 |                       2.2% |                        2.0% |
-|     9 |                       1.0% |                        0.8% |
-|    10 |                       1.7% |                        1.5% |
-|    11 |                      -0.5% |                       -0.7% |
-|    12 |                       2.0% |                        1.8% |
+| Month | Asset Monthly Return | Excess Return |
+| ----: | -------------------: | ------------: |
+|     1 |                 3.0% |          2.8% |
+|     2 |                 1.5% |          1.3% |
+|     3 |                -1.0% |         -1.2% |
+|     4 |                 2.5% |          2.3% |
+|     5 |                 0.5% |          0.3% |
+|     6 |                 1.8% |          1.6% |
+|     7 |                -1.2% |         -1.4% |
+|     8 |                 2.2% |          2.0% |
+|     9 |                 1.0% |          0.8% |
+|    10 |                 1.7% |          1.5% |
+|    11 |                -0.5% |         -0.7% |
+|    12 |                 2.0% |          1.8% |
 
 First calculate the average excess return:
 
@@ -254,11 +254,7 @@ $$
 =\frac{0.1110}{12}=0.00925
 $$
 
-So the average monthly excess return is:
-
-$$
-0.925%
-$$
+So the average monthly excess return is 0.925%.
 
 Next calculate the sample standard deviation:
 
@@ -298,25 +294,26 @@ First, sample and population standard deviations produce slightly different resu
 
 Assume:
 
-* Three assets: $A$, $B$, and $C$.
+* Three assets: A, B, and C.
 * Six months of return data.
-* Portfolio weights are:
+* Portfolio weights are 50%, 30%, and 20%.
+* Monthly risk-free rate is 0.15%.
+* The portfolio is fully invested, so weights sum to 1.
+
+The portfolio weight vector is:
 
 $$
 w=(0.5,;0.3,;0.2)^\top
 $$
 
-* Monthly risk-free rate is 0.15%.
-* The portfolio is fully invested, so weights sum to 1.
-
-| Month |     A |     B |     C | Portfolio Return $r_{p,t}$ | Excess Return $x_t$ |
-| ----: | ----: | ----: | ----: | -------------------------: | ------------------: |
-|     1 |  2.0% |  1.2% |  3.0% |                      1.96% |               1.81% |
-|     2 |  1.0% |  0.8% | -1.0% |                      0.54% |               0.39% |
-|     3 | -1.5% |  0.4% |  2.0% |                     -0.23% |              -0.38% |
-|     4 |  1.8% |  1.1% |  1.5% |                      1.53% |               1.38% |
-|     5 |  1.2% | -0.6% |  0.5% |                      0.52% |               0.37% |
-|     6 |  0.5% |  0.7% | -1.2% |                      0.22% |               0.07% |
+| Month |     A |     B |     C | Portfolio Return | Excess Return |
+| ----: | ----: | ----: | ----: | ---------------: | ------------: |
+|     1 |  2.0% |  1.2% |  3.0% |            1.96% |         1.81% |
+|     2 |  1.0% |  0.8% | -1.0% |            0.54% |         0.39% |
+|     3 | -1.5% |  0.4% |  2.0% |           -0.23% |        -0.38% |
+|     4 |  1.8% |  1.1% |  1.5% |            1.53% |         1.38% |
+|     5 |  1.2% | -0.6% |  0.5% |            0.52% |         0.37% |
+|     6 |  0.5% |  0.7% | -1.2% |            0.22% |         0.07% |
 
 The portfolio return in each period is:
 
@@ -384,14 +381,14 @@ Assume:
 * Monthly risk-free rate is 0.2%.
 * Fees and leverage are ignored.
 
-| Month | Asset Monthly Return $r_t$ | Excess Return $x_t$ |
-| ----: | -------------------------: | ------------------: |
-|     1 |                      -3.0% |               -3.2% |
-|     2 |                       1.0% |                0.8% |
-|     3 |                      -2.0% |               -2.2% |
-|     4 |                      -1.5% |               -1.7% |
-|     5 |                       0.5% |                0.3% |
-|     6 |                      -1.0% |               -1.2% |
+| Month | Asset Monthly Return | Excess Return |
+| ----: | -------------------: | ------------: |
+|     1 |                -3.0% |         -3.2% |
+|     2 |                 1.0% |          0.8% |
+|     3 |                -2.0% |         -2.2% |
+|     4 |                -1.5% |         -1.7% |
+|     5 |                 0.5% |          0.3% |
+|     6 |                -1.0% |         -1.2% |
 
 The average monthly excess return is:
 
@@ -413,7 +410,7 @@ $$
 
 A negative Sharpe Ratio means that, over the sample period, the investment earned less than the risk-free rate on average.
 
-However, negative Sharpe Ratios are often less informative for ranking than positive Sharpe Ratios. Once a strategy has failed to beat the risk-free asset, the more important question is usually not whether $-0.6$ is better than $-0.8$. The more important question is why the strategy lost money, whether the sample window is representative, and whether the risk structure has changed.
+However, negative Sharpe Ratios are often less informative for ranking than positive Sharpe Ratios. Once a strategy has failed to beat the risk-free asset, the more important question is usually not whether negative 0.6 is better than negative 0.8. The more important question is why the strategy lost money, whether the sample window is representative, and whether the risk structure has changed.
 
 ## Practical Interpretation
 
@@ -425,11 +422,11 @@ A common market rule of thumb is:
 
 | Annualized Sharpe Ratio | Common Interpretation      | Practical View                                                |
 | ----------------------- | -------------------------- | ------------------------------------------------------------- |
-| < 0                     | Worse than risk-free asset | Investigate losses, sample window, and risk source            |
-| 0–0.99                  | Weak to ordinary           | Limited risk-adjusted attractiveness                          |
-| 1.00–1.99               | Good                       | Worth considering, but stability should be verified           |
-| 2.00–2.99               | Very strong                | Be cautious if sample is short or returns are smoothed        |
-| ≥ 3.00                  | Excellent and rare         | Check for overfitting, smoothing, illiquidity, or sample bias |
+| Less than 0             | Worse than risk-free asset | Investigate losses, sample window, and risk source            |
+| 0 to 0.99               | Weak to ordinary           | Limited risk-adjusted attractiveness                          |
+| 1.00 to 1.99            | Good                       | Worth considering, but stability should be verified           |
+| 2.00 to 2.99            | Very strong                | Be cautious if sample is short or returns are smoothed        |
+| 3.00 or higher          | Excellent and rare         | Check for overfitting, smoothing, illiquidity, or sample bias |
 
 These thresholds are not theoretical laws. They are practical heuristics.
 
@@ -451,7 +448,7 @@ The same strategy may produce different Sharpe Ratios depending on:
 | Risk-free rate choice      | The numerator is excess return. If the risk-free rate uses the wrong currency, maturity, or compounding convention, the result is distorted. | Use a risk-free rate that matches the investment currency, horizon, and measurement convention. |
 | Standard deviation as risk | Sharpe treats upside and downside volatility symmetrically.                                                                                  | Add downside and tail-risk measures when losses matter more than upside volatility.             |
 | Non-normal returns         | Skewness, fat tails, and option-like payoffs can make Sharpe misleading.                                                                     | Combine Sharpe with drawdown, skewness, kurtosis, Sortino Ratio, or stress tests.               |
-| Serial correlation         | Smoothed or autocorrelated returns can understate volatility and overstate Sharpe.                                                           | Do not blindly annualize by $\sqrt{m}$; use autocorrelation-adjusted scaling.                   |
+| Serial correlation         | Smoothed or autocorrelated returns can understate volatility and overstate Sharpe.                                                           | Do not blindly annualize by sqrt(periods per year); use autocorrelation-adjusted scaling.       |
 | Estimation error           | Sharpe is an estimate, not a true value.                                                                                                     | Use longer samples, confidence intervals, bootstrapping, and out-of-sample validation.          |
 | Small-sample bias          | Short samples can produce inflated Sharpe estimates.                                                                                         | Treat high Sharpe from small samples with skepticism.                                           |
 | Measurement window         | Different windows can produce very different Sharpe Ratios.                                                                                  | Compare strategies using the same sample period and frequency.                                  |
@@ -464,13 +461,13 @@ The Sharpe Ratio is important, but it is not the only risk-adjusted performance 
 
 Some metrics, such as Sharpe and Sortino, focus on whether an investment is attractive on its own. Others, such as Treynor Ratio, Information Ratio, and Jensen's Alpha, focus more on benchmark-relative performance or market risk exposure.
 
-| Metric                | Formula                                                        | Risk in Denominator                        | Main Benchmark                              | Best Used For                                               | Main Limitation                                                                                     |
-| --------------------- | -------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Sharpe Ratio**      | $\dfrac{R_p-r_f}{\sigma_p}$ or $\dfrac{\bar{x}}{s_x}$          | Total risk, measured by standard deviation | Risk-free asset                             | Comparing portfolios, funds, or standalone strategies       | Penalizes upside and downside volatility equally; sensitive to skew, fat tails, and autocorrelation |
-| **Sortino Ratio**     | $\dfrac{R_p-MAR}{DD}$, or commonly $\dfrac{R_p-r_f}{\sigma_d}$ | Downside risk                              | Minimum acceptable return or risk-free rate | When downside deviations matter more than upside volatility | Sensitive to the choice of MAR and downside deviation method                                        |
-| **Treynor Ratio**     | $\dfrac{R_p-r_f}{\beta_p}$                                     | Systematic market risk                     | Risk-free asset and market portfolio        | Well-diversified portfolios where beta is the relevant risk | Ignores idiosyncratic risk                                                                          |
-| **Information Ratio** | $\dfrac{R_p-R_B}{\sigma_{p-B}}$                                | Active risk, or tracking error             | Passive benchmark                           | Evaluating active managers relative to a benchmark          | Highly sensitive to benchmark choice                                                                |
-| **Jensen's Alpha**    | $\alpha_p=R_p-\left[r_f+\beta_p(R_m-r_f)\right]$               | Not a ratio                                | Market portfolio                            | Measuring excess return relative to CAPM prediction         | Depends heavily on CAPM and benchmark assumptions                                                   |
+| Metric                | Formula in Plain English                                             | Risk in Denominator                        | Main Benchmark                              | Best Used For                                               | Main Limitation                                                                                     |
+| --------------------- | -------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Sharpe Ratio**      | Excess return divided by total volatility                            | Total risk, measured by standard deviation | Risk-free asset                             | Comparing portfolios, funds, or standalone strategies       | Penalizes upside and downside volatility equally; sensitive to skew, fat tails, and autocorrelation |
+| **Sortino Ratio**     | Return above minimum acceptable return divided by downside deviation | Downside risk                              | Minimum acceptable return or risk-free rate | When downside deviations matter more than upside volatility | Sensitive to the choice of minimum acceptable return and downside deviation method                  |
+| **Treynor Ratio**     | Excess return divided by portfolio beta                              | Systematic market risk                     | Risk-free asset and market portfolio        | Well-diversified portfolios where beta is the relevant risk | Ignores idiosyncratic risk                                                                          |
+| **Information Ratio** | Active return divided by tracking error                              | Active risk, or tracking error             | Passive benchmark                           | Evaluating active managers relative to a benchmark          | Highly sensitive to benchmark choice                                                                |
+| **Jensen's Alpha**    | Actual return minus CAPM-implied expected return                     | Not a ratio                                | Market portfolio                            | Measuring excess return relative to CAPM prediction         | Depends heavily on CAPM and benchmark assumptions                                                   |
 
 The key question is not:
 
@@ -482,15 +479,37 @@ The better question is:
 
 If the goal is to compare standalone strategies or funds, the Sharpe Ratio is often appropriate. If the investor mostly cares about downside losses, the Sortino Ratio may be more relevant. If evaluating an active manager relative to a benchmark, Information Ratio is often more directly useful. If the portfolio is already well diversified and market beta is the key risk, Treynor Ratio and Jensen's Alpha can be more informative.
 
+For reference, the common mathematical forms are:
+
+$$
+\text{Sharpe Ratio}=\frac{R_p-r_f}{\sigma_p}
+$$
+
+$$
+\text{Sortino Ratio}=\frac{R_p-MAR}{DD}
+$$
+
+$$
+\text{Treynor Ratio}=\frac{R_p-r_f}{\beta_p}
+$$
+
+$$
+\text{Information Ratio}=\frac{R_p-R_B}{\sigma_{p-B}}
+$$
+
+$$
+\alpha_p=R_p-\left[r_f+\beta_p(R_m-r_f)\right]
+$$
+
 ## Interpretation of Related Metrics
 
-| Metric            | How to Interpret                                                                               | Common Practical Reading                                                                 |
-| ----------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Sharpe Ratio      | Higher is better, assuming same frequency, window, and risk-free rate convention               | 1, 2, and 3 are often used as rough benchmarks, but they are not theoretical thresholds  |
-| Sortino Ratio     | Higher is better, but only comparable when the same MAR and downside deviation method are used | Best used for relative comparison                                                        |
-| Treynor Ratio     | Higher is better if the portfolio is sufficiently diversified and beta is meaningful           | No universal fixed threshold                                                             |
-| Information Ratio | Higher means more active return per unit of tracking error                                     | 0.20–0.30 may already be good in competitive markets; 0.50 is strong; 1.0 is exceptional |
-| Jensen's Alpha    | Positive alpha means return exceeded CAPM expectation                                          | Measured in return units, not as a ratio                                                 |
+| Metric            | How to Interpret                                                                                                     | Common Practical Reading                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Sharpe Ratio      | Higher is better, assuming same frequency, window, and risk-free rate convention                                     | 1, 2, and 3 are often used as rough benchmarks, but they are not theoretical thresholds     |
+| Sortino Ratio     | Higher is better, but only comparable when the same minimum acceptable return and downside deviation method are used | Best used for relative comparison                                                           |
+| Treynor Ratio     | Higher is better if the portfolio is sufficiently diversified and beta is meaningful                                 | No universal fixed threshold                                                                |
+| Information Ratio | Higher means more active return per unit of tracking error                                                           | 0.20 to 0.30 may already be good in competitive markets; 0.50 is strong; 1.0 is exceptional |
+| Jensen's Alpha    | Positive alpha means return exceeded CAPM expectation                                                                | Measured in return units, not as a ratio                                                    |
 
 The broader lesson is that absolute thresholds should be used carefully. Metrics are most informative when compared within the same strategy universe, benchmark framework, and measurement convention.
 
