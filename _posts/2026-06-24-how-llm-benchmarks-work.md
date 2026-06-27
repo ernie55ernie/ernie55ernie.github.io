@@ -167,7 +167,7 @@ At the implementation level, at minimum one should fix and report the following:
 
 The evaluation flow can be conceptualized as follows. ([Liang et al., 2023](https://arxiv.org/abs/2211.09110); [EleutherAI lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness))
 
-```mermaid id="3q8quo"
+```mermaid
 flowchart LR
     A[Task definition and data split] --> B[Prompt template and few-shot examples]
     B --> C[Decoding settings<br/>temperature top-p max tokens stop]
