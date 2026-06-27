@@ -57,7 +57,7 @@ The table synthesizes information from the original papers and official material
 
 The timeline of major benchmarks is as follows. ([Wang et al., 2018](https://aclanthology.org/W18-5446/); [Wang et al., 2019](https://papers.neurips.cc/paper_files/paper/2019/hash/4496bf24afe7fab6f046bf4923da8de6-Abstract.html); [Raffel et al., 2020](https://arxiv.org/abs/1910.10683); [Hendrycks et al., 2021](https://arxiv.org/abs/2009.03300); [Chen et al., 2021](https://arxiv.org/abs/2107.03374); [Srivastava et al., 2022](https://arxiv.org/abs/2206.04615); [Liang et al., 2023](https://arxiv.org/abs/2211.09110); [Zhao et al., 2025](https://aclanthology.org/2025.acl-long.656/))
 
-```mermaid id="unpllb"
+```mermaid
 timeline
     title Evolution of Important LLM Benchmarks and Evaluation Frameworks
     2018 : GLUE
