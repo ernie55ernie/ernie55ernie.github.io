@@ -21,18 +21,18 @@ Anthropic's current public model ladder is no longer just "Opus vs Sonnet vs Hai
 
 | Tier               |    Current model | Best use                                                       | API ID             |         Context |      Max output |                        Pricing |
 | ------------------ | ---------------: | -------------------------------------------------------------- | ------------------ | --------------: | --------------: | -----------------------------: |
-| Highest capability |   Claude Fable 5 | Most demanding reasoning and long-horizon agentic work         | `claude-fable-5`   |   $$1\text{M}$$ | $$128\text{k}$$ |         $$$10 / $50$$ per MTok |
-| Opus               |  Claude Opus 4.8 | Complex reasoning, agentic coding, high-autonomy workflows     | `claude-opus-4-8`  |   $$1\text{M}$$ | $$128\text{k}$$ |          $$$5 / $25$$ per MTok |
-| Sonnet             |  Claude Sonnet 5 | Default model for coding, agents, analysis, and knowledge work | `claude-sonnet-5`  |   $$1\text{M}$$ | $$128\text{k}$$ | $$$3 / $15$$ per MTok standard |
-| Haiku              | Claude Haiku 4.5 | Fast, cheap, high-volume, simple or parallel subtasks          | `claude-haiku-4-5` | $$200\text{k}$$ |  $$64\text{k}$$ |           $$$1 / $5$$ per MTok |
+| Highest capability |   Claude Fable 5 | Most demanding reasoning and long-horizon agentic work         | `claude-fable-5`   |   $$1\text{M}$$ | $$128\text{k}$$ |         $$\$10 / \$50$$ per MTok |
+| Opus               |  Claude Opus 4.8 | Complex reasoning, agentic coding, high-autonomy workflows     | `claude-opus-4-8`  |   $$1\text{M}$$ | $$128\text{k}$$ |          $$\$5 / \$25$$ per MTok |
+| Sonnet             |  Claude Sonnet 5 | Default model for coding, agents, analysis, and knowledge work | `claude-sonnet-5`  |   $$1\text{M}$$ | $$128\text{k}$$ | $$\$3 / \$15$$ per MTok standard |
+| Haiku              | Claude Haiku 4.5 | Fast, cheap, high-volume, simple or parallel subtasks          | `claude-haiku-4-5` | $$200\text{k}$$ |  $$64\text{k}$$ |           $$\$1 / \$5$$ per MTok |
 
-`MTok` means one million tokens. Anthropic's pricing page also notes that Sonnet 5 has introductory pricing of $$$2$$ input and $$$10$$ output per MTok through August 31, 2026, after which the standard $$$3 / $15$$ pricing applies; verify this on the live [Claude pricing page](https://platform.claude.com/docs/en/about-claude/pricing) before budgeting.
+`MTok` means one million tokens. Anthropic's pricing page also notes that Sonnet 5 has introductory pricing of $$\$2$$ input and $$\$10$$ output per MTok through August 31, 2026, after which the standard $$\$3 / \$15$$ pricing applies; verify this on the live [Claude pricing page](https://platform.claude.com/docs/en/about-claude/pricing) before budgeting.
 
 A simple synchronous API cost approximation is:
 
 $$
 \text{cost}
-===========
+=
 
 \frac{T_{\text{in}}}{10^6}P_{\text{in}}
 +
@@ -92,7 +92,7 @@ A useful mental model is:
 
 $$
 \text{total output budget}
-==========================
+=
 
 \text{thinking tokens}
 +
@@ -349,7 +349,7 @@ Then compare:
 
 $$
 \text{utility}
-==============
+=
 
 ## \alpha \cdot \text{quality}
 
