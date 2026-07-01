@@ -351,11 +351,11 @@ $$
 \text{utility}
 =
 
-## \alpha \cdot \text{quality}
+\alpha \cdot \text{quality}
 
-## \beta \cdot \text{latency}
+- \beta \cdot \text{latency}
 
-\gamma \cdot \text{cost}
+- \gamma \cdot \text{cost}
 $$
 
 where $$\alpha, \beta, \gamma$$ reflect your product priorities.
