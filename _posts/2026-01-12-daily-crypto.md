@@ -242,7 +242,7 @@ Turkish exchange **BtcTurk** confirmed a **\$48M hot wallet breach** (Jan 1, 202
 
 [^23]: https://www.binance.com/en/square/post/34545085707089
 
-[^24]: https://ernie55ernie.github.io/crpyto/2026/01/02/daily-crypto.html
+[^24]: https://ernie55ernie.github.io/crypto/2026/01/02/daily-crypto.html
 
 [^25]: https://www.mexc.co/en-PH/news/422341
 

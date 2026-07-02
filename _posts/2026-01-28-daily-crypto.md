@@ -385,7 +385,7 @@ Crypto markets enter a consolidation phase dominated by Fed decision volatility 
 
 [^121]: https://www.ainvest.com/news/knowledge-proof-solana-arbitrum-sui-4-strategic-crypto-buys-2026-2601/
 
-[^122]: https://ernie55ernie.github.io/crpyto/2026/01/17/daily-crypto.html
+[^122]: https://ernie55ernie.github.io/crypto/2026/01/17/daily-crypto.html
 
 [^123]: https://gtg.com.mt/stablecoins-2026-dollar-dominance-regulation/
 

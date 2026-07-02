@@ -237,7 +237,7 @@ Bybit's multisig cold wallet compromised; 3 of 5 signers breached via phishing/m
 
 [^30]: https://www.ainvest.com/news/ethereum-fusaka-upgrade-implications-2026-growth-2512/
 
-[^31]: https://ernie55ernie.github.io/crpyto/2026/01/02/daily-crypto.html
+[^31]: https://ernie55ernie.github.io/crypto/2026/01/02/daily-crypto.html
 
 [^32]: https://www.kucoin.com/news/flash/3-altcoins-gaining-momentum-in-january-2026-ton-stx-and-virtual
 

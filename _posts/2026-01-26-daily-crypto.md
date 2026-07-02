@@ -247,7 +247,7 @@ SEC Innovation Exemption, Jan 6, 2026 ()[^25]
 
 [^24]: https://www.regulatoryandcompliance.com/2026/01/two-lane-highway-takes-shape-for-u-s-crypto-regulation-digital-securities-regulation-by-sec-digital-commodities-regulated-by-cftc/
 
-[^25]: https://ernie55ernie.github.io/crpyto/2026/01/07/daily-crypto.html
+[^25]: https://ernie55ernie.github.io/crypto/2026/01/07/daily-crypto.html
 
 [^26]: https://arxiv.org/pdf/2502.19349.pdf
 

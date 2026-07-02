@@ -861,23 +861,23 @@ High confidence; items cross‑checked against primary regulatory, exchange, and
 
 [^397]: https://arxiv.org/pdf/2307.16874.pdf
 
-[^398]: https://ernie55ernie.github.io/crpyto/2026/02/17/daily-crypto.html
+[^398]: https://ernie55ernie.github.io/crypto/2026/02/17/daily-crypto.html
 
 [^399]: https://www.mexc.com/news/588843
 
-[^400]: https://ernie55ernie.github.io/crpyto/2026/02/08/daily-crypto.html
+[^400]: https://ernie55ernie.github.io/crypto/2026/02/08/daily-crypto.html
 
 [^401]: https://www.coinglass.com/currencies/OPEN/futures
 
 [^402]: https://www.gate.com/crypto-market-data/funds/futures-open-interest/btc
 
-[^403]: https://ernie55ernie.github.io/crpyto/2026/02/19/daily-crypto.html
+[^403]: https://ernie55ernie.github.io/crypto/2026/02/19/daily-crypto.html
 
 [^404]: https://www.btcmarkets.net/blog/crypto-recovers-as-inflation-cools
 
 [^405]: https://www.coinglass.com/pro/futures/Cryptofutures
 
-[^406]: https://ernie55ernie.github.io/crpyto/2026/02/21/daily-crypto.html
+[^406]: https://ernie55ernie.github.io/crypto/2026/02/21/daily-crypto.html
 
 [^407]: https://seekingalpha.com/article/4868028-whale-digital-asset-view-why-bitcoin-sells-off-gold-stabilizes
 

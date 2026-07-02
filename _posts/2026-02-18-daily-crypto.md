@@ -107,7 +107,7 @@ The tool‑limited scan did not surface any large (>10 m USD) newly confirmed 
 
 [^20]: https://www.gate.com/crypto-wiki/article/how-do-funding-rates-futures-open-interest-and-liquidation-data-signal-crypto-derivatives-market-opportunities-in-2026-20260104
 
-[^21]: https://ernie55ernie.github.io/crpyto/2026/02/08/daily-crypto.html
+[^21]: https://ernie55ernie.github.io/crypto/2026/02/08/daily-crypto.html
 
 [^22]: https://www.investing.com/crypto
 
@@ -115,7 +115,7 @@ The tool‑limited scan did not surface any large (>10 m USD) newly confirmed 
 
 [^24]: https://www.cnn.com/2022/12/02/business/binance-withdrawals-hnk-intl
 
-[^25]: https://ernie55ernie.github.io/crpyto/2026/02/16/daily-crypto.html
+[^25]: https://ernie55ernie.github.io/crypto/2026/02/16/daily-crypto.html
 
 [^26]: https://www.coinglass.com
 

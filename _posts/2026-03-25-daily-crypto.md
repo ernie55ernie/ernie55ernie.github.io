@@ -288,7 +288,7 @@ category: crypto
 
 [^86]: https://insights.deribit.com/industry/crypto-derivatives-analytics-report-week-3-2026/
 
-[^87]: https://ernie55ernie.github.io/crpyto/2026/03/20/daily-crypto.html
+[^87]: https://ernie55ernie.github.io/crypto/2026/03/20/daily-crypto.html
 
 [^88]: https://www.coingecko.com/en/coins/bitcoin/historical_data
 

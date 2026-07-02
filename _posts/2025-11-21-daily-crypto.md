@@ -245,7 +245,7 @@ Bitcoin plunged to \$82,000–\$85,400 on November 21, 2025, marking a **7–8.4
 
 [^81]: https://arxiv.org/pdf/2205.08904.pdf
 
-[^82]: https://ernie55ernie.github.io/crpyto/2025/11/16/daily-crypto.html
+[^82]: https://ernie55ernie.github.io/crypto/2025/11/16/daily-crypto.html
 
 [^83]: https://yellow.com/research/crypto-market-pulse-okbs-dollar76b-burn-bnb-new-records-and-chainlink-partnerships
 

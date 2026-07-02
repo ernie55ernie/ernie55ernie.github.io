@@ -228,7 +228,7 @@ DPRK-linked hackers stole **\$2 billion in 2025**, driven by mega-hacks. Stolen 
 
 [^38]: https://www.binance.th/en/announcement/new-cryptocurrency-listing|delisting/b13533516a05450a9444bd88c99ef8e0
 
-[^39]: https://ernie55ernie.github.io/crpyto/2026/01/01/daily-crypto.html
+[^39]: https://ernie55ernie.github.io/crypto/2026/01/01/daily-crypto.html
 
 [^40]: https://fintechnews.sg/123854/crypto/apac-crypto-regulation-2026-compliance-guide/
 

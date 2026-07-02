@@ -347,7 +347,7 @@ category: crypto
 
 [^128]: http://arxiv.org/pdf/2405.02547.pdf
 
-[^129]: https://ernie55ernie.github.io/crpyto/2026/03/11/daily-crypto.html
+[^129]: https://ernie55ernie.github.io/crypto/2026/03/11/daily-crypto.html
 
 [^130]: https://fintech.tv/kaiko-data-shows-bitcoin-maturing-as-volatility-stabilizes/
 

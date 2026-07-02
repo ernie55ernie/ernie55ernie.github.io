@@ -264,7 +264,7 @@ category: crypto
 
 [^65]: https://www.coingecko.com/en/exchanges/ourbit
 
-[^66]: https://ernie55ernie.github.io/crpyto/2026/03/15/daily-crypto.html
+[^66]: https://ernie55ernie.github.io/crypto/2026/03/15/daily-crypto.html
 
 [^67]: https://www.cryptometer.io
 

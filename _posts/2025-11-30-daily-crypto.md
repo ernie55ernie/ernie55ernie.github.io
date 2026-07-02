@@ -114,7 +114,7 @@ Confidence: High confidence; all items cross‑checked against at least one prim
 
 [^32]: https://www.coinglass.com
 
-[^33]: https://ernie55ernie.github.io/crpyto/2025/11/11/daily-crypto.html
+[^33]: https://ernie55ernie.github.io/crypto/2025/11/11/daily-crypto.html
 
 [^34]: https://www.coinperps.com
 
