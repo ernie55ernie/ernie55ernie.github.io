@@ -28,7 +28,6 @@ plugins:
   - jekyll-paginate
 
 paginate: 15
-paginate_path: "/page:num/"
 
 excerpt_separator: ""
 
