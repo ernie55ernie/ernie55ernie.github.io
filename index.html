@@ -7,7 +7,7 @@ layout: default
   <h1 class="page-heading">Posts</h1>
 
   <ul class="post-list">
-    {% for post in site.posts %}
+    {% for post in paginator.posts %}
       <li>
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
@@ -17,5 +17,25 @@ layout: default
       </li>
     {% endfor %}
   </ul>
+
+  {% if paginator.total_pages > 1 %}
+  <div class="pagination" style="text-align: center; margin-top: 30px; font-size: 18px;">
+    {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" style="margin-right: 15px;">&laquo; Prev</a>
+    {% else %}
+      <span style="margin-right: 15px; color: #999;">&laquo; Prev</span>
+    {% endif %}
+
+    <span class="page_number" style="margin-right: 15px; color: #555;">
+      Page: {{ paginator.page }} of {{ paginator.total_pages }}
+    </span>
+
+    {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
+    {% else %}
+      <span style="color: #999;">Next &raquo;</span>
+    {% endif %}
+  </div>
+  {% endif %}
 
 </div>
