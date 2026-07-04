@@ -560,8 +560,8 @@ A basic security policy:
 $$
 \text{permission}(a_t) =
 \begin{cases}
-\text{allow} & \text{read-only and low risk} \
-\text{review} & \text{write, send, delete, pay, deploy} \
+\text{allow} & \text{read-only and low risk} \\
+\text{review} & \text{write, send, delete, pay, deploy} \\
 \text{deny} & \text{credential exfiltration or policy violation}
 \end{cases}
 $$
