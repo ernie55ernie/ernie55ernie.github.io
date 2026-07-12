@@ -150,7 +150,7 @@ Andrew Lo showed that when returns exhibit autocorrelation, the correct scaling 
 
 $$
 SR_T
-====
+=
 
 \frac{q}{\sqrt{q+2\sum_{k=1}^{q-1}(q-k)\rho_k}}
 , SR_t
