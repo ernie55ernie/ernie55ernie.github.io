@@ -49,8 +49,8 @@ $$
 
 where:
 
-* $$V_{30}(t)$$ is the rolling 30-day trading volume on day $$t$$
-* $$V_{t-i}$$ is the eligible trading volume recorded on each day
+* $V_{30}(t)$ is the rolling 30-day trading volume on day $t$
+* $V_{t-i}$ is the eligible trading volume recorded on each day
 
 For example, the standard Spot route to VIP 1 requires:
 
@@ -107,9 +107,9 @@ $$
 
 where:
 
-* $$F$$ is the trading fee
-* $$N$$ is the executed notional
-* $$f$$ is the applicable fee rate
+* $F$ is the trading fee
+* $N$ is the executed notional
+* $f$ is the applicable fee rate
 
 The executed notional is:
 
@@ -119,8 +119,8 @@ $$
 
 where:
 
-* $$Q$$ is the executed quantity
-* $$P$$ is the execution price
+* $Q$ is the executed quantity
+* $P$ is the execution price
 
 The combined fee formula is:
 
@@ -168,9 +168,9 @@ Binance currently advertises a **25% Spot trading-fee discount** when eligible f
 
 Let:
 
-* $$f$$ be the standard VIP fee rate
-* $$d_{\mathrm{BNB}}$$ be the BNB discount
-* $$f_{\mathrm{effective}}$$ be the discounted fee rate
+* $f$ be the standard VIP fee rate
+* $d_{\mathrm{BNB}}$ be the BNB discount
+* $f_{\mathrm{effective}}$ be the discounted fee rate
 
 The discounted rate is:
 
@@ -230,10 +230,10 @@ For systematic traders, the value of a VIP upgrade therefore depends heavily on 
 
 Let:
 
-* $$m$$ be the fraction of volume executed as maker
-* $$1-m$$ be the fraction executed as taker
-* $$f_m$$ be the maker fee
-* $$f_t$$ be the taker fee
+* $m$ be the fraction of volume executed as maker
+* $1-m$ be the fraction executed as taker
+* $f_m$ be the maker fee
+* $f_t$ be the taker fee
 
 The weighted average fee rate is:
 
@@ -370,8 +370,8 @@ $$
 
 where:
 
-* $$\bar{A}_{30}$$ is the 30-day average net asset amount
-* $$A_{t-1}$$ is the previous day's net asset amount
+* $\bar{A}_{30}$ is the 30-day average net asset amount
+* $A_{t-1}$ is the previous day's net asset amount
 
 This rule can allow a recently funded account to qualify without waiting for a full 30-day average to develop, subject to Binance's calculation and eligibility rules.
 
@@ -412,7 +412,7 @@ $$
 B_{\mathrm{BNB}} \geq 5\ \mathrm{BNB}
 $$
 
-Here, $$L_{30}$$ represents the applicable average qualifying borrowing amount.
+Here, $L_{30}$ represents the applicable average qualifying borrowing amount.
 
 Eligible products may include Crypto Loans and VIP Loans. Borrowing limits, collateral requirements, interest rates, liquidation rules, and supported assets remain product-specific.
 
@@ -505,8 +505,8 @@ $$
 
 where:
 
-* $$V_{\mathrm{expiring}}$$ is the oldest day's volume leaving the window
-* $$V_{\mathrm{new}}$$ is newly generated eligible volume
+* $V_{\mathrm{expiring}}$ is the oldest day's volume leaving the window
+* $V_{\mathrm{new}}$ is newly generated eligible volume
 
 Professional traders should monitor not only current 30-day volume but also the daily volume that will expire during the coming week.
 
@@ -530,7 +530,7 @@ $$
 f_{\mathrm{Futures},k} \neq f_{\mathrm{Options},k}
 $$
 
-Here, $$k$$ represents the user's VIP level.
+Here, $k$ represents the user's VIP level.
 
 For example, VIP 1 Spot and VIP 1 USDⓈ-M Futures have different maker and taker rates.
 
@@ -555,9 +555,9 @@ $$
 
 where:
 
-* $$S_{\mathrm{fee}}$$ is the expected fee saving
-* $$V$$ is eligible executed volume
-* $$\Delta f$$ is the fee-rate reduction
+* $S_{\mathrm{fee}}$ is the expected fee saving
+* $V$ is eligible executed volume
+* $\Delta f$ is the fee-rate reduction
 
 ### Higher and Configurable Limits
 
@@ -639,11 +639,11 @@ Holding BNB creates capital exposure and opportunity cost.
 
 Let:
 
-* $$C_{\mathrm{BNB}}$$ be the capital allocated to BNB
-* $$r$$ be the annual opportunity cost of capital
-* $$S_{\mathrm{fee}}$$ be expected annual fee savings
-* $$S_{\mathrm{other}}$$ be the value of other VIP benefits
-* $$C_{\mathrm{risk}}$$ be the estimated cost of BNB price and custody risk
+* $C_{\mathrm{BNB}}$ be the capital allocated to BNB
+* $r$ be the annual opportunity cost of capital
+* $S_{\mathrm{fee}}$ be expected annual fee savings
+* $S_{\mathrm{other}}$ be the value of other VIP benefits
+* $C_{\mathrm{risk}}$ be the estimated cost of BNB price and custody risk
 
 The upgrade is economically attractive only when:
 
@@ -706,7 +706,7 @@ $$
 C_{\mathrm{qualification}} = C_{\mathrm{fees}} + C_{\mathrm{spread}} + C_{\mathrm{slippage}} + C_{\mathrm{adverse}} + C_{\mathrm{funding}}
 $$
 
-Define the total carrying and risk cost of the required BNB as $$C_{\mathrm{BNB}}$$.
+Define the total carrying and risk cost of the required BNB as $C_{\mathrm{BNB}}$.
 
 The resulting net VIP benefit is:
 
@@ -720,12 +720,12 @@ Artificial or manipulative activity may also violate exchange rules. Qualificati
 
 ## A Practical Break-Even Calculation
 
-Suppose moving from the current tier to the next tier reduces the strategy's weighted average fee rate by $$\Delta f$$.
+Suppose moving from the current tier to the next tier reduces the strategy's weighted average fee rate by $\Delta f$.
 
 Let:
 
-* $$C$$ be the total cost required to qualify
-* $$V_{\mathrm{break-even}}$$ be the future volume needed to recover that cost
+* $C$ be the total cost required to qualify
+* $V_{\mathrm{break-even}}$ be the future volume needed to recover that cost
 
 The break-even future volume is:
 
@@ -898,7 +898,7 @@ A trader managing Binance VIP status should monitor:
 13. Regional product restrictions
 14. The next daily VIP evaluation time
 
-For automated monitoring, define the projected rolling volume as $$V_{30}^{\mathrm{projected}}$$.
+For automated monitoring, define the projected rolling volume as $V_{30}^{\mathrm{projected}}$.
 
 The projected buffer above a tier threshold is:
 

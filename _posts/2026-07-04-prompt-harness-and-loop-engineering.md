@@ -25,7 +25,7 @@ o_t = \mathcal{E}(a_t), \qquad
 C_{t+1} = g(C_t, a_t, o_t)
 $$
 
-where $$C_t$$ is the context at step $$t$$, $$a_t$$ is the model-selected action, $$o_t$$ is the observation returned by the environment or tool, and $$g$$ is the harness logic that decides what gets preserved, summarized, cleared, or retrieved for the next step.
+where $C_t$ is the context at step $t$, $a_t$ is the model-selected action, $o_t$ is the observation returned by the environment or tool, and $g$ is the harness logic that decides what gets preserved, summarized, cleared, or retrieved for the next step.
 
 The core engineering problem is therefore:
 
@@ -34,7 +34,7 @@ $$
 \quad \text{s.t.} \quad |C_t| \le B
 $$
 
-where $$\mathcal{I}_t$$ is all potentially relevant information and $$B$$ is the model’s context budget.
+where $\mathcal{I}_t$ is all potentially relevant information and $B$ is the model’s context budget.
 
 ---
 
@@ -54,13 +54,13 @@ $$
 
 where:
 
-* $$S$$: system prompt and policy instructions
-* $$U_t$$: current user request
-* $$H_t$$: relevant conversation history
-* $$T_t$$: tool definitions and schemas
-* $$R_t$$: retrieved documents or search results
-* $$M_t$$: persistent memory, notes, summaries, files
-* $$A_t$$: artifacts created so far, such as code, plans, tables, or drafts
+* $S$: system prompt and policy instructions
+* $U_t$: current user request
+* $H_t$: relevant conversation history
+* $T_t$: tool definitions and schemas
+* $R_t$: retrieved documents or search results
+* $M_t$: persistent memory, notes, summaries, files
+* $A_t$: artifacts created so far, such as code, plans, tables, or drafts
 
 The danger is that more context is not always better. Anthropic notes that as context grows, agents may lose focus before they hit the hard token limit; this is often described as **context rot**.
 
@@ -634,7 +634,7 @@ $$
 \frac{|C_t|}{B} > \tau
 $$
 
-where $$\tau$$ might be 0.5–0.7 depending on task complexity.
+where $\tau$ might be 0.5–0.7 depending on task complexity.
 
 Compaction should preserve:
 

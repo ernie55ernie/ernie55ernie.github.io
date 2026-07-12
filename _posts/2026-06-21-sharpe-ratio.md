@@ -13,7 +13,7 @@ When William F. Sharpe introduced the concept in 1966, he called it the **reward
 
 However, the Sharpe Ratio is useful only when interpreted carefully. It treats risk as standard deviation, which means it penalizes upside and downside volatility symmetrically. This can be misleading for skewed returns, fat-tailed distributions, option-like payoffs, illiquid assets, smoothed returns, and strategies with nonlinear downside risk.
 
-A particularly important caveat is that **a monthly Sharpe Ratio cannot generally be annualized simply by multiplying it by $$\sqrt{12}$$**. That shortcut is valid only under restrictive assumptions, especially independent and identically distributed returns. When returns are serially correlated, annualized Sharpe can be materially overstated. Andrew Lo's classic work shows that some hedge fund Sharpe Ratios may be overstated by as much as 65% when serial correlation is ignored.
+A particularly important caveat is that **a monthly Sharpe Ratio cannot generally be annualized simply by multiplying it by $\sqrt{12}$**. That shortcut is valid only under restrictive assumptions, especially independent and identically distributed returns. When returns are serially correlated, annualized Sharpe can be materially overstated. Andrew Lo's classic work shows that some hedge fund Sharpe Ratios may be overstated by as much as 65% when serial correlation is ignored.
 
 The practical conclusion is straightforward: **the Sharpe Ratio is a good first-pass screening tool, but it should not be the sole basis for investment judgment**. For long-tail, nonlinear, actively managed, or benchmark-relative strategies, it should be combined with other metrics such as Sortino Ratio, Treynor Ratio, Information Ratio, Jensen's Alpha, maximum drawdown, and rolling-window stability analysis.
 
@@ -62,8 +62,8 @@ $$
 
 where:
 
-* $$r_{p,t}$$ is the portfolio or asset return in period $$t$$,
-* $$r_{f,t}$$ is the risk-free rate in the same period, currency, and frequency.
+* $r_{p,t}$ is the portfolio or asset return in period $t$,
+* $r_{f,t}$ is the risk-free rate in the same period, currency, and frequency.
 
 If the risk-free rate is treated as constant over the sample, the excess return is often written as:
 
@@ -90,7 +90,7 @@ This is the theoretical or population Sharpe Ratio. In practice, this true value
 
 ### Sample Formula
 
-Given historical excess returns $$x_1, x_2, \ldots, x_n$$, the sample mean excess return is:
+Given historical excess returns $x_1, x_2, \ldots, x_n$, the sample mean excess return is:
 
 $$
 \bar{x}=\frac{1}{n}\sum_{t=1}^{n}x_t
@@ -133,16 +133,16 @@ $$
 SR_{\text{ann}} \approx \sqrt{m}, SR_{\text{per}}
 $$
 
-where $$m$$ is the number of periods per year.
+where $m$ is the number of periods per year.
 
 Common values are:
 
-| Data Frequency | Common Periods Per Year $$m$$ |   Approximate Annualized Sharpe |
+| Data Frequency | Common Periods Per Year $m$ |   Approximate Annualized Sharpe |
 | -------------- | ----------------------------: | ------------------------------: |
-| Daily          |       Around 252 trading days |  $$\sqrt{252},SR_{\text{day}}$$ |
-| Weekly         |               Around 52 weeks |  $$\sqrt{52},SR_{\text{week}}$$ |
-| Monthly        |                     12 months | $$\sqrt{12},SR_{\text{month}}$$ |
-| Quarterly      |                    4 quarters |       $$2,SR_{\text{quarter}}$$ |
+| Daily          |       Around 252 trading days |  $\sqrt{252},SR_{\text{day}}$ |
+| Weekly         |               Around 52 weeks |  $\sqrt{52},SR_{\text{week}}$ |
+| Monthly        |                     12 months | $\sqrt{12},SR_{\text{month}}$ |
+| Quarterly      |                    4 quarters |       $2,SR_{\text{quarter}}$ |
 
 This shortcut is common, but it depends heavily on the assumption that returns are not serially correlated.
 
@@ -150,7 +150,7 @@ Andrew Lo showed that when returns exhibit autocorrelation, the correct scaling 
 
 $$
 SR_T
-====
+=
 
 \frac{q}{\sqrt{q+2\sum_{k=1}^{q-1}(q-k)\rho_k}}
 , SR_t
@@ -158,22 +158,22 @@ $$
 
 where:
 
-* $$q=T/t$$,
-* $$\rho_k$$ is the $$k$$-th order autocorrelation of excess returns.
+* $q=T/t$,
+* $\rho_k$ is the $k$-th order autocorrelation of excess returns.
 
-When all autocorrelations are zero, the formula collapses back to the familiar $$\sqrt{q}$$ rule. But when autocorrelation is positive, simple square-root annualization may overstate the true annualized Sharpe Ratio.
+When all autocorrelations are zero, the formula collapses back to the familiar $\sqrt{q}$ rule. But when autocorrelation is positive, simple square-root annualization may overstate the true annualized Sharpe Ratio.
 
 ## Converting the Risk-Free Rate
 
 The risk-free rate must be converted to the same frequency as the return data.
 
-If the annual risk-free rate is $$y_f$$, the equivalent per-period risk-free rate is:
+If the annual risk-free rate is $y_f$, the equivalent per-period risk-free rate is:
 
 $$
 r_{f,\text{per}} = (1+y_f)^{1/m}-1
 $$
 
-Conversely, if the per-period risk-free rate is $$r_{f,\text{per}}$$, its annualized equivalent is:
+Conversely, if the per-period risk-free rate is $r_{f,\text{per}}$, its annualized equivalent is:
 
 $$
 r_{f,\text{ann}} = (1+r_{f,\text{per}})^m-1
@@ -183,7 +183,7 @@ The purpose is to ensure that returns and risk-free rates are comparable in the 
 
 ## Simple Returns vs. Log Returns
 
-If simple returns $$R_t$$ are used, multi-period returns compound multiplicatively:
+If simple returns $R_t$ are used, multi-period returns compound multiplicatively:
 
 $$
 1+R_t(k)=\prod_{j=0}^{k-1}(1+R_{t-j})
@@ -232,7 +232,7 @@ Assume:
 * Monthly risk-free rate is fixed at 0.2%.
 * Transaction costs and taxes are ignored.
 
-| Month | Asset Monthly Return $$r_t$$ | Excess Return $$x_t=r_t-r_f$$ |
+| Month | Asset Monthly Return $r_t$ | Excess Return $x_t=r_t-r_f$ |
 | ----: | ---------------------------: | ----------------------------: |
 |     1 |                         3.0% |                          2.8% |
 |     2 |                         1.5% |                          1.3% |
@@ -298,7 +298,7 @@ First, sample and population standard deviations produce slightly different resu
 
 Assume:
 
-* Three assets: $$A$$, $$B$$, and $$C$$.
+* Three assets: $A$, $B$, and $C$.
 * Six months of return data.
 * Portfolio weights are:
 
@@ -309,7 +309,7 @@ $$
 * Monthly risk-free rate is 0.15%.
 * The portfolio is fully invested, so weights sum to 1.
 
-| Month | $$A$$ | $$B$$ | $$C$$ | Portfolio Return $$r_{p,t}$$ | Excess Return $$x_t$$ |
+| Month | $A$ | $B$ | $C$ | Portfolio Return $r_{p,t}$ | Excess Return $x_t$ |
 | ----: | ----: | ----: | ----: | ---------------------------: | --------------------: |
 |     1 |  2.0% |  1.2% |  3.0% |                        1.96% |                 1.81% |
 |     2 |  1.0% |  0.8% | -1.0% |                        0.54% |                 0.39% |
@@ -384,7 +384,7 @@ Assume:
 * Monthly risk-free rate is 0.2%.
 * Fees and leverage are ignored.
 
-| Month | Asset Monthly Return $$r_t$$ | Excess Return $$x_t$$ |
+| Month | Asset Monthly Return $r_t$ | Excess Return $x_t$ |
 | ----: | ---------------------------: | --------------------: |
 |     1 |                        -3.0% |                 -3.2% |
 |     2 |                         1.0% |                  0.8% |
@@ -413,7 +413,7 @@ $$
 
 A negative Sharpe Ratio means that, over the sample period, the investment earned less than the risk-free rate on average.
 
-However, negative Sharpe Ratios are often less informative for ranking than positive Sharpe Ratios. Once a strategy has failed to beat the risk-free asset, the more important question is usually not whether $$-0.6$$ is better than $$-0.8$$. The more important question is why the strategy lost money, whether the sample window is representative, and whether the risk structure has changed.
+However, negative Sharpe Ratios are often less informative for ranking than positive Sharpe Ratios. Once a strategy has failed to beat the risk-free asset, the more important question is usually not whether $-0.6$ is better than $-0.8$. The more important question is why the strategy lost money, whether the sample window is representative, and whether the risk structure has changed.
 
 ## Practical Interpretation
 
@@ -451,7 +451,7 @@ The same strategy may produce different Sharpe Ratios depending on:
 | Risk-free rate choice      | The numerator is excess return. If the risk-free rate uses the wrong currency, maturity, or compounding convention, the result is distorted. | Use a risk-free rate that matches the investment currency, horizon, and measurement convention. |
 | Standard deviation as risk | Sharpe treats upside and downside volatility symmetrically.                                                                                  | Add downside and tail-risk measures when losses matter more than upside volatility.             |
 | Non-normal returns         | Skewness, fat tails, and option-like payoffs can make Sharpe misleading.                                                                     | Combine Sharpe with drawdown, skewness, kurtosis, Sortino Ratio, or stress tests.               |
-| Serial correlation         | Smoothed or autocorrelated returns can understate volatility and overstate Sharpe.                                                           | Do not blindly annualize by $$\sqrt{m}$$; use autocorrelation-adjusted scaling.                 |
+| Serial correlation         | Smoothed or autocorrelated returns can understate volatility and overstate Sharpe.                                                           | Do not blindly annualize by $\sqrt{m}$; use autocorrelation-adjusted scaling.                 |
 | Estimation error           | Sharpe is an estimate, not a true value.                                                                                                     | Use longer samples, confidence intervals, bootstrapping, and out-of-sample validation.          |
 | Small-sample bias          | Short samples can produce inflated Sharpe estimates.                                                                                         | Treat high Sharpe from small samples with skepticism.                                           |
 | Measurement window         | Different windows can produce very different Sharpe Ratios.                                                                                  | Compare strategies using the same sample period and frequency.                                  |
@@ -466,11 +466,11 @@ Some metrics, such as Sharpe and Sortino, focus on whether an investment is attr
 
 | Metric                | Formula                                                            | Risk in Denominator                        | Main Benchmark                              | Best Used For                                               | Main Limitation                                                                                     |
 | --------------------- | ------------------------------------------------------------------ | ------------------------------------------ | ------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Sharpe Ratio**      | $$\dfrac{R_p-r_f}{\sigma_p}$$ or $$\dfrac{\bar{x}}{s_x}$$          | Total risk, measured by standard deviation | Risk-free asset                             | Comparing portfolios, funds, or standalone strategies       | Penalizes upside and downside volatility equally; sensitive to skew, fat tails, and autocorrelation |
-| **Sortino Ratio**     | $$\dfrac{R_p-MAR}{DD}$$, or commonly $$\dfrac{R_p-r_f}{\sigma_d}$$ | Downside risk                              | Minimum acceptable return or risk-free rate | When downside deviations matter more than upside volatility | Sensitive to the choice of MAR and downside deviation method                                        |
-| **Treynor Ratio**     | $$\dfrac{R_p-r_f}{\beta_p}$$                                       | Systematic market risk                     | Risk-free asset and market portfolio        | Well-diversified portfolios where beta is the relevant risk | Ignores idiosyncratic risk                                                                          |
-| **Information Ratio** | $$\dfrac{R_p-R_B}{\sigma_{p-B}}$$                                  | Active risk, or tracking error             | Passive benchmark                           | Evaluating active managers relative to a benchmark          | Highly sensitive to benchmark choice                                                                |
-| **Jensen's Alpha**    | $$\alpha_p=R_p-\left[r_f+\beta_p(R_m-r_f)\right]$$                 | Not a ratio                                | Market portfolio                            | Measuring excess return relative to CAPM prediction         | Depends heavily on CAPM and benchmark assumptions                                                   |
+| **Sharpe Ratio**      | $\dfrac{R_p-r_f}{\sigma_p}$ or $\dfrac{\bar{x}}{s_x}$          | Total risk, measured by standard deviation | Risk-free asset                             | Comparing portfolios, funds, or standalone strategies       | Penalizes upside and downside volatility equally; sensitive to skew, fat tails, and autocorrelation |
+| **Sortino Ratio**     | $\dfrac{R_p-MAR}{DD}$, or commonly $\dfrac{R_p-r_f}{\sigma_d}$ | Downside risk                              | Minimum acceptable return or risk-free rate | When downside deviations matter more than upside volatility | Sensitive to the choice of MAR and downside deviation method                                        |
+| **Treynor Ratio**     | $\dfrac{R_p-r_f}{\beta_p}$                                       | Systematic market risk                     | Risk-free asset and market portfolio        | Well-diversified portfolios where beta is the relevant risk | Ignores idiosyncratic risk                                                                          |
+| **Information Ratio** | $\dfrac{R_p-R_B}{\sigma_{p-B}}$                                  | Active risk, or tracking error             | Passive benchmark                           | Evaluating active managers relative to a benchmark          | Highly sensitive to benchmark choice                                                                |
+| **Jensen's Alpha**    | $\alpha_p=R_p-\left[r_f+\beta_p(R_m-r_f)\right]$                 | Not a ratio                                | Market portfolio                            | Measuring excess return relative to CAPM prediction         | Depends heavily on CAPM and benchmark assumptions                                                   |
 
 The key question is not:
 
