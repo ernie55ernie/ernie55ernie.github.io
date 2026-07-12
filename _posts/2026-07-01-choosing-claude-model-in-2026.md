@@ -9,11 +9,11 @@ category: llm
 ## TL;DR
 
 * **Use Claude Sonnet 5 as the default production model.** It is the best balance of speed, intelligence, and cost for coding, data analysis, tool use, writing, and most agentic workflows, according to Anthropic's current [model overview](https://platform.claude.com/docs/en/about-claude/models/overview) and [model-selection guide](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model).
-* **Escalate to Claude Opus 4.8 for hard reasoning and long-horizon agentic coding.** Opus 4.8 is positioned as Anthropic's strongest Opus-tier model for complex reasoning, long-horizon coding, and high-autonomy work, with a $1\text{M}$ token context window and up to $128\text{k}$ output tokens in the synchronous Messages API.
+* **Escalate to Claude Opus 4.8 for hard reasoning and long-horizon agentic coding.** Opus 4.8 is positioned as Anthropic's strongest Opus-tier model for complex reasoning, long-horizon coding, and high-autonomy work, with a $$1\text{M}$$ token context window and up to $$128\text{k}$$ output tokens in the synchronous Messages API.
 * **Use Claude Haiku 4.5 for speed, scale, and simple tasks.** Haiku 4.5 is the fastest and cheapest current Claude model in the main Opus/Sonnet/Haiku ladder, useful for routing, extraction, lightweight classification, sub-agent work, and high-volume workloads.
 * **Use Claude Fable 5 only when you need the highest available capability.** Fable 5 is Anthropic's most capable widely released model, priced above Opus, and aimed at the most demanding reasoning and long-horizon agentic work; see Anthropic's [Fable 5 / Mythos 5 launch notes](https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5).
 * **Do not treat “thinking” as one universal switch.** Current Claude models are moving from manual `budget_tokens` toward **adaptive thinking** plus an `effort` control. On newer Opus/Sonnet/Fable models, the practical knob is usually `output_config.effort`, not a manually chosen chain-of-thought budget; see Anthropic's [extended thinking guide](https://platform.claude.com/docs/en/build-with-claude/extended-thinking).
-* **Optimize cost with caching and batching before downgrading intelligence.** Prompt cache hits are much cheaper than fresh input tokens, and the [Batch API](https://platform.claude.com/docs/en/about-claude/pricing) gives a $50%$ discount on both input and output tokens for asynchronous work.
+* **Optimize cost with caching and batching before downgrading intelligence.** Prompt cache hits are much cheaper than fresh input tokens, and the [Batch API](https://platform.claude.com/docs/en/about-claude/pricing) gives a $$50%$$ discount on both input and output tokens for asynchronous work.
 
 ## The 2026 Claude lineup
 
@@ -21,12 +21,12 @@ Anthropic's current public model ladder is no longer just "Opus vs Sonnet vs Hai
 
 | Tier               |    Current model | Best use                                                       | API ID             |         Context |      Max output |                        Pricing |
 | ------------------ | ---------------: | -------------------------------------------------------------- | ------------------ | --------------: | --------------: | -----------------------------: |
-| Highest capability |   Claude Fable 5 | Most demanding reasoning and long-horizon agentic work         | `claude-fable-5`   |   $1\text{M}$ | $128\text{k}$ |         $\$10 / \$50$ per MTok |
-| Opus               |  Claude Opus 4.8 | Complex reasoning, agentic coding, high-autonomy workflows     | `claude-opus-4-8`  |   $1\text{M}$ | $128\text{k}$ |          $\$5 / \$25$ per MTok |
-| Sonnet             |  Claude Sonnet 5 | Default model for coding, agents, analysis, and knowledge work | `claude-sonnet-5`  |   $1\text{M}$ | $128\text{k}$ | $\$3 / \$15$ per MTok standard |
-| Haiku              | Claude Haiku 4.5 | Fast, cheap, high-volume, simple or parallel subtasks          | `claude-haiku-4-5` | $200\text{k}$ |  $64\text{k}$ |           $\$1 / \$5$ per MTok |
+| Highest capability |   Claude Fable 5 | Most demanding reasoning and long-horizon agentic work         | `claude-fable-5`   |   $$1\text{M}$$ | $$128\text{k}$$ |         $$\$10 / \$50$$ per MTok |
+| Opus               |  Claude Opus 4.8 | Complex reasoning, agentic coding, high-autonomy workflows     | `claude-opus-4-8`  |   $$1\text{M}$$ | $$128\text{k}$$ |          $$\$5 / \$25$$ per MTok |
+| Sonnet             |  Claude Sonnet 5 | Default model for coding, agents, analysis, and knowledge work | `claude-sonnet-5`  |   $$1\text{M}$$ | $$128\text{k}$$ | $$\$3 / \$15$$ per MTok standard |
+| Haiku              | Claude Haiku 4.5 | Fast, cheap, high-volume, simple or parallel subtasks          | `claude-haiku-4-5` | $$200\text{k}$$ |  $$64\text{k}$$ |           $$\$1 / \$5$$ per MTok |
 
-`MTok` means one million tokens. Anthropic's pricing page also notes that Sonnet 5 has introductory pricing of $\$2$ input and $\$10$ output per MTok through August 31, 2026, after which the standard $\$3 / \$15$ pricing applies; verify this on the live [Claude pricing page](https://platform.claude.com/docs/en/about-claude/pricing) before budgeting.
+`MTok` means one million tokens. Anthropic's pricing page also notes that Sonnet 5 has introductory pricing of $$\$2$$ input and $$\$10$$ output per MTok through August 31, 2026, after which the standard $$\$3 / \$15$$ pricing applies; verify this on the live [Claude pricing page](https://platform.claude.com/docs/en/about-claude/pricing) before budgeting.
 
 A simple synchronous API cost approximation is:
 
@@ -41,7 +41,7 @@ $$
 \text{feature add-ons}
 $$
 
-where $T_{\text{in}}$ and $T_{\text{out}}$ are input and output token counts, and $P_{\text{in}}$ and $P_{\text{out}}$ are the model's per-million-token prices.
+where $$T_{\text{in}}$$ and $$T_{\text{out}}$$ are input and output token counts, and $$P_{\text{in}}$$ and $$P_{\text{out}}$$ are the model's per-million-token prices.
 
 ## What changed from the older Opus/Sonnet/Haiku advice?
 
@@ -86,7 +86,7 @@ thinking = {
 }
 ```
 
-The parameter $N$ sets the maximum number of tokens the model can use for internal reasoning. The docs note that `budget_tokens` must be less than `max_tokens`, and larger budgets can improve quality on complex problems, though the model may not use the full budget.
+The parameter $$N$$ sets the maximum number of tokens the model can use for internal reasoning. The docs note that `budget_tokens` must be less than `max_tokens`, and larger budgets can improve quality on complex problems, though the model may not use the full budget.
 
 A useful mental model is:
 
@@ -223,7 +223,7 @@ Prompt caching is often more important than model downgrading. Anthropic's prici
 * cache hits and refreshes,
 * output tokens.
 
-For current models, cache hits are roughly $10%$ of the base input price. If a repeated prompt prefix is large, caching can dominate savings.
+For current models, cache hits are roughly $$10%$$ of the base input price. If a repeated prompt prefix is large, caching can dominate savings.
 
 A simplified cache-hit model:
 
@@ -244,7 +244,7 @@ Use prompt caching for:
 
 ### Batch API
 
-The Batch API gives a $50%$ discount on both input and output tokens for asynchronous workloads.
+The Batch API gives a $$50%$$ discount on both input and output tokens for asynchronous workloads.
 
 $$
 C_{\text{batch}}
@@ -329,7 +329,7 @@ If users are waiting in real time, prefer Haiku or Sonnet and avoid unnecessaril
 
 ### 3. Is the task reasoning-bound or context-bound?
 
-Reasoning-bound tasks need better models and higher effort. Context-bound tasks may need retrieval, chunking, caching, or the $1\text{M}$ context window. Do not assume that adding more context always improves results.
+Reasoning-bound tasks need better models and higher effort. Context-bound tasks may need retrieval, chunking, caching, or the $$1\text{M}$$ context window. Do not assume that adding more context always improves results.
 
 ### 4. Does the same context repeat?
 
@@ -339,7 +339,7 @@ If yes, prompt caching may save more than downgrading the model.
 
 Do not select models by vibes. Build a small eval set:
 
-* $50$ to $200$ representative prompts,
+* $$50$$ to $$200$$ representative prompts,
 * expected answers or grading rubrics,
 * edge cases,
 * cost and latency logs,
@@ -358,7 +358,7 @@ $$
 - \gamma \cdot \text{cost}
 $$
 
-where $\alpha, \beta, \gamma$ reflect your product priorities.
+where $$\alpha, \beta, \gamma$$ reflect your product priorities.
 
 ## Common mistakes
 
@@ -378,7 +378,7 @@ Manual extended thinking is deprecated or unsupported on several newer models. N
 
 Per-token price is not the same as per-task price. If a new model tokenizes the same text differently, actual cost can move even when the listed per-MTok price is unchanged.
 
-### Mistake 5: Using $1\text{M}$ context as a substitute for retrieval
+### Mistake 5: Using $$1\text{M}$$ context as a substitute for retrieval
 
 Long context is powerful, but it is not always the cheapest or most accurate architecture. For large corpora, retrieval plus citations is often better than dumping everything into one request.
 
