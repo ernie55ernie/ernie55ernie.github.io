@@ -2,7 +2,7 @@
 layout: post
 title: "How LLM Benchmarks Work"
 date: 2026-06-24
-category: llm
+category: AI
 ---
 
 ## Executive Summary

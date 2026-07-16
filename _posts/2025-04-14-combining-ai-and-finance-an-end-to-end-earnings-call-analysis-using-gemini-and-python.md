@@ -2,7 +2,7 @@
 layout: post
 title: "Combining AI and Finance An End-to-End Earnings Call Analysis Using Gemini and Python"
 date: 2025-04-14
-category: llm
+category: AI
 ---
 
 ## Introduction

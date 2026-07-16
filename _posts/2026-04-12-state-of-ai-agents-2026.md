@@ -2,7 +2,7 @@
 layout: post
 title: "State of AI Agents 2026: Exhaustive Market, Technical, and Architectural Analysis"
 date: 2026-04-12
-category: llm
+category: AI
 ---
 
 ## **Executive Summary**

@@ -2,7 +2,7 @@
 layout: post
 title: "Prompt, Harness, and Loop Engineering for General-Purpose Autonomous LLM Agents"
 date: 2026-07-04
-category: llm
+category: AI
 ---
 
 ## TL;DR

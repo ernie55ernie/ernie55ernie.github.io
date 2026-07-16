@@ -2,7 +2,7 @@
 layout: post
 title: "In-Depth Comparative Report on Claude Mythos and Claude Fable"
 date: 2026-06-17
-category: llm
+category: AI
 ---
 
 ## Executive Summary

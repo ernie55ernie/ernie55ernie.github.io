@@ -3,7 +3,7 @@
 layout: post
 title: "Choosing Claude Models in 2026: Fable, Opus, Sonnet, Haiku, and Effort"
 date: 2026-07-01
-category: llm
+category: AI
 ---
 
 ## TL;DR

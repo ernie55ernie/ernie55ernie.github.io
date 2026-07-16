@@ -2,7 +2,7 @@
 layout: post
 title: "OpenCode and BigPickle: Open-Source Coding Agent and Free Stealth Model"
 date: 2026-06-19
-category: llm
+category: AI
 ---
 
 # OpenCode and BigPickle: Open-Source Coding Agent and Free Stealth Model

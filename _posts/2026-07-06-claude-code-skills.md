@@ -2,7 +2,7 @@
 layout: post
 title: "Top Claude Code Skills"
 date: 2026-07-06
-category: llm
+category: AI
 ---
 
 # Executive Summary
