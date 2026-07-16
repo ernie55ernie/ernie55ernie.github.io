@@ -2,7 +2,7 @@
 layout: post
 title: "Configurating HPE FlexFabric 5700 from Factory Setting with Console"
 date: 2020-09-29
-category: sdn
+category: infrastructure
 ---
 <h3>Introduction</h3>
 Accidentally, the switch, HPE FlexFabric 5700, in our laboratory has been resetted back to factory setting. This gives me a chance to study how to configure a switch with serial console. Usually, a switch that just comes out from the factory may have a web management port. You just have to connect your computer to the management port with a RJ-45 to RJ-45 connector and set your network settings to Dynamic Host Configuration Protocol (DHCP). After obtaining an IP, you can search what the IP of the DHCP server is and the management webpage is right there. However, when I connect to the management port, I've only got an IP of 169.*.*.* which means the DHCP is unavailable (more possibilities can be found <a href="https://windowsreport.com/computer-stuck-169-ip-address/#:~:text=Whenever%20you%20find%20your%20computer,DHCP%20server%20is%20temporarily%20unavailable&text=The%20computer%20itself%20was%20unable,and%20thus%20needs%20a%20reboot">here</a>). As a result, the only way to configure the switch is via serial console. The exact model of our switch is HPE FF 5700-32XGT-8XG-2QSFP+ Sw.

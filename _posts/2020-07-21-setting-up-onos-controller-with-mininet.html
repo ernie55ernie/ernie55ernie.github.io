@@ -2,7 +2,7 @@
 layout: post
 title: "Setting Up ONOS Controller with Mininet"
 date: 2020-07-21
-category: sdn
+category: infrastructure
 ---
 <h3>Introduction</h3>
 In the previous post, <a href="/sdn/2019/03/25/install-mininet-and-ryu-controller.html">Install Mininet and Ryu Controller</a>, the software defined networking (SDN) controller is <a href="https://osrg.github.io/ryu/">Ryu</a>. It makes it easy for developers to create network management, control application, and prototyping. However, if you want to deploy SDN in a realistic network environment, it's better to use <a href="https://www.opennetworking.org/onos/">ONOS</a> and <a href="https://docs.opendaylight.org/en/stable-magnesium/user-guide/opendaylight-controller-overview.html">OpenDayLight</a> since they have better support for legacy network, a distributed model for the controller, very good modularity, and GUI. A complete comparison of SDN controllers can be found in <a href="https://www.researchgate.net/publication/340977508_Controller_selection_in_software_defined_networks_using_best-worst_multi-criteria_decision-making">Controller selection in software defined networks using best-worst multi-criteria decision-making</a>. This post demonstrates how to build a ONOS controller and connects the it to Mininet.
