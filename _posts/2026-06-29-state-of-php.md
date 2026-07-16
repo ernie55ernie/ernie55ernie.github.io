@@ -3,7 +3,7 @@
 layout: post
 title: "In-Depth Research Report on the State of PHP"
 date: 2026-06-29
-category: php
+category: software engineering
 ---
 
 ## Executive Summary
