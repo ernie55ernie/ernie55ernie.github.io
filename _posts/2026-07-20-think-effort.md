@@ -3,7 +3,7 @@
 layout: post
 title: "How Think Effort Works in OpenAI ChatGPT and GPT-5.6 Sol"
 date: 2026-07-20
-category: llm
+category: AI
 ---
 
 ## Executive Summary
