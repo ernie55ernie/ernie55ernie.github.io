@@ -138,7 +138,7 @@ This move serves a dual purpose. Commercially, it provides Microsoft with an anc
 
 ### 6.2 The Rise of Taiwan as a Strategic AI Hub
 
-Simultaneously, Microsoft positioned Taiwan at the epicenter of its Asian AI hardware and software engineering efforts. Recognizing Taiwan's unrivaled semiconductor manufacturing ecosystem, Microsoft invested heavily in the island's digital infrastructure, operating its regional headquarters out of the Cathay Landmark in Taipei's Xinyi District[43](https://www.cc.ntu.edu.tw/chinese/services/serv\_i07.pdf).
+Simultaneously, Microsoft positioned Taiwan at the epicenter of its Asian AI hardware and software engineering efforts. Recognizing Taiwan's unrivaled semiconductor manufacturing ecosystem, Microsoft invested heavily in the island's digital infrastructure, operating its regional headquarters out of the Cathay Landmark in Taipei's Xinyi District[43](https://www.microsoft.com/zh-tw/mscorp/about/contact).
 
 * **Data Center and Infrastructure:** Building on an AI R&D Center established in 2018, Microsoft achieved general availability for its new Taiwan North cloud data center region (located in Taoyuan) in 2026, following the launch of Microsoft 365 data residency services[46](https://www.datacentermap.com/taiwan/taoyuan/microsoft-taoyuan/). This facility forms the backbone of an expansion strategy that also includes new Azure regions launching in India, Malaysia, and Indonesia[47](https://azure.microsoft.com/en-us/blog/microsofts-commitment-to-supporting-cloud-infrastructure-demand-in-asia/).
 
