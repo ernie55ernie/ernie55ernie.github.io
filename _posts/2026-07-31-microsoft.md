@@ -255,7 +255,7 @@ In conclusion, Microsoft’s position in 2026 is characterized by massive capita
 40. [Microsoft and Mistral expand strategic partnership to give enterprises and regulated industries frontier AI they can control](https://news.microsoft.com/source/2026/07/21/microsoft-and-mistral-expand-strategic-partnership-to-give-enterprises-and-regulated-industries-frontier-ai-they-can-control/)
 41. [Press releases Archives - Microsoft Source](https://news.microsoft.com/source/tag/press-releases/)
 42. [Microsoft Widens Mistral Deal to Court Regulated AI Buyers - Unite.AI](https://www.unite.ai/microsoft-widens-mistral-deal-to-court-regulated-ai-buyers/)
-43. [機關地址:台北市忠孝東路五段68號18樓](https://www.cc.ntu.edu.tw/chinese/services/serv\_i07.pdf)
+43. [機關地址:台北市忠孝東路五段68號18樓](https://www.microsoft.com/zh-tw/mscorp/about/contact)
 44. [File:Microsoft Taiwan Corporation headquarters plate 20161126.jpg - Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Microsoft\_Taiwan\_Corporation\_headquarters\_plate\_20161126.jpg)
 45. [Locations - Microsoft](https://www.microsoft.com/en-us/hub/locations)
 46. [Microsoft Taoyuan Data Center - Lane 525, Taoying Rd](https://www.datacentermap.com/taiwan/taoyuan/microsoft-taoyuan/)
