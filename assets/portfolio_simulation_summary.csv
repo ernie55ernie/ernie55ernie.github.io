@@ -1,0 +1,6 @@
+Strategy,CAGR_pct,Annualized_Volatility_pct,Sharpe,Maximum_Drawdown_pct,Annual_Traded_Notional_per_Capital_x,Average_Gross_Exposure_x
+1/N,7.87,12.15,0.48,-18.73,0.39,1.0
+GMV,7.27,5.89,0.9,-8.55,0.59,1.0
+MV-Shrink,7.4,10.29,0.52,-16.66,1.27,1.0
+Kelly-full,5.91,38.23,0.1,-66.81,6.27,2.0
+Hybrid,6.56,9.88,0.46,-15.71,1.07,0.7

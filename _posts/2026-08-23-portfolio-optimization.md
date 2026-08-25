@@ -457,11 +457,11 @@ Simulation results:
 
 This example does not deliberately make the hybrid strategy “win.” On the contrary, GMV has the best risk-adjusted performance on this path, while full Kelly performs the worst; this is exactly the attitude research should have: **do not use one attractive equity curve to prove that a model is correct.** The out-of-sample research by DeMiguel et al. likewise warns that complex optimization may not outperform simple allocation in the presence of estimation error. [DeMiguel, Garlappi & Uppal (2009)](https://academic.oup.com/rfs/article-abstract/22/5/1915/1592901)
 
-![Cumulative wealth of the six-asset simulated strategies](./portfolio_hybrid_cumulative_wealth.png)
+![Cumulative wealth of the six-asset simulated strategies](/assets/portfolio_hybrid_cumulative_wealth.png)
 
 Transaction-cost sensitivity is particularly noteworthy. When costs rise from 0 bps to 50 bps on this simulated path, $$1/N$$ CAGR falls from roughly 7.91% to 7.70%; GMV falls from 7.33% to 7.02%; MV-Shrink falls from 7.54% to 6.86%; Hybrid falls from 6.67% to 6.11%; but full Kelly falls sharply from 6.57% to 3.27%. The reason is not that the Kelly objective itself is “wrong,” but that noisy full-Kelly weights generate approximately 6.27× annual traded notional, causing turnover and forecast error to amplify each other.
 
-![Transaction-cost sensitivity](./portfolio_transaction_cost_sensitivity.png)
+![Transaction-cost sensitivity](/assets/portfolio_transaction_cost_sensitivity.png)
 
 Fractional Kelly sensitivity also illustrates the role of the exposure cap:
 
@@ -476,9 +476,9 @@ Fractional Kelly sensitivity also illustrates the role of the exposure cap:
 
 $$f=0.75$$ and $$1.0$$ are nearly identical in this example because the volatility / exposure constraints are already binding; this is also an important property of a production system: **the Kelly fraction should not be the only safety mechanism.**
 
-![Fractional Kelly sensitivity](./portfolio_fractional_kelly_sensitivity.png)
+![Fractional Kelly sensitivity](/assets/portfolio_fractional_kelly_sensitivity.png)
 
-The complete simulation outputs can be downloaded here: [Strategy summary CSV](./portfolio_simulation_summary.csv), [Transaction-cost sensitivity CSV](./portfolio_transaction_cost_sensitivity.csv), and [Fractional Kelly sensitivity CSV](./portfolio_fractional_kelly_sensitivity.csv).
+The complete simulation outputs can be downloaded here: [Strategy summary CSV](/assets/portfolio_simulation_summary.csv), [Transaction-cost sensitivity CSV](/assets/portfolio_transaction_cost_sensitivity.csv), and [Fractional Kelly sensitivity CSV](/assets/portfolio_fractional_kelly_sensitivity.csv).
 
 ## Live Execution, Transaction Costs, and Risk Overlays
 
