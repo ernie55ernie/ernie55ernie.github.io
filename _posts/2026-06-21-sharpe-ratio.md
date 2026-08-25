@@ -504,7 +504,7 @@ Rolling Sharpe calculates the Sharpe Ratio over a moving window, such as the mos
 
 For example:
 
-![Illustrative chart: monthly returns and 12-month rolling Sharpe Ratio](sandbox:/mnt/data/sharpe_rolling_example_en.png)
+![Illustrative chart: monthly returns and 12-month rolling Sharpe Ratio](/assets/sharpe_rolling_example_en.png)
 
 In this type of chart, the bars represent monthly returns and the line represents rolling annualized Sharpe. The point is not to draw a conclusion from the illustrative data, but to show how quickly Sharpe can shift when recent returns, volatility, or loss patterns change.
 
