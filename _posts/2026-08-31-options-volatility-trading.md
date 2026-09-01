@@ -1,11 +1,9 @@
 ---
 layout: post
-title: "Factor Investing & Cross-Sectional Alpha: A Research Framework for Theory, Evidence, Statistical Testing, and Tradable Implementatio"
-date: 2026-08-30
+title: "Options, Volatility & Volatility Trading: Models, Surfaces, Risk Premia, and Cross-Asset Evidence"
+date: 2026-08-31
 category: trading
 ---
-
-# Options, Volatility & Volatility Trading: Models, Surfaces, Risk Premia, and Cross-Asset Evidence
 
 ## Executive Summary
 

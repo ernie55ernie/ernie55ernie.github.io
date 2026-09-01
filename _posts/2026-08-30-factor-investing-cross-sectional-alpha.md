@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Factor Investing & Cross-Sectional Alpha: A Research Framework for Theory, Evidence, Statistical Testing, and Tradable Implementatio"
+title: "Factor Investing & Cross-Sectional Alpha: A Research Framework for Theory, Evidence, Statistical Testing, and Tradable Implementation"
 date: 2026-08-30
 category: trading
 ---
