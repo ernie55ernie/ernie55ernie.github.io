@@ -18,6 +18,8 @@ The question: *Will the sheep ever be eaten?*
 
 We solve this through **backward induction**, analyzing from smaller cases up:
 
+<iframe src="{{ site.baseurl }}/assets/tigers_and_sheep_backward_induction.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### 1 Tiger, 1 Sheep
 - The tiger eats the sheep, becomes a sheep.
 - Now alone, no threat. **Survival guaranteed.**
