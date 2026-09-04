@@ -33,42 +33,36 @@ Weigh balls **1, 2, 3, 4** vs. **5, 6, 7, 8**
 **Three outcomes:**
 
 #### 1. If balanced:
-Then the defective ball is among **9, 10, 11, 12**.
+The defective ball is among **9, 10, 11, 12**, and balls 1–8 are known to be normal.
 
-### Second Weighing (Case: Balanced First Weighing):
-Weigh **1, 2, 9** vs. **3, 4, 10**
+**Second Weighing:** Weigh **9, 10, 11** vs. **1, 2, 3** (known normal).
+- **If balanced:** Ball 12 is the odd one. 
+  - **Third Weighing:** Weigh **12** vs. **1**. If 12 goes down, it's heavy; if it goes up, it's light.
+- **If left is heavy:** The odd ball is 9, 10, or 11, and it is heavy. 
+  - **Third Weighing:** Weigh **9** vs. **10**. If 9 goes down, 9 is heavy. If 10 goes down, 10 is heavy. If balanced, 11 is heavy.
+- **If left is light:** The odd ball is 9, 10, or 11, and it is light. 
+  - **Third Weighing:** Weigh **9** vs. **10**. If 9 goes up, 9 is light. If 10 goes up, 10 is light. If balanced, 11 is light.
 
-- If **balanced**, the odd ball is **11 or 12**
-- Weigh **11 vs. 1** (known normal)
-  - If equal → ball 12 is odd
-  - If 11 heavier/lighter → 11 is odd and its type is known
+#### 2. If unbalanced (e.g., left is heavier):
+Assume left (1, 2, 3, 4) is heavier than right (5, 6, 7, 8). This means either one of {1, 2, 3, 4} is heavy, or one of {5, 6, 7, 8} is light. Balls 9–12 are known normal.
 
-- If **unbalanced**, you compare positions of 9 or 10 to deduce which is odd and whether it's heavy or light
+**Second Weighing:** Weigh **1, 2, 3, 5** vs. **4, 9, 10, 11**.
+*(We kept 1, 2, 3 on the left, moved 4 to the right, moved 5 to the left, and filled the rest with normal balls).*
 
-#### 2. If **left heavier** in the first weighing:
-The defective ball is in **1–8**, and you know the odd ball caused an imbalance.
+- **If left is heavy again:** The odd ball must be one that stayed on the same side and was suspected heavy. So it's **1, 2, or 3** (all heavy candidates).
+  - **Third Weighing:** Weigh **1** vs. **2**. If 1 is heavy, it goes down. If 2 is heavy, it goes down. If balanced, 3 is heavy.
+- **If right is heavy:** The imbalance flipped. The odd ball must be one that switched sides. So it's either **4** (switched to right, making it heavy) or **5** (switched to left, making it light).
+  - **Third Weighing:** Weigh **4** vs. **9** (normal). If 4 goes down, 4 is heavy. If balanced, 5 is light.
+- **If balanced:** The odd ball must be one of the unweighed balls from the suspected light group: **6, 7, or 8** (all light candidates).
+  - **Third Weighing:** Weigh **6** vs. **7**. If 6 goes up, 6 is light. If 7 goes up, 7 is light. If balanced, 8 is light.
 
-Track the combinations of outcomes across weighings to eliminate possibilities. The logic tree splits depending on which balls are on which sides in each weighing.
-
-You continue with carefully selected weighings:
-
-### Second Weighing (Case: Left Heavy First):
-Weigh **1, 5, 9** vs. **2, 6, 10**
-
-Again, interpret outcomes:
-
-- Balanced → Odd ball in {3, 4, 7, 8}
-- Left heavy → Infer about 1/5 vs 2/6
-- Right heavy → Same logic
-
-### Third Weighing:
-Use the information narrowed down from the first two steps to make a final weighing that distinguishes between the last 3 suspects.
+*(If the first weighing resulted in the left being lighter, you apply the exact same logic but mirror the heavy/light expectations).*
 
 ## Final Answer
 
-**Yes**, you can identify the defective ball and its nature (heavier/lighter) in **3 weighings** using a decision tree based on outcomes of each weighing.
+**Yes**, you can always identify the defective ball and its nature (heavier/lighter) in exactly **3 weighings**. 
 
-This puzzle illustrates **information theory** and the power of base-3 logic.
+This puzzle illustrates **information theory** and the power of base-3 logic: each weighing gives 3 possible outcomes. Three weighings give \\( 3^3 = 27 \\) possible outcomes, which is just enough to distinguish the 24 possible states (12 balls × 2 states).
 
 # Reference
 
