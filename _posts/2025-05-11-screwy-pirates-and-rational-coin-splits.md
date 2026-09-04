@@ -40,14 +40,14 @@ Why this works:
 - E gets 0 in the 2-pirate case, so 1 coin is better. He votes yes.
 
 ### 4 Pirates: B, C, D, E
-B needs 2 votes beyond his own. He gives **1 coin to D** (who would get 0 if B dies) to secure his support.
+B needs 1 vote beyond his own. He gives **1 coin to D** (who would get 0 if B dies) to secure his support.
 
 Split:  
 **B: 99, C: 0, D: 1, E: 0**
 
 - C would prefer B dead, hoping for 99 coins in the 3-pirate scenario.
 - D prefers 1 over 0.
-- E gets nothing either way, but prefers B dead, so votes no.
+- E would get 1 if B dies, so prefers B dead and votes no.
 - B gets yes from himself and D.
 
 ### 5 Pirates: A, B, C, D, E
