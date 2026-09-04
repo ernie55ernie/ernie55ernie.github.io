@@ -20,6 +20,8 @@ Let’s label the pirates from A (most senior) to E (least senior).
 
 To understand what proposal pirate A should make, we analyze from the smallest group upward.
 
+<iframe src="{{ site.baseurl }}/assets/pirate_game_visualizer.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### 1 Pirate Left: Pirate E
 Only E remains. He keeps all **100 coins**. No vote needed.
 
