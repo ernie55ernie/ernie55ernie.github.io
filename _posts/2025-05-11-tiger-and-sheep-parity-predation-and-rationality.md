@@ -10,7 +10,7 @@ Imagine 100 rational tigers and 1 lone sheep stranded on a magical island. The o
 - If a tiger eats the sheep, **it becomes a sheep itself**.
 - Only one tiger can eat at any given moment.
 - All tigers are **perfectly rational**, prioritizing their **own survival** above all else.
-- If indifferent in outcome, a tiger prefers **fewer fellow survivors** (more tigers dead).
+- If indifferent in outcome, a tiger prefers to **eat the sheep**.
 
 The question: *Will the sheep ever be eaten?*
 
