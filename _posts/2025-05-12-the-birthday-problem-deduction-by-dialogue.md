@@ -7,7 +7,7 @@ category: quantitative interview
 
 This logical deduction puzzle, inspired by the famous “Cheryl’s Birthday,” revolves around narrowing down possibilities from a short conversation between two people with partial information.
 
-### The Setup
+## The Problem
 
 Your boss A's birthday is one of the following 10 dates:
 
@@ -16,11 +16,21 @@ Your boss A's birthday is one of the following 10 dates:
 - **September**: 1, 5  
 - **December**: 1, 2, 8
 
-You are told **only the month**, while your colleague C is told **only the day**.
+You are told **only the month**, while your colleague C is told **only the day**. Everyone knows the list of 10 possible dates.
 
-Everyone knows the list of 10 possible dates.
+The following conversation takes place:
 
-### Step 1: You Say  
+- **You:** “I don’t know A’s birthday, and I know C doesn’t know it either.”
+- **C:** “At first I didn’t know A’s birthday, but now I do.”
+- **You:** “Now I know it, too.”
+
+**Question:** When is A's birthday?
+
+## The Solution
+
+We can deduce the birthday by breaking down the conversation step by step.
+
+### Step 1: Your First Statement
 > “I don’t know A’s birthday, and I know C doesn’t know it either.”
 
 This tells us your month **cannot** be one with any uniquely identifying days.
@@ -43,7 +53,7 @@ So when you confidently say, “I know C doesn’t know,” it rules out **June*
 
 You're left with **March** and **September**.
 
-### Step 2: C Says  
+### Step 2: C's Statement
 > “At first I didn’t know A’s birthday, but now I do.”
 
 C must have heard a day that was **not unique at first**, but now can be **uniquely associated** with one date, given the month must be March or September.
@@ -67,7 +77,7 @@ So if C had **5**, they’d still be confused. But if C had **1**, **4**, or **8
 
 Therefore, C must have seen **1**, **4**, or **8**.
 
-### Step 3: You Say  
+### Step 3: Your Second Statement
 > “Now I know it, too.”
 
 You must have been told **March** or **September**, and now that C figured it out, you must also be able to.
