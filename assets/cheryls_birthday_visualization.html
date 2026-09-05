@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cheryl's Birthday — Interactive Deduction</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#11182b; --panel2:#151f36; --text:#eef3ff; --muted:#9aa8c7;
+    --line:#2b385c; --accent:#79a7ff; --accent2:#9f8cff; --good:#58d68d; --bad:#ff7d7d;
+    --gold:#ffd166;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text); background:
+      radial-gradient(circle at 15% 0%, #172449 0, transparent 32rem),
+      radial-gradient(circle at 90% 20%, #251c4f 0, transparent 30rem),
+      var(--bg);
+  }
+  .page{max-width:1180px;margin:0 auto;padding:28px 18px 56px}
+  h1{margin:0;font-size:clamp(2rem,5vw,4.2rem);line-height:.95;letter-spacing:-.05em}
+  .subtitle{color:var(--muted);max-width:760px;line-height:1.6;margin:14px 0 0}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .chip{border:1px solid var(--line);background:#111a31;padding:8px 12px;border-radius:999px;color:#dbe5ff;font-size:14px}
+  .layout{display:grid;grid-template-columns:1.3fr .8fr;gap:18px;margin-top:24px}
+  .panel{background:rgba(17,24,43,.88);border:1px solid var(--line);border-radius:22px;padding:18px;backdrop-filter:blur(8px)}
+  .panel h2{font-size:16px;margin:0 0 6px}
+  .small{font-size:13px;color:var(--muted)}
+  .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+  button{
+    font:inherit;color:inherit;background:#121b31;border:1px solid var(--line);border-radius:12px;
+    min-height:44px;padding:10px 14px;cursor:pointer
+  }
+  button:hover{border-color:#53658f}
+  button:focus-visible{outline:3px solid rgba(121,167,255,.35);outline-offset:2px}
+  .date-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+  .date-card{position:relative;text-align:left;padding:14px;border-radius:14px;background:var(--panel2);transition:.2s ease}
+  .date-card strong{font-size:17px}
+  .date-card .status{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+  .date-card.dead{opacity:.28;filter:saturate(.3);text-decoration:line-through}
+  .date-card.winner{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;background:#2b2616}
+  .winner-badge{position:absolute;right:10px;top:10px;background:var(--gold);color:#17120a;font-size:11px;font-weight:800;padding:4px 7px;border-radius:999px}
+  .dialogue{display:grid;gap:10px;margin-top:14px}
+  .step{width:100%;text-align:left;padding:13px;background:#10182b}
+  .step.active{border-color:var(--accent);background:#172544}
+  .step.future{opacity:.52}
+  .who{display:flex;gap:11px;align-items:flex-start}
+  .avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;font-weight:800;flex:0 0 auto}
+  .avatar.a{background:#486fb3}.avatar.b{background:#6c55aa}
+  .quote{color:var(--muted);font-size:14px;line-height:1.45;margin-top:2px}
+  .logic-title{font-size:23px;font-weight:800;line-height:1.1;margin-top:8px}
+  .logic-body{color:#c2ccea;line-height:1.65;margin-top:12px}
+  .mini{margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 9px;margin:3px 4px 3px 0;font-size:12px;background:#111a31}
+  .arrow{display:flex;align-items:center;gap:8px;margin:12px 0;color:var(--muted)}
+  .arrow span{height:1px;background:var(--line);flex:1}
+  .answer{border:1px solid #7a641f;background:#2b2616;border-radius:16px;padding:15px;text-align:center;margin-top:12px}
+  .answer .big{font-size:28px;font-weight:900;color:var(--gold);margin-top:3px}
+  .legend{display:grid;gap:10px;margin-top:16px}
+  .legend-row{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .footer{margin-top:22px;color:var(--muted);font-size:12px;line-height:1.6}
+  .footer a{color:#adc8ff}
+  .progress{margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .pstep{height:6px;background:#263452;border-radius:999px}
+  .pstep.on{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}.date-grid{grid-template-columns:1fr}.page{padding:20px 14px 44px}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Cheryl’s Birthday</h1>
+    <p class="subtitle">
+      A knowledge puzzle: Cheryl gives Albert only the <b>month</b> and Bernard only the <b>day</b>.
+      Their public statements reveal not just what they know, but what they know about each other’s knowledge.
+    </p>
+    <div class="chips">
+      <span class="chip">Albert → month</span>
+      <span class="chip">Bernard → day</span>
+      <span class="chip">10 candidate dates</span>
+      <span class="chip">Answer emerges by elimination</span>
+    </div>
+  </header>
+
+  <div class="progress" aria-hidden="true">
+    <div class="pstep on"></div><div class="pstep"></div><div class="pstep"></div><div class="pstep"></div>
+  </div>
+
+  <section class="layout">
+    <div class="panel">
+      <div class="toprow">
+        <div>
+          <h2>Possible birthdays</h2>
+          <div id="countText" class="small" aria-live="polite">10 candidates remain</div>
+        </div>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div id="dateGrid" class="date-grid"></div>
+
+      <div class="arrow"><span></span><b>PUBLIC CONVERSATION</b><span></span></div>
+
+      <div class="dialogue">
+        <button class="step" data-step="1" type="button">
+          <div class="who"><span class="avatar a">A</span><div><b>Albert</b>
+            <div class="quote">“I don’t know when Cheryl’s birthday is, but I know that Bernard doesn’t know too.”</div>
+          </div></div>
+        </button>
+        <button class="step future" data-step="2" type="button">
+          <div class="who"><span class="avatar b">B</span><div><b>Bernard</b>
+            <div class="quote">“At first I don’t know when Cheryl’s birthday is, but I know now.”</div>
+          </div></div>
+        </button>
+        <button class="step future" data-step="3" type="button">
+          <div class="who"><span class="avatar a">A</span><div><b>Albert</b>
+            <div class="quote">“Then I also know when Cheryl’s birthday is.”</div>
+          </div></div>
+        </button>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="small">DEDUCTION</div>
+      <div id="logicTitle" class="logic-title">Start with all 10 dates</div>
+      <div id="logicBody" class="logic-body">
+        Every month appears more than once, so Albert initially cannot identify the date.
+        The crucial information comes from what each person says about the other person’s knowledge.
+      </div>
+      <div id="miniViz" class="mini"></div>
+
+      <div class="legend">
+        <div class="legend-row"><span class="dot" style="background:#5e79b7"></span> still possible</div>
+        <div class="legend-row"><span class="dot" style="background:#5a3140"></span> eliminated</div>
+        <div class="legend-row"><span class="dot" style="background:#ffd166"></span> final answer</div>
+      </div>
+    </aside>
+  </section>
+
+  <p class="footer">
+    Based on the original SASMO 2015 puzzle as summarized on
+    <a href="https://en.wikipedia.org/wiki/Cheryl%27s_Birthday" target="_blank" rel="noreferrer">Wikipedia</a>.
+    Click any conversation line to jump directly to that deduction stage.
+  </p>
+</main>
+
+<script>
+(() => {
+  const dates = [
+    {m:'May',d:15},{m:'May',d:16},{m:'May',d:19},
+    {m:'June',d:17},{m:'June',d:18},
+    {m:'July',d:14},{m:'July',d:16},
+    {m:'August',d:14},{m:'August',d:15},{m:'August',d:17}
+  ];
+  const survivors = {
+    0:[0,1,2,3,4,5,6,7,8,9],
+    1:[5,6,7,8,9],
+    2:[6,8,9],
+    3:[6]
+  };
+  const titles = [
+    'Start with all 10 dates',
+    'Albert eliminates May and June',
+    'Bernard eliminates day 14',
+    'Albert identifies July 16'
+  ];
+  const bodies = [
+    'Bernard could know immediately only if his day appeared exactly once. Among the original dates, only 18 and 19 are unique.',
+    'If Albert had been told May, Bernard might have been told 19; if Albert had been told June, Bernard might have been told 18. Albert is certain Bernard does not know, so Albert’s month must be July or August.',
+    'After Albert speaks, Bernard knows the month is July or August. Day 14 still appears twice, so Bernard could not know if his day were 14. Therefore the possible dates are July 16, August 15, and August 17.',
+    'Albert now knows too. If his month were August, two possibilities would remain. Therefore Albert’s month must be July, leaving only July 16.'
+  ];
+
+  let step = 0;
+  const grid = document.getElementById('dateGrid');
+  const countText = document.getElementById('countText');
+  const logicTitle = document.getElementById('logicTitle');
+  const logicBody = document.getElementById('logicBody');
+  const miniViz = document.getElementById('miniViz');
+  const psteps = [...document.querySelectorAll('.pstep')];
+
+  function renderMini() {
+    if (step === 0) {
+      miniViz.innerHTML = `
+        <b>Days in the original list</b><br>
+        <span class="pill">14 × 2</span>
+        <span class="pill">15 × 2</span>
+        <span class="pill">16 × 2</span>
+        <span class="pill">17 × 2</span>
+        <span class="pill">18 × 1</span>
+        <span class="pill">19 × 1</span>
+        <p class="small">Only 18 and 19 would let Bernard know immediately.</p>`;
+    } else if (step === 1) {
+      miniViz.innerHTML = `
+        <b>Albert’s month must be</b><br>
+        <span class="pill">July ✓</span>
+        <span class="pill">August ✓</span>
+        <p class="small">May and June are impossible because they contain unique days 19 and 18.</p>`;
+    } else if (step === 2) {
+      miniViz.innerHTML = `
+        <b>Bernard’s updated view</b><br>
+        <span class="pill">14 → 2 dates</span>
+        <span class="pill">15 → 1 date</span>
+        <span class="pill">16 → 1 date</span>
+        <span class="pill">17 → 1 date</span>
+        <p class="small">Since Bernard now knows, his day cannot be 14.</p>`;
+    } else {
+      miniViz.innerHTML = `
+        <b>Albert’s updated view</b><br>
+        <span class="pill">July → 1 date</span>
+        <span class="pill">August → 2 dates</span>
+        <div class="answer"><div class="small">CHERYL’S BIRTHDAY</div><div class="big">July 16</div></div>`;
+    }
+  }
+
+  function render() {
+    const alive = new Set(survivors[step]);
+    grid.innerHTML = '';
+    dates.forEach((x,i) => {
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'date-card' + (alive.has(i) ? '' : ' dead') + (step===3 && i===6 ? ' winner' : '');
+      el.innerHTML = `<strong>${x.m} ${x.d}</strong><span class="status">${alive.has(i) ? (step===3&&i===6 ? 'only candidate left' : 'still possible') : 'eliminated'}</span>${step===3&&i===6?'<span class="winner-badge">ANSWER</span>':''}`;
+      grid.appendChild(el);
+    });
+
+    countText.textContent = `${survivors[step].length} candidate${survivors[step].length===1?'':'s'} remain`;
+    logicTitle.textContent = titles[step];
+    logicBody.textContent = bodies[step];
+    renderMini();
+
+    document.querySelectorAll('.step').forEach(btn => {
+      const n = Number(btn.dataset.step);
+      btn.classList.toggle('active', n===step);
+      btn.classList.toggle('future', n>step);
+    });
+
+    psteps.forEach((p,i)=>p.classList.toggle('on', i<=step));
+  }
+
+  document.querySelectorAll('.step').forEach(btn => {
+    btn.addEventListener('click', () => {
+      step = Number(btn.dataset.step);
+      render();
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => { step=0; render(); });
+  render();
+})();
+</script>
+</body>
+</html>

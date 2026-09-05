@@ -26,6 +26,8 @@ The following conversation takes place:
 
 **Question:** When is A's birthday?
 
+<iframe src="{{ site.baseurl }}/assets/cheryls_birthday_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## The Solution
 
 We can deduce the birthday by breaking down the conversation step by step.
