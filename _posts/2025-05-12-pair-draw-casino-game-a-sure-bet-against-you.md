@@ -20,6 +20,8 @@ You’re in a casino offered a curious card game involving a standard 52-card de
    - If not (tie or dealer has more), you **win nothing**.
 5. You get to choose the **entry fee** before playing.
 
+<iframe src="{{ site.baseurl }}/assets/insidious_casino_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### What Should You Pay?
 
 Let’s analyze the symmetry and probability:
