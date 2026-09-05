@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>25 Horses — Fastest 3 in 7 Races</title>
+  <style>
+    :root{
+      --bg:#f7f7f8;--card:#ffffff;--text:#1f2328;--muted:#667085;--border:#d9dee7;
+      --accent:#2563eb;--accent-bg:#eaf1ff;--good:#16a34a;--dead:#a3a3a3;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 44px}
+    h1{margin:0 0 8px;font-size:clamp(28px,4vw,44px)}
+    .sub{color:var(--muted);margin-bottom:24px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+    .stat,.card{background:var(--card);border:1px solid var(--border);border-radius:14px}
+    .stat{padding:14px}
+    .stat small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .stat strong{font-size:28px}
+    .steps{display:flex;align-items:center;gap:8px;overflow:auto;padding:4px 0 14px}
+    .dot{width:36px;height:36px;border-radius:999px;border:1px solid var(--border);background:#fff;font-weight:700;cursor:pointer}
+    .dot.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+    .arrow{color:var(--muted)}
+    .card{padding:18px;margin-bottom:16px}
+    .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .eyebrow{color:var(--accent);font-weight:700;font-size:14px}
+    h2{margin:4px 0 6px}
+    .muted{color:var(--muted)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    button{font:inherit;border:1px solid var(--border);background:white;padding:10px 14px;border-radius:10px;cursor:pointer}
+    button.primary{border-color:var(--accent);background:var(--accent-bg);font-weight:700}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .race-grid{margin-top:18px;overflow:auto}
+    .lane{display:grid;grid-template-columns:38px repeat(5,minmax(54px,1fr));gap:8px;align-items:center;min-width:520px;margin:7px 0}
+    .horse{height:44px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;background:white;transition:.2s}
+    .horse.focus{background:var(--accent-bg);border-color:var(--accent)}
+    .horse.dead{opacity:.25;text-decoration:line-through}
+    .horse.winner{outline:2px solid var(--good);outline-offset:1px}
+    .result{margin-top:16px;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fafafa}
+    .logic{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .logic > div{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fafafa}
+    .hidden{display:none}
+    .final-order{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+    .ranks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .rank{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fafafa}
+    .rank small{color:var(--muted)}
+    .rank strong{display:block;font-size:24px;margin-top:4px}
+    .footer-note{margin-top:12px;color:var(--muted);font-size:14px}
+    @media(max-width:700px){
+      .stats,.logic,.ranks{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>25 Horses → Fastest 3</h1>
+    <div class="sub">Interactive walkthrough of why only <strong>7 races</strong> are needed, with no stopwatch and at most 5 horses per race.</div>
+
+    <section class="stats">
+      <div class="stat"><small>Horses</small><strong>25</strong></div>
+      <div class="stat"><small>Per race</small><strong>5</strong></div>
+      <div class="stat"><small>Goal</small><strong>Top 3</strong></div>
+    </section>
+
+    <div class="steps" id="steps"></div>
+
+    <section class="card">
+      <div class="top">
+        <div>
+          <div class="eyebrow" id="stepLabel"></div>
+          <h2 id="stepTitle"></h2>
+          <div class="muted" id="stepDesc"></div>
+        </div>
+        <div class="actions">
+          <button id="prevBtn">← Previous</button>
+          <button id="nextBtn" class="primary">Next →</button>
+        </div>
+      </div>
+
+      <div class="race-grid">
+        <div class="lane"><strong>A</strong>
+          <div class="horse" data-horse="A1">🐎 A1</div><div class="horse" data-horse="A2">🐎 A2</div><div class="horse" data-horse="A3">🐎 A3</div><div class="horse" data-horse="A4">🐎 A4</div><div class="horse" data-horse="A5">🐎 A5</div>
+        </div>
+        <div class="lane"><strong>B</strong>
+          <div class="horse" data-horse="B1">🐎 B1</div><div class="horse" data-horse="B2">🐎 B2</div><div class="horse" data-horse="B3">🐎 B3</div><div class="horse" data-horse="B4">🐎 B4</div><div class="horse" data-horse="B5">🐎 B5</div>
+        </div>
+        <div class="lane"><strong>C</strong>
+          <div class="horse" data-horse="C1">🐎 C1</div><div class="horse" data-horse="C2">🐎 C2</div><div class="horse" data-horse="C3">🐎 C3</div><div class="horse" data-horse="C4">🐎 C4</div><div class="horse" data-horse="C5">🐎 C5</div>
+        </div>
+        <div class="lane"><strong>D</strong>
+          <div class="horse" data-horse="D1">🐎 D1</div><div class="horse" data-horse="D2">🐎 D2</div><div class="horse" data-horse="D3">🐎 D3</div><div class="horse" data-horse="D4">🐎 D4</div><div class="horse" data-horse="D5">🐎 D5</div>
+        </div>
+        <div class="lane"><strong>E</strong>
+          <div class="horse" data-horse="E1">🐎 E1</div><div class="horse" data-horse="E2">🐎 E2</div><div class="horse" data-horse="E3">🐎 E3</div><div class="horse" data-horse="E4">🐎 E4</div><div class="horse" data-horse="E5">🐎 E5</div>
+        </div>
+      </div>
+
+      <div class="result" id="raceResult"></div>
+    </section>
+
+    <section class="card hidden" id="logicPanel">
+      <h2>Who can still be in the top 3?</h2>
+      <div class="logic">
+        <div><strong>Group A</strong><p>A1, A2, A3</p><span class="muted">All three could still occupy the overall top 3.</span></div>
+        <div><strong>Group B</strong><p>B1, B2</p><span class="muted">B1 can be #2 and B2 can still be #3.</span></div>
+        <div><strong>Group C</strong><p>C1</p><span class="muted">C1 can still be #3, but C2 already has at least three known horses ahead.</span></div>
+      </div>
+      <p><strong>D1 and E1 are eliminated</strong>, along with everyone behind them in their groups.</p>
+      <p><strong>A1 is already guaranteed fastest overall.</strong></p>
+    </section>
+
+    <section class="card hidden" id="finalPanel">
+      <div class="top">
+        <div>
+          <h2>Race 7: Final candidates</h2>
+          <div class="muted">Race A2, A3, B1, B2, and C1. The first two finishers are overall #2 and #3.</div>
+        </div>
+        <button id="shuffleBtn">Try another valid finish</button>
+      </div>
+
+      <div class="final-order" id="finalOrder"></div>
+
+      <div class="ranks">
+        <div class="rank"><small>🥇 Fastest</small><strong>A1</strong></div>
+        <div class="rank"><small>🥈 Second</small><strong id="rank2">—</strong></div>
+        <div class="rank"><small>🥉 Third</small><strong id="rank3">—</strong></div>
+      </div>
+
+      <div class="result"><strong>Total = 7 races:</strong> 5 group races + 1 winners' race + 1 final candidate race.</div>
+    </section>
+
+    <div class="footer-note">Assumption: no ties. A race reveals only relative order, not actual times.</div>
+  </main>
+
+  <script>
+    const data = [
+      null,
+      ["Race Group A","A1 > A2 > A3 > A4 > A5","Split the 25 horses into five groups of five and race Group A."],
+      ["Race Group B","B1 > B2 > B3 > B4 > B5","Race Group B and label them in finishing order."],
+      ["Race Group C","C1 > C2 > C3 > C4 > C5","Race Group C."],
+      ["Race Group D","D1 > D2 > D3 > D4 > D5","Race Group D."],
+      ["Race Group E","E1 > E2 > E3 > E4 > E5","Race Group E. Now every horse has raced once."],
+      ["Race the 5 group winners","A1 > B1 > C1 > D1 > E1","Race A1, B1, C1, D1, and E1. Assume this is the result."],
+      ["Final race","A2, A3, B1, B2, C1","Only these five horses can still possibly be overall #2 or #3."]
+    ];
+
+    let step = 1;
+    let finalOrder = ["A2","B1","A3","C1","B2"];
+
+    const horses = [...document.querySelectorAll(".horse")];
+    const steps = document.getElementById("steps");
+    const stepLabel = document.getElementById("stepLabel");
+    const stepTitle = document.getElementById("stepTitle");
+    const stepDesc = document.getElementById("stepDesc");
+    const raceResult = document.getElementById("raceResult");
+    const logicPanel = document.getElementById("logicPanel");
+    const finalPanel = document.getElementById("finalPanel");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    for (let i = 1; i <= 7; i++) {
+      const b = document.createElement("button");
+      b.className = "dot";
+      b.textContent = i;
+      b.addEventListener("click", () => { step = i; render(); });
+      steps.appendChild(b);
+      if (i < 7) {
+        const a = document.createElement("span");
+        a.className = "arrow";
+        a.textContent = "→";
+        steps.appendChild(a);
+      }
+    }
+
+    function eliminated(name) {
+      if (step < 6) return false;
+      const g = name[0], n = Number(name[1]);
+      if (g === "A") return n >= 4;
+      if (g === "B") return n >= 3;
+      if (g === "C") return n >= 2;
+      return g === "D" || g === "E";
+    }
+
+    function render() {
+      stepLabel.textContent = `Race ${step} of 7`;
+      stepTitle.textContent = data[step][0];
+      stepDesc.textContent = data[step][2];
+      raceResult.innerHTML = `<strong>Result / candidates:</strong> ${data[step][1].replaceAll(">", "›")}`;
+
+      [...steps.querySelectorAll(".dot")].forEach((d,i) => d.classList.toggle("active", i === step - 1));
+
+      horses.forEach(h => {
+        const name = h.dataset.horse;
+        h.className = "horse";
+        if (eliminated(name)) h.classList.add("dead");
+        if (step <= 5 && name[0] === String.fromCharCode(64 + step)) h.classList.add("focus");
+        if (step === 6 && name.endsWith("1")) h.classList.add("focus");
+        if (step >= 6 && name === "A1") h.classList.add("winner");
+        if (step === 7 && ["A2","A3","B1","B2","C1"].includes(name)) h.classList.add("focus");
+      });
+
+      logicPanel.classList.toggle("hidden", step < 6);
+      finalPanel.classList.toggle("hidden", step !== 7);
+      prevBtn.disabled = step === 1;
+      nextBtn.textContent = step === 7 ? "Restart ↻" : "Next →";
+
+      if (step === 7) renderFinal();
+    }
+
+    function validRandomOrder() {
+      const items = ["A2","A3","B1","B2","C1"];
+      for (let tries = 0; tries < 200; tries++) {
+        const arr = [...items];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i],arr[j]] = [arr[j],arr[i]];
+        }
+        if (arr.indexOf("A2") < arr.indexOf("A3") && arr.indexOf("B1") < arr.indexOf("B2")) return arr;
+      }
+      return ["A2","B1","A3","C1","B2"];
+    }
+
+    function renderFinal() {
+      const box = document.getElementById("finalOrder");
+      box.innerHTML = "";
+      finalOrder.forEach((h,i) => {
+        const chip = document.createElement("div");
+        chip.className = "horse" + (i < 2 ? " focus" : "");
+        chip.textContent = "🐎 " + h;
+        box.appendChild(chip);
+        if (i < finalOrder.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = "arrow";
+          arrow.textContent = "›";
+          box.appendChild(arrow);
+        }
+      });
+      document.getElementById("rank2").textContent = finalOrder[0];
+      document.getElementById("rank3").textContent = finalOrder[1];
+    }
+
+    prevBtn.addEventListener("click", () => { if (step > 1) { step--; render(); } });
+    nextBtn.addEventListener("click", () => { step = step === 7 ? 1 : step + 1; render(); });
+    document.getElementById("shuffleBtn").addEventListener("click", () => {
+      finalOrder = validRandomOrder();
+      renderFinal();
+    });
+
+    render();
+  </script>
+</body>
+</html>
