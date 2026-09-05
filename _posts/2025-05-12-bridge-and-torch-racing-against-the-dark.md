@@ -15,6 +15,8 @@ This classic puzzle tests our ability to optimize under constraints. Four people
 
 The goal: **get everyone across as quickly as possible**.
 
+<iframe src="{{ site.baseurl }}/assets/bridge_and_torch_problem.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## The Naive Approach
 
 It might seem intuitive to always use the absolute fastest person (D) to ferry everyone else across. Let's see what happens if we do that:

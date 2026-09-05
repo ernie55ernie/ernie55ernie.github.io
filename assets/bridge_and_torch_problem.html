@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bridge and Torch Problem</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --border:#334155;
+      --accent:#38bdf8;
+      --accent2:#f59e0b;
+      --success:#22c55e;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#020617 0%,#0f172a 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .wrap{
+      width:min(1180px,94vw);
+      margin:0 auto;
+      padding:28px 0 48px;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(28px,4vw,48px);
+      letter-spacing:-.03em;
+    }
+    .subtitle{
+      margin-top:8px;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:850px;
+    }
+    .topbar{
+      margin-top:22px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .timer{
+      border:1px solid var(--border);
+      background:rgba(31,41,55,.7);
+      padding:12px 16px;
+      border-radius:14px;
+      min-width:190px;
+    }
+    .timer small{display:block;color:var(--muted);margin-bottom:3px}
+    .timer strong{font-size:24px}
+    .layout{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);
+      gap:18px;
+    }
+    .panel{
+      border:1px solid var(--border);
+      background:rgba(17,24,39,.88);
+      border-radius:20px;
+      overflow:hidden;
+    }
+    .scene{
+      display:grid;
+      grid-template-columns:1fr 170px 1fr;
+      min-height:420px;
+    }
+    .bank{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .bank-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .bank-head .label{
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .torch{
+      padding:6px 9px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      font-size:12px;
+      background:var(--card);
+    }
+    .hidden{display:none}
+    .people{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:10px;
+    }
+    .person{
+      width:100%;
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      border-radius:14px;
+      padding:12px;
+      font-size:15px;
+      text-align:left;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .person:hover{transform:translateY(-1px);border-color:#64748b}
+    .person.selected{
+      border-color:var(--accent);
+      background:rgba(56,189,248,.12);
+      box-shadow:0 0 0 1px rgba(56,189,248,.15) inset;
+    }
+    .person:disabled{
+      cursor:not-allowed;
+      opacity:.46;
+      transform:none;
+    }
+    .badge{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      border:1px solid var(--border);
+      margin-right:8px;
+      font-weight:800;
+      background:#0f172a;
+    }
+    .bridge-zone{
+      position:relative;
+      overflow:hidden;
+      border-left:1px solid var(--border);
+      border-right:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(circle at 30% 20%,rgba(56,189,248,.1),transparent 28%),
+        radial-gradient(circle at 70% 80%,rgba(14,165,233,.08),transparent 32%),
+        #082f49;
+    }
+    .bridge-zone::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        repeating-linear-gradient(
+          160deg,
+          transparent 0 16px,
+          rgba(255,255,255,.05) 16px 18px
+        );
+      opacity:.35;
+    }
+    .bridge{
+      position:relative;
+      z-index:2;
+      width:82%;
+      height:76px;
+      background:#8b5e34;
+      border:3px solid #5b3a1f;
+      border-radius:6px;
+      box-shadow:0 10px 20px rgba(0,0,0,.28);
+    }
+    .bridge::after{
+      content:"";
+      position:absolute;
+      inset:8px;
+      background:repeating-linear-gradient(
+        90deg,
+        transparent 0 16px,
+        rgba(0,0,0,.25) 16px 18px
+      );
+    }
+    .bridge-label{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:24px;
+      z-index:3;
+      width:90%;
+      text-align:center;
+      font-size:12px;
+      color:#dbeafe;
+      background:rgba(2,6,23,.68);
+      padding:7px 8px;
+      border-radius:10px;
+      border:1px solid rgba(148,163,184,.2);
+    }
+    .controls{
+      padding:16px 18px 18px;
+      border-top:1px solid var(--border);
+    }
+    .status{
+      min-height:28px;
+      margin-bottom:12px;
+      color:#e2e8f0;
+      line-height:1.5;
+    }
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+    button.ctrl{
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      border-radius:12px;
+      padding:11px 14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button.ctrl.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#082f49;
+    }
+    button.ctrl:hover{filter:brightness(1.08)}
+    button.ctrl:disabled{
+      opacity:.4;
+      cursor:not-allowed;
+      filter:none;
+    }
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .card{
+      border:1px solid var(--border);
+      background:rgba(31,41,55,.8);
+      border-radius:18px;
+      padding:16px;
+    }
+    .card h3{
+      margin:0 0 12px;
+      font-size:15px;
+    }
+    .times{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .time-chip{
+      background:#0f172a;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+    }
+    .time-chip span:last-child{float:right;color:#cbd5e1}
+    .note{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    ol{
+      margin:0;
+      padding-left:22px;
+    }
+    li{
+      margin:8px 0;
+      color:#dbeafe;
+      line-height:1.4;
+    }
+    .formula{
+      margin-top:12px;
+      background:#0f172a;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:11px;
+      font-weight:800;
+      color:#fde68a;
+    }
+    .good{color:#86efac}
+    .bad{color:#fca5a5}
+    .footer{
+      margin-top:20px;
+      color:#64748b;
+      font-size:12px;
+    }
+    @media (max-width:900px){
+      .layout{grid-template-columns:1fr}
+    }
+    @media (max-width:680px){
+      .scene{grid-template-columns:1fr 92px 1fr}
+      .bank{padding:12px}
+      .person{padding:10px;font-size:14px}
+      .bridge{height:64px}
+    }
+    @media (max-width:480px){
+      .scene{grid-template-columns:1fr}
+      .bridge-zone{
+        min-height:120px;
+        border-left:none;
+        border-right:none;
+        border-top:1px solid var(--border);
+        border-bottom:1px solid var(--border);
+      }
+      .bridge{width:68%}
+      .bridge-label{bottom:8px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Bridge and Torch Problem</h1>
+    <p class="subtitle">
+      Four people take <strong>1, 2, 5, and 8 minutes</strong> to cross a narrow bridge.
+      At most two people can cross at once, they must carry the torch, and a pair moves at the slower person's speed.
+      Can everyone cross within <strong>15 minutes</strong>?
+    </p>
+
+    <div class="topbar">
+      <div>
+        <strong>Goal:</strong> move all four people to the far side.
+      </div>
+      <div class="timer">
+        <small>Elapsed time</small>
+        <strong id="time">0 / 15 min</strong>
+      </div>
+    </div>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="scene">
+          <div class="bank">
+            <div class="bank-head">
+              <span class="label">Start side</span>
+              <span id="leftTorch" class="torch">🔦 Torch</span>
+            </div>
+            <div id="leftPeople" class="people"></div>
+          </div>
+
+          <div class="bridge-zone">
+            <div class="bridge" aria-hidden="true"></div>
+            <div id="bridgeLabel" class="bridge-label">Torch is on the start side</div>
+          </div>
+
+          <div class="bank">
+            <div class="bank-head">
+              <span class="label">Far side</span>
+              <span id="rightTorch" class="torch hidden">🔦 Torch</span>
+            </div>
+            <div id="rightPeople" class="people"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div id="status" class="status">Choose one or two people on the torch side.</div>
+          <div class="buttons">
+            <button id="crossBtn" class="ctrl primary">Cross bridge →</button>
+            <button id="hintBtn" class="ctrl">Show next optimal move</button>
+            <button id="autoBtn" class="ctrl">▶ Auto solve</button>
+            <button id="resetBtn" class="ctrl">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="card">
+          <h3>Crossing times</h3>
+          <div class="times">
+            <div class="time-chip"><strong>A</strong><span>1 min</span></div>
+            <div class="time-chip"><strong>B</strong><span>2 min</span></div>
+            <div class="time-chip"><strong>C</strong><span>5 min</span></div>
+            <div class="time-chip"><strong>D</strong><span>8 min</span></div>
+          </div>
+          <div class="note">If two people cross together, the crossing time is the slower person's time.</div>
+        </div>
+
+        <div class="card">
+          <h3>Move history</h3>
+          <ol id="history"><li>No crossings yet.</li></ol>
+        </div>
+
+        <div class="card">
+          <h3>The key idea</h3>
+          <div class="note">
+            A tempting strategy is to have the 1-minute person escort everyone individually.
+            That takes <strong>17 minutes</strong>.
+            The trick is to send the two slowest people together, so the 8-minute cost is paid only once.
+          </div>
+          <div class="formula">2 + 1 + 8 + 2 + 2 = 15 min</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      Classic bridge-and-torch puzzle visualization.
+    </div>
+  </main>
+
+  <script>
+    const people = {
+      A: { time: 1 },
+      B: { time: 2 },
+      C: { time: 5 },
+      D: { time: 8 }
+    };
+
+    const optimal = [
+      { ids: ["A","B"], from: "left" },
+      { ids: ["A"], from: "right" },
+      { ids: ["C","D"], from: "left" },
+      { ids: ["B"], from: "right" },
+      { ids: ["A","B"], from: "left" }
+    ];
+
+    let side, torch, elapsed, selected, history, hintIndex, autoTimer;
+
+    const leftPeople = document.getElementById("leftPeople");
+    const rightPeople = document.getElementById("rightPeople");
+    const leftTorch = document.getElementById("leftTorch");
+    const rightTorch = document.getElementById("rightTorch");
+    const timeEl = document.getElementById("time");
+    const statusEl = document.getElementById("status");
+    const bridgeLabel = document.getElementById("bridgeLabel");
+    const historyEl = document.getElementById("history");
+    const crossBtn = document.getElementById("crossBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const autoBtn = document.getElementById("autoBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function reset() {
+      if (autoTimer) {
+        clearTimeout(autoTimer);
+        autoTimer = null;
+      }
+
+      side = { A:"left", B:"left", C:"left", D:"left" };
+      torch = "left";
+      elapsed = 0;
+      selected = new Set();
+      history = [];
+      hintIndex = 0;
+      autoBtn.textContent = "▶ Auto solve";
+      render();
+    }
+
+    function makePersonButton(id) {
+      const btn = document.createElement("button");
+      btn.className = "person" + (selected.has(id) ? " selected" : "");
+      btn.innerHTML = `<span class="badge">${id}</span>${people[id].time} min`;
+      btn.disabled = side[id] !== torch || elapsed > 15 || solved();
+
+      btn.addEventListener("click", () => {
+        if (selected.has(id)) {
+          selected.delete(id);
+        } else if (selected.size < 2) {
+          selected.add(id);
+        } else {
+          statusEl.textContent = "At most two people can be on the bridge.";
+          return;
+        }
+        render();
+      });
+
+      return btn;
+    }
+
+    function renderBank(container, bank) {
+      container.innerHTML = "";
+      const ids = Object.keys(people).filter(id => side[id] === bank);
+
+      if (!ids.length) {
+        const empty = document.createElement("div");
+        empty.className = "note";
+        empty.textContent = "No one here";
+        container.appendChild(empty);
+        return;
+      }
+
+      ids.forEach(id => container.appendChild(makePersonButton(id)));
+    }
+
+    function solved() {
+      return Object.values(side).every(s => s === "right");
+    }
+
+    function renderHistory() {
+      historyEl.innerHTML = "";
+
+      if (!history.length) {
+        historyEl.innerHTML = "<li>No crossings yet.</li>";
+        return;
+      }
+
+      history.forEach(move => {
+        const li = document.createElement("li");
+        const arrow = move.from === "left" ? "→" : "←";
+        li.textContent = `${move.ids.join(" + ")} ${arrow}  +${move.cost} min  (total ${move.total})`;
+        historyEl.appendChild(li);
+      });
+    }
+
+    function render() {
+      renderBank(leftPeople, "left");
+      renderBank(rightPeople, "right");
+
+      leftTorch.classList.toggle("hidden", torch !== "left");
+      rightTorch.classList.toggle("hidden", torch !== "right");
+
+      timeEl.textContent = `${elapsed} / 15 min`;
+      timeEl.className = elapsed <= 15 ? "" : "bad";
+
+      crossBtn.textContent = torch === "left" ? "Cross bridge →" : "← Return with torch";
+      crossBtn.disabled = selected.size < 1 || selected.size > 2 || elapsed > 15 || solved();
+
+      if (selected.size) {
+        const ids = [...selected];
+        const cost = Math.max(...ids.map(id => people[id].time));
+        bridgeLabel.textContent = `${ids.join(" + ")} selected · ${cost} min`;
+      } else {
+        bridgeLabel.textContent = `Torch is on the ${torch === "left" ? "start" : "far"} side`;
+      }
+
+      if (solved()) {
+        statusEl.innerHTML = elapsed <= 15
+          ? `<span class="good">🎉 Solved in ${elapsed} minutes${elapsed === 15 ? " — optimal!" : "!"}</span>`
+          : `<span class="bad">Everyone crossed, but it took ${elapsed} minutes.</span>`;
+      } else if (elapsed > 15) {
+        statusEl.innerHTML = `<span class="bad">The 15-minute limit has been exceeded.</span>`;
+      } else if (!selected.size) {
+        statusEl.textContent = "Choose one or two people on the torch side.";
+      } else {
+        const ids = [...selected];
+        const cost = Math.max(...ids.map(id => people[id].time));
+        statusEl.textContent = `${ids.join(" + ")} will take ${cost} minute${cost === 1 ? "" : "s"}.`;
+      }
+
+      renderHistory();
+    }
+
+    function doMove(ids) {
+      if (!ids.length || ids.length > 2) return false;
+      if (!ids.every(id => side[id] === torch)) return false;
+
+      const from = torch;
+      const to = torch === "left" ? "right" : "left";
+      const cost = Math.max(...ids.map(id => people[id].time));
+
+      ids.forEach(id => side[id] = to);
+      elapsed += cost;
+      torch = to;
+      history.push({ ids:[...ids], from, cost, total:elapsed });
+      selected.clear();
+
+      render();
+      return true;
+    }
+
+    crossBtn.addEventListener("click", () => doMove([...selected]));
+
+    hintBtn.addEventListener("click", () => {
+      if (solved() || elapsed > 15) return;
+
+      const move = optimal[hintIndex];
+
+      if (!move || move.from !== torch || !move.ids.every(id => side[id] === torch)) {
+        statusEl.innerHTML = 'Your current path differs from the standard optimal sequence. Press <strong>Reset</strong> to follow it.';
+        return;
+      }
+
+      selected = new Set(move.ids);
+      hintIndex++;
+      render();
+      statusEl.innerHTML = `Hint: move <strong>${move.ids.join(" + ")}</strong> ${torch === "left" ? "across →" : "back ←"}.`;
+    });
+
+    function autoStep(i) {
+      if (i >= optimal.length) {
+        autoTimer = null;
+        autoBtn.textContent = "▶ Auto solve";
+        return;
+      }
+
+      const move = optimal[i];
+      selected = new Set(move.ids);
+      render();
+
+      autoTimer = setTimeout(() => {
+        doMove(move.ids);
+        autoTimer = setTimeout(() => autoStep(i + 1), 650);
+      }, 550);
+    }
+
+    autoBtn.addEventListener("click", () => {
+      if (autoTimer) {
+        clearTimeout(autoTimer);
+        autoTimer = null;
+        autoBtn.textContent = "▶ Auto solve";
+        return;
+      }
+
+      reset();
+      autoBtn.textContent = "■ Stop";
+      autoStep(0);
+    });
+
+    resetBtn.addEventListener("click", reset);
+
+    reset();
+  </script>
+</body>
+</html>
