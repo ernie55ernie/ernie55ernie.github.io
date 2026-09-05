@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rope-Burning Puzzle — 45 Minutes</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a2f;
+      --card:#18223b;
+      --text:#eef3ff;
+      --muted:#a9b4cf;
+      --border:#2c395b;
+      --accent:#7dd3fc;
+      --accent2:#fbbf24;
+      --ropeA:#fb7185;
+      --ropeB:#34d399;
+      --burned:#52607e;
+      --success:#86efac;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(125,211,252,.12), transparent 28rem),
+        var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 48px}
+    h1{font-size:clamp(1.9rem,4vw,3.4rem);line-height:1.05;margin:0}
+    .subtitle{color:var(--muted);max-width:800px;line-height:1.6;margin:12px 0 0}
+    .grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr);gap:18px;margin-top:24px}
+    .panel,.card{border:1px solid var(--border);border-radius:22px;background:rgba(18,26,47,.92)}
+    .panel{padding:20px}
+    .card{padding:18px}
+    .topbar{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+    .eyebrow{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .goal{font-size:1.35rem;font-weight:800;margin-top:4px}
+    .clockbox{padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:15px;text-align:center;min-width:120px}
+    .clocklabel{font-size:.72rem;color:var(--muted)}
+    #clock{font:800 1.9rem/1.2 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .ropes{display:grid;gap:24px;margin-top:28px}
+    .rope-row{display:grid;grid-template-columns:105px minmax(0,1fr) 110px;gap:12px;align-items:center}
+    .rope-name{font-weight:800;font-size:1rem}
+    .rope-sub,.state-sub{font-size:.76rem;color:var(--muted)}
+    .ropebox{height:98px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px 12px;overflow:hidden}
+    svg{display:block;width:100%;height:100%}
+    .state{font-weight:800;font-size:.9rem}
+    .timeline{margin-top:28px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+    .timeline-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:16px}
+    .track{position:relative;height:46px}
+    .base,.fill{position:absolute;left:0;right:0;top:16px;height:9px;border-radius:999px}
+    .base{background:var(--border)}
+    .fill{right:auto;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .tick{position:absolute;top:5px;width:1px;height:30px;background:#8390ad}
+    .tick0{left:0}.tick30{left:66.666%}.tick45{right:0}
+    .marklbl{position:absolute;top:35px;font-size:.74rem;font-weight:800}
+    .lbl30{left:66.666%;transform:translateX(-50%)} .lbl45{right:0}
+    .marker{position:absolute;top:10px;width:21px;height:21px;border-radius:50%;background:var(--accent);border:3px solid var(--card);transform:translateX(-50%);left:0}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:22px}
+    button{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:11px 15px;
+      background:var(--card);
+      color:var(--text);
+      font:700 .92rem inherit;
+      cursor:pointer
+    }
+    button.primary{background:var(--accent);color:#07121d;border-color:transparent}
+    button:hover{filter:brightness(1.08)}
+    .sliderwrap{margin-left:auto;display:flex;gap:10px;align-items:center;color:var(--muted);font-size:.86rem}
+    input[type=range]{width:190px;accent-color:var(--accent)}
+    .side{display:grid;gap:14px}
+    .side h2{font-size:1rem;margin:0 0 10px}
+    .instruction{font-size:1.05rem;font-weight:800;line-height:1.4}
+    .explain{color:var(--muted);line-height:1.6;font-size:.9rem}
+    .steps{display:grid;gap:13px}
+    .step{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+    .badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#263555;font-weight:900}
+    .result{font-size:2rem;font-weight:900;margin-top:2px}
+    .success{color:var(--success)}
+    .note{margin-top:24px;color:var(--muted);font-size:.84rem;line-height:1.55}
+    @media (max-width:860px){
+      .grid{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      .rope-row{grid-template-columns:1fr}
+      .statebox{text-align:left}
+      .sliderwrap{margin-left:0;width:100%}
+      input[type=range]{flex:1;width:auto}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="eyebrow">Interactive logic puzzle</div>
+    <h1>Rope-Burning Puzzle</h1>
+    <p class="subtitle">
+      You have two ropes. Each takes exactly 60 minutes to burn from one end, but neither burns uniformly along its length.
+      Use them to measure exactly <strong>45 minutes</strong>.
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <div class="eyebrow">Goal</div>
+            <div class="goal">Measure exactly 45 minutes</div>
+          </div>
+          <div class="clockbox">
+            <div class="clocklabel">Elapsed time</div>
+            <div id="clock">0:00</div>
+          </div>
+        </div>
+
+        <div class="ropes">
+          <div class="rope-row">
+            <div>
+              <div class="rope-name">Rope A</div>
+              <div class="rope-sub">light both ends</div>
+            </div>
+            <div class="ropebox">
+              <svg viewBox="0 0 700 90" aria-label="Rope A visualization">
+                <path d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
+                  fill="none" stroke="var(--ropeA)" stroke-width="14" stroke-linecap="round"/>
+                <path id="aBurned" d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round"/>
+                <text id="aLeft" x="3" y="34" font-size="32">🔥</text>
+                <text id="aRight" x="650" y="34" font-size="32">🔥</text>
+              </svg>
+            </div>
+            <div class="statebox">
+              <div id="aState" class="state">Burning ×2</div>
+              <div id="aRemain" class="state-sub">60 burn-min left</div>
+            </div>
+          </div>
+
+          <div class="rope-row">
+            <div>
+              <div class="rope-name">Rope B</div>
+              <div class="rope-sub">one end first</div>
+            </div>
+            <div class="ropebox">
+              <svg viewBox="0 0 700 90" aria-label="Rope B visualization">
+                <path d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
+                  fill="none" stroke="var(--ropeB)" stroke-width="14" stroke-linecap="round"/>
+                <path id="bBurned" d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round"/>
+                <text id="bLeft" x="3" y="34" font-size="32">🔥</text>
+                <text id="bRight" x="650" y="34" font-size="32" opacity=".15">🔥</text>
+              </svg>
+            </div>
+            <div class="statebox">
+              <div id="bState" class="state">Burning ×1</div>
+              <div id="bRemain" class="state-sub">60 burn-min left</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-labels"><span>0 min</span><strong>Timeline</strong><span>45 min</span></div>
+          <div class="track">
+            <div class="base"></div>
+            <div id="fill" class="fill"></div>
+            <div class="tick tick0"></div>
+            <div class="tick tick30"></div>
+            <div class="tick tick45"></div>
+            <div class="marklbl lbl30">30:00</div>
+            <div class="marklbl lbl45">45:00</div>
+            <div id="marker" class="marker"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="play" class="primary">▶ Play</button>
+          <button id="next">Next key moment</button>
+          <button id="reset">Reset</button>
+          <label class="sliderwrap">
+            <span>Time</span>
+            <input id="slider" type="range" min="0" max="45" step="0.1" value="0" />
+          </label>
+        </div>
+      </section>
+
+      <aside class="side">
+        <section class="card">
+          <div class="eyebrow">What to do</div>
+          <div id="instruction" class="instruction" style="margin-top:8px">
+            Light both ends of Rope A and one end of Rope B.
+          </div>
+          <p id="explain" class="explain">
+            Rope A is being consumed at twice the total burn rate, so it finishes after 30 minutes.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Key insight</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="badge">1</div>
+              <div><strong>0 → 30:</strong> Rope A burns from both ends. Rope B burns from one.</div>
+            </div>
+            <div class="step">
+              <div class="badge">2</div>
+              <div><strong>At 30:</strong> Rope A is gone. This is a reliable 30-minute signal.</div>
+            </div>
+            <div class="step">
+              <div class="badge">3</div>
+              <div><strong>30 → 45:</strong> Light Rope B’s second end. Its remaining 30 burn-minutes are consumed in 15 minutes.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="eyebrow">Measured time</div>
+          <div class="result">30 + 15 = <span class="success">45</span></div>
+          <p class="explain">
+            The ropes need not burn uniformly along their physical length. The only assumption is that
+            each rope takes exactly 60 minutes to burn completely from one end.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <p class="note">
+      Based on the classic rope-burning puzzle described on Wikipedia.
+    </p>
+  </main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const clock = $("clock"), slider = $("slider"), fill = $("fill"), marker = $("marker");
+  const play = $("play"), next = $("next"), reset = $("reset");
+  const instruction = $("instruction"), explain = $("explain");
+  const aState = $("aState"), bState = $("bState"), aRemain = $("aRemain"), bRemain = $("bRemain");
+  const aLeft = $("aLeft"), aRight = $("aRight"), bLeft = $("bLeft"), bRight = $("bRight");
+  const aBurned = $("aBurned"), bBurned = $("bBurned");
+
+  let t = 0, timer = null;
+  const maxLen = 760;
+  aBurned.style.strokeDasharray = `0 ${maxLen}`;
+  bBurned.style.strokeDasharray = `0 ${maxLen}`;
+
+  function fmt(m) {
+    const sec = Math.round(m * 60);
+    return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`;
+  }
+
+  function setBurn(path, fraction) {
+    const f = Math.max(0, Math.min(1, fraction));
+    path.style.strokeDasharray = `${maxLen*f} ${maxLen}`;
+  }
+
+  function update(x) {
+    t = Math.max(0, Math.min(45, Number(x) || 0));
+    slider.value = t;
+    clock.textContent = fmt(t);
+
+    const pct = t/45*100;
+    fill.style.width = `${pct}%`;
+    marker.style.left = `${pct}%`;
+
+    const aRemaining = Math.max(0, 60 - 2*t);
+    const bRemaining = t <= 30 ? 60 - t : Math.max(0, 30 - 2*(t-30));
+    aRemain.textContent = `${Math.round(aRemaining)} burn-min left`;
+    bRemain.textContent = `${Math.round(bRemaining)} burn-min left`;
+
+    setBurn(aBurned, Math.min(1, t/30));
+    setBurn(bBurned, t <= 30 ? (t/60) : (0.5 + (t-30)/30));
+
+    if (t < 30) {
+      aState.textContent = "Burning ×2";
+      bState.textContent = "Burning ×1";
+      aLeft.style.opacity = 1; aRight.style.opacity = 1;
+      bLeft.style.opacity = 1; bRight.style.opacity = .15;
+      instruction.textContent = "Light both ends of Rope A and one end of Rope B.";
+      explain.textContent = "Rope A burns at twice the total burn rate, so its 60 burn-minutes are exhausted in 30 minutes.";
+    } else if (t < 45) {
+      aState.textContent = "Burned out ✓";
+      bState.textContent = "Burning ×2";
+      aLeft.style.opacity = .12; aRight.style.opacity = .12;
+      bLeft.style.opacity = 1; bRight.style.opacity = 1;
+      instruction.textContent = "Rope A is gone — immediately light Rope B’s other end.";
+      explain.textContent = "Rope B has 30 burn-minutes remaining. Burning it from both ends consumes that remainder in 15 more minutes.";
+    } else {
+      aState.textContent = "Burned out ✓";
+      bState.textContent = "Burned out ✓";
+      aLeft.style.opacity = .12; aRight.style.opacity = .12;
+      bLeft.style.opacity = .12; bRight.style.opacity = .12;
+      instruction.textContent = "Rope B burns out: exactly 45 minutes have elapsed.";
+      explain.textContent = "You measured 30 minutes with Rope A, then another 15 minutes using Rope B’s remaining burn-time.";
+    }
+  }
+
+  function stop() {
+    if (timer) clearInterval(timer);
+    timer = null;
+    play.textContent = "▶ Play";
+  }
+
+  function start() {
+    if (t >= 45) update(0);
+    stop();
+    play.textContent = "❚❚ Pause";
+    timer = setInterval(() => {
+      update(t + 0.25);
+      if (t >= 45) stop();
+    }, 80);
+  }
+
+  play.addEventListener("click", () => timer ? stop() : start());
+  slider.addEventListener("input", e => { stop(); update(e.target.value); });
+  reset.addEventListener("click", () => { stop(); update(0); });
+  next.addEventListener("click", () => {
+    stop();
+    if (t < 30) update(30);
+    else if (t < 45) update(45);
+    else update(0);
+  });
+
+  update(0);
+})();
+</script>
+</body>
+</html>

@@ -17,6 +17,8 @@ This classic logic puzzle challenges you to measure **exactly 45 minutes** using
 - You **cannot** assume uniform burning.
 - But you **can** light either or both ends of either rope at any time.
 
+<iframe src="{{ site.baseurl }}/assets/rope_burning_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## The Strategy
 
 Here’s the clever trick: leverage the fact that **lighting both ends halves the total burn time** of any rope segment.
