@@ -31,15 +31,20 @@ Let’s analyze the symmetry and probability:
 
 ### Key Insight
 
-Over many games, you’ll find that the number of **red-red pairs (your gain)** and **black-black pairs (dealer’s gain)** will be **exactly equal in expectation**. In fact, the red and black pairs are symmetric due to identical counts and uniform shuffling.
+You don't even need to rely on probability or expected values! Let’s look at the deterministic math of every single deck:
+
+- Every mixed pair (discarded) consumes exactly **1 red card** and **1 black card**.
+- The remaining cards form the mono-color pairs (your pile and the dealer’s pile).
 
 ### Mathematical Outcome
 
-The **expected number of red pairs** equals the **expected number of black pairs**. So, the **expected win** is $0.
+Let \\( M \\) be the number of mixed pairs. These \\( M \\) pairs consume exactly \\( M \\) red cards and \\( M \\) black cards from the deck. 
 
-Moreover, the **dealer wins ties**, so your chances of actually **winning \$100** are **0%**.
+This leaves exactly \\( 26 - M \\) red cards for your pile, and \\( 26 - M \\) black cards for the dealer’s pile. 
 
-Hence, the **expected value of the game is zero**.
+Because your pile and the dealer's pile will **always** have the exact same number of cards, the game **always ends in a tie**, regardless of how the deck is shuffled.
+
+Since the rules state you only win if you have *more* cards, your chances of winning are exactly **0%**.
 
 ## Final Answer
 
