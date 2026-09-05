@@ -124,12 +124,20 @@
             </div>
             <div class="ropebox">
               <svg viewBox="0 0 700 90" aria-label="Rope A visualization">
+                <defs>
+                  <clipPath id="clipALeft"><rect id="clipALeftRect" x="35" y="0" width="0" height="90"/></clipPath>
+                  <clipPath id="clipARight"><rect id="clipARightRect" x="665" y="0" width="0" height="90"/></clipPath>
+                </defs>
                 <path d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
                   fill="none" stroke="var(--ropeA)" stroke-width="14" stroke-linecap="round"/>
-                <path id="aBurned" d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
-                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round"/>
+                <path d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round" clip-path="url(#clipALeft)"/>
+                <path d="M35 47 C95 18 135 67 195 43 S290 21 345 49 S430 68 490 41 S575 20 665 47"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round" clip-path="url(#clipARight)"/>
                 <text id="aLeft" x="3" y="34" font-size="32">🔥</text>
                 <text id="aRight" x="650" y="34" font-size="32">🔥</text>
+                <circle id="aLeftFront" cx="35" cy="47" r="5" fill="var(--accent2)"/>
+                <circle id="aRightFront" cx="665" cy="47" r="5" fill="var(--accent2)"/>
               </svg>
             </div>
             <div class="statebox">
@@ -145,12 +153,20 @@
             </div>
             <div class="ropebox">
               <svg viewBox="0 0 700 90" aria-label="Rope B visualization">
+                <defs>
+                  <clipPath id="clipBLeft"><rect id="clipBLeftRect" x="35" y="0" width="0" height="90"/></clipPath>
+                  <clipPath id="clipBRight"><rect id="clipBRightRect" x="665" y="0" width="0" height="90"/></clipPath>
+                </defs>
                 <path d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
                   fill="none" stroke="var(--ropeB)" stroke-width="14" stroke-linecap="round"/>
-                <path id="bBurned" d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
-                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round"/>
+                <path d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round" clip-path="url(#clipBLeft)"/>
+                <path d="M35 47 C90 65 145 20 210 46 S305 65 360 42 S455 20 510 47 S595 66 665 46"
+                  fill="none" stroke="var(--burned)" stroke-width="14" stroke-linecap="round" clip-path="url(#clipBRight)"/>
                 <text id="bLeft" x="3" y="34" font-size="32">🔥</text>
                 <text id="bRight" x="650" y="34" font-size="32" opacity=".15">🔥</text>
+                <circle id="bLeftFront" cx="35" cy="47" r="5" fill="var(--accent2)"/>
+                <circle id="bRightFront" cx="665" cy="46" r="5" fill="var(--accent2)" opacity=".15"/>
               </svg>
             </div>
             <div class="statebox">
@@ -221,6 +237,9 @@
             The ropes need not burn uniformly along their physical length. The only assumption is that
             each rope takes exactly 60 minutes to burn completely from one end.
           </p>
+          <p class="explain" style="margin-bottom:0">
+            The moving burn fronts are illustrative; their spatial speed is not meant to imply uniform burning.
+          </p>
         </section>
       </aside>
     </div>
@@ -238,21 +257,36 @@
   const instruction = $("instruction"), explain = $("explain");
   const aState = $("aState"), bState = $("bState"), aRemain = $("aRemain"), bRemain = $("bRemain");
   const aLeft = $("aLeft"), aRight = $("aRight"), bLeft = $("bLeft"), bRight = $("bRight");
-  const aBurned = $("aBurned"), bBurned = $("bBurned");
+  const clipALeftRect = $("clipALeftRect"), clipARightRect = $("clipARightRect");
+  const clipBLeftRect = $("clipBLeftRect"), clipBRightRect = $("clipBRightRect");
+  const aLeftFront = $("aLeftFront"), aRightFront = $("aRightFront");
+  const bLeftFront = $("bLeftFront"), bRightFront = $("bRightFront");
 
   let t = 0, timer = null;
-  const maxLen = 760;
-  aBurned.style.strokeDasharray = `0 ${maxLen}`;
-  bBurned.style.strokeDasharray = `0 ${maxLen}`;
+  const ropeStart = 35, ropeEnd = 665, ropeSpan = ropeEnd - ropeStart;
 
   function fmt(m) {
     const sec = Math.round(m * 60);
     return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`;
   }
 
-  function setBurn(path, fraction) {
-    const f = Math.max(0, Math.min(1, fraction));
-    path.style.strokeDasharray = `${maxLen*f} ${maxLen}`;
+  function clamp01(v) {
+    return Math.max(0, Math.min(1, v));
+  }
+
+  function setSideBurn(leftRect, rightRect, leftFraction, rightFraction, leftFront, rightFront) {
+    const lf = clamp01(leftFraction);
+    const rf = clamp01(rightFraction);
+    const leftWidth = ropeSpan * lf;
+    const rightWidth = ropeSpan * rf;
+
+    leftRect.setAttribute("x", ropeStart);
+    leftRect.setAttribute("width", leftWidth);
+    rightRect.setAttribute("x", ropeEnd - rightWidth);
+    rightRect.setAttribute("width", rightWidth);
+
+    leftFront.setAttribute("cx", ropeStart + leftWidth);
+    rightFront.setAttribute("cx", ropeEnd - rightWidth);
   }
 
   function update(x) {
@@ -269,28 +303,42 @@
     aRemain.textContent = `${Math.round(aRemaining)} burn-min left`;
     bRemain.textContent = `${Math.round(bRemaining)} burn-min left`;
 
-    setBurn(aBurned, Math.min(1, t/30));
-    setBurn(bBurned, t <= 30 ? (t/60) : (0.5 + (t-30)/30));
+    // Spatial motion is illustrative: the puzzle allows non-uniform physical burn speed.
+    // Rope A: both burn fronts move toward each other and meet at 30 minutes.
+    const aSide = Math.min(0.5, t / 60);
+    setSideBurn(clipALeftRect, clipARightRect, aSide, aSide, aLeftFront, aRightFront);
+
+    // Rope B: left end burns alone for 30 minutes. Then the right end is lit too.
+    // In this illustrative mapping, the fronts meet at 45 minutes.
+    const bLeftFrac = Math.min(0.75, t / 60);
+    const bRightFrac = t <= 30 ? 0 : Math.min(0.25, (t - 30) / 60);
+    setSideBurn(clipBLeftRect, clipBRightRect, bLeftFrac, bRightFrac, bLeftFront, bRightFront);
 
     if (t < 30) {
       aState.textContent = "Burning ×2";
       bState.textContent = "Burning ×1";
       aLeft.style.opacity = 1; aRight.style.opacity = 1;
+      aLeftFront.style.opacity = 1; aRightFront.style.opacity = 1;
       bLeft.style.opacity = 1; bRight.style.opacity = .15;
+      bLeftFront.style.opacity = 1; bRightFront.style.opacity = .15;
       instruction.textContent = "Light both ends of Rope A and one end of Rope B.";
       explain.textContent = "Rope A burns at twice the total burn rate, so its 60 burn-minutes are exhausted in 30 minutes.";
     } else if (t < 45) {
       aState.textContent = "Burned out ✓";
       bState.textContent = "Burning ×2";
       aLeft.style.opacity = .12; aRight.style.opacity = .12;
+      aLeftFront.style.opacity = .12; aRightFront.style.opacity = .12;
       bLeft.style.opacity = 1; bRight.style.opacity = 1;
+      bLeftFront.style.opacity = 1; bRightFront.style.opacity = 1;
       instruction.textContent = "Rope A is gone — immediately light Rope B’s other end.";
       explain.textContent = "Rope B has 30 burn-minutes remaining. Burning it from both ends consumes that remainder in 15 more minutes.";
     } else {
       aState.textContent = "Burned out ✓";
       bState.textContent = "Burned out ✓";
       aLeft.style.opacity = .12; aRight.style.opacity = .12;
+      aLeftFront.style.opacity = .12; aRightFront.style.opacity = .12;
       bLeft.style.opacity = .12; bRight.style.opacity = .12;
+      bLeftFront.style.opacity = .12; bRightFront.style.opacity = .12;
       instruction.textContent = "Rope B burns out: exactly 45 minutes have elapsed.";
       explain.textContent = "You measured 30 minutes with Rope A, then another 15 minutes using Rope B’s remaining burn-time.";
     }
