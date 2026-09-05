@@ -46,24 +46,19 @@ So far: **6 races**
 
 From the race results, we can now eliminate many horses:
 
-- Any horse slower than C1 is out of top 3.
-- Also, any horse not from the groups A, B, or C is out (since D1 and E1 lost to top 3 candidates).
+- Any horse from groups D and E is out (since D1 is at best 4th).
+- From group C, **C1** can be at best 3rd (behind A1 and B1). Therefore, C2, C3, C4, and C5 are at best 4th and are eliminated.
+- From group B, **B1** can be at best 2nd. **B2** can be at best 3rd. B3, B4, and B5 are eliminated.
+- From group A, A1 is guaranteed 1st overall. **A2** can be at best 2nd, and **A3** can be at best 3rd. A4 and A5 are eliminated.
 
-From the remaining:
-- A1 (fastest)  
-- B1, B2  
-- C1, C2, C3  
-- A2, A3  
+This leaves exactly **5 horses** competing for the 2nd and 3rd place spots:  
+**A2, A3, B1, B2, C1**
 
-Candidates for 2nd and 3rd place are among these **5 horses**:  
-**A2, A3, B1, B2, C1, C2, C3**  
-But A1 is already declared fastest.
-
-Pick **A2, A3, B1, B2, C1** to race → **7th race**
+Race these 5 horses → **7th race**
 
 ### Step 4: Final Determination
 
-Race these 5 horses and take the **top 2 finishers**—those are the **2nd and 3rd fastest horses overall**, since A1 is already the fastest.
+Take the **top 2 finishers** from this 7th race—those are the **2nd and 3rd fastest horses overall**, joining A1 on the podium.
 
 ## Final Answer
 
