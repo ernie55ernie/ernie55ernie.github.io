@@ -19,7 +19,7 @@ This classic logic puzzle challenges you to measure **exactly 45 minutes** using
 
 ## The Strategy
 
-Here’s the clever trick: leverage the **doubling of burn rate** when lighting both ends.
+Here’s the clever trick: leverage the fact that **lighting both ends halves the total burn time** of any rope segment.
 
 ### Step-by-Step Solution
 
@@ -29,8 +29,8 @@ Here’s the clever trick: leverage the **doubling of burn rate** when lighting 
 
 2. **As soon as Rope A finishes burning (after 30 minutes)**, immediately **light the other end of Rope B**.
 
-   - At this point, Rope B has burned for 30 minutes from one end, so **half remains**—but again, due to irregular burn rate, we don't know where the flame is.
-   - Lighting the other end now causes it to burn from **both ends**, which doubles the burn rate of the remaining segment.
+   - At this point, Rope B has burned for 30 minutes from one end, so **exactly 30 minutes of burn time remains**—but due to the irregular burn rate, we don't know the physical length of this remaining segment.
+   - Lighting the other end now causes it to burn from **both ends**. The two flames will meet in exactly half the remaining time.
 
 3. The remaining rope will now take **15 minutes** to finish burning.
 
