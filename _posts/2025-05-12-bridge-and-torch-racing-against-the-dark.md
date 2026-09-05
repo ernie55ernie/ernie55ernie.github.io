@@ -15,13 +15,19 @@ This classic puzzle tests our ability to optimize under constraints. Four people
 
 The goal: **get everyone across as quickly as possible**.
 
-## Naive Approaches Don’t Work
+## The Naive Approach
 
-It might seem intuitive to always try to send the fastest people back and forth, or to send the slowest people together—but that doesn't always minimize total time.
+It might seem intuitive to always use the absolute fastest person (D) to ferry everyone else across. Let's see what happens if we do that:
 
-### Key Insight
+1. **D and A cross** (10 mins), **D returns** (1 min)
+2. **D and B cross** (5 mins), **D returns** (1 min)
+3. **D and C cross** (2 mins)
 
-To minimize time, we **minimize the number of slow crossings**, and use the two fastest people (C and D) as returners whenever possible.
+**Total Time = 19 minutes.** We can do better!
+
+## Key Insight
+
+To minimize time, we must overlap the largest time penalties by sending the two **slowest** people (A and B) across together. To facilitate this without stranding our fast people on the wrong side, we use the two fastest people (C and D) to stage the return trips.
 
 ## Optimal Strategy
 
