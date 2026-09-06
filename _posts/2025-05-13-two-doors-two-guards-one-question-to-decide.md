@@ -18,6 +18,8 @@ You face a classic logic puzzle:
 > You may ask **one yes-or-no question** to **one guard**.  
 > You must then choose a door.
 
+<iframe src="{{ site.baseurl }}/assets/two_doors_two_guards.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## The Challenge
 
 With only one question and no way to know which guard is truthful, how can you **guarantee** selecting the correct door?

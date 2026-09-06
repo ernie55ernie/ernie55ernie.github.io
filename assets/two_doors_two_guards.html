@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Doors, Two Guards</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#38bdf8;
+      --accent-soft:rgba(56,189,248,.12);
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --border:#334155;
+      --shadow:0 12px 30px rgba(0,0,0,.28);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1220 0%, #111827 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .hero, .panel, .result, details{
+      background:rgba(17,24,39,.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .hero{
+      padding:28px;
+      margin-bottom:20px;
+    }
+
+    .eyebrow{
+      color:var(--accent);
+      font-size:.85rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    h1{
+      margin:.35rem 0 .8rem;
+      font-size:clamp(1.8rem,4vw,3rem);
+      line-height:1.15;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      max-width:860px;
+      font-size:1rem;
+    }
+
+    .problem{
+      margin-top:18px;
+      padding:16px 18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:16px;
+    }
+
+    .problem ul{
+      margin:10px 0 0 1.1rem;
+      padding:0;
+    }
+
+    .grid{
+      display:grid;
+      gap:20px;
+    }
+
+    .two-col{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .panel{
+      padding:22px;
+    }
+
+    .panel h2{
+      margin:0 0 12px;
+      font-size:1.2rem;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .guards{
+      display:grid;
+      gap:18px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .guard-card, .door-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+    }
+
+    .avatar{
+      width:82px;
+      height:82px;
+      margin:0 auto 10px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-size:2.4rem;
+      background:rgba(255,255,255,.04);
+      border:2px solid var(--border);
+    }
+
+    .name{
+      font-size:1.1rem;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .badge{
+      display:inline-block;
+      margin-top:8px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:.8rem;
+      color:var(--muted);
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+    }
+
+    .question-box{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      margin-top:12px;
+      font-size:1.08rem;
+      text-align:center;
+      font-weight:700;
+    }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+      justify-content:center;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:14px;
+      padding:12px 16px;
+      font-size:0.97rem;
+      font-weight:700;
+      transition:transform .12s ease, opacity .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+    button:hover{ transform:translateY(-1px); }
+    button:active{ transform:translateY(0); }
+
+    .btn-primary{
+      color:#062437;
+      background:var(--accent);
+    }
+
+    .btn-secondary{
+      color:var(--text);
+      background:transparent;
+      border:1px solid var(--border);
+    }
+
+    .btn-soft{
+      color:var(--text);
+      background:var(--accent-soft);
+      border:1px solid rgba(56,189,248,.35);
+    }
+
+    .btn-disabled, button:disabled{
+      cursor:not-allowed;
+      opacity:.55;
+      transform:none !important;
+    }
+
+    .answer{
+      display:none;
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+    }
+
+    .answer.show{ display:block; }
+
+    .big-answer{
+      font-size:2.4rem;
+      font-weight:800;
+      margin:.2rem 0;
+    }
+
+    .door-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      margin-top:12px;
+    }
+
+    .door-emoji{
+      font-size:4rem;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .door-title{
+      font-size:1.15rem;
+      font-weight:800;
+    }
+
+    .hint{
+      margin-top:6px;
+      color:var(--muted);
+      min-height:24px;
+    }
+
+    .result{
+      display:none;
+      margin-top:18px;
+      padding:24px;
+      text-align:center;
+    }
+
+    .result.show{ display:block; }
+
+    .result .emoji{
+      font-size:3.2rem;
+      line-height:1;
+    }
+
+    .result h3{
+      margin:10px 0 8px;
+      font-size:1.6rem;
+    }
+
+    .success h3{ color:var(--good); }
+    .failure h3{ color:var(--bad); }
+    .warning h3{ color:var(--warn); }
+
+    details{
+      padding:18px 20px;
+      margin-top:20px;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      font-size:1.02rem;
+    }
+
+    .logic{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+
+    .logic .item{
+      padding:14px 16px;
+      border-radius:14px;
+      background:var(--card);
+      border:1px solid var(--border);
+    }
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:.93rem;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(34,197,94,.12);
+      color:#86efac;
+      border:1px solid rgba(34,197,94,.25);
+      font-size:.8rem;
+      font-weight:700;
+    }
+
+    @media (max-width: 760px){
+      .two-col, .guards, .door-grid{
+        grid-template-columns:1fr;
+      }
+      .wrap{ padding:16px; }
+      .hero, .panel, .result, details{ border-radius:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Interactive Logic Puzzle</div>
+      <h1>Two Doors, Two Guards</h1>
+      <p class="subtitle">
+        This visualizes the classic “fork in the road” Knights-and-Knaves style puzzle: one guard always tells the truth, the other always lies, and by asking one yes-or-no question to one guard, you can still determine the correct path【turn868652view0†L155-L160】.
+      </p>
+
+      <div class="problem">
+        <strong>Setup</strong>
+        <ul>
+          <li>One door leads to your <strong>dream job offer</strong>.</li>
+          <li>The other leads to <strong>certain doom</strong> (rejection and exit).</li>
+          <li>One guard <strong>always tells the truth</strong>.</li>
+          <li>The other <strong>always lies</strong>.</li>
+          <li>You may ask <strong>one yes-or-no question</strong> to <strong>one guard</strong>, then choose a door.</li>
+        </ul>
+      </div>
+
+      <div class="controls" style="justify-content:flex-start; margin-top:18px;">
+        <button id="resetBtn" class="btn-primary">Randomize Puzzle</button>
+      </div>
+    </section>
+
+    <div class="grid two-col">
+      <section class="panel">
+        <h2>Step 1 — Choose a guard to ask</h2>
+        <p class="muted">You do not know which guard is truthful and which one lies. That’s okay — the strategy works either way.</p>
+
+        <div class="guards">
+          <div class="guard-card">
+            <div class="avatar">🛡️</div>
+            <div class="name">Guard 1</div>
+            <div class="muted">Truth-teller or liar?</div>
+            <div class="badge">Identity hidden</div>
+            <div class="controls">
+              <button class="btn-soft ask-guard" data-guard="0">Ask Guard 1</button>
+            </div>
+          </div>
+
+          <div class="guard-card">
+            <div class="avatar">🛡️</div>
+            <div class="name">Guard 2</div>
+            <div class="muted">Truth-teller or liar?</div>
+            <div class="badge">Identity hidden</div>
+            <div class="controls">
+              <button class="btn-soft ask-guard" data-guard="1">Ask Guard 2</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Step 2 — Pick the question form</h2>
+        <p class="muted">Use the classic nested question. You can ask about either door:</p>
+
+        <div class="question-box">
+          “If I asked the <u>other guard</u> whether
+          <span id="questionDoorLabel">Door A</span>
+          leads to the dream job, would they say <strong>yes</strong>?”
+        </div>
+
+        <div class="controls">
+          <button id="askAboutA" class="btn-primary">Ask about Door A</button>
+          <button id="askAboutB" class="btn-secondary">Ask about Door B</button>
+        </div>
+
+        <div id="answerPanel" class="answer" aria-live="polite">
+          <div class="muted">The guard answers:</div>
+          <div id="answerText" class="big-answer">NO</div>
+          <p id="answerReason" class="muted" style="margin:.2rem 0 0;"></p>
+          <p id="strategyText" style="margin:.9rem 0 0; font-weight:700;"></p>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:20px;">
+      <h2>Step 3 — Choose a door</h2>
+      <p class="muted">After hearing the answer, choose the opposite of the door the answer seems to indicate.</p>
+
+      <div class="door-grid">
+        <div class="door-card">
+          <div class="door-emoji">🚪</div>
+          <div class="door-title">Door A</div>
+          <div id="doorAHint" class="hint">Ask first, then choose.</div>
+          <div class="controls">
+            <button class="btn-soft choose-door" data-door="0">Choose Door A</button>
+          </div>
+        </div>
+
+        <div class="door-card">
+          <div class="door-emoji">🚪</div>
+          <div class="door-title">Door B</div>
+          <div id="doorBHint" class="hint">Ask first, then choose.</div>
+          <div class="controls">
+            <button class="btn-soft choose-door" data-door="1">Choose Door B</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultPanel" class="result" aria-live="polite">
+        <div id="resultEmoji" class="emoji">🎉</div>
+        <h3 id="resultTitle"></h3>
+        <p id="resultDesc" class="muted"></p>
+        <p id="revealLine" class="footer-note"></p>
+      </div>
+    </section>
+
+    <details>
+      <summary>Why the trick always works</summary>
+      <div class="logic">
+        <div class="item">
+          <strong>If you ask the truthful guard:</strong>
+          they truthfully report what the lying guard would say — which is false.
+        </div>
+        <div class="item">
+          <strong>If you ask the lying guard:</strong>
+          they lie about what the truthful guard would say — again producing the false outcome.
+        </div>
+        <div class="item">
+          So both guards give the <strong>same misleading answer</strong>. Therefore, the answer always points to the <strong>wrong door</strong>, and you should choose the <strong>opposite</strong> door.
+        </div>
+      </div>
+      <div class="footer-note">
+        This matches the classic fork-in-the-road solution described on the Knights and Knaves page【turn868652view0†L157-L160】.
+      </div>
+    </details>
+  </div>
+
+  <script>
+    (() => {
+      let goodDoor = 0;       // 0 => A, 1 => B
+      let truthGuard = 0;     // 0 => Guard 1 truthful, 1 => Guard 2 truthful
+      let questionDoor = 0;   // which door the nested question is about
+      let asked = false;
+      let answerWasYes = null;
+      let recommendedDoor = null;
+
+      const questionDoorLabel = document.getElementById("questionDoorLabel");
+      const askAboutA = document.getElementById("askAboutA");
+      const askAboutB = document.getElementById("askAboutB");
+      const askGuardButtons = Array.from(document.querySelectorAll(".ask-guard"));
+      const chooseDoorButtons = Array.from(document.querySelectorAll(".choose-door"));
+      const answerPanel = document.getElementById("answerPanel");
+      const answerText = document.getElementById("answerText");
+      const answerReason = document.getElementById("answerReason");
+      const strategyText = document.getElementById("strategyText");
+      const resultPanel = document.getElementById("resultPanel");
+      const resultEmoji = document.getElementById("resultEmoji");
+      const resultTitle = document.getElementById("resultTitle");
+      const resultDesc = document.getElementById("resultDesc");
+      const revealLine = document.getElementById("revealLine");
+      const doorAHint = document.getElementById("doorAHint");
+      const doorBHint = document.getElementById("doorBHint");
+      const resetBtn = document.getElementById("resetBtn");
+
+      function doorName(i) {
+        return i === 0 ? "Door A" : "Door B";
+      }
+
+      function randomize() {
+        goodDoor = Math.random() < 0.5 ? 0 : 1;
+        truthGuard = Math.random() < 0.5 ? 0 : 1;
+        questionDoor = 0;
+        asked = false;
+        answerWasYes = null;
+        recommendedDoor = null;
+
+        questionDoorLabel.textContent = "Door A";
+        askAboutA.className = "btn-primary";
+        askAboutB.className = "btn-secondary";
+
+        answerPanel.classList.remove("show");
+        resultPanel.className = "result";
+
+        answerText.textContent = "";
+        answerReason.textContent = "";
+        strategyText.textContent = "";
+
+        doorAHint.textContent = "Ask first, then choose.";
+        doorBHint.textContent = "Ask first, then choose.";
+
+        askGuardButtons.forEach((btn, i) => {
+          btn.disabled = false;
+          btn.textContent = `Ask Guard ${i + 1}`;
+          btn.classList.remove("btn-disabled");
+        });
+
+        chooseDoorButtons.forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove("btn-disabled");
+        });
+      }
+
+      function setQuestionDoor(door) {
+        if (asked) return;
+        questionDoor = door;
+        questionDoorLabel.textContent = doorName(door);
+
+        if (door === 0) {
+          askAboutA.className = "btn-primary";
+          askAboutB.className = "btn-secondary";
+        } else {
+          askAboutA.className = "btn-secondary";
+          askAboutB.className = "btn-primary";
+        }
+      }
+
+      function askGuard(guardIndex) {
+        if (asked) return;
+
+        asked = true;
+
+        // Truth of base proposition: "Door X is the good door"
+        const propositionTrue = (questionDoor === goodDoor);
+
+        // The other guard would answer opposite to the truth of the base proposition.
+        // Therefore the nested question always yields the false outcome relative to the base proposition.
+        answerWasYes = !propositionTrue;
+
+        answerText.textContent = answerWasYes ? "YES" : "NO";
+        recommendedDoor = answerWasYes ? 1 - questionDoor : questionDoor;
+
+        answerReason.innerHTML = answerWasYes
+          ? `A “YES” here means both types of guards are forcing the answer toward <strong>the wrong door</strong>: ${doorName(questionDoor)}.`
+          : `A “NO” here means ${doorName(questionDoor)} is <strong>not</strong> the door the misleading answer points to — so it is the safe choice.`;
+
+        strategyText.innerHTML = `Strategy: choose <span class="pill">${doorName(recommendedDoor)}</span>.`;
+
+        answerPanel.classList.add("show");
+
+        doorAHint.textContent = recommendedDoor === 0 ? "← Strategy says choose this one" : "Strategy says avoid this one";
+        doorBHint.textContent = recommendedDoor === 1 ? "← Strategy says choose this one" : "Strategy says avoid this one";
+
+        askGuardButtons.forEach((btn, i) => {
+          btn.disabled = true;
+          btn.classList.add("btn-disabled");
+          if (i === guardIndex) btn.textContent = "Question used ✓";
+        });
+
+        askAboutA.disabled = true;
+        askAboutB.disabled = true;
+        askAboutA.classList.add("btn-disabled");
+        askAboutB.classList.add("btn-disabled");
+      }
+
+      function chooseDoor(doorIndex) {
+        resultPanel.classList.add("show");
+
+        if (!asked) {
+          resultPanel.className = "result show warning";
+          resultEmoji.textContent = "⚠️";
+          resultTitle.textContent = "Ask your one question first";
+          resultDesc.textContent = "You only get one yes-or-no question. Ask either guard using the nested question, then choose the opposite of the indicated door.";
+          revealLine.textContent = "";
+          return;
+        }
+
+        const success = doorIndex === goodDoor;
+
+        if (success) {
+          resultPanel.className = "result show success";
+          resultEmoji.textContent = "🎉";
+          resultTitle.textContent = "Dream Job Offer!";
+          resultDesc.textContent = "You chose correctly. The classic trick worked.";
+        } else {
+          resultPanel.className = "result show failure";
+          resultEmoji.textContent = "💀";
+          resultTitle.textContent = "Certain Doom";
+          resultDesc.textContent = "That was the wrong door. The reliable rule is to choose the opposite of the nested-answer indication.";
+        }
+
+        revealLine.innerHTML = `
+          Hidden setup: <strong>${doorName(goodDoor)}</strong> was the dream-job door.
+          <strong>Guard ${truthGuard + 1}</strong> was the truth-teller, and
+          <strong>Guard ${1 - truthGuard + 1}</strong> was the liar.
+        `;
+
+        chooseDoorButtons.forEach(btn => {
+          btn.disabled = true;
+          btn.classList.add("btn-disabled");
+        });
+      }
+
+      askAboutA.addEventListener("click", () => setQuestionDoor(0));
+      askAboutB.addEventListener("click", () => setQuestionDoor(1));
+      askGuardButtons.forEach(btn => btn.addEventListener("click", () => askGuard(Number(btn.dataset.guard))));
+      chooseDoorButtons.forEach(btn => btn.addEventListener("click", () => chooseDoor(Number(btn.dataset.door))));
+      resetBtn.addEventListener("click", randomize);
+
+      randomize();
+    })();
+  </script>
+</body>
+</html>
