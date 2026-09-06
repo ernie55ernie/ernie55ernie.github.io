@@ -15,6 +15,8 @@ A well-known puzzle in secure communication goes as follows:
 
 **How can you securely send the locked box and its contents?**
 
+<iframe src="{{ site.baseurl }}/assets/message_delivery_double_lock_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## Step-by-Step Solution: The Double-Lock Method
 
 This problem is a classic physical illustration of the **Three-pass protocol** (relying on commutative locking) to maintain confidentiality without exchanging keys.

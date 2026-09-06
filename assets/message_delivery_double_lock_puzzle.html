@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Delivery — Double-Lock Puzzle</title>
+  <style>
+    :root{
+      --bg:#f7f7f8;
+      --panel:#ffffff;
+      --card:#fafafa;
+      --text:#1f2328;
+      --muted:#667085;
+      --border:#d0d5dd;
+      --accent:#2563eb;
+      --accent-bg:#dbeafe;
+      --series-2:#22c55e;
+      --series-3:#f59e0b;
+      --series-4:#c4b5fd;
+      --series-6:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{max-width:900px;margin:0 auto;padding:28px 18px 48px}
+    h1{font-size:28px;margin:0 0 8px}
+    .subtitle{color:var(--muted);margin:0 0 22px}
+    .scene{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px}
+    .header-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+    .pill{border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--muted)}
+    .route-grid{display:grid;grid-template-columns:86px minmax(0,1fr) 86px;align-items:center;gap:8px}
+    .person{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+    .avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:var(--card);border:1px solid var(--border)}
+    .road{position:relative;height:140px;min-width:0;overflow:hidden}
+    .line{position:absolute;left:5%;right:5%;top:72px;height:3px;background:var(--border);border-radius:3px}
+    .arrow{position:absolute;top:51px;font-size:26px;color:var(--muted);opacity:.6}
+    .arrow.left{left:13%}
+    .arrow.right{right:13%}
+    .box{position:absolute;top:28px;left:6%;width:100px;height:78px;transition:left .65s ease;z-index:2}
+    .case{position:absolute;left:5px;bottom:4px;width:90px;height:53px;border-radius:9px;background:var(--series-4);border:2px solid var(--text);display:grid;place-items:center;font-size:23px}
+    .handle{position:absolute;left:28px;top:0;width:44px;height:25px;border:5px solid var(--text);border-bottom:0;border-radius:11px 11px 0 0}
+    .lock{position:absolute;top:45px;width:27px;height:29px;border:2px solid var(--text);border-radius:5px;display:grid;place-items:center;font-size:13px;font-weight:800;transition:opacity .25s,transform .25s}
+    .lock.a{left:8px;background:#86efac}
+    .lock.b{right:8px;background:#fcd34d}
+    .hiddenLock{opacity:0;transform:translateY(-6px)}
+    .steps{display:flex;justify-content:center;gap:8px;margin-top:10px}
+    .stepDot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700}
+    .stepDot.on{background:var(--accent-bg);border-color:var(--accent)}
+    .content-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:16px;margin-top:18px}
+    .section-title{font-size:18px;font-weight:700;margin-bottom:8px}
+    .step-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
+    .trip-label{font-size:12px;color:var(--muted)}
+    .explain{background:var(--panel);border-left:4px solid var(--accent);border-radius:10px;padding:14px}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    button{
+      min-height:44px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:9px 13px;
+      background:var(--panel);
+      color:var(--text);
+      font:inherit;
+      font-weight:650;
+      cursor:pointer;
+    }
+    button.primary{background:var(--accent-bg);border-color:var(--accent)}
+    button:disabled{opacity:.4;cursor:not-allowed}
+    button:not(:disabled):active{transform:scale(.98)}
+    .state-card,.details,.challenge{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px}
+    .state-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #ececec}
+    .state-row:last-child{border-bottom:0}
+    .safe{color:#15803d}
+    .danger{color:#b91c1c}
+    details{margin-top:18px}
+    details summary{cursor:pointer;font-weight:700}
+    .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    .why-grid div{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .challenge{margin-top:18px}
+    .status{margin-top:12px;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card)}
+    .legend{font-size:13px;color:var(--muted)}
+    @media(max-width:700px){
+      .content-grid{grid-template-columns:1fr}
+      .why-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:520px){
+      .wrap{padding:20px 12px 36px}
+      h1{font-size:24px}
+      .route-grid{grid-template-columns:64px minmax(0,1fr) 64px}
+      .avatar{width:48px;height:48px;font-size:24px}
+      .person{font-size:12px}
+      .road{height:126px}
+      .box{transform:scale(.88);transform-origin:center}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .box,.lock{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Message Delivery — Double-Lock Puzzle</h1>
+    <p class="subtitle">
+      Alice must send a secret document to Bob through an untrusted courier.
+      Alice and Bob each own a padlock and keep their own key.
+    </p>
+
+    <section class="scene">
+      <div class="header-row">
+        <div>
+          <div class="section-title">How can they deliver the message securely?</div>
+          <div class="legend">The box must never travel while unlocked.</div>
+        </div>
+        <div class="pill">🔒 Secure protocol</div>
+      </div>
+
+      <div class="route-grid">
+        <div class="person">
+          <div class="avatar">👩‍💻</div>
+          <strong>Alice</strong>
+          <span class="legend">🔑 A</span>
+        </div>
+
+        <div class="road" aria-label="Animated locked-box delivery route">
+          <div class="line"></div>
+          <div class="arrow left">←</div>
+          <div class="arrow right">→</div>
+
+          <div class="box" id="box">
+            <div class="handle"></div>
+            <div class="case">📄</div>
+            <div class="lock a" id="lock-a">A</div>
+            <div class="lock b hiddenLock" id="lock-b">B</div>
+          </div>
+        </div>
+
+        <div class="person">
+          <div class="avatar">👨‍💻</div>
+          <strong>Bob</strong>
+          <span class="legend">🔑 B</span>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="stepDot on" data-dot="0">1</div>
+        <div class="stepDot" data-dot="1">2</div>
+        <div class="stepDot" data-dot="2">3</div>
+        <div class="stepDot" data-dot="3">4</div>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <div>
+        <div class="step-head">
+          <div class="section-title" id="step-title">1. Alice locks the document</div>
+          <span class="trip-label" id="trip-label">Alice → Bob</span>
+        </div>
+
+        <div class="explain" id="step-text" aria-live="polite">
+          Alice puts the document in the box, attaches padlock <strong>A</strong>,
+          and sends it to Bob. The courier cannot open the box.
+        </div>
+
+        <div class="actions">
+          <button type="button" id="prev">← Previous</button>
+          <button type="button" class="primary" id="next">Next step →</button>
+          <button type="button" id="reset">↺ Reset</button>
+        </div>
+      </div>
+
+      <div class="state-card">
+        <div class="section-title">Current box state</div>
+        <div class="state-row"><span>Document</span><strong id="doc-state">Inside box</strong></div>
+        <div class="state-row"><span>Alice's lock</span><strong id="a-state">On 🔒</strong></div>
+        <div class="state-row"><span>Bob's lock</span><strong id="b-state">Off</strong></div>
+        <div class="state-row"><span>Can courier open it?</span><strong id="courier-state" class="safe">No ✓</strong></div>
+      </div>
+    </section>
+
+    <details class="details">
+      <summary>Why does this work?</summary>
+      <div class="why-grid">
+        <div>
+          <strong>① Alice → Bob</strong><br />
+          <span class="legend">Lock A protects the document.</span>
+        </div>
+        <div>
+          <strong>② Bob → Alice</strong><br />
+          <span class="legend">Bob adds lock B, so both locks are attached.</span>
+        </div>
+        <div>
+          <strong>③ Alice → Bob</strong><br />
+          <span class="legend">Alice removes A. Lock B remains during the final trip.</span>
+        </div>
+      </div>
+      <p>
+        <strong>Key idea:</strong> the box is never transported while unlocked,
+        and neither person ever needs to give the other person a key.
+      </p>
+    </details>
+
+    <section class="challenge">
+      <div class="section-title">Try the protocol yourself</div>
+      <p class="legend">
+        Start with Alice holding the document. Choose the actions in the correct order.
+      </p>
+
+      <div class="actions" id="challenge-actions">
+        <button type="button" data-act="aLock">Add lock A</button>
+        <button type="button" data-act="bLock">Add lock B</button>
+        <button type="button" data-act="removeA">Remove lock A</button>
+        <button type="button" data-act="send">Send box</button>
+        <button type="button" data-act="openB">Bob opens lock B</button>
+        <button type="button" data-act="restart">Restart challenge</button>
+      </div>
+
+      <div id="challenge-status" class="status" aria-live="polite">
+        Alice has the document. The box is currently <strong>unlocked</strong>.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const steps = [
+        {
+          title: "1. Alice locks the document",
+          trip: "Alice → Bob",
+          pos: "6%",
+          a: true,
+          b: false,
+          doc: "Inside box",
+          text: 'Alice puts the document in the box, attaches padlock <strong>A</strong>, and sends it to Bob. The courier cannot open the box.'
+        },
+        {
+          title: "2. Bob adds his own lock",
+          trip: "Bob → Alice",
+          pos: "76%",
+          a: true,
+          b: true,
+          doc: "Inside box",
+          text: 'Bob cannot remove Alice’s lock because he does not have key A. Instead, he attaches his own padlock <strong>B</strong>. The box now has <strong>two locks</strong>, and he sends it back.'
+        },
+        {
+          title: "3. Alice removes only her lock",
+          trip: "Alice → Bob",
+          pos: "6%",
+          a: false,
+          b: true,
+          doc: "Inside box",
+          text: 'Alice receives the doubly locked box and uses key A to remove <strong>only her lock</strong>. Bob’s lock B stays attached, so the box remains secure during the final trip.'
+        },
+        {
+          title: "4. Bob opens the box",
+          trip: "Delivered ✓",
+          pos: "76%",
+          a: false,
+          b: false,
+          doc: "Bob received it ✓",
+          text: 'Bob receives the box protected by his own lock B. He uses key B, opens the box, and safely retrieves the document. No key was ever shared.'
+        }
+      ];
+
+      let i = 0;
+      const box = document.getElementById("box");
+      const lockA = document.getElementById("lock-a");
+      const lockB = document.getElementById("lock-b");
+      const title = document.getElementById("step-title");
+      const text = document.getElementById("step-text");
+      const trip = document.getElementById("trip-label");
+      const doc = document.getElementById("doc-state");
+      const aState = document.getElementById("a-state");
+      const bState = document.getElementById("b-state");
+      const courierState = document.getElementById("courier-state");
+      const prev = document.getElementById("prev");
+      const next = document.getElementById("next");
+
+      function render() {
+        const s = steps[i];
+        box.style.left = s.pos;
+        lockA.classList.toggle("hiddenLock", !s.a);
+        lockB.classList.toggle("hiddenLock", !s.b);
+
+        title.textContent = s.title;
+        text.innerHTML = s.text;
+        trip.textContent = s.trip;
+        doc.textContent = s.doc;
+        aState.textContent = s.a ? "On 🔒" : "Off";
+        bState.textContent = s.b ? "On 🔒" : "Off";
+
+        courierState.textContent = i === 3 ? "Trip complete" : "No ✓";
+        courierState.className = "safe";
+
+        document.querySelectorAll("[data-dot]").forEach((d, k) => {
+          d.classList.toggle("on", k === i);
+        });
+
+        prev.disabled = i === 0;
+        next.disabled = i === steps.length - 1;
+        next.textContent = i === steps.length - 2 ? "Deliver →" : "Next step →";
+      }
+
+      prev.addEventListener("click", () => {
+        if (i > 0) {
+          i--;
+          render();
+        }
+      });
+
+      next.addEventListener("click", () => {
+        if (i < steps.length - 1) {
+          i++;
+          render();
+        }
+      });
+
+      document.getElementById("reset").addEventListener("click", () => {
+        i = 0;
+        render();
+      });
+
+      render();
+
+      let challenge = {
+        where: "Alice",
+        a: false,
+        b: false,
+        doc: true,
+        done: false
+      };
+
+      const status = document.getElementById("challenge-status");
+
+      function lockCount() {
+        return (challenge.a ? 1 : 0) + (challenge.b ? 1 : 0);
+      }
+
+      function say(message, ok) {
+        status.innerHTML = message;
+        status.style.borderColor = ok === false ? "var(--series-6)" : "var(--border)";
+      }
+
+      function restartChallenge() {
+        challenge = {
+          where: "Alice",
+          a: false,
+          b: false,
+          doc: true,
+          done: false
+        };
+        say('Alice has the document. The box is currently <strong>unlocked</strong>.');
+      }
+
+      document.getElementById("challenge-actions").addEventListener("click", (event) => {
+        const btn = event.target.closest("button[data-act]");
+        if (!btn) return;
+
+        const act = btn.dataset.act;
+
+        if (act === "restart") {
+          restartChallenge();
+          return;
+        }
+
+        if (challenge.done) {
+          say('Puzzle already solved. Press <strong>Restart challenge</strong> to try again.', true);
+          return;
+        }
+
+        if (act === "aLock") {
+          if (challenge.where !== "Alice" || challenge.a) {
+            say("Only Alice can add lock A, and it is already unavailable in this state.", false);
+            return;
+          }
+          challenge.a = true;
+          say("🔒 Alice adds lock A. The box is now secure.", true);
+          return;
+        }
+
+        if (act === "bLock") {
+          if (challenge.where !== "Bob" || challenge.b) {
+            say("Bob can add lock B only when he has the box.", false);
+            return;
+          }
+          challenge.b = true;
+          say("🔒 Bob adds lock B. Both locks are now on the box.", true);
+          return;
+        }
+
+        if (act === "removeA") {
+          if (challenge.where !== "Alice" || !challenge.a) {
+            say("Alice can remove lock A only when the box is with her and lock A is attached.", false);
+            return;
+          }
+          challenge.a = false;
+          say(
+            challenge.b
+              ? "🔓 Alice removes A. Lock B still protects the box — perfect."
+              : "⚠️ Alice removed the only lock. Sending it now would expose the document.",
+            challenge.b
+          );
+          return;
+        }
+
+        if (act === "openB") {
+          if (challenge.where !== "Bob" || !challenge.b) {
+            say("Bob can open lock B only when he has the box and B is attached.", false);
+            return;
+          }
+          if (challenge.a) {
+            say("Bob can remove B, but lock A would still keep the box closed. That does not finish the delivery.", false);
+            return;
+          }
+
+          challenge.b = false;
+          challenge.done = true;
+          say("🎉 <strong>Success!</strong> Bob removes lock B and retrieves the document. No key was shared.", true);
+          return;
+        }
+
+        if (act === "send") {
+          if (!challenge.doc) {
+            say("There is no document to send.", false);
+            return;
+          }
+
+          if (lockCount() === 0) {
+            challenge.doc = false;
+            say("💥 <strong>Failed:</strong> the box was sent unlocked, so the insecure courier steals the document.", false);
+            return;
+          }
+
+          challenge.where = challenge.where === "Alice" ? "Bob" : "Alice";
+          say(`📦 Box delivered to <strong>${challenge.where}</strong>. It stayed locked during transit.`, true);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
