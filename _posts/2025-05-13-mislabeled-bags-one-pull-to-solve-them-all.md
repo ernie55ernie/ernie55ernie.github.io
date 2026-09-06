@@ -30,17 +30,19 @@ Reach into the **bag labeled “mix”** and pull out **one fruit**.
 Let’s say you pull out an **apple**.
 
 Then you know:
-- This bag is **definitely not mix**, and not labeled “apple” either (since label is wrong).
-- So it must be the **apple-only** bag.
+- This bag cannot be the mix (because its label is wrong).
+- Since it must be a single-fruit bag and you pulled an apple, it is the **apple-only** bag.
 
 ### Step 2: Deduce the Others
 
-Now you know:
-- The bag labeled “mix” actually contains **only apples**.
-- The bag labeled “apple” **can’t** be apples or mix → must be **orange-only**
-- The bag labeled “orange” must then be the **mix**.
+Now you know the bag labeled “mix” actually contains **only apples**. 
 
-Same logic holds if you’d pulled out an orange first.
+What about the bag labeled "apple"?
+- It cannot contain apples (since all labels are wrong, and we already found the apple bag anyway).
+- Could it contain the **mix**? If it did, the third bag (labeled "orange") would have to contain **only oranges**. But we know **all labels are wrong**, so that's impossible!
+- Therefore, the bag labeled "apple" must contain **only oranges**.
+
+By elimination, the third bag (labeled "orange") must contain the **mix**.
 
 ---
 
