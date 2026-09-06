@@ -69,4 +69,4 @@ Eventually, only **one ball remains**—so that ball must also respect the invar
 
 # Reference
 
-* [1] [Algorithmic Puzzles - X-Files](https://doc.lagout.org/science/0_Computer%20Science/2_Algorithms/Algorithmic%20Puzzles%20%5BLevitin%20%26%20Levitin%202011-10-14%5D.pdf)
+* [1] [Brain Teaser 14: Last Ball](https://medium.com/@shelvia1039/brain-teaser-14-last-ball-1dbb38c21620)
