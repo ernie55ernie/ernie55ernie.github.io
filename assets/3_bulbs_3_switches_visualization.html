@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3 Bulbs & 3 Switches Puzzle</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --border:#334155;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent2:#22c55e;
+      --warm:#f59e0b;
+      --cold:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#0f172a,#020617);
+      color:var(--text);
+      min-height:100vh;
+      padding:24px;
+    }
+    .wrap{max-width:1050px;margin:0 auto}
+    h1{margin:0 0 8px;font-size:clamp(28px,5vw,48px)}
+    .subtitle{color:var(--muted);margin-bottom:22px}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1.15fr;
+      gap:18px;
+    }
+    .panel{
+      background:rgba(17,24,39,.92);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+    }
+    .topline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    button,select{
+      font:inherit;
+    }
+    button{
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      min-height:44px;
+    }
+    button.primary{
+      background:var(--accent);
+      color:#06243a;
+      border-color:transparent;
+      font-weight:700;
+    }
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .switch-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:12px;
+      padding:13px;
+      margin-top:12px;
+    }
+    .small{font-size:13px;color:var(--muted)}
+    .meter{
+      height:9px;
+      background:#0b1220;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:8px;
+    }
+    .meter>div{
+      height:100%;
+      background:var(--warm);
+      width:0%;
+      transition:width .3s ease;
+    }
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .room{
+      min-height:380px;
+      position:relative;
+      overflow:hidden;
+    }
+    .door-wrap{
+      height:280px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .door{
+      width:140px;
+      height:220px;
+      border:2px solid var(--border);
+      border-radius:8px 18px 18px 8px;
+      background:#18212f;
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      padding-right:15px;
+      transform-origin:left center;
+      transition:transform .55s ease,opacity .35s ease;
+    }
+    .door.open{transform:perspective(600px) rotateY(-68deg);opacity:.3}
+    .knob{width:12px;height:12px;border-radius:50%;background:#cbd5e1}
+    .bulbs{
+      display:none;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:38px;
+    }
+    .bulb-card{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:14px;
+      padding:14px;
+      text-align:center;
+    }
+    .bulb{
+      width:82px;
+      height:82px;
+      margin:0 auto;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:40px;
+      background:#111827;
+      border:2px solid var(--border);
+      transition:all .25s ease;
+    }
+    .bulb.on{
+      background:#fde68a;
+      filter:drop-shadow(0 0 18px rgba(250,204,21,.75));
+      transform:scale(1.05);
+    }
+    .status{margin-top:8px;font-size:14px}
+    .warm{color:#fbbf24;font-weight:700}
+    .cold{color:#93c5fd}
+    .section{
+      margin-top:18px;
+      border:1px solid var(--border);
+      background:rgba(17,24,39,.92);
+      border-radius:18px;
+      padding:18px;
+    }
+    .hidden{display:none}
+    .selectors{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    label{font-size:14px;font-weight:700}
+    select{
+      display:block;
+      width:100%;
+      margin-top:6px;
+      padding:11px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+    }
+    .result{margin-top:12px;color:#dbeafe}
+    ol{padding-left:22px;line-height:1.65}
+    .insight{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      background:#0b1220;
+      margin-top:12px;
+    }
+    @media(max-width:760px){
+      body{padding:14px}
+      .grid{grid-template-columns:1fr}
+      .selectors{grid-template-columns:1fr}
+      .bulbs{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *{transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>3 Bulbs & 3 Switches</h1>
+    <div class="subtitle">
+      You are outside a closed room. Three switches control three bulbs inside.
+      You may enter the room only once. Can you determine the full mapping?
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="topline">
+          <div>
+            <h2 style="margin:0">Outside the room</h2>
+            <div class="small">Manipulate the switches before your one visit.</div>
+          </div>
+          <button id="resetBtn">Reset</button>
+        </div>
+
+        <div id="switches"></div>
+
+        <div style="margin-top:18px">
+          <div class="topline">
+            <span>Elapsed heating time</span>
+            <strong id="timeLabel">0 min</strong>
+          </div>
+          <div class="meter"><div id="timeBar"></div></div>
+        </div>
+
+        <div class="actions">
+          <button id="waitBtn" class="primary">Wait 5 minutes</button>
+          <button id="enterBtn">Enter room →</button>
+        </div>
+
+        <div class="small" style="margin-top:16px">
+          Hint: the bulb gives you more information than just ON/OFF.
+        </div>
+      </section>
+
+      <section class="panel room">
+        <div class="topline">
+          <div>
+            <h2 style="margin:0">Bulb room</h2>
+            <div id="roomHint" class="small">The door is closed. Bulb states are hidden.</div>
+          </div>
+          <div id="visitBadge" class="small">0 / 1 visits</div>
+        </div>
+
+        <div id="closedView" class="door-wrap">
+          <div id="door" class="door"><div class="knob"></div></div>
+        </div>
+
+        <div id="bulbRoom" class="bulbs"></div>
+      </section>
+    </div>
+
+    <section id="deduction" class="section hidden">
+      <div class="topline">
+        <div>
+          <h2 style="margin:0">Make your deduction</h2>
+          <div class="small">Match each switch to the correct bulb.</div>
+        </div>
+        <button id="solutionBtn">Show strategy</button>
+      </div>
+
+      <div id="selectors" class="selectors"></div>
+      <button id="checkBtn" class="primary" style="margin-top:14px">Check answer</button>
+      <div id="result" class="result" aria-live="polite"></div>
+    </section>
+
+    <section id="strategy" class="section hidden">
+      <h2 style="margin-top:0">The one-trip solution</h2>
+      <ol>
+        <li>Turn <strong>Switch 1 ON</strong> and leave it on for several minutes.</li>
+        <li>Turn <strong>Switch 1 OFF</strong>.</li>
+        <li>Turn <strong>Switch 2 ON</strong>. Leave Switch 3 OFF.</li>
+        <li>Enter the room once.</li>
+      </ol>
+      <div class="insight">
+        <strong>Now inspect the bulbs:</strong><br>
+        💡 <strong>Lit bulb</strong> → Switch 2<br>
+        ♨️ <strong>Dark but warm bulb</strong> → Switch 1<br>
+        ❄️ <strong>Dark and cold bulb</strong> → Switch 3
+      </div>
+      <div class="insight">
+        <strong>Key idea:</strong> residual heat stores information about the past.
+        That gives each bulb three useful observable states: lit, dark-but-warm, and dark-and-cold.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const switchesEl = document.getElementById("switches");
+    const bulbRoom = document.getElementById("bulbRoom");
+    const closedView = document.getElementById("closedView");
+    const door = document.getElementById("door");
+    const deduction = document.getElementById("deduction");
+    const selectors = document.getElementById("selectors");
+    const strategy = document.getElementById("strategy");
+    const result = document.getElementById("result");
+    const timeLabel = document.getElementById("timeLabel");
+    const timeBar = document.getElementById("timeBar");
+    const roomHint = document.getElementById("roomHint");
+    const visitBadge = document.getElementById("visitBadge");
+    const waitBtn = document.getElementById("waitBtn");
+    const enterBtn = document.getElementById("enterBtn");
+
+    let mapping = [];
+    let sw = [false,false,false];
+    let heat = [0,0,0];
+    let minutes = 0;
+    let entered = false;
+
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+      }
+      return arr;
+    }
+
+    function reset(){
+      mapping = shuffle([0,1,2]);
+      sw = [false,false,false];
+      heat = [0,0,0];
+      minutes = 0;
+      entered = false;
+
+      deduction.classList.add("hidden");
+      strategy.classList.add("hidden");
+      result.textContent = "";
+      closedView.style.display = "flex";
+      bulbRoom.style.display = "none";
+      door.classList.remove("open");
+      roomHint.textContent = "The door is closed. Bulb states are hidden.";
+      visitBadge.textContent = "0 / 1 visits";
+      enterBtn.disabled = false;
+      waitBtn.disabled = false;
+
+      renderSwitches();
+      renderTime();
+    }
+
+    function renderSwitches(){
+      switchesEl.innerHTML = "";
+      sw.forEach((on,i)=>{
+        const row=document.createElement("div");
+        row.className="switch-row";
+
+        const text=document.createElement("div");
+        text.innerHTML=`<strong>Switch ${i+1}</strong><div class="small">${on?"Currently ON":"Currently OFF"}</div>`;
+
+        const btn=document.createElement("button");
+        btn.textContent=on?"Turn off":"Turn on";
+        btn.disabled=entered;
+        btn.addEventListener("click",()=>{
+          sw[i]=!sw[i];
+          renderSwitches();
+        });
+
+        row.append(text,btn);
+        switchesEl.appendChild(row);
+      });
+    }
+
+    function renderTime(){
+      timeLabel.textContent = minutes + " min";
+      timeBar.style.width = Math.min(100, minutes*10) + "%";
+    }
+
+    function waitFive(){
+      if(entered) return;
+      minutes += 5;
+
+      for(let s=0;s<3;s++){
+        if(sw[s]){
+          heat[mapping[s]] += 5;
+        }
+      }
+      renderTime();
+    }
+
+    function enterRoom(){
+      if(entered) return;
+      entered=true;
+
+      renderSwitches();
+      enterBtn.disabled=true;
+      waitBtn.disabled=true;
+      visitBadge.textContent="1 / 1 visits";
+      roomHint.textContent="Observe brightness and temperature.";
+
+      door.classList.add("open");
+
+      setTimeout(()=>{
+        closedView.style.display="none";
+        bulbRoom.style.display="grid";
+        renderBulbs();
+        deduction.classList.remove("hidden");
+        renderSelectors();
+      },350);
+    }
+
+    function renderBulbs(){
+      bulbRoom.innerHTML="";
+
+      for(let bulb=0;bulb<3;bulb++){
+        const controllingSwitch = mapping.indexOf(bulb);
+        const lit = sw[controllingSwitch];
+        const warm = heat[bulb] > 0;
+
+        const card=document.createElement("div");
+        card.className="bulb-card";
+        card.innerHTML=`
+          <div class="bulb ${lit?"on":""}">💡</div>
+          <div style="font-weight:800;margin-top:10px">Bulb ${String.fromCharCode(65+bulb)}</div>
+          <div class="status">${lit?"● ON":"○ OFF"}</div>
+          <div class="status ${warm?"warm":"cold"}">${warm?"♨ Warm":"❄ Cold"}</div>
+        `;
+        bulbRoom.appendChild(card);
+      }
+    }
+
+    function renderSelectors(){
+      selectors.innerHTML="";
+      for(let s=0;s<3;s++){
+        const label=document.createElement("label");
+        label.textContent="Switch "+(s+1);
+
+        const select=document.createElement("select");
+        select.innerHTML=`
+          <option value="">Choose bulb…</option>
+          <option value="0">Bulb A</option>
+          <option value="1">Bulb B</option>
+          <option value="2">Bulb C</option>
+        `;
+        select.dataset.switchIndex=s;
+
+        label.appendChild(select);
+        selectors.appendChild(label);
+      }
+    }
+
+    function checkAnswer(){
+      const selects=[...selectors.querySelectorAll("select")];
+
+      if(selects.some(s=>s.value==="")){
+        result.textContent="Choose a bulb for every switch.";
+        return;
+      }
+
+      const guess=selects.map(s=>Number(s.value));
+
+      if(new Set(guess).size!==3){
+        result.textContent="Each bulb must be assigned to exactly one switch.";
+        return;
+      }
+
+      const correct=guess.every((value,i)=>value===mapping[i]);
+
+      result.innerHTML = correct
+        ? "✅ <strong>Correct!</strong> You identified all three mappings using one room visit."
+        : "❌ Not quite. Use both <strong>brightness</strong> and <strong>temperature</strong>.";
+    }
+
+    document.getElementById("resetBtn").addEventListener("click",reset);
+    waitBtn.addEventListener("click",waitFive);
+    enterBtn.addEventListener("click",enterRoom);
+    document.getElementById("checkBtn").addEventListener("click",checkAnswer);
+    document.getElementById("solutionBtn").addEventListener("click",()=>{
+      strategy.classList.toggle("hidden");
+    });
+
+    reset();
+  </script>
+</body>
+</html>

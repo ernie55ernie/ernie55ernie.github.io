@@ -19,6 +19,8 @@ You face this classic puzzle in deductive reasoning:
 
 You're allowed to **touch** the bulb and check whether it's **on or warm**. This allows you to gain **more information** than just sight.
 
+<iframe src="{{ site.baseurl }}/assets/3_bulbs_3_switches_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### Step 1: Create Four Unique States
 
 To distinguish between 4 switches using a single bulb, we need **4 distinct observable states**. We can achieve this by combining **on/off** with **warm/cold**.
