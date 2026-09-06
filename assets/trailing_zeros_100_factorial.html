@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trailing Zeros in 100!</title>
+  <style>
+    :root{
+      --bg:#f7f8fb; --card:#ffffff; --panel:#f1f4f8; --text:#172033;
+      --muted:#667085; --border:#d9dee8; --accent:#3b82f6;
+      --series2:#10b981; --series3:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 40px}
+    h1{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:0 0 8px}
+    .sub{color:var(--muted);font-size:18px;margin-bottom:24px}
+    .grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:22px}
+    .eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .idea{font-size:20px;line-height:1.55;margin-top:10px}
+    .factor-row{display:flex;align-items:center;justify-content:center;gap:12px;font-size:28px;font-weight:800;margin:24px 0 4px;flex-wrap:wrap}
+    .factor{border:1px solid var(--border);border-radius:14px;padding:12px 17px;background:#fff}
+    .factor.five{border:2px solid var(--accent);background:#edf5ff}
+    .controls{margin-top:16px}
+    label{font-weight:700;font-size:14px}
+    .control-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    input{
+      min-height:44px;width:160px;border:1px solid var(--border);border-radius:10px;
+      padding:0 12px;font-size:16px;background:#fff;color:var(--text)
+    }
+    button{
+      min-height:44px;border:none;border-radius:10px;background:var(--accent);color:#fff;
+      padding:0 16px;font-weight:800;cursor:pointer
+    }
+    button:hover{filter:brightness(.96)}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px}
+    .formula{font-size:24px;font-weight:800;margin-top:16px;word-break:break-word}
+    .term{display:grid;grid-template-columns:70px 1fr 60px;gap:12px;align-items:center;margin-top:14px}
+    .term-label{font-weight:800;font-size:14px}
+    .track{height:14px;background:var(--panel);border-radius:999px;overflow:hidden}
+    .bar{height:100%;border-radius:999px}
+    .term-value{text-align:right;font-weight:900;font-variant-numeric:tabular-nums}
+    .answer-block{border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+    .answer-label{color:var(--muted);font-size:14px}
+    .answer{font-size:54px;line-height:1;font-weight:900;margin-top:4px}
+    .section-title{font-weight:900;font-size:18px}
+    .section-sub{color:var(--muted);font-size:14px;margin-top:4px}
+    .number-grid{display:grid;grid-template-columns:repeat(20,1fr);gap:6px;margin-top:18px}
+    .cell{
+      aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);
+      border-radius:7px;background:#fff;font-size:11px;min-width:0
+    }
+    .cell.m5{background:var(--series2);color:#fff;border-color:transparent}
+    .cell.m25{background:var(--series3);color:#fff;border-color:transparent}
+    .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;color:var(--muted);font-size:13px}
+    .legend-item{display:flex;align-items:center;gap:7px}
+    .swatch{width:15px;height:15px;border-radius:4px;border:1px solid var(--border);background:#fff}
+    .swatch.m5{background:var(--series2);border:none}
+    .swatch.m25{background:var(--series3);border:none}
+    .calc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:20px;font-weight:800}
+    .chip{background:var(--panel);border-radius:11px;padding:10px 13px}
+    .chip.final{border:2px solid var(--accent);background:#edf5ff;font-size:26px}
+    .note{margin-top:12px;color:var(--muted);line-height:1.5}
+    .footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media(max-width:800px){
+      .grid{grid-template-columns:1fr}
+      .number-grid{grid-template-columns:repeat(10,1fr)}
+    }
+    @media(max-width:420px){
+      .wrap{padding:18px 12px 30px}
+      .card,.panel{padding:16px}
+      .number-grid{grid-template-columns:repeat(5,1fr)}
+      .term{grid-template-columns:58px 1fr 48px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>How many zeros are at the end of 100!?</h1>
+    <div class="sub">An interactive visualization of trailing zeros in factorials.</div>
+
+    <div class="grid">
+      <section>
+        <div class="card">
+          <div class="eyebrow">The key idea</div>
+          <div class="idea">
+            A trailing zero comes from a factor of <strong>10 = 2 × 5</strong>.
+            In a factorial, factors of 2 are abundant, so the limiting factor is how many
+            <strong>5s</strong> appear in the prime factorization.
+          </div>
+          <div class="factor-row" aria-label="Ten equals two times five">
+            <span class="factor">2</span><span>×</span>
+            <span class="factor five">5</span><span>=</span>
+            <span class="factor">10</span>
+          </div>
+        </div>
+
+        <div class="panel controls">
+          <label for="nInput">Explore another factorial</label>
+          <div class="control-row">
+            <input id="nInput" type="number" min="1" max="1000000" value="100" />
+            <button id="resetBtn" type="button">Reset to 100!</button>
+          </div>
+          <div id="validation" class="hint">Enter n from 1 to 1,000,000.</div>
+        </div>
+      </section>
+
+      <section class="card" aria-live="polite">
+        <div class="eyebrow">Legendre's formula</div>
+        <div id="formula" class="formula"></div>
+        <div id="terms"></div>
+        <div class="answer-block">
+          <div class="answer-label">Total trailing zeros</div>
+          <div id="answer" class="answer"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:18px">
+      <div class="section-title">Where do the factors of 5 come from?</div>
+      <div class="section-sub">
+        Multiples of 5 contribute at least one factor of 5. Multiples of 25 contain an extra factor of 5.
+      </div>
+      <div id="gridSummary" class="hint" style="font-weight:700;margin-top:10px"></div>
+      <div id="numberGrid" class="number-grid"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch"></span> no factor of 5</div>
+        <div class="legend-item"><span class="swatch m5"></span> multiple of 5</div>
+        <div class="legend-item"><span class="swatch m25"></span> multiple of 25 → extra 5</div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <div class="section-title">For 100!</div>
+      <div class="calc">
+        <span class="chip">⌊100 / 5⌋ = 20</span>
+        <span>+</span>
+        <span class="chip">⌊100 / 25⌋ = 4</span>
+        <span>=</span>
+        <span class="chip final">24</span>
+      </div>
+      <div class="note">
+        The four numbers <strong>25, 50, 75, and 100</strong> each contribute a second factor of 5.
+        So merely counting the 20 multiples of 5 would miss four additional zeros.
+      </div>
+    </section>
+
+    <div class="footer">
+      Formula: Z(n!) = ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋ + ···
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById('nInput');
+    const resetBtn = document.getElementById('resetBtn');
+    const formula = document.getElementById('formula');
+    const terms = document.getElementById('terms');
+    const answer = document.getElementById('answer');
+    const validation = document.getElementById('validation');
+    const numberGrid = document.getElementById('numberGrid');
+    const gridSummary = document.getElementById('gridSummary');
+
+    function trailingZeros(n){
+      let total = 0;
+      let p = 5;
+      const rows = [];
+      while (p <= n){
+        const count = Math.floor(n / p);
+        total += count;
+        rows.push({ power: p, count });
+        if (p > Math.floor(n / 5)) break;
+        p *= 5;
+      }
+      return { total, rows };
+    }
+
+    function renderGrid(n){
+      numberGrid.innerHTML = '';
+      if (n > 200){
+        numberGrid.innerHTML =
+          '<div style="grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--muted);font-size:14px">' +
+          'The number grid is shown for n ≤ 200. The formula above still works for larger values.' +
+          '</div>';
+        gridSummary.textContent = '';
+        return;
+      }
+
+      let multiples5 = 0;
+      let multiples25 = 0;
+
+      for (let i = 1; i <= n; i++){
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = i;
+
+        if (i % 25 === 0){
+          cell.classList.add('m25');
+          cell.title = `${i} contributes at least two factors of 5`;
+          multiples5++;
+          multiples25++;
+        } else if (i % 5 === 0){
+          cell.classList.add('m5');
+          cell.title = `${i} contributes a factor of 5`;
+          multiples5++;
+        }
+        numberGrid.appendChild(cell);
+      }
+
+      gridSummary.textContent =
+        `${multiples5} multiples of 5` +
+        (multiples25 ? ` + ${multiples25} extra 5s from multiples of 25` : '');
+    }
+
+    function render(){
+      let raw = Number(input.value);
+      if (!Number.isFinite(raw)) raw = 100;
+
+      let n = Math.floor(raw);
+      n = Math.max(1, Math.min(1000000, n));
+
+      if (String(n) !== input.value) input.value = String(n);
+
+      const result = trailingZeros(n);
+      validation.textContent = `Counting factors of 5 in ${n.toLocaleString()}!.`;
+      formula.textContent = `Z(${n.toLocaleString()}!) = Σ ⌊n / 5ᵏ⌋`;
+      answer.textContent = result.total.toLocaleString();
+
+      terms.innerHTML = '';
+
+      if (!result.rows.length){
+        const msg = document.createElement('div');
+        msg.className = 'hint';
+        msg.style.marginTop = '16px';
+        msg.textContent = 'There are no factors of 5, so there are no trailing zeros.';
+        terms.appendChild(msg);
+      } else {
+        const max = result.rows[0].count || 1;
+
+        result.rows.forEach((row, idx) => {
+          const div = document.createElement('div');
+          div.className = 'term';
+
+          const label = document.createElement('div');
+          label.className = 'term-label';
+          label.textContent = `÷ ${row.power.toLocaleString()}`;
+
+          const track = document.createElement('div');
+          track.className = 'track';
+
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          bar.style.width = `${Math.max(4, (row.count / max) * 100)}%`;
+          bar.style.background = idx === 0 ? 'var(--series2)' : 'var(--series3)';
+
+          const value = document.createElement('div');
+          value.className = 'term-value';
+          value.textContent = row.count.toLocaleString();
+
+          track.appendChild(bar);
+          div.append(label, track, value);
+          terms.appendChild(div);
+        });
+      }
+
+      renderGrid(n);
+    }
+
+    input.addEventListener('input', render);
+
+    resetBtn.addEventListener('click', () => {
+      input.value = '100';
+      render();
+      input.focus();
+    });
+
+    render();
+  </script>
+</body>
+</html>

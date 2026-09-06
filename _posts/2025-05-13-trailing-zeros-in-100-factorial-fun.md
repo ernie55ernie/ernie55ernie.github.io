@@ -11,6 +11,8 @@ A classic number theory puzzle asks:
 
 These trailing zeros come from **factors of 10** in the factorial. Each 10 comes from a factor pair of **2 and 5**. Since multiples of 2 are more frequent than multiples of 5, we only need to count how many times **5** appears as a factor.
 
+<iframe src="{{ site.baseurl }}/assets/trailing_zeros_100_factorial.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## Step-by-Step Count
 
 To count the number of factors of 5 in \\(100!\\):
