@@ -19,39 +19,33 @@ You face this classic puzzle in deductive reasoning:
 
 You're allowed to **touch** the bulb and check whether it's **on or warm**. This allows you to gain **more information** than just sight.
 
-### Step 1: Divide and Conquer with Time
+### Step 1: Create Four Unique States
 
-1. **Turn on Switch 1** — leave it on for **a few minutes** (say 5).
-2. **Turn off Switch 1**, then **turn on Switch 2**.
-3. Leave Switches 3 and 4 **off**.
-4. **Immediately** enter the room.
+To distinguish between 4 switches using a single bulb, we need **4 distinct observable states**. We can achieve this by combining **on/off** with **warm/cold**.
+
+Here is the exact procedure:
+
+1. **Turn ON Switch 1 and Switch 2**, and leave them on for about **10 minutes** to let the bulb heat up.
+2. **Turn OFF Switch 1**. (Leave Switch 2 on).
+3. **Turn ON Switch 3**.
+4. **Leave Switch 4 OFF**.
+5. **Immediately** enter the room.
 
 ### Step 2: Observe and Infer
 
-Once inside, observe the bulb:
+Once inside, you touch the bulb and observe its state. There are exactly four possible outcomes, each uniquely identifying the correct switch:
 
-- **Bulb is ON** → Controlled by **Switch 2**
-- **Bulb is OFF but warm** → Controlled by **Switch 1**
-- **Bulb is OFF and cold** → Controlled by **Switch 3 or 4**
-
-Now, you've narrowed it down to:
-
-- If warm → Switch 1
-- If on → Switch 2
-- If off and cold → Must be either Switch 3 or 4
-
-### Step 3: Handling 3 or 4
-
-Now you only need to distinguish between **Switch 3 and 4**. This requires just **one more experiment**. Repeat the process but only for the two remaining candidates.
-
-However, the puzzle specifically asks for the **minimum number of room entries** to **guarantee** the answer.
+- **Bulb is OFF and WARM** → Controlled by **Switch 1** (was on for 10 minutes, but turned off right before entering).
+- **Bulb is ON and WARM** → Controlled by **Switch 2** (was on for 10 minutes, and left on).
+- **Bulb is ON and COLD** → Controlled by **Switch 3** (was just turned on, so it hasn't had time to heat up).
+- **Bulb is OFF and COLD** → Controlled by **Switch 4** (was never turned on).
 
 ---
 
 ## Final Answer
 
-**You only need to enter the room once**  
-With clever timing and heat detection, you can determine exactly which switch controls the bulb.
+**You only need to enter the room once.**  
+By cleverly combining timing (to create warm/cold states) with switch combinations (on/off states), you can uniquely identify all 4 switches in a single visit!
 
 # Reference
 
