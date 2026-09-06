@@ -47,7 +47,7 @@ x = \sqrt{2}
 
 Infinite power towers don't always converge. For convergence, it’s known that:
 
-- The tower \\(x^{x^{x^{\cdots}}}\\) converges if and only if \\(0 < x \leq e^{1/e} \approx 1.444\ldots\\)
+- The tower \\(x^{x^{x^{\cdots}}}\\) converges if and only if \\(e^{-e} \leq x \leq e^{1/e}\\) (approx \\(0.066 \leq x \leq 1.445\\)).
 
 Check if \\(\sqrt{2} \approx 1.4142\\) is within that range — it is.
 
