@@ -19,6 +19,8 @@ This classic logic puzzle tests your deductive reasoning with minimal informatio
 
 ---
 
+<iframe src="{{ site.baseurl }}/assets/mislabeled_bags_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## Step-by-Step Strategy
 
 ### Step 1: Pick the Bag Labeled “Mix”

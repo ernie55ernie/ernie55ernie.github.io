@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mislabeled Bags Puzzle</title>
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --panel: #ffffff;
+      --card: #fbfbfa;
+      --text: #171717;
+      --muted: #6b6b6b;
+      --border: #d9d9d5;
+      --accent: #2563eb;
+      --accent-bg: #eaf1ff;
+      --good: #15803d;
+      --bad: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .app {
+      width: min(1100px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    .header {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .bags {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .bag {
+      position: relative;
+      min-height: 240px;
+      border: 1px solid var(--border);
+      border-radius: 26px 26px 16px 16px;
+      background: var(--panel);
+      padding: 24px 18px 18px;
+      overflow: hidden;
+      transition: .18s ease;
+    }
+
+    .bag::before {
+      content: "";
+      position: absolute;
+      left: 20%;
+      right: 20%;
+      top: 0;
+      height: 18px;
+      border-bottom: 2px solid var(--border);
+      border-radius: 50%;
+    }
+
+    .bag.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+      transform: translateY(-2px);
+    }
+
+    .bag-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .label {
+      padding: 6px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .unknown {
+      text-align: center;
+      font-size: 54px;
+      margin-top: 26px;
+    }
+
+    .hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 40px;
+      margin-top: 5px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .draw {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    .draw:hover {
+      background: #f1f1ef;
+    }
+
+    .draw.best {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .draw.best:hover {
+      filter: brightness(.97);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .world-row {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px;
+      transition: opacity .18s ease;
+    }
+
+    .world-row.eliminated {
+      opacity: .28;
+      text-decoration: line-through;
+    }
+
+    .world-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .world-name {
+      font-weight: 800;
+    }
+
+    .result-empty {
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    .callout {
+      margin-top: 14px;
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .result-live {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .fruit-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fruit {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .secondary {
+      min-height: 42px;
+      padding: 8px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .solution-panel {
+      display: none;
+      margin-top: 18px;
+    }
+
+    .solution-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .min {
+      background: var(--accent-bg);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .tree {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .root-node {
+      display: inline-block;
+      padding: 11px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--card);
+      font-weight: 800;
+    }
+
+    .line {
+      width: 2px;
+      height: 24px;
+      background: var(--border);
+      margin: auto;
+    }
+
+    .branches {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .branch {
+      text-align: left;
+      padding: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .branch strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .footer-callout {
+      margin-top: 18px;
+      border-left: 4px solid var(--accent);
+      background: var(--panel);
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .bags,
+      .grid2,
+      .branches {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="header">
+      <div>
+        <h1>Mislabeled Bags</h1>
+        <p class="subtitle">
+          One bag contains only apples, one only oranges, and one a mixture.
+          Every label is wrong. What is the minimum number of fruits you must draw
+          to identify all three bags?
+        </p>
+      </div>
+      <div class="pill">Goal: fewest guaranteed draws</div>
+    </div>
+
+    <section class="bags">
+      <article class="bag" data-bag="apple">
+        <div class="bag-label-row">
+          <span class="small">Label says</span>
+          <span class="label">🍎 APPLES</span>
+        </div>
+        <div class="unknown">❓</div>
+        <div class="hint">Cannot actually be apples.</div>
+        <button class="draw" data-draw="apple">Draw 1 fruit</button>
+      </article>
+
+      <article class="bag" data-bag="orange">
+        <div class="bag-label-row">
+          <span class="small">Label says</span>
+          <span class="label">🍊 ORANGES</span>
+        </div>
+        <div class="unknown">❓</div>
+        <div class="hint">Cannot actually be oranges.</div>
+        <button class="draw" data-draw="orange">Draw 1 fruit</button>
+      </article>
+
+      <article class="bag" data-bag="mix">
+        <div class="bag-label-row">
+          <span class="small">Label says</span>
+          <span class="label">🍎 + 🍊 MIX</span>
+        </div>
+        <div class="unknown">❓</div>
+        <div class="hint"><strong>Must be a pure bag.</strong></div>
+        <button class="draw best" data-draw="mix">★ Draw here</button>
+      </article>
+    </section>
+
+    <div class="grid2">
+      <section class="panel">
+        <div class="solution-top">
+          <h2>Possible worlds</h2>
+          <span id="worldCount" class="small">2 possibilities</span>
+        </div>
+        <p class="small">The “every label is wrong” rule leaves only these two assignments.</p>
+
+        <div class="world-row" data-world="A">
+          <div class="world-name">World A</div>
+          <div class="world-grid">
+            <div><span class="small">“Apples”</span><br><strong>🍊 Orange</strong></div>
+            <div><span class="small">“Oranges”</span><br><strong>🍎+🍊 Mix</strong></div>
+            <div><span class="small">“Mix”</span><br><strong>🍎 Apple</strong></div>
+          </div>
+        </div>
+
+        <div class="world-row" data-world="B">
+          <div class="world-name">World B</div>
+          <div class="world-grid">
+            <div><span class="small">“Apples”</span><br><strong>🍎+🍊 Mix</strong></div>
+            <div><span class="small">“Oranges”</span><br><strong>🍎 Apple</strong></div>
+            <div><span class="small">“Mix”</span><br><strong>🍊 Orange</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Your deduction</h2>
+
+        <div id="resultEmpty" class="result-empty">
+          No fruit drawn yet.
+          <div class="callout">
+            Try the bag labeled <strong>Mix</strong>. Since its label is wrong,
+            it cannot really be mixed. So a single fruit tells you its entire contents.
+          </div>
+        </div>
+
+        <div id="resultLive" class="result-live">
+          <div class="fruit-row">
+            <div id="drawnFruit" class="fruit">🍎</div>
+            <div>
+              <strong id="drawTitle"></strong>
+              <div id="drawSubtitle" class="small"></div>
+            </div>
+          </div>
+          <div id="deductionText" class="callout"></div>
+        </div>
+
+        <div class="actions">
+          <button id="resetBtn" class="secondary">Reset</button>
+          <button id="solutionBtn" class="secondary">Show optimal logic</button>
+        </div>
+      </section>
+    </div>
+
+    <section id="solutionPanel" class="panel solution-panel">
+      <div class="solution-top">
+        <h2>The one-draw decision tree</h2>
+        <span class="min">Minimum = 1</span>
+      </div>
+
+      <div class="tree">
+        <div class="root-node">Draw from bag labeled “MIX”</div>
+        <div class="line"></div>
+
+        <div class="branches">
+          <button id="appleBranch" class="branch">
+            <strong>🍎 You draw an apple</strong>
+            <span class="small">Then “Mix” → Apples</span>
+          </button>
+
+          <button id="orangeBranch" class="branch">
+            <strong>🍊 You draw an orange</strong>
+            <span class="small">Then “Mix” → Oranges</span>
+          </button>
+        </div>
+
+        <div id="branchExplanation" class="callout" style="text-align:left;">
+          Choose either branch to see how the remaining two bags become forced.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-callout">
+      <strong>Why not draw from the other bags first?</strong>
+      A fruit from a bag labeled “Apples” or “Oranges” might come from either a pure bag
+      or the mixed bag, so one draw does not always distinguish the two possible worlds.
+      The bag labeled “Mix” is the only guaranteed one-draw solution.
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const worlds = {
+        A: { apple: "orange", orange: "mix", mix: "apple" },
+        B: { apple: "mix", orange: "apple", mix: "orange" }
+      };
+
+      let hiddenWorld = Math.random() < 0.5 ? "A" : "B";
+      let possible = new Set(["A", "B"]);
+
+      const fruitEmoji = { apple: "🍎", orange: "🍊" };
+      const labelName = { apple: "Apples", orange: "Oranges", mix: "Mix" };
+      const contentName = {
+        apple: "apples only",
+        orange: "oranges only",
+        mix: "a mixture"
+      };
+
+      const worldCount = document.getElementById("worldCount");
+      const resultEmpty = document.getElementById("resultEmpty");
+      const resultLive = document.getElementById("resultLive");
+      const drawnFruit = document.getElementById("drawnFruit");
+      const drawTitle = document.getElementById("drawTitle");
+      const drawSubtitle = document.getElementById("drawSubtitle");
+      const deductionText = document.getElementById("deductionText");
+      const solutionPanel = document.getElementById("solutionPanel");
+      const branchExplanation = document.getElementById("branchExplanation");
+
+      function canProduce(content, fruit) {
+        return content === "mix" || content === fruit;
+      }
+
+      function updateWorlds() {
+        document.querySelectorAll("[data-world]").forEach(row => {
+          row.classList.toggle("eliminated", !possible.has(row.dataset.world));
+        });
+
+        worldCount.textContent =
+          possible.size === 1 ? "1 possibility — solved" : "2 possibilities";
+      }
+
+      function revealSolvedWorld(key) {
+        const w = worlds[key];
+        return `Correct contents: “Apples” label → <strong>${contentName[w.apple]}</strong>;
+          “Oranges” label → <strong>${contentName[w.orange]}</strong>;
+          “Mix” label → <strong>${contentName[w.mix]}</strong>.`;
+      }
+
+      function drawFrom(bag) {
+        document.querySelectorAll(".bag").forEach(el => {
+          el.classList.toggle("selected", el.dataset.bag === bag);
+        });
+
+        const actual = worlds[hiddenWorld][bag];
+        let fruit;
+
+        if (actual === "mix") {
+          fruit = Math.random() < 0.5 ? "apple" : "orange";
+        } else {
+          fruit = actual;
+        }
+
+        possible = new Set(
+          [...possible].filter(key => canProduce(worlds[key][bag], fruit))
+        );
+
+        updateWorlds();
+
+        resultEmpty.style.display = "none";
+        resultLive.style.display = "block";
+        drawnFruit.textContent = fruitEmoji[fruit];
+        drawTitle.textContent = `You drew ${fruit === "apple" ? "an apple" : "an orange"}`;
+        drawSubtitle.textContent = `from the bag labeled “${labelName[bag]}”`;
+
+        if (possible.size === 1) {
+          const solved = [...possible][0];
+
+          if (bag === "mix") {
+            deductionText.innerHTML =
+              `<strong>Solved immediately.</strong> The bag labeled “Mix” cannot actually be mixed,
+              so this fruit identifies the entire bag. The remaining two contents are then forced
+              by the wrong-label rule.<br><br>${revealSolvedWorld(solved)}`;
+          } else {
+            deductionText.innerHTML =
+              `<strong>This draw happened to solve it.</strong> This particular fruit eliminates one
+              possible world.<br><br>${revealSolvedWorld(solved)}`;
+          }
+        } else {
+          deductionText.innerHTML =
+            `<strong>Not enough information yet.</strong> That fruit could have come from either
+            a pure bag or the mixed bag, so both assignments are still possible.`;
+        }
+      }
+
+      function reset() {
+        hiddenWorld = Math.random() < 0.5 ? "A" : "B";
+        possible = new Set(["A", "B"]);
+
+        document.querySelectorAll(".bag").forEach(el => {
+          el.classList.remove("selected");
+        });
+
+        resultEmpty.style.display = "block";
+        resultLive.style.display = "none";
+        solutionPanel.style.display = "none";
+        branchExplanation.textContent =
+          "Choose either branch to see how the remaining two bags become forced.";
+
+        updateWorlds();
+      }
+
+      document.querySelectorAll("[data-draw]").forEach(btn => {
+        btn.addEventListener("click", () => drawFrom(btn.dataset.draw));
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", reset);
+
+      document.getElementById("solutionBtn").addEventListener("click", () => {
+        solutionPanel.style.display =
+          solutionPanel.style.display === "block" ? "none" : "block";
+      });
+
+      document.getElementById("appleBranch").addEventListener("click", () => {
+        branchExplanation.innerHTML =
+          `<strong>Apple branch:</strong> The bag labeled “Mix” is apples only.
+          The bag labeled “Apples” cannot be apples, so among the remaining contents
+          it must be oranges only. The bag labeled “Oranges” is therefore the mixed bag.`;
+      });
+
+      document.getElementById("orangeBranch").addEventListener("click", () => {
+        branchExplanation.innerHTML =
+          `<strong>Orange branch:</strong> The bag labeled “Mix” is oranges only.
+          The bag labeled “Oranges” cannot be oranges, so among the remaining contents
+          it must be apples only. The bag labeled “Apples” is therefore the mixed bag.`;
+      });
+
+      updateWorlds();
+    })();
+  </script>
+</body>
+</html>
