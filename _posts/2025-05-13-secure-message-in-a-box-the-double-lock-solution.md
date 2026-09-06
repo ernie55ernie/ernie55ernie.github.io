@@ -8,7 +8,7 @@ category: quantitative interview
 A well-known puzzle in secure communication goes as follows:
 
 > You must send a **confidential document** via a courier.  
-> The catch? The courier is **untrusted**—if they ever see the box **unlocked** or containing **extra locks**, they will confiscate everything.
+> The catch? The courier is **untrusted**—if they ever see the box **unlocked**, or if you try to hand them any **loose locks or keys**, they will confiscate everything.
 >
 > - You and your colleague each have a **padlock**, but **only you** know the key to yours, and **only they** know theirs.
 > - You **cannot share keys** or meet in person.
@@ -17,7 +17,7 @@ A well-known puzzle in secure communication goes as follows:
 
 ## Step-by-Step Solution: The Double-Lock Method
 
-This problem is about using **asymmetric locking** to maintain confidentiality.
+This problem is a classic physical illustration of the **Three-pass protocol** (relying on commutative locking) to maintain confidentiality without exchanging keys.
 
 ### Step 1: You Lock the Box
 
