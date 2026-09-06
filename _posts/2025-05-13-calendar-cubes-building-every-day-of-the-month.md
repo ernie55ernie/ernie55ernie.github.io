@@ -13,6 +13,8 @@ You're given a delightful constraint puzzle:
 
 Digits can appear on both cubes, and the two cubes are placed **side by side** (in either order) to form each two-digit number.
 
+<iframe src="{{ site.baseurl }}/assets/two_cubes_calendar_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## Step 1: What Digits Are Needed?
 
 We need to display every number from **01 to 31**. So, we need to form:

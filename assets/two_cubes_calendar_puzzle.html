@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Cubes Calendar Puzzle</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --panel:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#d1d5db;
+      --accent:#2563eb;
+      --accent-bg:#dbeafe;
+      --cubeA:#10b981;
+      --cubeB:#f59e0b;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:linear-gradient(180deg,#eef4ff 0%, var(--bg) 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 16px 56px;
+    }
+    h1,h2,h3,p{margin:0}
+    .hero{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+    .hero h1{
+      font-size:clamp(1.8rem, 4vw, 2.7rem);
+      margin-bottom:10px;
+    }
+    .hero p{
+      color:var(--muted);
+      margin-top:8px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#3730a3;
+      font-weight:700;
+      font-size:.9rem;
+      margin-bottom:12px;
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:12px 14px;
+      min-height:44px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:.95rem;
+      font-weight:700;
+      transition:.15s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn[aria-pressed="true"]{
+      border-color:var(--accent);
+      background:var(--accent-bg);
+      color:#0f172a;
+    }
+    .grid{
+      display:grid;
+      gap:16px;
+    }
+    .grid-2{
+      grid-template-columns:repeat(2, minmax(0,1fr));
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .panel-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .panel-title h2{
+      font-size:1.1rem;
+    }
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .cube{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .face{
+      aspect-ratio:1;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:clamp(1.2rem, 4vw, 1.8rem);
+      font-weight:800;
+      position:relative;
+    }
+    .cube-a .face{border-bottom:4px solid var(--cubeA)}
+    .cube-b .face{border-bottom:4px solid var(--cubeB)}
+    .face.used{
+      outline:3px solid var(--accent);
+      outline-offset:1px;
+      background:var(--accent-bg);
+    }
+    .date-box{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      min-height:120px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:#fafcff;
+    }
+    .date-label{
+      color:var(--muted);
+      font-size:.85rem;
+      margin-bottom:6px;
+    }
+    .big-date{
+      font-size:clamp(2.5rem, 8vw, 4.6rem);
+      line-height:1;
+      font-weight:900;
+      letter-spacing:.08em;
+      font-variant-numeric:tabular-nums;
+    }
+    .assignment{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+      align-items:center;
+      gap:12px;
+      margin-top:14px;
+    }
+    .assign-card{
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:#fafafa;
+      padding:16px;
+      text-align:center;
+    }
+    .assign-digit{
+      font-size:2.2rem;
+      font-weight:900;
+      line-height:1.1;
+      margin-top:6px;
+    }
+    .plus{
+      font-size:1.5rem;
+      color:var(--muted);
+      font-weight:900;
+      text-align:center;
+    }
+    .calendar{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      gap:8px;
+      margin-top:14px;
+    }
+    .day{
+      appearance:none;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:12px;
+      min-height:46px;
+      font-variant-numeric:tabular-nums;
+      font-size:.98rem;
+      font-weight:800;
+      cursor:pointer;
+      transition:.12s ease;
+    }
+    .day:hover{transform:translateY(-1px)}
+    .day.selected{
+      outline:3px solid var(--accent);
+      background:var(--accent-bg);
+    }
+    .note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .hidden{display:none !important}
+    .steps{
+      display:grid;
+      gap:12px;
+      margin-top:10px;
+    }
+    .step{
+      display:grid;
+      grid-template-columns:44px minmax(0,1fr);
+      gap:12px;
+      align-items:start;
+    }
+    .step-num{
+      width:44px;height:44px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .chip{
+      min-width:44px;
+      height:44px;
+      padding:0 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+    }
+    .success{
+      display:inline-block;
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      background:#ecfdf5;
+      border:1px solid #a7f3d0;
+      color:#065f46;
+      font-weight:800;
+      font-size:.95rem;
+    }
+    .footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.9rem;
+      text-align:center;
+    }
+    button:focus-visible{
+      outline:3px solid var(--accent);
+      outline-offset:2px;
+    }
+    @media (max-width: 860px){
+      .grid-2{grid-template-columns:1fr}
+    }
+    @media (max-width: 560px){
+      .calendar{grid-template-columns:repeat(5,minmax(0,1fr))}
+      .assignment{grid-template-columns:1fr}
+      .plus{transform:rotate(90deg)}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="tag">Interactive Puzzle Visualizer</div>
+      <h1>Two Cubes Calendar Puzzle</h1>
+      <p>
+        You have <strong>two six-sided cubes</strong>. Put <strong>one digit on each face</strong> using digits 0–9,
+        and try to display every date from <strong>01 to 31</strong>. For 01–09, a <strong>leading zero</strong> is required.
+      </p>
+      <p>
+        There is an important twist: under the <strong>strict literal rules</strong>, the puzzle is actually
+        <strong>impossible</strong>. The famous classic version works only if <strong>6 can be rotated and used as 9</strong>.
+      </p>
+
+      <div class="toolbar" role="group" aria-label="Mode switch">
+        <button id="strictBtn" class="btn" aria-pressed="false">Strict digits 0–9</button>
+        <button id="rotateBtn" class="btn" aria-pressed="true">Allow 6 ↔ 9 rotation</button>
+      </div>
+    </section>
+
+    <section id="rotateView">
+      <div class="grid grid-2">
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Working Cube Arrangement</h2>
+            <div class="small">Classic solution</div>
+          </div>
+          <p class="small">
+            One valid arrangement is:
+            <strong>Cube A = {0,1,2,3,4,5}</strong>,
+            <strong>Cube B = {0,1,2,6/9,7,8}</strong>.
+          </p>
+
+          <div class="grid grid-2" style="margin-top:14px;">
+            <div class="panel cube-a" style="box-shadow:none;">
+              <div class="panel-title">
+                <h3>Cube A</h3>
+                <div class="small">0 · 1 · 2 · 3 · 4 · 5</div>
+              </div>
+              <div id="cubeA" class="cube"></div>
+            </div>
+            <div class="panel cube-b" style="box-shadow:none;">
+              <div class="panel-title">
+                <h3>Cube B</h3>
+                <div class="small">0 · 1 · 2 · 6/9 · 7 · 8</div>
+              </div>
+              <div id="cubeB" class="cube"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Selected Date</h2>
+            <div class="small">Click any date below</div>
+          </div>
+
+          <div class="date-box">
+            <div class="date-label">Current date</div>
+            <div id="bigDate" class="big-date">01</div>
+          </div>
+
+          <div class="assignment">
+            <div class="assign-card">
+              <div id="leftCubeLabel" class="small">Cube A</div>
+              <div id="leftDigit" class="assign-digit">0</div>
+            </div>
+            <div class="plus">+</div>
+            <div class="assign-card">
+              <div id="rightCubeLabel" class="small">Cube B</div>
+              <div id="rightDigit" class="assign-digit">1</div>
+            </div>
+          </div>
+
+          <div id="rotationNote" class="note hidden">
+            For this date, the <strong>6</strong> face is being <strong>rotated</strong> to display <strong>9</strong>.
+          </div>
+
+          <div class="success">✓ All dates from 01 to 31 can be displayed</div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-title">
+          <h2>Try Every Date</h2>
+          <div class="small">Selected faces are highlighted on the cubes</div>
+        </div>
+        <div id="calendar" class="calendar"></div>
+      </div>
+    </section>
+
+    <section id="strictView" class="hidden">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>Why the Strict Version Has No Solution</h2>
+          <div class="small">No rotation allowed</div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <strong>Dates 01–09 force digit 0 onto both cubes.</strong>
+              <p class="small" style="margin-top:4px;">
+                To show 01, 02, ..., 09, the zero must sometimes appear on the left while the other digit appears on the other cube.
+                If only one cube had 0, the other cube would need digits 1–9 all by itself, which is impossible with only 6 faces.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <strong>Date 11 forces digit 1 onto both cubes.</strong>
+              <p class="small" style="margin-top:4px;">
+                A two-digit display uses one cube per digit. So to show 11, each cube must contain a 1.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <strong>Date 22 forces digit 2 onto both cubes.</strong>
+              <p class="small" style="margin-top:4px;">
+                Now each cube must already contain <strong>0, 1, and 2</strong>.
+                That uses <strong>3 faces on each cube</strong>, or <strong>6 faces total</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <strong>But you still need digits 3, 4, 5, 6, 7, 8, 9.</strong>
+              <div class="chips">
+                <div class="chip">3</div>
+                <div class="chip">4</div>
+                <div class="chip">5</div>
+                <div class="chip">6</div>
+                <div class="chip">7</div>
+                <div class="chip">8</div>
+                <div class="chip">9</div>
+              </div>
+              <p class="small" style="margin-top:8px;">
+                That is <strong>7 more distinct digits</strong>, but there are only
+                <strong>6 remaining faces total</strong> across both cubes.
+              </p>
+              <div class="success" style="background:#fef2f2;border-color:#fecaca;color:#991b1b;">
+                7 required faces &gt; 6 available faces ⇒ impossible
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="box-shadow:none; margin-top:16px;">
+          <h3>Why 6 ↔ 9 rotation fixes it</h3>
+          <p class="small" style="margin-top:6px;">
+            If <strong>6 and 9 are treated as the same physical face</strong>, then the remaining needed symbols become:
+            <strong>{3, 4, 5, 6/9, 7, 8}</strong>, which is exactly <strong>6 symbols</strong>.
+            That fits perfectly into the 6 remaining faces.
+          </p>
+          <button id="showSolutionBtn" class="btn" style="margin-top:12px;">Show the classic working solution</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Built as a standalone HTML visualization for the “two cubes calendar puzzle”.
+    </div>
+  </div>
+
+  <script>
+    const strictBtn = document.getElementById("strictBtn");
+    const rotateBtn = document.getElementById("rotateBtn");
+    const strictView = document.getElementById("strictView");
+    const rotateView = document.getElementById("rotateView");
+    const showSolutionBtn = document.getElementById("showSolutionBtn");
+
+    const cubeAData = ["0","1","2","3","4","5"];
+    const cubeBData = ["0","1","2","6","7","8"];
+
+    const cubeAEl = document.getElementById("cubeA");
+    const cubeBEl = document.getElementById("cubeB");
+    const calendarEl = document.getElementById("calendar");
+
+    const bigDateEl = document.getElementById("bigDate");
+    const leftCubeLabelEl = document.getElementById("leftCubeLabel");
+    const rightCubeLabelEl = document.getElementById("rightCubeLabel");
+    const leftDigitEl = document.getElementById("leftDigit");
+    const rightDigitEl = document.getElementById("rightDigit");
+    const rotationNoteEl = document.getElementById("rotationNote");
+
+    function faceMatches(face, digit){
+      return face === digit || (face === "6" && digit === "9");
+    }
+
+    function buildCube(container, data, cubeName){
+      container.innerHTML = "";
+      data.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "face";
+        div.dataset.face = d;
+        div.dataset.cube = cubeName;
+        div.textContent = (cubeName === "B" && d === "6") ? "6↕9" : d;
+        container.appendChild(div);
+      });
+    }
+
+    buildCube(cubeAEl, cubeAData, "A");
+    buildCube(cubeBEl, cubeBData, "B");
+
+    function clearHighlights(){
+      document.querySelectorAll(".face.used").forEach(el => el.classList.remove("used"));
+    }
+
+    function highlightFace(cubeName, digit){
+      const faces = document.querySelectorAll(cubeName === "A" ? "#cubeA .face" : "#cubeB .face");
+      for(const face of faces){
+        if(faceMatches(face.dataset.face, digit)){
+          face.classList.add("used");
+          break;
+        }
+      }
+    }
+
+    function resolveDate(dateStr){
+      const a = dateStr[0];
+      const b = dateStr[1];
+
+      const firstOptionWorks =
+        cubeAData.some(x => faceMatches(x, a)) &&
+        cubeBData.some(x => faceMatches(x, b));
+
+      if(firstOptionWorks){
+        return { leftCube: "A", leftDigit: a, rightCube: "B", rightDigit: b };
+      } else {
+        return { leftCube: "B", leftDigit: a, rightCube: "A", rightDigit: b };
+      }
+    }
+
+    function selectDate(dateStr){
+      const result = resolveDate(dateStr);
+
+      bigDateEl.textContent = dateStr;
+      leftCubeLabelEl.textContent = "Cube " + result.leftCube;
+      rightCubeLabelEl.textContent = "Cube " + result.rightCube;
+      leftDigitEl.textContent = result.leftDigit;
+      rightDigitEl.textContent = result.rightDigit;
+
+      clearHighlights();
+      highlightFace(result.leftCube, result.leftDigit);
+      highlightFace(result.rightCube, result.rightDigit);
+
+      const usesRotatedNine = result.leftDigit === "9" || result.rightDigit === "9";
+      rotationNoteEl.classList.toggle("hidden", !usesRotatedNine);
+
+      document.querySelectorAll(".day").forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.date === dateStr);
+        btn.setAttribute("aria-pressed", btn.dataset.date === dateStr ? "true" : "false");
+      });
+    }
+
+    function buildCalendar(){
+      calendarEl.innerHTML = "";
+      for(let i = 1; i <= 31; i++){
+        const dateStr = String(i).padStart(2, "0");
+        const btn = document.createElement("button");
+        btn.className = "day";
+        btn.type = "button";
+        btn.dataset.date = dateStr;
+        btn.textContent = dateStr;
+        btn.setAttribute("aria-pressed", "false");
+        btn.addEventListener("click", () => selectDate(dateStr));
+        calendarEl.appendChild(btn);
+      }
+    }
+
+    function setMode(mode){
+      const isRotate = mode === "rotate";
+      rotateView.classList.toggle("hidden", !isRotate);
+      strictView.classList.toggle("hidden", isRotate);
+      rotateBtn.setAttribute("aria-pressed", isRotate ? "true" : "false");
+      strictBtn.setAttribute("aria-pressed", isRotate ? "false" : "true");
+    }
+
+    strictBtn.addEventListener("click", () => setMode("strict"));
+    rotateBtn.addEventListener("click", () => setMode("rotate"));
+    showSolutionBtn.addEventListener("click", () => setMode("rotate"));
+
+    buildCalendar();
+    selectDate("01");
+    setMode("rotate");
+  </script>
+</body>
+</html>
