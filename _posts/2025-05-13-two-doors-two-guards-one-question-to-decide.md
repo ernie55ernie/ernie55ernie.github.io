@@ -36,25 +36,22 @@ Then:
 
 ### Why It Works
 
-Let’s break down what happens:
+You are asking a nested question. By asking one guard what the *other* guard would say, you guarantee that the logical path passes through exactly **one truth-teller** and **one liar**. 
 
-#### Case 1: You're speaking to the **truth-teller**
-- They will **honestly report** what the **liar** would say.
-- Since the liar always lies, the answer the truth-teller reports is **false**.
-- So, you **go to the opposite door** of what they indicate.
+Because `True × False = False`, the final answer you receive will **always be a lie**.
 
-#### Case 2: You're speaking to the **liar**
-- They will **lie** about what the **truth-teller** would say.
-- The truth-teller would point you to the correct door; the liar lies and points to the wrong one.
-- Again, you go to the **opposite door**.
+Let's trace it:
+- If you point to the **Job door**: The true answer is "Yes". The liar would lie and say "No". The truth-teller would honestly report that the liar would say "No". Thus, both guards will say **"No"**.
+- If you point to the **Doom door**: The true answer is "No". The liar would lie and say "Yes". The truth-teller would honestly report that the liar would say "Yes". Thus, both guards will say **"Yes"**.
 
-In **both cases**, reversing the answer leads you to the correct door.
+In **both cases**, the "Yes" or "No" you receive is exactly backward.
 
 ## Final Answer
 
 > Ask **either guard**:  
 > **“If I asked the other guard which door leads to the job offer, would they say this one?”**  
-> Then **go through the opposite door** of what they say.
+> - If they say **"Yes"**, go to the **other door**.
+> - If they say **"No"**, go to **the door you pointed at**.
 
 # Reference
 
