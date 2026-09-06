@@ -7,7 +7,7 @@ category: quantitative interview
 
 A classic number theory puzzle asks:
 
-> **How many zeros are at the end of $100!$ when written in base 10?**
+> **How many zeros are at the end of \\(100!\\) when written in base 10?**
 
 These trailing zeros come from **factors of 10** in the factorial. Each 10 comes from a factor pair of **2 and 5**. Since multiples of 2 are more frequent than multiples of 5, we only need to count how many times **5** appears as a factor.
 
