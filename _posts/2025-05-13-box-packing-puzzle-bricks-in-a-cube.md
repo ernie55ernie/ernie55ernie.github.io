@@ -9,6 +9,8 @@ category: quantitative interview
 
 This spatial puzzle blends volume computation with parity and tiling logic. Let's break it down.
 
+<iframe src="{{ site.baseurl }}/assets/box_packing_brain_teaser.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### Step 1: Volume Check
 
 - Cube volume: \\(6 × 6 × 6 = 216\\) unit cubes
@@ -19,49 +21,41 @@ So, the total volume used would be **212**, leaving exactly **4 unit cubes empty
 
 **At first glance, this seems possible.**
 
-### Step 2: Parity Insight
+### Step 2: The Clever Coloring
 
-To go further, we analyze the **structure** of the cube and the constraints of packing.
+To prove it's impossible, we use a special coloring scheme. 
+Instead of coloring individual \\(1×1×1\\) cubes, imagine dividing the \\(6×6×6\\) cube into **27 smaller \\(2×2×2\\) sub-cubes**. 
 
-Color the cube in a **3D checkerboard pattern**: alternate black and white unit cubes such that adjacent cubes (in any direction) have opposite colors.
+Now, color these 27 sub-cubes in a 3D checkerboard pattern (alternating Black and White). 
+Since 27 is an odd number, there won't be an equal amount of Black and White sub-cubes. Let's say we end up with:
+- **14 Black sub-cubes** 
+- **13 White sub-cubes**
 
-In a \\(6×6×6\\) cube, this gives:
-- **108 black** and **108 white** cubes.
+Since each sub-cube contains exactly 8 unit cubes, our entire \\(6×6×6\\) cube has:
+- \\(14 × 8 = \mathbf{112}\\) Black unit cubes
+- \\(13 × 8 = \mathbf{104}\\) White unit cubes
 
-### Step 3: Brick Coverage Pattern
+### Step 3: Brick Coverage Parity
 
-Each 1×1×4 brick occupies 4 consecutive cubes in a straight line. No matter how it's placed (along x, y, or z direction), it will cover:
-- **2 black** and **2 white** cubes.
+Now, think about placing a single \\(1×1×4\\) brick anywhere in this grid. 
+Along its length, the axis is divided into three 2-unit segments (the sub-cubes). A brick of length 4 must cover 4 consecutive units.
+It can either align perfectly with two segments (taking 2 units from each), or it can sit in the middle (taking 1 unit from the first segment, 2 from the middle, and 1 from the third).
 
-Why? Because starting on black leads to black-white-black-white or vice versa—4 in total, equally split.
+Because the alternating sub-cubes have opposite colors, the outer segments in the middle scenario share the *same* color. 
+- Aligned: 2 Black, 2 White.
+- Middle: 1 Black + 2 White + 1 Black = 2 Black, 2 White.
 
-### Step 4: Total Balance
+Therefore, no matter where it's placed, **every single brick covers exactly 2 Black and 2 White unit cubes.**
 
-53 bricks × (2 black + 2 white) = 106 black + 106 white
+### Step 4: The Contradiction
 
-But the cube has 108 of each.
+If we were to pack **53 bricks**, we would need:
+- \\(53 × 2 = \mathbf{106}\\) Black unit cubes
+- \\(53 × 2 = \mathbf{106}\\) White unit cubes
 
-That means the **remaining 4 unit cubes** must be made up of **2 black and 2 white** cubes—perfectly balanced.
+But look at our cube: **there are only 104 White unit cubes available!** 
 
-So the **parity check passes**.
-
-### Step 5: Can You Actually Pack Them?
-
-Despite parity and volume working out, **no known arrangement** can fit 53 such bricks into a 6×6×6 cube.
-
-This was a research-level puzzle, and the key insight comes from **modulo arithmetic**.
-
-#### Mod-4 Grid Analysis
-
-Imagine labeling all unit cubes with coordinates (x, y, z). Now sum all coordinates mod 4.
-
-Each brick always covers 4 **distinct values** of x+y+z mod 4. Thus, the **sum mod 4** of all positions used by bricks must be divisible by 4.
-
-When applied to the cube and 53 bricks, this leads to a **modulo contradiction**.
-
-### Final Verdict
-
-Though volume and parity **seem to allow** a solution, deeper structure-based arguments prove it’s **not possible**.
+Since 106 > 104, it is mathematically impossible to fit 53 bricks into the cube.
 
 ## Final Answer
 
