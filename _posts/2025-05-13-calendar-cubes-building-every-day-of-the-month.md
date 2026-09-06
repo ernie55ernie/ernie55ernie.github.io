@@ -25,29 +25,31 @@ The digits required across all combinations:
 
 So, both cubes must between them represent **all 10 digits**, possibly duplicating some.
 
-## Step 2: Important Observations
+## Step 2: Logical Deduction
 
-- To display **01–09**, cube one must show **0**, and cube two the digits **1 through 9**.
-- To display **11, 22**, etc., some digits must be present on **both cubes**.
-- Crucially, to display **6 and 9**, we can take advantage of a standard puzzle trick:  
-  **Allow the digit 6 to double as 9**, by turning the cube upside down (or vice versa).
+Let's figure out what must go on the cubes by pure deduction:
 
-## Step 3: Minimum Digits, Maximum Coverage
+1. **The Double Digits:** To display **11** and **22**, the digits **1** and **2** must be present on **both cubes**. (We don't need 33 for a month calendar).
+2. **The Zero:** To display dates **01 through 09**, a **0** must be paired with all 9 digits (1-9). Since a single cube only has 6 faces, it cannot hold all 9 digits to pair with a single 0. Therefore, the digit **0 must also be on both cubes** to split the load.
 
-We want to distribute the digits among the cubes such that all combinations for 01–31 are possible. Here's a **known valid solution**:
+At this point, we've used 3 faces on both cubes:
+- **Cube 1:** 0, 1, 2, _, _, _
+- **Cube 2:** 0, 1, 2, _, _, _
 
-- **Cube 1**: 0, 1, 2, 3, 4, 5  
-- **Cube 2**: 0, 1, 2, 6, 7, 8  
-  (Using **6 as 9** when needed)
+## Step 3: The Missing Digits and The Trick
 
-### Why This Works
+We have exactly **6 empty faces** left across both cubes. 
+The digits we still need to place are: **3, 4, 5, 6, 7, 8, 9** (7 digits).
 
-- 0 is present on both (needed for 01–09).
-- Cube 1 has digits up to 5; Cube 2 includes 6, 7, 8.
-- To form 09 → 0 (cube 1) + 6 (cube 2, interpreted as 9)
-- For 29 → 2 (cube 1) + 6 (cube 2 as 9)
-- For 19 → 1 + 6 (as 9)
-- All necessary combinations are covered.
+This looks impossible since we need 7 digits but only have 6 faces! 
+
+This is where the classic puzzle trick comes in: **allow the digit 6 to double as 9** by turning the cube upside down.
+
+This reduces the remaining required digits to exactly 6: **3, 4, 5, 6, 7, 8**.
+
+We can distribute these 6 digits evenly across the 6 remaining empty faces. For example:
+- Place 3, 4, 5 on Cube 1
+- Place 6, 7, 8 on Cube 2
 
 ## Final Answer
 
