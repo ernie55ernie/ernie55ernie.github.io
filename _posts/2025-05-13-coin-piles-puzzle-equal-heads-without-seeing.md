@@ -15,6 +15,8 @@ You're blindfolded, faced with a deceptively simple task:
 
 Sounds impossible without sight? It’s not—just clever.
 
+<iframe src="{{ site.baseurl }}/assets/1000_coin_puzzles.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## The Key Trick: Use Randomness Against Itself
