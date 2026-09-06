@@ -33,7 +33,7 @@ This method uses **secure masking** with random numbers.
 
 ### Step-by-Step:
 
-1. **Q1 picks a random number** \\( r \\) and **adds it** to their salary:
+1. **Q1 picks a very large random number** \\( r \\) and **adds it** to their salary:
    \\[
    T_1 = s_1 + r
    \\]
@@ -62,10 +62,18 @@ This method uses **secure masking** with random numbers.
 
 ## Why It Works
 
-- Only Q1 knows the random \\( r \\), which protects their salary.
-- Every participant only sees a **masked partial sum**.
-- No one learns any individual salary.
+- Only Q1 knows the random \\( r \\), which acts as a secure mask protecting the entire chain of partial sums.
+- Every participant only sees a **meaningless, masked running total**.
+- No one learns any individual salary (as long as participants don't conspire).
 - Only the **total sum** is ever revealed (to Q1), and then the **average** is shared.
+
+### Bonus Insight: The Collusion Flaw
+
+In a quant interview, you are often asked a follow-up: *"What's the vulnerability here?"* 
+
+The answer is **collusion**. If Q1 and Q3 secretly talk, they can compare the number Q1 sent (\\(T_1\\)) and the number Q3 received (\\(T_2\\)). Since \\(T_2 - T_1 = s_2\\), they instantly expose Q2's private salary! 
+
+To fix this, a more robust protocol (like *Secret Sharing*) requires *everyone* to split their salary into 8 random fragments and distribute them, removing any single point of failure.
 
 ---
 
