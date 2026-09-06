@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Multi-Party Computation — Private Salary Average</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --panel-2: #f8fafc;
+      --text: #172033;
+      --muted: #667085;
+      --border: #d9dee8;
+      --accent: #6750d8;
+      --accent-soft: #eeeafd;
+      --green: #2f855a;
+      --green-soft: #e9f7ef;
+      --orange: #b36a16;
+      --orange-soft: #fff4df;
+      --red: #b54747;
+      --shadow: 0 12px 34px rgba(17,24,39,.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(103,80,216,.09), transparent 30rem),
+        radial-gradient(circle at 85% 10%, rgba(47,133,90,.06), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 36px auto 60px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -.035em;
+    }
+    .lead {
+      margin: 16px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .hero-card, .card {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+    .hero-card {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hero-label, .section-kicker {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+    .big-result {
+      margin-top: 8px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .small-result {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .55fr);
+      gap: 22px;
+      margin-top: 24px;
+    }
+    .card { padding: 20px; }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .toolbar h2, .card h2 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -.015em;
+    }
+    .subtle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 3px;
+    }
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 11px;
+      padding: 10px 14px;
+      min-height: 42px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    button:hover { border-color: #b7bfd0; transform: translateY(-1px); }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(103,80,216,.24);
+      outline-offset: 2px;
+    }
+
+    .viz-wrap {
+      overflow-x: auto;
+      padding-top: 8px;
+    }
+    svg {
+      width: 100%;
+      min-width: 630px;
+      display: block;
+    }
+
+    .side-stack { display: grid; gap: 22px; }
+    .transcript {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      min-height: 152px;
+    }
+    .message {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      border-radius: 13px;
+      padding: 12px 13px;
+      font-size: 14px;
+    }
+    .formula {
+      background: #101828;
+      color: #f7f7fb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      border-radius: 12px;
+      padding: 12px;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+    .privacy-box {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .privacy-box strong { color: var(--text); }
+
+    .inputs-card {
+      margin-top: 22px;
+    }
+    .inputs-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+    .toggle {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .salary-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .salary-item {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 12px;
+      text-align: center;
+      background: var(--panel-2);
+      min-width: 0;
+    }
+    .salary-name {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .salary-value {
+      margin-top: 3px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+    .callout {
+      border-left: 4px solid var(--orange);
+      background: var(--orange-soft);
+      box-shadow: none;
+    }
+    .callout p, .notes p { margin: 8px 0 0; color: #704415; font-size: 14px; }
+    .notes p { color: var(--muted); }
+    .source {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 22px;
+    }
+    .source a { color: var(--accent); text-decoration: none; }
+    .source a:hover { text-decoration: underline; }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 99px;
+      margin-right: 6px;
+      background: var(--border);
+    }
+    .legend .active::before { background: var(--accent); }
+    .legend .private::before { background: var(--green); }
+
+    @media (max-width: 900px) {
+      .hero, .layout, .bottom-grid { grid-template-columns: 1fr; }
+      .salary-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .page { width: min(100% - 20px, 1180px); margin-top: 18px; }
+      .card, .hero-card { border-radius: 16px; padding: 16px; }
+      .salary-grid { grid-template-columns: repeat(2, 1fr); }
+      .lead { font-size: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Secure Multi-Party Computation</div>
+        <h1>Compute the average salary without revealing any salary</h1>
+        <p class="lead">
+          Eight quantitative analysts want one number—their average salary—but no participant is willing
+          to reveal an individual salary. This interactive demo shows a simple masked secure-sum protocol.
+        </p>
+      </div>
+      <aside class="hero-card" aria-live="polite">
+        <div class="hero-label">Public result</div>
+        <div id="resultAverage" class="big-result">$—</div>
+        <div id="resultTotal" class="small-result">The aggregate is hidden until the protocol finishes.</div>
+      </aside>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <div class="toolbar">
+          <div>
+            <div class="section-kicker">Interactive protocol</div>
+            <h2>Pass a masked running total around the ring</h2>
+            <div id="stepLabel" class="subtle" aria-live="polite">Step 0 — all salaries are private.</div>
+          </div>
+          <div class="buttons">
+            <button id="nextBtn" class="primary" type="button">Next step</button>
+            <button id="resetBtn" type="button">Reset</button>
+            <button id="randomBtn" type="button">New salaries</button>
+          </div>
+        </div>
+
+        <div class="viz-wrap">
+          <svg id="ringSvg" viewBox="0 0 760 480" role="img" aria-label="Eight analysts in a ring passing a masked running salary total">
+            <defs>
+              <marker id="arrowHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#98a2b3"></path>
+              </marker>
+              <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#101828" flood-opacity=".10"/>
+              </filter>
+            </defs>
+
+            <circle cx="380" cy="240" r="170" fill="none" stroke="#d9dee8" stroke-width="2" stroke-dasharray="6 8"></circle>
+            <g id="arrows"></g>
+            <g id="nodes"></g>
+
+            <rect x="250" y="189" width="260" height="102" rx="20" fill="#ffffff" stroke="#d9dee8" filter="url(#softShadow)"></rect>
+            <text x="380" y="218" text-anchor="middle" fill="#667085" font-size="13" font-weight="700">VALUE TRAVELLING AROUND THE RING</text>
+            <text id="centerValue" x="380" y="253" text-anchor="middle" fill="#172033" font-size="27" font-weight="800">—</text>
+            <text id="centerMeaning" x="380" y="278" text-anchor="middle" fill="#667085" font-size="13">Nothing has been shared yet</text>
+          </svg>
+        </div>
+
+        <div class="legend">
+          <span class="active">Current sender</span>
+          <span class="private">Private salary stays local</span>
+          <span>Masked value sent</span>
+        </div>
+      </article>
+
+      <aside class="side-stack">
+        <section class="card">
+          <div class="section-kicker">What is sent?</div>
+          <h2>Message transcript</h2>
+          <div id="transcript" class="transcript">
+            <div class="message">Press <strong>Next step</strong> to start.</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-kicker">Privacy intuition</div>
+          <h2>Why an individual salary is hidden</h2>
+          <div id="privacyExplanation" class="privacy-box">
+            No participant sends “my salary is $X.” Instead, the protocol circulates a running total
+            obscured by a random mask <strong>R</strong>.
+          </div>
+          <div class="formula">transmitted value = R + accumulated salaries</div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="card inputs-card">
+      <div class="inputs-head">
+        <div>
+          <div class="section-kicker">Private inputs</div>
+          <h2>Eight analyst salaries</h2>
+          <div class="subtle">Shown only for inspecting the simulation. In a real execution, each analyst knows only their own input.</div>
+        </div>
+        <label class="toggle">
+          <input id="revealToggle" type="checkbox" />
+          Reveal simulator salaries
+        </label>
+      </div>
+      <div id="salaryGrid" class="salary-grid"></div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="card notes">
+        <div class="section-kicker">Mathematics</div>
+        <h2>The mask cancels out</h2>
+        <p>
+          Analyst 1 chooses a private random number <strong>R</strong>. After every participant adds
+          salary <em>sᵢ</em>, the value returning to Analyst 1 is
+          <strong>R + s₁ + s₂ + ··· + s₈</strong>. Subtracting <strong>R</strong> gives the total salary.
+          Divide by 8 to obtain the average.
+        </p>
+      </article>
+
+      <article class="card callout">
+        <div class="section-kicker">Security caveat</div>
+        <h2>This simple ring protocol is not full MPC</h2>
+        <p>
+          If the two neighbors of one analyst collude, they can compare the value before and after that
+          analyst's step and recover the analyst's salary. Production-grade MPC uses stronger techniques
+          such as secret sharing and cryptographic protocols designed for explicit adversary models.
+        </p>
+      </article>
+    </section>
+
+    <div class="source">
+      Concept reference:
+      <a href="https://en.wikipedia.org/wiki/Secure_multi-party_computation" target="_blank" rel="noopener noreferrer">
+        Secure multi-party computation — Wikipedia
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const N = 8;
+      let salaries = [126000, 142000, 118000, 157000, 134000, 151000, 123000, 149000];
+      let mask = 0;
+      let step = 0;
+
+      const nextBtn = document.getElementById('nextBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const randomBtn = document.getElementById('randomBtn');
+      const revealToggle = document.getElementById('revealToggle');
+      const stepLabel = document.getElementById('stepLabel');
+      const centerValue = document.getElementById('centerValue');
+      const centerMeaning = document.getElementById('centerMeaning');
+      const resultAverage = document.getElementById('resultAverage');
+      const resultTotal = document.getElementById('resultTotal');
+      const transcript = document.getElementById('transcript');
+      const privacyExplanation = document.getElementById('privacyExplanation');
+      const salaryGrid = document.getElementById('salaryGrid');
+      const nodesLayer = document.getElementById('nodes');
+      const arrowsLayer = document.getElementById('arrows');
+
+      const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+      const randSalary = () => (90 + Math.floor(Math.random() * 91)) * 1000;
+      const randMask = () => (700 + Math.floor(Math.random() * 1201)) * 1000;
+
+      const positions = Array.from({ length: N }, (_, i) => {
+        const angle = -Math.PI / 2 + i * 2 * Math.PI / N;
+        return {
+          x: 380 + 185 * Math.cos(angle),
+          y: 240 + 185 * Math.sin(angle)
+        };
+      });
+
+      function buildRing() {
+        arrowsLayer.innerHTML = '';
+        nodesLayer.innerHTML = '';
+
+        for (let i = 0; i < N; i++) {
+          const a = positions[i];
+          const b = positions[(i + 1) % N];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const len = Math.hypot(dx, dy);
+          const ux = dx / len;
+          const uy = dy / len;
+
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', a.x + ux * 43);
+          line.setAttribute('y1', a.y + uy * 43);
+          line.setAttribute('x2', b.x - ux * 49);
+          line.setAttribute('y2', b.y - uy * 49);
+          line.setAttribute('stroke', '#d0d5dd');
+          line.setAttribute('stroke-width', '2.5');
+          line.setAttribute('marker-end', 'url(#arrowHead)');
+          line.dataset.edge = i;
+          arrowsLayer.appendChild(line);
+        }
+
+        positions.forEach((p, i) => {
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g.dataset.node = i;
+
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', p.x);
+          circle.setAttribute('cy', p.y);
+          circle.setAttribute('r', '39');
+          circle.setAttribute('fill', '#ffffff');
+          circle.setAttribute('stroke', '#d9dee8');
+          circle.setAttribute('stroke-width', '2');
+          circle.setAttribute('filter', 'url(#softShadow)');
+
+          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          label.setAttribute('x', p.x);
+          label.setAttribute('y', p.y - 2);
+          label.setAttribute('text-anchor', 'middle');
+          label.setAttribute('fill', '#172033');
+          label.setAttribute('font-size', '15');
+          label.setAttribute('font-weight', '800');
+          label.textContent = 'A' + (i + 1);
+
+          const privateText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          privateText.setAttribute('x', p.x);
+          privateText.setAttribute('y', p.y + 17);
+          privateText.setAttribute('text-anchor', 'middle');
+          privateText.setAttribute('fill', '#2f855a');
+          privateText.setAttribute('font-size', '10');
+          privateText.setAttribute('font-weight', '700');
+          privateText.textContent = 'PRIVATE';
+
+          g.appendChild(circle);
+          g.appendChild(label);
+          g.appendChild(privateText);
+          nodesLayer.appendChild(g);
+        });
+      }
+
+      function renderSalaries() {
+        salaryGrid.innerHTML = '';
+        salaries.forEach((salary, i) => {
+          const item = document.createElement('div');
+          item.className = 'salary-item';
+          item.innerHTML =
+            '<div class="salary-name">Analyst ' + (i + 1) + '</div>' +
+            '<div class="salary-value">' + (revealToggle.checked ? fmt(salary) : '••••••') + '</div>';
+          salaryGrid.appendChild(item);
+        });
+      }
+
+      function highlight(activeNode = -1, activeEdge = -1) {
+        document.querySelectorAll('[data-node]').forEach((g, i) => {
+          const circle = g.querySelector('circle');
+          const isActive = i === activeNode;
+          circle.setAttribute('stroke', isActive ? '#6750d8' : '#d9dee8');
+          circle.setAttribute('stroke-width', isActive ? '5' : '2');
+          circle.setAttribute('fill', isActive ? '#f2efff' : '#ffffff');
+        });
+
+        document.querySelectorAll('[data-edge]').forEach((line, i) => {
+          const isActive = i === activeEdge;
+          line.setAttribute('stroke', isActive ? '#6750d8' : '#d0d5dd');
+          line.setAttribute('stroke-width', isActive ? '5' : '2.5');
+        });
+      }
+
+      function runningValue(count) {
+        return mask + salaries.slice(0, count).reduce((a, b) => a + b, 0);
+      }
+
+      function setTranscript(html) {
+        transcript.innerHTML = html;
+      }
+
+      function render() {
+        renderSalaries();
+
+        const total = salaries.reduce((a, b) => a + b, 0);
+        const average = total / N;
+
+        if (step === 0) {
+          stepLabel.textContent = 'Step 0 — all salaries are private.';
+          centerValue.textContent = '—';
+          centerMeaning.textContent = 'Nothing has been shared yet';
+          setTranscript('<div class="message">Press <strong>Next step</strong> to start.</div>');
+          privacyExplanation.innerHTML =
+            'No participant sends “my salary is $X.” Instead, the protocol circulates a running total obscured by a random mask <strong>R</strong>.';
+          resultAverage.textContent = '$—';
+          resultTotal.textContent = 'The aggregate is hidden until the protocol finishes.';
+          nextBtn.textContent = 'Next step';
+          highlight();
+          return;
+        }
+
+        if (step === 1) {
+          stepLabel.textContent = 'Step 1 — Analyst 1 secretly samples a random mask R.';
+          centerValue.textContent = 'R = ' + fmt(mask);
+          centerMeaning.textContent = 'Only Analyst 1 knows R';
+          setTranscript(
+            '<div class="message"><strong>A1</strong> privately chooses <strong>R = ' + fmt(mask) + '</strong>.</div>' +
+            '<div class="message">R is a random mask, not a salary, and is not revealed to the other analysts.</div>'
+          );
+          privacyExplanation.innerHTML =
+            'The random mask hides the first partial sum. Without knowing <strong>R</strong>, another participant cannot interpret the transmitted number as A1’s salary.';
+          highlight(0);
+          return;
+        }
+
+        if (step >= 2 && step <= 9) {
+          const analyst = step - 2;
+          const count = analyst + 1;
+          const value = runningValue(count);
+          const next = (analyst + 1) % N;
+
+          stepLabel.textContent =
+            'Step ' + step + ' — Analyst ' + (analyst + 1) + ' adds their private salary.';
+          centerValue.textContent = fmt(value);
+          centerMeaning.textContent = 'Masked running total';
+
+          setTranscript(
+            '<div class="message"><strong>A' + (analyst + 1) + '</strong> receives the current masked total.</div>' +
+            '<div class="message">A' + (analyst + 1) + ' adds their salary locally, then sends <strong>' +
+            fmt(value) + '</strong> to A' + (next + 1) + '.</div>'
+          );
+
+          privacyExplanation.innerHTML =
+            analyst === 0
+              ? 'A2 sees <strong>R + s₁</strong>, but does not know R. Therefore A2 cannot isolate salary <strong>s₁</strong>.'
+              : 'The next participant sees only a cumulative masked value. No individual salary is transmitted as a standalone message.';
+
+          highlight(analyst, analyst);
+          return;
+        }
+
+        if (step === 10) {
+          const maskedTotal = mask + total;
+          stepLabel.textContent = 'Step 10 — the masked total returns to Analyst 1.';
+          centerValue.textContent = fmt(maskedTotal);
+          centerMeaning.textContent = 'R + sum of all 8 salaries';
+          setTranscript(
+            '<div class="message">The value returning to <strong>A1</strong> is <strong>' + fmt(maskedTotal) + '</strong>.</div>' +
+            '<div class="message"><code>R + s₁ + s₂ + ··· + s₈</code></div>'
+          );
+          privacyExplanation.innerHTML =
+            'Only A1 knows the random mask <strong>R</strong>, so A1 is the only participant who can remove it from this running total.';
+          highlight(0, 7);
+          return;
+        }
+
+        stepLabel.textContent = 'Step 11 — Analyst 1 removes R and publishes only the aggregate.';
+        centerValue.textContent = fmt(total);
+        centerMeaning.textContent = 'Unmasked group total';
+
+        setTranscript(
+          '<div class="message"><strong>A1 subtracts R:</strong><br><code>' +
+          fmt(mask + total) + ' − ' + fmt(mask) + ' = ' + fmt(total) +
+          '</code></div>' +
+          '<div class="message">Everyone computes <strong>' + fmt(total) +
+          ' ÷ 8 = ' + fmt(average) + '</strong>.</div>'
+        );
+
+        privacyExplanation.innerHTML =
+          'The group learns the final aggregate and average, but no salary is directly published. The output itself can still reveal aggregate information, which is unavoidable.';
+        resultAverage.textContent = fmt(average);
+        resultTotal.textContent = 'Group total: ' + fmt(total) + ' · 8 analysts';
+        nextBtn.textContent = 'Restart';
+        highlight(0);
+      }
+
+      function reset() {
+        step = 0;
+        mask = randMask();
+        render();
+      }
+
+      nextBtn.addEventListener('click', () => {
+        if (step >= 11) {
+          step = 0;
+        } else {
+          step += 1;
+        }
+        if (step === 1) mask = randMask();
+        render();
+      });
+
+      resetBtn.addEventListener('click', reset);
+
+      randomBtn.addEventListener('click', () => {
+        salaries = Array.from({ length: N }, randSalary);
+        reset();
+      });
+
+      revealToggle.addEventListener('change', renderSalaries);
+
+      buildRing();
+      reset();
+    })();
+  </script>
+</body>
+</html>
