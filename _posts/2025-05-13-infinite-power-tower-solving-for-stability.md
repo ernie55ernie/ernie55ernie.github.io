@@ -15,6 +15,8 @@ This infinite power tower, also known as a **tetration**, asks:
 
 > What value of \\(x\\) causes this tower to converge exactly to 2?
 
+<iframe src="{{ site.baseurl }}/assets/infinity_power_tower.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### Step 1: Understand the Definition
 
 Let:

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetration Visualization</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: #171b2e;
+      --card: #1e2440;
+      --text: #eef2ff;
+      --muted: #b8c0e0;
+      --accent: #7cc7ff;
+      --accent2: #8ef0c5;
+      --border: rgba(255,255,255,0.12);
+      --danger: #ff9a9a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #0d1020 0%, #11162a 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .hero {
+      margin-bottom: 20px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 820px;
+    }
+
+    .equation {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      font-size: clamp(1.35rem, 2.4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      display: inline-block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+    }
+
+    .panel p {
+      color: var(--muted);
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .step {
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .step .label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .step .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: grid;
+      gap: 16px;
+    }
+
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .control-group span {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--accent2);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #2b78c8;
+      color: white;
+    }
+
+    button.secondary {
+      background: #2a3258;
+      border: 1px solid var(--border);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat .k {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat .v {
+      font-size: 1.15rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-word;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(124,199,255,0.08);
+      border: 1px solid rgba(124,199,255,0.25);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .chart-wrap {
+      margin-top: 18px;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #12172b;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 640px;
+      display: block;
+    }
+
+    .table-wrap {
+      margin-top: 16px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .footnotes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .footnotes {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .note {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .note h3 {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--accent2);
+    }
+
+    .note p {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .math {
+      font-family: "Times New Roman", Georgia, serif;
+      font-weight: 700;
+      color: white;
+    }
+
+    .danger {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Infinite Power Tower (Tetration)</h1>
+      <p>
+        We want to solve the recursive equation
+        <span class="math">x<sup>x<sup>x<sup>⋱</sup></sup></sup> = 2</span>.
+        If the infinite tower converges to some value <span class="math">y</span>, then by self-similarity it must satisfy
+        <span class="math">y = x<sup>y</sup></span>.
+      </p>
+      <div class="equation">x<sup>x<sup>x<sup>⋱</sup></sup></sup> = 2</div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Why the answer is <span class="math">x = √2</span></h2>
+        <p>Let the entire infinite tower be <span class="math">y</span>. Then the tower repeats itself after the first base:</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="label">Step 1</div>
+            <div class="value math">y = x<sup>y</sup></div>
+          </div>
+          <div class="step">
+            <div class="label">Step 2</div>
+            <div class="value">We want <span class="math">y = 2</span>, so <span class="math">2 = x<sup>2</sup></span></div>
+          </div>
+          <div class="step">
+            <div class="label">Step 3</div>
+            <div class="value">Thus <span class="math">x = √2 ≈ 1.41421356</span></div>
+          </div>
+        </div>
+
+        <div class="footnotes">
+          <div class="note">
+            <h3>Fixed-point idea</h3>
+            <p>The infinite tower is a fixed point of the map <span class="math">f(y)=x<sup>y</sup></span>.</p>
+          </div>
+          <div class="note">
+            <h3>Target value</h3>
+            <p>Because the tower must equal 2, we solve <span class="math">x<sup>2</sup>=2</span>, giving <span class="math">x=√2</span>.</p>
+          </div>
+          <div class="note">
+            <h3>Convergence range</h3>
+            <p>For positive real bases, the standard infinite power tower converges when <span class="math">e<sup>-e</sup> ≤ x ≤ e<sup>1/e</sup></span>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Interactive exploration</h2>
+        <div class="controls">
+          <div class="button-row">
+            <button id="setSqrt2">Set x = √2</button>
+            <button id="setNearLow" class="secondary">Set x = 1.2</button>
+            <button id="setNearHigh" class="secondary">Set x = 1.5</button>
+          </div>
+
+          <div class="control-group">
+            <label for="xSlider">
+              <span>Base x</span>
+              <span id="xValue">1.414214</span>
+            </label>
+            <input id="xSlider" type="range" min="0.20" max="1.60" step="0.001" value="1.41421356" />
+          </div>
+
+          <div class="control-group">
+            <label for="nSlider">
+              <span>Tower height n</span>
+              <span id="nValue">10</span>
+            </label>
+            <input id="nSlider" type="range" min="1" max="30" step="1" value="10" />
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Finite tower value</div>
+            <div class="v" id="towerValue">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Distance from 2</div>
+            <div class="v" id="errorValue">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Expected infinite limit</div>
+            <div class="v" id="limitValue">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Convergence interval check</div>
+            <div class="v" id="rangeValue">—</div>
+          </div>
+        </div>
+
+        <div class="status" id="status">
+          Move the slider to see how the finite tower behaves.
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top: 18px;">
+      <h2>Successive finite towers</h2>
+      <p>
+        Starting from <span class="math">a₁ = x</span>, define
+        <span class="math">a<sub>n+1</sub> = x<sup>a<sub>n</sub></sup></span>.
+        If this sequence converges, its limit is the infinite power tower.
+      </p>
+
+      <div class="chart-wrap">
+        <svg id="chart" viewBox="0 0 760 320" aria-label="Chart of tower height versus finite tower value"></svg>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Height n</th>
+              <th>Expression</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="seqTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SQRT2 = Math.sqrt(2);
+    const LOWER = Math.exp(-Math.E);
+    const UPPER = Math.exp(1 / Math.E);
+
+    const xSlider = document.getElementById("xSlider");
+    const nSlider = document.getElementById("nSlider");
+    const xValue = document.getElementById("xValue");
+    const nValue = document.getElementById("nValue");
+    const towerValue = document.getElementById("towerValue");
+    const errorValue = document.getElementById("errorValue");
+    const limitValue = document.getElementById("limitValue");
+    const rangeValue = document.getElementById("rangeValue");
+    const status = document.getElementById("status");
+    const chart = document.getElementById("chart");
+    const seqTable = document.getElementById("seqTable");
+
+    document.getElementById("setSqrt2").addEventListener("click", () => {
+      xSlider.value = SQRT2;
+      update();
+    });
+
+    document.getElementById("setNearLow").addEventListener("click", () => {
+      xSlider.value = 1.2;
+      update();
+    });
+
+    document.getElementById("setNearHigh").addEventListener("click", () => {
+      xSlider.value = 1.5;
+      update();
+    });
+
+    xSlider.addEventListener("input", update);
+    nSlider.addEventListener("input", update);
+
+    function fmt(x, digits = 8) {
+      if (!Number.isFinite(x)) return "diverges";
+      if (Math.abs(x) >= 1e8) return x.toExponential(4);
+      return x.toFixed(digits);
+    }
+
+    function powerTowerSequence(x, n) {
+      const seq = [];
+      let a = x;
+      seq.push(a);
+      for (let i = 2; i <= n; i++) {
+        a = Math.pow(x, a);
+        if (!Number.isFinite(a) || a > 1e12) {
+          seq.push(Infinity);
+          break;
+        }
+        seq.push(a);
+      }
+      return seq;
+    }
+
+    function estimateLimit(x) {
+      if (x < LOWER || x > UPPER) return null;
+      let a = x;
+      for (let i = 0; i < 200; i++) {
+        const next = Math.pow(x, a);
+        if (!Number.isFinite(next)) return null;
+        if (Math.abs(next - a) < 1e-12) return next;
+        a = next;
+      }
+      return a;
+    }
+
+    function towerExpression(n) {
+      if (n === 1) return "x";
+      return "x^(".repeat(n - 1) + "x" + ")".repeat(n - 1);
+    }
+
+    function drawChart(seq) {
+      const W = 760, H = 320;
+      const pad = { l: 60, r: 20, t: 20, b: 48 };
+
+      const capped = seq.map(v => Number.isFinite(v) ? Math.min(v, 6) : 6);
+      const yMin = Math.min(0, ...capped, 2);
+      const yMax = Math.max(2.2, ...capped);
+      const yLo = yMin - 0.1 * (yMax - yMin + 1e-9);
+      const yHi = yMax + 0.1 * (yMax - yMin + 1e-9);
+
+      const xs = i => pad.l + (seq.length === 1 ? 0 : i * (W - pad.l - pad.r) / (seq.length - 1));
+      const ys = v => {
+        const vv = Number.isFinite(v) ? Math.min(v, 6) : 6;
+        return pad.t + (yHi - vv) * (H - pad.t - pad.b) / (yHi - yLo);
+      };
+
+      let svg = "";
+
+      for (let k = 0; k <= 5; k++) {
+        const val = yLo + (yHi - yLo) * k / 5;
+        const y = ys(val);
+        svg += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="rgba(255,255,255,0.12)" />`;
+        svg += `<text x="${pad.l - 10}" y="${y + 4}" text-anchor="end" fill="#b8c0e0" font-size="11">${val.toFixed(2)}</text>`;
+      }
+
+      svg += `<line x1="${pad.l}" y1="${ys(2)}" x2="${W - pad.r}" y2="${ys(2)}" stroke="#8ef0c5" stroke-width="1.8" stroke-dasharray="6 5" />`;
+      svg += `<text x="${W - pad.r - 6}" y="${ys(2) - 8}" text-anchor="end" fill="#8ef0c5" font-size="12">target = 2</text>`;
+
+      svg += `<line x1="${pad.l}" y1="${H - pad.b}" x2="${W - pad.r}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.35)" />`;
+      svg += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${H - pad.b}" stroke="rgba(255,255,255,0.35)" />`;
+
+      const points = seq.map((v, i) => `${xs(i)},${ys(v)}`).join(" ");
+      svg += `<polyline points="${points}" fill="none" stroke="#7cc7ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />`;
+
+      seq.forEach((v, i) => {
+        const cx = xs(i), cy = ys(v);
+        svg += `<circle cx="${cx}" cy="${cy}" r="5" fill="#7cc7ff" />`;
+        svg += `<text x="${cx}" y="${H - pad.b + 20}" text-anchor="middle" fill="#b8c0e0" font-size="11">${i + 1}</text>`;
+      });
+
+      svg += `<text x="${W / 2}" y="${H - 10}" text-anchor="middle" fill="#b8c0e0" font-size="12">Tower height n</text>`;
+      svg += `<text x="18" y="${H / 2}" text-anchor="middle" fill="#b8c0e0" font-size="12" transform="rotate(-90 18 ${H / 2})">Value of finite tower</text>`;
+
+      chart.innerHTML = svg;
+    }
+
+    function renderTable(seq, x) {
+      const rows = seq.map((v, i) => {
+        const n = i + 1;
+        const expr = n === 1 ? "x" : `${"x^(".repeat(n - 1)}x${")".repeat(n - 1)}`;
+        return `
+          <tr>
+            <td>${n}</td>
+            <td class="math">${expr}</td>
+            <td>${fmt(v)}</td>
+          </tr>
+        `;
+      }).join("");
+      seqTable.innerHTML = rows;
+    }
+
+    function update() {
+      const x = Number(xSlider.value);
+      const n = Number(nSlider.value);
+
+      xValue.textContent = x.toFixed(6);
+      nValue.textContent = String(n);
+
+      const seq = powerTowerSequence(x, n);
+      const last = seq[seq.length - 1];
+      const err = Number.isFinite(last) ? Math.abs(last - 2) : Infinity;
+      const limit = estimateLimit(x);
+
+      towerValue.textContent = fmt(last);
+      errorValue.textContent = Number.isFinite(err) ? err.toExponential(4) : "—";
+      limitValue.textContent = limit === null ? "no real limit" : fmt(limit);
+      rangeValue.textContent = (x >= LOWER && x <= UPPER) ? "inside convergence range" : "outside convergence range";
+
+      if (x < LOWER || x > UPPER) {
+        status.innerHTML = `For positive real bases, <span class="danger">this x is outside the usual convergence interval</span> <span class="math">[e<sup>-e</sup>, e<sup>1/e</sup>]</span>.`;
+      } else if (Math.abs(x - SQRT2) < 0.0007) {
+        status.innerHTML = `At <span class="math">x = √2</span>, the finite towers converge to <span class="math">2</span>. This is exactly the desired solution.`;
+      } else if (limit !== null) {
+        if (limit < 2) {
+          status.innerHTML = `This value of <span class="math">x</span> converges, but its infinite tower settles <strong>below 2</strong>.`;
+        } else if (limit > 2) {
+          status.innerHTML = `This value of <span class="math">x</span> converges, but its infinite tower settles <strong>above 2</strong>.`;
+        } else {
+          status.innerHTML = `This value appears to converge exactly to <span class="math">2</span>.`;
+        }
+      } else {
+        status.textContent = "Unable to estimate a stable real limit for this x.";
+      }
+
+      drawChart(seq);
+      renderTable(seq, x);
+    }
+
+    update();
+  </script>
+</body>
+</html>
