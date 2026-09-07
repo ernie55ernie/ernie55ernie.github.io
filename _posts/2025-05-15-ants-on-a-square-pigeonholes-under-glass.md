@@ -11,6 +11,8 @@ You're given a deceptively simple geometry-meets-pigeonhole puzzle:
 > You’re given a **glass disk of radius \\( \frac{1}{7} \\)**.  
 > **Prove**: No matter how the ants are placed, you can always position the glass to cover **at least 3 ants**.
 
+<iframe src="{{ site.baseurl }}/assets/51_ants_on_a_unit_square.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Divide and Conquer

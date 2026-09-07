@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>51 Ants on a Unit Square</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --panel:#eef3ff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#d1d9e6;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --green:#059669;
+      --orange:#ea580c;
+      --red:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:32px;
+      line-height:1.15;
+    }
+    .subtitle{
+      color:var(--muted);
+      margin-bottom:20px;
+      font-size:16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.35fr 0.85fr;
+      gap:20px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:0 4px 14px rgba(0,0,0,.04);
+    }
+    .panel{
+      padding:18px;
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    button{
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:14px;
+      transition:.15s ease;
+    }
+    button:hover{
+      transform:translateY(-1px);
+      border-color:#b8c4d6;
+    }
+    button.primary{
+      background:var(--accent-soft);
+      border-color:#b9d4ff;
+      color:#123b88;
+      font-weight:600;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius:14px;
+      background:white;
+    }
+    .status{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:12px;
+      min-height:22px;
+    }
+    .step{
+      padding:16px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:var(--card);
+      margin-bottom:14px;
+    }
+    .step h3{
+      margin:0 0 8px 0;
+      font-size:17px;
+    }
+    .step p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+    }
+    .formula{
+      margin:12px 0;
+      padding:12px;
+      border-radius:12px;
+      background:var(--panel);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-size:15px;
+      color:#1e3a8a;
+    }
+    .big{
+      font-size:28px;
+      text-align:center;
+      font-weight:700;
+      margin:10px 0;
+      color:var(--accent);
+    }
+    .conclusion{
+      background:#ecfdf5;
+      border:1px solid #b7ebd3;
+      border-radius:16px;
+      padding:16px;
+    }
+    .conclusion h3{
+      margin:0 0 8px 0;
+      color:#065f46;
+    }
+    .conclusion p{
+      margin:0;
+      color:#065f46;
+    }
+    .footer-box{
+      margin-top:18px;
+      padding:18px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--card);
+    }
+    .footer-box h3{
+      margin:0 0 10px 0;
+      font-size:18px;
+    }
+    .footer-box p{
+      margin:0;
+      color:var(--muted);
+    }
+    .tag{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:#1d4ed8;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tag">Geometric Pigeonhole Principle</div>
+    <h1>51 Ants on a Unit Square</h1>
+    <div class="subtitle">
+      Prove that no matter how 51 ants are placed in a unit square, a disk of radius <strong>1/7</strong> can always be positioned to cover at least <strong>3 ants</strong>.
+    </div>
+
+    <div class="grid">
+      <section class="card panel">
+        <div class="controls">
+          <button id="tightBtn" class="primary">Tight 50 + 1 placement</button>
+          <button id="randomBtn">Randomize 51 ants</button>
+          <button id="diskBtn">Hide disk</button>
+        </div>
+
+        <svg id="board" viewBox="0 0 520 520" aria-label="Unit square divided into 25 cells with ants">
+          <rect x="10" y="10" width="500" height="500" rx="4" fill="#fff" stroke="#1f2937" stroke-width="2"></rect>
+          <g id="grid"></g>
+          <g id="highlight"></g>
+          <g id="disk"></g>
+          <g id="ants"></g>
+        </svg>
+
+        <div id="status" class="status"></div>
+      </section>
+
+      <aside>
+        <div class="step">
+          <h3>1. Divide the square into 25 cells</h3>
+          <p>
+            Split the unit square into a <strong>5 × 5</strong> grid.  
+            Then each small square has side length <strong>1/5</strong>.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>2. Apply the pigeonhole principle</h3>
+          <p>If each of the 25 cells contained at most 2 ants, then the total number of ants would be at most:</p>
+          <div class="big">25 × 2 = 50</div>
+          <p>
+            But there are <strong>51 ants</strong>, so at least one cell must contain
+            <strong>3 or more ants</strong>.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>3. Show one disk covers that entire cell</h3>
+          <p>
+            Place the center of the glass disk at the center of the crowded small square.
+            The farthest points in the cell are the corners.
+          </p>
+          <div class="formula">
+            needed radius = √[(1/10)² + (1/10)²] = √2 / 10 ≈ 0.14142
+          </div>
+          <div class="formula">
+            glass radius = 1 / 7 ≈ 0.14286
+          </div>
+          <div class="formula">
+            √2 / 10 &lt; 1 / 7
+          </div>
+          <p>
+            So the radius-<strong>1/7</strong> disk covers the whole small square, and therefore
+            covers all ants in that square — at least <strong>3 ants</strong>.
+          </p>
+        </div>
+
+        <div class="conclusion">
+          <h3>Conclusion</h3>
+          <p>
+            No matter how the 51 ants are arranged, there is always a placement of the radius-1/7 disk
+            that covers at least 3 ants.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer-box">
+      <h3>Why the “50 + 1” arrangement is the key idea</h3>
+      <p>
+        The tight example puts exactly 2 ants in each of the 25 cells, for a total of 50 ants.
+        The 51st ant must land in some existing cell, forcing that cell to contain 3 ants.
+        Since the disk covers the whole cell, it covers those 3 ants regardless of their exact locations.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const gridG = document.getElementById('grid');
+      const highlightG = document.getElementById('highlight');
+      const diskG = document.getElementById('disk');
+      const antsG = document.getElementById('ants');
+      const status = document.getElementById('status');
+
+      const tightBtn = document.getElementById('tightBtn');
+      const randomBtn = document.getElementById('randomBtn');
+      const diskBtn = document.getElementById('diskBtn');
+
+      const x0 = 10, y0 = 10, size = 500;
+      const cells = 5;
+      const cell = size / cells;
+      const diskR = size / 7; // scaled radius
+
+      let points = [];
+      let chosenCell = 0;
+      let showDisk = true;
+
+      const NS = 'http://www.w3.org/2000/svg';
+      function svgEl(name, attrs = {}) {
+        const el = document.createElementNS(NS, name);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        return el;
+      }
+
+      // Draw grid once
+      for (let i = 1; i < cells; i++) {
+        gridG.appendChild(svgEl('line', {
+          x1: x0 + i * cell, y1: y0, x2: x0 + i * cell, y2: y0 + size,
+          stroke: '#d1d9e6', 'stroke-width': '1.5'
+        }));
+        gridG.appendChild(svgEl('line', {
+          x1: x0, y1: y0 + i * cell, x2: x0 + size, y2: y0 + i * cell,
+          stroke: '#d1d9e6', 'stroke-width': '1.5'
+        }));
+      }
+
+      function occupancy() {
+        const counts = Array(25).fill(0);
+        for (const p of points) counts[p.cell]++;
+        return counts;
+      }
+
+      function tightPlacement() {
+        const p = [];
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 5; c++) {
+            const idx = r * 5 + c;
+            p.push({ x: x0 + c * cell + 30, y: y0 + r * cell + 30, cell: idx });
+            p.push({ x: x0 + c * cell + 70, y: y0 + r * cell + 70, cell: idx });
+          }
+        }
+        chosenCell = 12; // center cell
+        p.push({ x: x0 + 2 * cell + 70, y: y0 + 2 * cell + 30, cell: chosenCell });
+        points = p;
+        render("Tight arrangement: 2 ants in every cell, and the 51st ant forces one cell to contain 3 ants.");
+      }
+
+      function randomPlacement() {
+        points = [];
+        const counts = Array(25).fill(0);
+
+        for (let i = 0; i < 51; i++) {
+          const x = x0 + 5 + Math.random() * (size - 10);
+          const y = y0 + 5 + Math.random() * (size - 10);
+          const c = Math.min(4, Math.floor((x - x0) / cell));
+          const r = Math.min(4, Math.floor((y - y0) / cell));
+          const idx = r * 5 + c;
+          counts[idx]++;
+          points.push({ x, y, cell: idx });
+        }
+
+        chosenCell = counts.findIndex(v => v >= 3);
+        if (chosenCell === -1) {
+          let best = 0;
+          for (let i = 1; i < 25; i++) if (counts[i] > counts[best]) best = i;
+          chosenCell = best;
+        }
+
+        render(`Random placement: the highlighted cell contains ${counts[chosenCell]} ants.`);
+      }
+
+      function render(message) {
+        highlightG.innerHTML = '';
+        diskG.innerHTML = '';
+        antsG.innerHTML = '';
+
+        const row = Math.floor(chosenCell / 5);
+        const col = chosenCell % 5;
+
+        const cellX = x0 + col * cell;
+        const cellY = y0 + row * cell;
+        const cx = cellX + cell / 2;
+        const cy = cellY + cell / 2;
+
+        // Highlight chosen cell
+        highlightG.appendChild(svgEl('rect', {
+          x: cellX + 1.5,
+          y: cellY + 1.5,
+          width: cell - 3,
+          height: cell - 3,
+          rx: 6,
+          fill: '#f97316',
+          opacity: '0.12',
+          stroke: '#ea580c',
+          'stroke-width': '3'
+        }));
+
+        const counts = occupancy();
+
+        // Disk
+        if (showDisk) {
+          diskG.appendChild(svgEl('circle', {
+            cx, cy, r: diskR,
+            fill: '#2563eb',
+            opacity: '0.10',
+            stroke: '#2563eb',
+            'stroke-width': '3'
+          }));
+          diskG.appendChild(svgEl('circle', {
+            cx, cy, r: 3.8, fill: '#2563eb'
+          }));
+          diskG.appendChild(svgEl('line', {
+            x1: cx, y1: cy, x2: cx + diskR, y2: cy,
+            stroke: '#2563eb',
+            'stroke-width': '2',
+            'stroke-dasharray': '6 5'
+          }));
+          const label = svgEl('text', {
+            x: cx + diskR / 2,
+            y: cy - 8,
+            'text-anchor': 'middle',
+            'font-size': '15',
+            fill: '#1f2937'
+          });
+          label.textContent = 'r = 1/7';
+          diskG.appendChild(label);
+        }
+
+        // Ants
+        for (const p of points) {
+          const crowded = p.cell === chosenCell;
+          antsG.appendChild(svgEl('circle', {
+            cx: p.x,
+            cy: p.y,
+            r: crowded ? 6 : 4.6,
+            fill: crowded ? '#dc2626' : '#111827'
+          }));
+          if (crowded) {
+            antsG.appendChild(svgEl('circle', {
+              cx: p.x,
+              cy: p.y,
+              r: 9,
+              fill: 'none',
+              stroke: '#dc2626',
+              'stroke-width': '1.4',
+              opacity: '0.65'
+            }));
+          }
+        }
+
+        // Cell label
+        const t = svgEl('text', {
+          x: cellX + 8,
+          y: cellY + 20,
+          'font-size': '15',
+          'font-weight': '700',
+          fill: '#7c2d12'
+        });
+        t.textContent = counts[chosenCell] + ' ants';
+        highlightG.appendChild(t);
+
+        status.textContent = message;
+        diskBtn.textContent = showDisk ? 'Hide disk' : 'Show disk';
+      }
+
+      tightBtn.addEventListener('click', () => {
+        tightBtn.classList.add('primary');
+        randomBtn.classList.remove('primary');
+        tightPlacement();
+      });
+
+      randomBtn.addEventListener('click', () => {
+        randomBtn.classList.add('primary');
+        tightBtn.classList.remove('primary');
+        randomPlacement();
+      });
+
+      diskBtn.addEventListener('click', () => {
+        showDisk = !showDisk;
+        const counts = occupancy();
+        render(`Highlighted cell contains ${counts[chosenCell]} ants. The disk is now ${showDisk ? 'shown' : 'hidden'}.`);
+      });
+
+      tightPlacement();
+    })();
+  </script>
+</body>
+</html>
