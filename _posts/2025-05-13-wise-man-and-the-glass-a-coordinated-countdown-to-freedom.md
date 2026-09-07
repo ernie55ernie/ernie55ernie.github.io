@@ -77,7 +77,7 @@ Eventually, the counter will tally **49** ups, proving all others have appeared.
 
 > **Designate one man as counter**.  
 > All others flip the glass **from down to up only once**, the first time they’re called and the glass is down.  
-> The counter flips it **down to up**, and increments a count.  
+> The counter flips it **from up to down** and increments his count.  
 > When he reaches **49**, he declares that all have been summoned.
 
 # Reference
