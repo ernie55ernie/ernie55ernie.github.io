@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5 Bags Coin Puzzle Visualization</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --border:#334155;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#22c55e;
+      --accent2:#38bdf8;
+      --danger:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:linear-gradient(180deg,#0b1220,#111827);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1,h2,h3,p{margin:0}
+    .hero,.panel,.card{
+      background:rgba(17,24,39,.9);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .hero{
+      padding:24px;
+      margin-bottom:20px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:20px;
+    }
+    .muted{color:var(--muted)}
+    .big{
+      font-size:56px;
+      font-weight:800;
+      color:var(--accent);
+      line-height:1;
+    }
+    .sub{
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .pill{
+      display:inline-block;
+      border:1px solid var(--border);
+      background:#0b1220;
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:13px;
+      margin:4px 6px 0 0;
+      color:#cbd5e1;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+    }
+    .card{
+      padding:16px;
+    }
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .count{
+      font-size:28px;
+      font-weight:800;
+      color:var(--accent2);
+      margin-bottom:12px;
+    }
+    select,button{
+      font:inherit;
+    }
+    select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+    button{
+      border:none;
+      padding:12px 18px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.15s transform ease,.15s opacity ease;
+    }
+    button:hover{transform:translateY(-1px)}
+    .primary{background:var(--accent); color:#052e16;}
+    .secondary{background:#0b1220; color:var(--text); border:1px solid var(--border);}
+    .warning{background:var(--danger); color:#3b2200;}
+    .two-col{
+      display:grid;
+      grid-template-columns:.8fr 1.2fr;
+      gap:20px;
+      margin-top:20px;
+    }
+    .panel{
+      padding:20px;
+    }
+    .scale{
+      text-align:center;
+      padding:24px;
+      background:linear-gradient(180deg,#0b1220,#111827);
+      border:1px solid var(--border);
+      border-radius:20px;
+    }
+    .reading{
+      font-size:54px;
+      font-weight:800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color:var(--accent2);
+      margin:16px 0 8px;
+    }
+    .delta{
+      font-size:30px;
+      font-weight:800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color:var(--accent);
+      margin-top:10px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:14px;
+    }
+    th,td{
+      padding:10px 8px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{color:var(--muted); font-weight:600;}
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .equation,.explain,.summary{
+      margin-top:16px;
+      padding:14px;
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:14px;
+    }
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .summary{
+      text-align:center;
+    }
+    .summary .value{
+      font-size:28px;
+      font-weight:800;
+      color:var(--accent2);
+      margin-top:4px;
+    }
+    .foot{
+      margin-top:20px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    @media (max-width: 980px){
+      .hero-grid,.two-col{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .summary-grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns:1fr}
+      .big{font-size:42px}
+      .reading{font-size:40px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="sub">Puzzle visualization</div>
+          <h1>5 bags, 3 possible coin weights, and a digital scale</h1>
+          <p class="muted" style="margin-top:12px;">
+            Each bag contains 100 coins, and every coin in a bag weighs either
+            <strong>9 g</strong>, <strong>10 g</strong>, or <strong>11 g</strong>.
+            We want to determine the weight of every bag using as few weighings as possible.
+          </p>
+          <div style="margin-top:14px;">
+            <span class="pill">Bag weights ∈ {9, 10, 11}</span>
+            <span class="pill">5 bags ⇒ 3⁵ = 243 possibilities</span>
+            <span class="pill">Minimum weighings = 1</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub">Key idea</div>
+          <div class="big">Balanced ternary</div>
+          <p class="muted" style="margin-top:12px;">
+            Take <strong>1, 3, 9, 27, 81</strong> coins from the five bags.
+            If we treat <strong>9 g = −1</strong>, <strong>10 g = 0</strong>, and <strong>11 g = +1</strong>
+            relative to 10 g, then the weight deviation becomes a unique
+            5-digit balanced-ternary number.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Interactive one-weighing experiment</h2>
+      <p class="muted" style="margin-top:6px;">
+        Choose a hidden weight for each bag, then perform the single weighing.
+      </p>
+
+      <div class="grid" style="margin-top:18px;">
+        <div class="card">
+          <div class="label">Bag A · take</div>
+          <div class="count">1 coin</div>
+          <select data-bag="0">
+            <option value="9">9 g</option>
+            <option value="10" selected>10 g</option>
+            <option value="11">11 g</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Bag B · take</div>
+          <div class="count">3 coins</div>
+          <select data-bag="1">
+            <option value="9">9 g</option>
+            <option value="10" selected>10 g</option>
+            <option value="11">11 g</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Bag C · take</div>
+          <div class="count">9 coins</div>
+          <select data-bag="2">
+            <option value="9">9 g</option>
+            <option value="10" selected>10 g</option>
+            <option value="11">11 g</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Bag D · take</div>
+          <div class="count">27 coins</div>
+          <select data-bag="3">
+            <option value="9">9 g</option>
+            <option value="10" selected>10 g</option>
+            <option value="11">11 g</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Bag E · take</div>
+          <div class="count">81 coins</div>
+          <select data-bag="4">
+            <option value="9">9 g</option>
+            <option value="10" selected>10 g</option>
+            <option value="11">11 g</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="weighBtn">⚖ Weigh once</button>
+        <button class="secondary" id="randomBtn">Randomize</button>
+        <button class="warning" id="resetBtn">Reset to all 10 g</button>
+      </div>
+    </section>
+
+    <section class="two-col">
+      <div class="panel">
+        <div class="scale">
+          <div class="sub">Digital scale reading</div>
+          <div class="reading" id="reading">1210 g</div>
+          <div class="muted">Baseline if every sampled coin were 10 g:</div>
+          <div class="mono" style="margin-top:6px;">10 × (1 + 3 + 9 + 27 + 81) = 1210 g</div>
+          <div class="delta" id="delta">Δ = 0 g</div>
+        </div>
+
+        <div class="equation">
+          <h3>How to set up the weighing</h3>
+          <p class="muted" style="margin-top:8px;">
+            Take
+            <span class="mono">1</span> coin from Bag A,
+            <span class="mono">3</span> from Bag B,
+            <span class="mono">9</span> from Bag C,
+            <span class="mono">27</span> from Bag D,
+            and <span class="mono">81</span> from Bag E.
+          </p>
+          <p class="muted" style="margin-top:10px;">
+            These are powers of 3, so each possible deviation can be decoded uniquely.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Decode the result</h2>
+        <p class="muted" style="margin-top:6px;">
+          Write the deviation from 1210 g in balanced ternary, using digits −1, 0, +1.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Bag</th>
+              <th>Coins taken</th>
+              <th>Digit</th>
+              <th>Meaning</th>
+              <th>Contribution</th>
+            </tr>
+          </thead>
+          <tbody id="decodeRows"></tbody>
+        </table>
+
+        <div class="equation mono" id="equationText"></div>
+        <div class="explain" id="decodedText"></div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:20px;">
+      <h2>Why one weighing is enough</h2>
+      <div class="explain">
+        <p>
+          Let each bag’s deviation from 10 g be:
+        </p>
+        <p class="mono" style="margin-top:8px;">
+          d₀, d₁, d₂, d₃, d₄ ∈ {−1, 0, +1}
+        </p>
+        <p style="margin-top:8px;">
+          Then the total deviation from the baseline 1210 g is
+        </p>
+        <p class="mono" style="margin-top:8px;">
+          Δ = d₀·1 + d₁·3 + d₂·9 + d₃·27 + d₄·81
+        </p>
+        <p style="margin-top:8px;">
+          This is exactly a balanced-ternary representation. Since every 5-digit balanced-ternary value is unique,
+          all <span class="mono">3⁵ = 243</span> bag assignments produce different scale readings.
+          So one weighing determines all five bag weights.
+        </p>
+        <p style="margin-top:8px;">
+          Also, zero weighings are impossible because there are 243 possible worlds and no information is obtained.
+          Therefore, the minimum number of weighings is <strong>1</strong>.
+        </p>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary">
+          <div class="muted">Possible assignments</div>
+          <div class="value">243</div>
+        </div>
+        <div class="summary">
+          <div class="muted">Largest sample from one bag</div>
+          <div class="value">81</div>
+        </div>
+        <div class="summary">
+          <div class="muted">Optimal number of weighings</div>
+          <div class="value">1</div>
+        </div>
+      </div>
+
+      <div class="foot">
+        Method used: balanced ternary with sample sizes 1, 3, 9, 27, 81.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const counts = [1, 3, 9, 27, 81];
+    const bagNames = ["A", "B", "C", "D", "E"];
+    const selects = [...document.querySelectorAll("select[data-bag]")];
+    const readingEl = document.getElementById("reading");
+    const deltaEl = document.getElementById("delta");
+    const rowsEl = document.getElementById("decodeRows");
+    const equationTextEl = document.getElementById("equationText");
+    const decodedTextEl = document.getElementById("decodedText");
+
+    function balancedTernaryDigits(value, n = 5) {
+      let x = value;
+      const digits = [];
+      for (let i = 0; i < n; i++) {
+        let r = ((x % 3) + 3) % 3;
+        if (r === 2) {
+          digits.push(-1);
+          x = (x + 1) / 3;
+        } else {
+          digits.push(r);
+          x = (x - r) / 3;
+        }
+      }
+      return digits;
+    }
+
+    function digitSymbol(d) {
+      return d === -1 ? "−1" : d === 1 ? "+1" : "0";
+    }
+
+    function meaning(d) {
+      return d === -1 ? "Bag has 9 g coins"
+           : d === 0 ? "Bag has 10 g coins"
+           : "Bag has 11 g coins";
+    }
+
+    function render() {
+      const chosenWeights = selects.map(s => Number(s.value));
+      const total = chosenWeights.reduce((sum, w, i) => sum + w * counts[i], 0);
+      const baseline = 10 * counts.reduce((a, b) => a + b, 0); // 1210
+      const delta = total - baseline;
+      const digits = balancedTernaryDigits(delta, 5);
+
+      readingEl.textContent = total + " g";
+      deltaEl.textContent = "Δ = " + (delta > 0 ? "+" : "") + delta + " g";
+
+      rowsEl.innerHTML = digits.map((d, i) => {
+        const contribution = d * counts[i];
+        const contributionText = contribution > 0 ? "+" + contribution : String(contribution);
+        return `
+          <tr>
+            <td><strong>${bagNames[i]}</strong></td>
+            <td class="mono">${counts[i]}</td>
+            <td class="mono"><strong>${digitSymbol(d)}</strong></td>
+            <td>${meaning(d)}</td>
+            <td class="mono">${contributionText} g</td>
+          </tr>
+        `;
+      }).join("");
+
+      equationTextEl.textContent =
+        "Δ = " + digits.map((d, i) => `${digitSymbol(d)}×${counts[i]}`).join("  ")
+        + " = " + (delta > 0 ? "+" : "") + delta;
+
+      decodedTextEl.innerHTML =
+        "<strong>Decoded bag weights:</strong> " +
+        digits.map((d, i) => `Bag ${bagNames[i]} = ${10 + d} g`).join(" · ");
+    }
+
+    document.getElementById("weighBtn").addEventListener("click", render);
+
+    document.getElementById("randomBtn").addEventListener("click", () => {
+      selects.forEach(sel => {
+        const values = [9, 10, 11];
+        sel.value = values[Math.floor(Math.random() * 3)];
+      });
+      render();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      selects.forEach(sel => sel.value = "10");
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
