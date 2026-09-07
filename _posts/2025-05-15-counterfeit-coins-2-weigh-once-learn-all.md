@@ -51,10 +51,10 @@ These counts correspond to the **powers of 3**: \\(3^0, 3^1, 3^2, 3^3, 3^4\\)
 
 ## Step 3: Calculate Expected Weight
 
-If all coins were **10g**, then total weight would be:
+If all coins were **10g**, then the total weight would be:
 
 \\[
-1×10 + 3×10 + 9×10 + 27×10 + 81×10 = 1210 \text{ g}
+1 \times 10 + 3 \times 10 + 9 \times 10 + 27 \times 10 + 81 \times 10 = 1210 \text{ g}
 \\]
 
 Now suppose you perform a single weighing and get total weight \\(W\\).
@@ -71,12 +71,12 @@ Because you took different **multiples of coins** from each bag, each weight dev
 
 ## Step 4: Decode the Deviation
 
-Write \\(d\\) as a number in **balanced ternary** (digits = -1, 0, +1), using the weights:
+Write \\(d\\) as a number in **balanced ternary** (digits = -1, 0, +1), using the powers of 3:
 \\[
-d = a×1 + b×3 + c×9 + d×27 + e×81
+d = c_1 \times 1 + c_2 \times 3 + c_3 \times 9 + c_4 \times 27 + c_5 \times 81
 \\]
 
-Each coefficient tells you whether that bag was:
+Each coefficient \\(c_i\\) tells you whether that bag was:
 - **-1** → 9g coins
 - **0** → 10g coins
 - **+1** → 11g coins
