@@ -9,6 +9,8 @@ A classic clock puzzle presents a tidy little number theory challenge:
 
 > By drawing **two straight lines** across a circular clock face, divide the numbers into **three pieces** such that the **sum of the numbers on each piece is equal**.
 
+<iframe src="{{ site.baseurl }}/assets/clock_pieces_interactive.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Total Sum of the Clock
