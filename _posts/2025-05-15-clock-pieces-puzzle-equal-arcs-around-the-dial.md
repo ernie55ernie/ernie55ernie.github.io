@@ -5,10 +5,9 @@ date: 2025-05-15
 category: quantitative interview
 ---
 
-A seemingly broken clock presents a tidy little number theory challenge:
+A classic clock puzzle presents a tidy little number theory challenge:
 
-> A circular clock face (with numbers **1 through 12** in the usual order) breaks into **three contiguous arcs**—each with one or more adjacent numbers.  
-> You find that the **sum of the numbers on each piece is equal**.
+> By drawing **two straight lines** across a circular clock face, divide the numbers into **three pieces** such that the **sum of the numbers on each piece is equal**.
 
 ---
 
@@ -17,7 +16,7 @@ A seemingly broken clock presents a tidy little number theory challenge:
 The numbers on the clock are:
 
 \\[
-1 + 2 + \cdots + 12 = \frac{12 × 13}{2} = 78
+1 + 2 + \cdots + 12 = \frac{12 \times 13}{2} = 78
 \\]
 
 So, if the clock breaks into **three pieces** with equal sums, each piece must sum to:
@@ -28,35 +27,32 @@ So, if the clock breaks into **three pieces** with equal sums, each piece must s
 
 ---
 
-## Step 2: Try Contiguous Groups Summing to 26
+## Step 2: Slice the Clock
 
-We’re looking for **three contiguous arcs** (sequential numbers on the clock) that each sum to 26. Since the clock is circular, we can start anywhere.
+We need to slice the clock so the numbers in each region sum to 26. Let's look for contiguous sequences around the edge that naturally add up to 26:
 
-After trial and logic, one solution is:
+- **Top sequence**: 11 + 12 + 1 + 2 = **26**
+- **Bottom sequence**: 5 + 6 + 7 + 8 = **26**
 
-- **Piece 1**: 12 + 1 + 2 + 11 = **26**
-- **Piece 2**: 3 + 10 + 4 + 9 = **26**
-- **Piece 3**: 5 + 8 + 6 + 7 = **26**
+If we draw **two parallel straight lines** across the clock face to slice off these two sequences, we create three distinct pieces:
 
-All are contiguous when placed around the clock face:
+- **Piece 1 (Top)**: A line drawn between 10 & 11 and 2 & 3. Contains `[11, 12, 1, 2]`.
+- **Piece 2 (Bottom)**: A line drawn between 8 & 9 and 4 & 5. Contains `[5, 6, 7, 8]`.
+- **Piece 3 (Middle)**: The remaining numbers wedged between the two lines. Contains `[9, 10]` on the left and `[3, 4]` on the right. 
 
-- **Arc 1**: 12 → 1 → 2 → 11  
-- **Arc 2**: 3 → 10 → 4 → 9  
-- **Arc 3**: 5 → 8 → 6 → 7
-
-Each segment adds up to 26 and wraps around the circle neatly.
+Let's verify the middle piece: `9 + 10 + 3 + 4 = 26`. It works perfectly!
 
 ---
 
 ## Final Answer
 
-**The three clock face pieces are:**
+**Draw two parallel lines across the clock to form these three pieces:**
 
-- **[12, 1, 2, 11]**
-- **[3, 10, 4, 9]**
-- **[5, 8, 6, 7]**
+- **Top Piece**: `[11, 12, 1, 2]`
+- **Middle Piece**: `[9, 10]` and `[3, 4]`
+- **Bottom Piece**: `[5, 6, 7, 8]`
 
-Each arc is contiguous and sums to **26**.
+Each region neatly sums to **26**.
 
 # Reference
 
