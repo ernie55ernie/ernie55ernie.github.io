@@ -17,34 +17,32 @@ But the others may or may not shake hands among themselves.
 
 ## Step 1: What Are the Possible Handshake Counts?
 
-Each of the **25 guests** could have shaken hands with anywhere from:
+Let's look at the **total number of handshakes** for each of the 25 other guests.
 
-- **0** other guests (besides you),
-- up to **24** others (excluding themselves and you).
+Since you shook hands with **everyone**, every guest has at least **1** handshake.  
+The maximum number of handshakes a guest could have is **25** (you + the 24 other guests).
 
-So, the possible handshake counts range from **0 to 24**.
+So, the possible total handshake counts range from **1 to 25**.
 
-That’s **25 possible values**.
+That’s exactly **25 possible values**.
 
 ---
 
 ## Step 2: Apply the Pigeonhole Principle
 
-Suppose—just for contradiction—that **each of the 25 people has a unique handshake count**.
+Suppose—just for contradiction—that **each of the 25 guests has a unique handshake count**.
 
-Then their counts must cover **all** the integers from 0 to 24.
+Then their counts must perfectly cover **all** the integers from 1 to 25.
 
 But wait: here comes the contradiction.
 
-### Can Someone Have 0 Handshakes?
+### The Guest with 1 Handshake
+This guest shook hands with exactly one person. Since you shook hands with everyone, their single handshake **must have been with you**. They shook hands with **no other guests**.
 
-Yes—someone could’ve refused to shake hands with anyone else.
+### The Guest with 25 Handshakes
+This guest shook hands with **every single person** in the room. This includes you, and crucially, it includes the guest who only had 1 handshake!
 
-### Can Someone Have 24 Handshakes?
-
-That would mean they shook hands with **every other person**, including the one who shook **zero hands**—which is impossible!
-
-**You can't have both extremes (0 and 24) in the same room.**
+**You can't have both extremes in the same room.** The guest with 25 handshakes must have shaken hands with the guest with 1 handshake, but the guest with 1 handshake *only* shook hands with you. This is impossible!
 
 So the assumption that all 25 people have **unique handshake counts** fails.
 
