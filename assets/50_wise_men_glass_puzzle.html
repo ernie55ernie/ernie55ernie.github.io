@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>50 Wise Men & the Glass</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#11182b;
+      --card:#182238;
+      --text:#eef3ff;
+      --muted:#9aa7bf;
+      --border:#2b3854;
+      --accent:#7aa2ff;
+      --accent-bg:#1d315e;
+      --good:#4fd1a8;
+      --gold:#f6c85f;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#0b1020,#10172a);
+      color:var(--text);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    h1{margin:0 0 8px;font-size:clamp(28px,4vw,44px)}
+    .lead{margin:0 0 24px;color:var(--muted);max-width:850px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+    .panel,.card{border:1px solid var(--border);border-radius:18px}
+    .panel{background:var(--panel);padding:18px}
+    .card{background:var(--card);padding:16px}
+    .topbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .counter-box{text-align:center;min-width:120px}
+    .counter-num{font-size:30px;font-weight:800}
+    .muted{color:var(--muted)}
+    .glass-wrap{height:180px;display:flex;align-items:center;justify-content:center}
+    .glass{
+      position:relative;width:86px;height:105px;
+      border:5px solid var(--text);border-top:none;
+      border-radius:0 0 18px 18px;
+      transform-origin:center;
+      transition:transform .3s ease,background .3s ease;
+    }
+    .glass:before{
+      content:"";position:absolute;left:-9px;right:-9px;top:-6px;height:6px;
+      border-radius:999px;background:var(--text)
+    }
+    .glass.upside{transform:rotate(180deg)}
+    .glass.signal{background:rgba(79,209,168,.23)}
+    .center{text-align:center}
+    .meter{height:11px;border-radius:999px;background:#26344f;overflow:hidden;margin-top:18px}
+    .meter>div{height:100%;width:0;background:var(--good);transition:width .2s ease}
+    .meter-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:7px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    button{
+      min-height:44px;border-radius:12px;border:1px solid var(--border);
+      background:var(--card);color:var(--text);font:inherit;font-weight:700;
+      padding:0 15px;cursor:pointer
+    }
+    button.primary{background:var(--accent-bg);border-color:var(--accent)}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+    .event{margin-top:14px;min-height:64px;line-height:1.55}
+    .stack{display:grid;gap:18px}
+    .steps{display:grid;gap:13px;margin-top:14px}
+    .step{display:flex;gap:12px;line-height:1.5}
+    .bubble{
+      width:30px;height:30px;border-radius:50%;background:#26344f;
+      display:grid;place-items:center;font-weight:800;flex:none
+    }
+    .people{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+    .person{
+      width:29px;height:29px;border-radius:50%;border:1px solid var(--border);
+      background:#11182b;display:grid;place-items:center;font-size:11px;
+      transition:.15s
+    }
+    .person.counter{border:2px solid var(--gold);font-weight:800}
+    .person.done{background:rgba(79,209,168,.25);border-color:var(--good)}
+    .person.active{outline:3px solid var(--accent);outline-offset:2px}
+    .why{line-height:1.6}
+    .footer-note{margin-top:20px;color:var(--muted);font-size:13px}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}.wrap{padding:16px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>50 Wise Men & the Glass</h1>
+    <p class="lead">
+      A coordination puzzle under uncertainty. One man is chosen as the counter; the other 49 each
+      contribute exactly one signal. Random selection changes only how long the process takes — not whether it is correct.
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <strong>Shared state</strong>
+            <div id="minuteText" class="muted" style="margin-top:5px">Minute 0 · nobody has visited yet</div>
+          </div>
+          <div class="card counter-box">
+            <div class="muted" style="font-size:12px">Counter's count</div>
+            <div class="counter-num"><span id="countText">0</span><span class="muted" style="font-size:14px;font-weight:500"> / 49</span></div>
+          </div>
+        </div>
+
+        <div class="glass-wrap">
+          <div id="glass" class="glass upside" role="img" aria-label="Glass is upside-down"></div>
+        </div>
+        <div id="glassLabel" class="center"><strong>Glass: UPSIDE-DOWN · ready to receive a signal</strong></div>
+
+        <div class="meter"><div id="progress"></div></div>
+        <div class="meter-labels"><span>0 unique signals counted</span><span>Safe declaration at 49</span></div>
+
+        <div class="actions">
+          <button id="stepBtn" class="primary" type="button">Next random call</button>
+          <button id="runBtn" type="button">Auto run</button>
+          <button id="resetBtn" type="button">Reset</button>
+        </div>
+
+        <div id="eventText" class="card event" aria-live="polite">
+          They agree beforehand that Wise Man #1 will be the <b>counter</b>.
+        </div>
+      </section>
+
+      <section class="stack">
+        <div class="panel">
+          <strong>The strategy</strong>
+          <div class="steps">
+            <div class="step"><div class="bubble">1</div><div><b>Choose one counter.</b> Wise Man #1 never contributes his own signal.</div></div>
+            <div class="step"><div class="bubble">2</div><div>Each of the other 49 men remembers one bit: <b>“Have I signaled yet?”</b></div></div>
+            <div class="step"><div class="bubble">3</div><div>If a non-counter who has never signaled sees the glass <b>upside-down</b>, he flips it right-side-up. That is his one signal.</div></div>
+            <div class="step"><div class="bubble">4</div><div>Whenever the counter sees it <b>right-side-up</b>, he flips it back and increments his count.</div></div>
+            <div class="step"><div class="bubble">✓</div><div>When his count reaches <b>49</b>, all 49 other men must have signaled, so all 50 have been called.</div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="topbar">
+            <strong>50 wise men</strong>
+            <span class="muted" style="font-size:12px">★ = counter · filled = signaled</span>
+          </div>
+          <div id="people" class="people"></div>
+        </div>
+
+        <div class="card why">
+          <strong>Why this can never give a false declaration</strong>
+          <p class="muted">
+            A count is added only after a non-counter creates a right-side-up signal, and every non-counter
+            is allowed to create that signal at most once. Therefore 49 counts correspond to 49 distinct men.
+          </p>
+          <p><b>Random selection affects only how long it takes, not correctness.</b> With independent random calls, every man is eventually selected with probability 1.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">
+      Initial state matters: this version assumes the glass starts upside-down, exactly as specified in the puzzle.
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const glass = document.getElementById('glass');
+      const glassLabel = document.getElementById('glassLabel');
+      const countText = document.getElementById('countText');
+      const minuteText = document.getElementById('minuteText');
+      const eventText = document.getElementById('eventText');
+      const progress = document.getElementById('progress');
+      const people = document.getElementById('people');
+      const stepBtn = document.getElementById('stepBtn');
+      const runBtn = document.getElementById('runBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      let minute = 0;
+      let count = 0;
+      let signal = false;
+      let active = null;
+      let timer = null;
+      let finished = false;
+      let visited = Array(50).fill(false);
+      let signaled = Array(50).fill(false);
+      let visitCounts = Array(50).fill(0);
+
+      for (let i = 0; i < 50; i++) {
+        const d = document.createElement('div');
+        d.className = 'person' + (i === 0 ? ' counter' : '');
+        d.dataset.i = i;
+        d.title = i === 0 ? 'Wise Man #1 — counter' : `Wise Man #${i + 1}`;
+        d.textContent = i === 0 ? '★' : String(i + 1);
+        people.appendChild(d);
+      }
+      const nodes = [...people.children];
+
+      function update() {
+        countText.textContent = count;
+        minuteText.textContent = `Minute ${minute} · ${visited.filter(Boolean).length}/50 have been called at least once`;
+        progress.style.width = `${(count / 49) * 100}%`;
+
+        glass.classList.toggle('upside', !signal);
+        glass.classList.toggle('signal', signal);
+        glass.setAttribute('aria-label',
+          signal ? 'Glass is right-side-up: an uncounted signal is waiting'
+                 : 'Glass is upside-down: ready to receive a signal'
+        );
+
+        glassLabel.innerHTML = signal
+          ? '<strong>Glass: RIGHT-SIDE-UP · one signal is waiting</strong>'
+          : '<strong>Glass: UPSIDE-DOWN · ready to receive a signal</strong>';
+
+        nodes.forEach((n, i) => {
+          n.classList.toggle('done', signaled[i]);
+          n.classList.toggle('active', i === active);
+        });
+
+        if (finished) {
+          stepBtn.disabled = true;
+          runBtn.disabled = true;
+          runBtn.textContent = 'Completed';
+        }
+      }
+
+      function stop() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+        if (!finished) runBtn.textContent = 'Auto run';
+      }
+
+      function step() {
+        if (finished) return;
+
+        minute++;
+        const i = Math.floor(Math.random() * 50);
+        active = i;
+        visited[i] = true;
+        visitCounts[i]++;
+
+        if (i === 0) {
+          if (signal) {
+            signal = false;
+            count++;
+            eventText.innerHTML =
+              `<b>Counter #1</b> is called. He sees a waiting signal, flips the glass upside-down, and raises his count to <b>${count}</b>.`;
+
+            if (count === 49) {
+              finished = true;
+              stop();
+              eventText.innerHTML =
+                `🎉 <b>Counter #1 reaches 49.</b> Every other wise man has definitely been called and signaled once. He can safely declare: <b>“Everyone has been called.”</b>`;
+            }
+          } else {
+            eventText.innerHTML =
+              '<b>Counter #1</b> is called, but the glass is upside-down. There is no new signal to count, so he does nothing.';
+          }
+        } else {
+          if (!signaled[i] && !signal) {
+            signal = true;
+            signaled[i] = true;
+            eventText.innerHTML =
+              `Wise Man <b>#${i + 1}</b> is called${visitCounts[i] === 1 ? ' for the first time' : ''}. He has not signaled before and finds the glass upside-down, so he flips it <b>right-side-up</b>.`;
+          } else if (signaled[i]) {
+            eventText.innerHTML =
+              `Wise Man <b>#${i + 1}</b> is called. He has already used his one signal, so he does nothing.`;
+          } else {
+            eventText.innerHTML =
+              `Wise Man <b>#${i + 1}</b> has not signaled yet, but the glass is already right-side-up. Someone else's signal is waiting for the counter, so he must <b>leave it alone</b>.`;
+          }
+        }
+
+        update();
+      }
+
+      function run() {
+        if (timer) {
+          stop();
+          return;
+        }
+        if (finished) return;
+        runBtn.textContent = 'Pause';
+        timer = setInterval(step, 60);
+      }
+
+      function reset() {
+        stop();
+        minute = 0;
+        count = 0;
+        signal = false;
+        active = null;
+        finished = false;
+        visited = Array(50).fill(false);
+        signaled = Array(50).fill(false);
+        visitCounts = Array(50).fill(0);
+        stepBtn.disabled = false;
+        runBtn.disabled = false;
+        runBtn.textContent = 'Auto run';
+        eventText.innerHTML =
+          'They agree beforehand that Wise Man #1 will be the <b>counter</b>.';
+        update();
+      }
+
+      stepBtn.addEventListener('click', step);
+      runBtn.addEventListener('click', run);
+      resetBtn.addEventListener('click', reset);
+      update();
+    })();
+  </script>
+</body>
+</html>

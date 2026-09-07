@@ -23,6 +23,8 @@ They get **one chance** before being separated to agree on a strategy.
 
 ---
 
+<iframe src="{{ site.baseurl }}/assets/50_wise_men_glass_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ## Goal
 
 Design a **guaranteed strategy** to eventually make the correct declaration—regardless of the randomness in the sultan’s choices.
