@@ -13,6 +13,8 @@ But the others may or may not shake hands among themselves.
 
 > **Question:** Show that **at least two people** (among the 25 others) must have shaken hands with the **same number** of people.
 
+<iframe src="{{ site.baseurl }}/assets/at_least_two_guests_must_shake_the_same_numbers_of_hands.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: What Are the Possible Handshake Counts?
