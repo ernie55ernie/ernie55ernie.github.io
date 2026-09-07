@@ -49,12 +49,15 @@ Now we must show that a circle of radius \\( \frac{1}{7} \\) is large enough to 
 
 - The **diagonal** of each small square is:
   \\[
-  \sqrt{(0.2)^2 + (0.2)^2} = \sqrt{0.08} ≈ 0.2828
+  \sqrt{(0.2)^2 + (0.2)^2} = \sqrt{0.08} \approx 0.2828
   \\]
 
 So, the **maximum distance** between any two ants inside the same small square is less than 0.283.
 
-A circle of radius \\( \frac{1}{7} ≈ 0.143 \\) has a **diameter of \\( \frac{2}{7} ≈ 0.2857 \\)**.
+A circle of radius \\( \frac{1}{7} \approx 0.143 \\) has a **diameter of \\( \frac{2}{7} \approx 0.2857 \\)**.
+
+Notice that \\( \frac{2}{7} = \sqrt{\frac{4}{49}} \approx \sqrt{0.0816} \\).
+Since \\( \sqrt{0.0816} > \sqrt{0.08} \\), the circle's diameter is **strictly greater** than the square's diagonal!
 
 Thus, a circle of diameter 2/7 can **cover the entire sub-square**.
 
