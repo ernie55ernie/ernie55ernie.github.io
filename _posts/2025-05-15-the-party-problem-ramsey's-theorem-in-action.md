@@ -14,7 +14,7 @@ You’re at a small gathering with a twist of mathematics:
 > - A trio of **mutual acquaintances**, or  
 > - A trio of **mutual strangers**.
 
-This is a classic result from **Ramsey theory**, and specifically proves that:
+This is a classic result from **Ramsey theory**, and famously demonstrates the Ramsey number:
 
 \\[
 R(3,3) = 6
@@ -61,17 +61,27 @@ You’d then find either:
 - A blue triangle (among strangers), or
 - A red triangle (mutual acquaintances).
 
+This rigorously proves that any group of 6 people guarantees a trio, meaning \\( R(3,3) \le 6 \\).
+
+---
+
+## Bonus: Why Not 5 People?
+
+To fully prove \\( R(3,3) = 6 \\), we must show that 5 people is **not enough**. 
+
+Imagine 5 people sitting in a circle, where everyone is acquainted **only** with their two immediate neighbors. 
+- The acquaintances form a **pentagon boundary** (no triangles).
+- The strangers form a **star inside** the pentagon (no triangles).
+
+Since a group of 5 can avoid both trios, 6 is the absolute minimum!
+
 ---
 
 ## Final Answer
 
 **In any group of 6 people**, there must exist **three mutual acquaintances** or **three mutual strangers**.
 
-This elegant result is a special case of **Ramsey’s Theorem**:
-
-\\[
-R(3,3) = 6
-\\]
+This perfectly illustrates the core principle of **Ramsey’s Theorem**: complete disorder is impossible!
 
 # Reference
 
