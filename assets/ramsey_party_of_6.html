@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ramsey Theory: Party of 6</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --panel:#ffffff; --text:#18202a; --muted:#677281;
+    --border:#d9dee7; --accent:#315efb; --accent-soft:#e9efff;
+    --friend:#2f7d4f; --stranger:#b24a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.5;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 40px}
+  h1{font-size:clamp(1.6rem,3vw,2.4rem);margin:0 0 8px}
+  .subtitle{color:var(--muted);margin-bottom:20px}
+  .grid{display:grid;grid-template-columns:1.35fr .8fr;gap:18px}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
+  }
+  .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+  button{
+    border:0;border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer;
+    background:var(--accent);color:white;font-weight:700
+  }
+  button.secondary{background:white;color:var(--text);border:1px solid var(--border)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  svg{width:100%;height:auto;display:block;margin-top:8px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .swatch{display:inline-block;width:30px;vertical-align:middle;margin-right:7px}
+  .solid{border-top:4px solid var(--friend)}
+  .dashed{border-top:4px dashed var(--stranger)}
+  .count-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .count{text-align:center;border:1px solid var(--border);border-radius:12px;padding:12px}
+  .big{font-size:28px;font-weight:800}
+  .note{background:var(--accent-soft);border-radius:12px;padding:12px;margin-top:12px}
+  .step{min-height:138px}
+  .buttons{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .case h3{margin:0 0 6px}
+  .result{
+    margin-top:14px;padding:14px;border-radius:12px;background:var(--accent-soft);
+    font-weight:800;text-align:center
+  }
+  code{background:#eef1f6;padding:2px 5px;border-radius:5px}
+  @media(max-width:800px){
+    .grid,.cases{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Why 6 People Force a Triangle</h1>
+  <div class="subtitle">
+    Every pair of people is either <strong>acquainted</strong> or <strong>strangers</strong>.
+    We prove that there must be either 3 mutual acquaintances or 3 mutual strangers.
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="toolbar">
+        <div>
+          <strong>Party graph</strong><br>
+          <span style="color:var(--muted);font-size:14px">Solid = acquainted · dashed = strangers</span>
+        </div>
+        <button id="randomize">Randomize relationships</button>
+      </div>
+
+      <svg id="graph" viewBox="0 0 520 430" aria-label="Graph of six people">
+        <g id="edges"></g>
+        <g id="nodes"></g>
+      </svg>
+
+      <div class="legend">
+        <span><span class="swatch solid"></span>Acquainted</span>
+        <span><span class="swatch dashed"></span>Strangers</span>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div style="color:var(--muted);font-size:14px;font-weight:700">THE KEY IDEA</div>
+      <h2 style="margin:4px 0 6px">Focus on one person: A</h2>
+      <p>A has relationships with the other <strong>5</strong> people. Each relationship has only two possible types.</p>
+
+      <div class="count-grid">
+        <div class="count"><div id="friendCount" class="big">–</div><small>acquaintances of A</small></div>
+        <div class="count"><div id="strangerCount" class="big">–</div><small>strangers to A</small></div>
+      </div>
+
+      <div id="pigeonhole" class="note"></div>
+
+      <hr style="border:0;border-top:1px solid var(--border);margin:16px 0">
+
+      <div style="color:var(--muted);font-size:14px;font-weight:700">PROOF WALKTHROUGH</div>
+      <div id="stepText" class="step"></div>
+      <div class="buttons">
+        <button id="prev" class="secondary">← Previous</button>
+        <button id="next">Next →</button>
+      </div>
+    </aside>
+  </div>
+
+  <section class="cases">
+    <div class="card case">
+      <h3>Case 1 — A has at least 3 acquaintances</h3>
+      <p>Call three of them B, C, D.</p>
+      <p>If <strong>any pair</strong> among B, C, D are acquainted, that pair together with A forms a trio of mutual acquaintances.</p>
+      <p>If <strong>none</strong> of those three pairs are acquainted, then B, C, D are pairwise strangers.</p>
+    </div>
+
+    <div class="card case">
+      <h3>Case 2 — A has at least 3 strangers</h3>
+      <p>The exact same argument works with the relationship types reversed.</p>
+      <p>Either two of those three people are strangers to each other, giving a trio of mutual strangers with A, or all three know each other, giving three mutual acquaintances.</p>
+      <div class="result">Therefore every 2-coloring of K₆ contains a monochromatic triangle.</div>
+    </div>
+  </section>
+
+  <div class="card" style="margin-top:18px">
+    <h2 style="margin-top:0">Why this proves the result</h2>
+    <p>
+      Among the 5 edges touching A, at least <code>ceil(5/2) = 3</code> have the same type
+      by the pigeonhole principle. Once we choose those 3 people, the relationships
+      among them force one of the two desired triangles.
+    </p>
+    <p><strong>This is the classic Ramsey-theory statement:</strong> <code>R(3,3) = 6</code>.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const people = ['A','B','C','D','E','F'];
+  const pos = {
+    A:[260,55], B:[430,155], C:[365,340],
+    D:[155,340], E:[90,155], F:[260,225]
+  };
+
+  const pairs = [];
+  for(let i=0;i<people.length;i++){
+    for(let j=i+1;j<people.length;j++) pairs.push([people[i],people[j]]);
+  }
+
+  const edgesG = document.getElementById('edges');
+  const nodesG = document.getElementById('nodes');
+  const friendCount = document.getElementById('friendCount');
+  const strangerCount = document.getElementById('strangerCount');
+  const pigeonhole = document.getElementById('pigeonhole');
+  const stepText = document.getElementById('stepText');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+
+  let rel = {};
+  let step = 0;
+  let dominant = 'friend';
+  let chosen = [];
+
+  function key(a,b){ return [a,b].sort().join('-'); }
+
+  function randomize(){
+    rel = {};
+    pairs.forEach(([a,b]) => {
+      rel[key(a,b)] = Math.random() < 0.5 ? 'friend' : 'stranger';
+    });
+    step = 0;
+    recompute();
+    render();
+  }
+
+  function recompute(){
+    const others = people.slice(1);
+    const friends = others.filter(p => rel[key('A',p)] === 'friend');
+    const strangers = others.filter(p => rel[key('A',p)] === 'stranger');
+
+    dominant = friends.length >= 3 ? 'friend' : 'stranger';
+    chosen = (dominant === 'friend' ? friends : strangers).slice(0,3);
+
+    friendCount.textContent = friends.length;
+    strangerCount.textContent = strangers.length;
+
+    pigeonhole.innerHTML =
+      `Since <strong>${friends.length} + ${strangers.length} = 5</strong>, one group must contain at least ` +
+      `<strong>3</strong> people. Here A has at least 3 ` +
+      `${dominant === 'friend' ? 'acquaintances' : 'strangers'}.`;
+  }
+
+  function resultTriangle(){
+    if(chosen.length < 3) return null;
+
+    const [x,y,z] = chosen;
+    const inner = [[x,y],[x,z],[y,z]];
+    const matching = inner.find(([u,v]) => rel[key(u,v)] === dominant);
+
+    if(matching){
+      return {type:dominant, tri:['A',matching[0],matching[1]], reason:'same'};
+    }
+
+    return {
+      type: dominant === 'friend' ? 'stranger' : 'friend',
+      tri:[x,y,z],
+      reason:'opposite'
+    };
+  }
+
+  function highlighted(a,b){
+    if(step === 1) return a === 'A' || b === 'A';
+
+    if(step === 2){
+      return chosen.includes(a) && chosen.includes(b) && (a === 'A' || b === 'A');
+    }
+
+    if(step >= 3){
+      const r = resultTriangle();
+      return r && r.tri.includes(a) && r.tri.includes(b);
+    }
+
+    return false;
+  }
+
+  function render(){
+    edgesG.innerHTML = '';
+    pairs.forEach(([a,b]) => {
+      const [x1,y1] = pos[a];
+      const [x2,y2] = pos[b];
+      const type = rel[key(a,b)];
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',x1);
+      line.setAttribute('y1',y1);
+      line.setAttribute('x2',x2);
+      line.setAttribute('y2',y2);
+      line.setAttribute('stroke', type === 'friend' ? 'var(--friend)' : 'var(--stranger)');
+      line.setAttribute('stroke-width', highlighted(a,b) ? '6' : '2.5');
+      line.setAttribute('stroke-linecap','round');
+      line.setAttribute('opacity', step > 0 && !highlighted(a,b) ? '.18' : '.85');
+
+      if(type === 'stranger') line.setAttribute('stroke-dasharray','9 8');
+      edgesG.appendChild(line);
+    });
+
+    nodesG.innerHTML = '';
+    people.forEach(p => {
+      const [x,y] = pos[p];
+      const r = resultTriangle();
+
+      const active =
+        p === 'A' ||
+        (step >= 2 && chosen.includes(p)) ||
+        (step >= 3 && r && r.tri.includes(p));
+
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx',x);
+      circle.setAttribute('cy',y);
+      circle.setAttribute('r','25');
+      circle.setAttribute('fill', active ? 'var(--accent-soft)' : '#fff');
+      circle.setAttribute('stroke', active ? 'var(--accent)' : 'var(--border)');
+      circle.setAttribute('stroke-width', active ? '3' : '2');
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+      text.setAttribute('x',x);
+      text.setAttribute('y',y+6);
+      text.setAttribute('text-anchor','middle');
+      text.setAttribute('font-size','18');
+      text.setAttribute('font-weight','800');
+      text.setAttribute('fill','var(--text)');
+      text.textContent = p;
+
+      nodesG.appendChild(circle);
+      nodesG.appendChild(text);
+    });
+
+    updateStep();
+  }
+
+  function updateStep(){
+    const names = chosen.join(', ');
+    const r = resultTriangle();
+    const dominantWord = dominant === 'friend' ? 'acquainted with A' : 'strangers to A';
+    const sameWord = dominant === 'friend' ? 'acquainted' : 'strangers';
+    const oppositeWord = dominant === 'friend' ? 'strangers' : 'acquainted';
+
+    const steps = [
+      `<p><strong>Start:</strong> There are 6 people. Every pair has exactly one of two relationship types.</p>
+       <p>We only need to inspect the 5 relationships involving A.</p>`,
+
+      `<p><strong>Step 1:</strong> A is connected to 5 people.</p>
+       <p>With only two relationship types, at least <strong>⌈5/2⌉ = 3</strong> of those 5 relationships must be the same type.</p>`,
+
+      `<p><strong>Step 2:</strong> Choose three such people: <strong>${names}</strong>.</p>
+       <p>All three are ${dominantWord}. Now inspect the three relationships among them.</p>`,
+
+      r && r.reason === 'same'
+        ? `<p><strong>Step 3:</strong> At least one pair among ${names} is also ${sameWord}.</p>
+           <p>That pair together with A forms a trio of mutual <strong>${dominant === 'friend' ? 'acquaintances' : 'strangers'}</strong>.</p>`
+        : `<p><strong>Step 3:</strong> None of the three pairs among ${names} has A's relationship type.</p>
+           <p>Therefore all three pairs have the opposite type, so <strong>${names}</strong> form a trio of mutual ${oppositeWord}.</p>`,
+
+      `<p><strong>Conclusion:</strong> Either way, a monochromatic triangle is unavoidable.</p>
+       <p>Thus <strong>R(3,3) = 6</strong>.</p>`
+    ];
+
+    stepText.innerHTML = steps[step];
+    prev.disabled = step === 0;
+    next.disabled = step === steps.length - 1;
+  }
+
+  document.getElementById('randomize').addEventListener('click', randomize);
+  prev.addEventListener('click', () => {
+    if(step > 0){ step--; render(); }
+  });
+  next.addEventListener('click', () => {
+    if(step < 4){ step++; render(); }
+  });
+
+  randomize();
+})();
+</script>
+</body>
+</html>

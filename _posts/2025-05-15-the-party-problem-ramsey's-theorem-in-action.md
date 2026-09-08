@@ -20,6 +20,8 @@ This is a classic result from **Ramsey theory**, and famously demonstrates the R
 R(3,3) = 6
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/ramsey_party_of_6.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Model the Problem
