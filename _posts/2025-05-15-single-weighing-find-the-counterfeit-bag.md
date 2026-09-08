@@ -14,6 +14,8 @@ You face a classic logic-and-weight puzzle:
 >
 > You may use a **digital scale** **once** to determine **which bag is counterfeit**.
 
+<iframe src="{{ site.baseurl }}/assets/one_weighing_counterfeit_coin_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step-by-Step Solution

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One-Weighing Counterfeit Coin Puzzle</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --card: #f3f5f8;
+      --text: #172033;
+      --muted: #667085;
+      --border: #d7dce5;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --success: #087443;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, select, input { font: inherit; }
+
+    .wrap {
+      width: min(1100px, calc(100% - 28px));
+      margin: 32px auto 48px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      max-width: 800px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .strategy {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .bags {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .bag {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      min-width: 0;
+      transition: 0.2s ease;
+    }
+
+    .bag.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .bag-label {
+      font-size: 0.73rem;
+      color: var(--muted);
+    }
+
+    .coin { font-size: 1.45rem; margin: 4px 0; }
+    .take { font-size: 0.75rem; font-weight: 700; }
+
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .facts strong { color: var(--text); }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    label, legend {
+      display: block;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    select {
+      width: 100%;
+      margin-top: 6px;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      padding: 8px 10px;
+    }
+
+    fieldset {
+      border: 0;
+      margin: 18px 0 0;
+      padding: 0;
+    }
+
+    .radios {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .radio-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 48px;
+      cursor: pointer;
+    }
+
+    .primary, .secondary {
+      min-height: 44px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 10px 16px;
+    }
+
+    .primary {
+      border: 1px solid var(--accent);
+      background: var(--accent-soft);
+      color: var(--text);
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .secondary {
+      border: 1px solid var(--border);
+      background: white;
+    }
+
+    .scale {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px 18px;
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    .scale-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: clamp(2.3rem, 8vw, 4rem);
+      font-weight: 800;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .result {
+      margin-top: 14px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 116px;
+    }
+
+    .result strong { color: var(--success); }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 9px 8px;
+      text-align: center;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    .formula {
+      margin-top: 16px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .source {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .source a { color: var(--accent); }
+
+    @media (max-width: 800px) {
+      .strategy, .main-grid { grid-template-columns: 1fr; }
+      .bags { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .strategy .secondary { width: 100%; }
+    }
+
+    @media (max-width: 430px) {
+      .wrap { width: min(100% - 18px, 1100px); margin-top: 18px; }
+      .panel, .card { padding: 15px; }
+      .bags { grid-template-columns: repeat(2, 1fr); }
+      .radios { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>One-Weighing Counterfeit Coin Puzzle</h1>
+    <p class="subtitle">
+      Ten bags contain 100 visually identical coins each. Nine bags contain 10 g coins,
+      while one bag contains either 9 g or 11 g coins. A digital scale may be used only once.
+    </p>
+
+    <section class="panel">
+      <div class="strategy">
+        <div>
+          <div class="eyebrow">The strategy</div>
+          <p>
+            Take <strong>1 coin from Bag 1</strong>, <strong>2 from Bag 2</strong>,
+            …, and <strong>10 from Bag 10</strong>.
+            If all sampled coins were genuine, the scale would read exactly <strong>550 g</strong>.
+          </p>
+        </div>
+        <button class="secondary" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div id="bags" class="bags" aria-label="Ten coin bags"></div>
+
+      <div class="facts">
+        <span>Coins sampled: <strong>1 + 2 + ⋯ + 10 = 55</strong></span>
+        <span>Normal weight: <strong>55 × 10 = 550 g</strong></span>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <h2 style="margin-top:0">Choose the hidden reality</h2>
+        <p class="muted">
+          These controls are only for the simulation. The solver does not know which bag is counterfeit.
+        </p>
+
+        <label for="bagSelect">Counterfeit bag</label>
+        <select id="bagSelect">
+          <option value="1">Bag 1</option>
+          <option value="2">Bag 2</option>
+          <option value="3">Bag 3</option>
+          <option value="4">Bag 4</option>
+          <option value="5">Bag 5</option>
+          <option value="6">Bag 6</option>
+          <option value="7">Bag 7</option>
+          <option value="8">Bag 8</option>
+          <option value="9">Bag 9</option>
+          <option value="10">Bag 10</option>
+        </select>
+
+        <fieldset>
+          <legend>Counterfeit coin weight</legend>
+          <div class="radios">
+            <label class="radio-card">
+              <input type="radio" name="coinWeight" value="9" checked />
+              <span><strong>9 g</strong> · light</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="coinWeight" value="11" />
+              <span><strong>11 g</strong> · heavy</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <button class="primary" id="weighBtn" type="button">⚖️ Weigh once</button>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+          <h2 style="margin:0">Digital scale</h2>
+          <span class="muted">Only one reading needed</span>
+        </div>
+
+        <div class="scale">
+          <div id="scaleValue" class="scale-value">— g</div>
+          <div id="deviation" class="muted">Expected genuine reading: 550 g</div>
+        </div>
+
+        <div id="result" class="result" aria-live="polite">
+          <p class="muted" style="margin:0">
+            Press <strong>Weigh once</strong>. The distance from 550 identifies the bag number;
+            the direction identifies whether the counterfeit coins are lighter or heavier.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin-top:0">Why the encoding works</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Counterfeit bag</th>
+              <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+              <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>If counterfeit coins are 9 g</td>
+              <td>549</td><td>548</td><td>547</td><td>546</td><td>545</td>
+              <td>544</td><td>543</td><td>542</td><td>541</td><td>540</td>
+            </tr>
+            <tr>
+              <td>If counterfeit coins are 11 g</td>
+              <td>551</td><td>552</td><td>553</td><td>554</td><td>555</td>
+              <td>556</td><td>557</td><td>558</td><td>559</td><td>560</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula">
+        reading = 550 ± k &nbsp; ⇒ &nbsp; counterfeit bag = |reading − 550|
+      </div>
+
+      <p>
+        For example, a reading of <strong>543 g</strong> is 7 g below the expected 550 g.
+        Since seven coins were taken from Bag 7, Bag 7 must be the counterfeit bag,
+        and because the reading is low, its coins must weigh <strong>9 g</strong>.
+      </p>
+    </section>
+
+    <p class="source">
+      Reference:
+      <a href="https://mathworld.wolfram.com/Weighing.html" target="_blank" rel="noopener noreferrer">
+        Wolfram MathWorld — Weighing
+      </a>
+    </p>
+  </main>
+
+  <script>
+    (() => {
+      const bags = document.getElementById("bags");
+      const bagSelect = document.getElementById("bagSelect");
+      const scaleValue = document.getElementById("scaleValue");
+      const deviation = document.getElementById("deviation");
+      const result = document.getElementById("result");
+      const weighBtn = document.getElementById("weighBtn");
+      const resetBtn = document.getElementById("resetBtn");
+
+      function renderBags(highlight = null) {
+        bags.innerHTML = "";
+        for (let i = 1; i <= 10; i++) {
+          const el = document.createElement("div");
+          el.className = "bag" + (i === highlight ? " active" : "");
+          el.innerHTML = `
+            <div class="bag-label">Bag ${i}</div>
+            <div class="coin">🪙</div>
+            <div class="take">take ${i}</div>
+          `;
+          bags.appendChild(el);
+        }
+      }
+
+      function selectedWeight() {
+        const radio = document.querySelector('input[name="coinWeight"]:checked');
+        return Number(radio.value);
+      }
+
+      function weigh() {
+        const k = Number(bagSelect.value);
+        const counterfeitWeight = selectedWeight();
+        const delta = (counterfeitWeight - 10) * k;
+        const reading = 550 + delta;
+        const decodedBag = Math.abs(reading - 550);
+        const decodedWeight = reading < 550 ? 9 : 11;
+
+        renderBags(k);
+
+        scaleValue.textContent = `${reading} g`;
+        deviation.innerHTML =
+          `Deviation from 550 g: <strong>${delta > 0 ? "+" : ""}${delta} g</strong>`;
+
+        result.innerHTML = `
+          <div class="muted">Decode the measurement</div>
+          <p style="font-size:1.15rem;margin:8px 0 0">
+            |${reading} − 550| = <strong>${decodedBag}</strong>
+            ⇒ counterfeit bag = <strong>Bag ${decodedBag}</strong>
+          </p>
+          <p style="margin-bottom:0">
+            The scale is <strong>${reading < 550 ? "lighter" : "heavier"}</strong>
+            than 550 g, so the counterfeit coins weigh
+            <strong>${decodedWeight} g</strong>.
+          </p>
+        `;
+      }
+
+      function reset() {
+        bagSelect.value = "1";
+        document.querySelector('input[name="coinWeight"][value="9"]').checked = true;
+        scaleValue.textContent = "— g";
+        deviation.textContent = "Expected genuine reading: 550 g";
+        result.innerHTML = `
+          <p class="muted" style="margin:0">
+            Press <strong>Weigh once</strong>. The distance from 550 identifies the bag number;
+            the direction identifies whether the counterfeit coins are lighter or heavier.
+          </p>
+        `;
+        renderBags();
+      }
+
+      weighBtn.addEventListener("click", weigh);
+      resetBtn.addEventListener("click", reset);
+      renderBags();
+    })();
+  </script>
+</body>
+</html>
