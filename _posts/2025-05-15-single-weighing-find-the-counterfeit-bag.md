@@ -29,7 +29,7 @@ Take coins from each bag in a **distinct count**:
 
 Now you have **55 coins total**:
 \\[
-1 + 2 + \cdots + 10 = \frac{10 × 11}{2} = 55
+1 + 2 + \cdots + 10 = \frac{10 \times 11}{2} = 55
 \\]
 
 ---
@@ -39,7 +39,7 @@ Now you have **55 coins total**:
 If all coins were 10g:
 
 \\[
-55 × 10 = 550 \text{ grams}
+55 \times 10 = 550 \text{ grams}
 \\]
 
 Now place your 55 coins on the scale and **record the actual weight**.
@@ -59,7 +59,7 @@ This difference tells you **how many grams off** you are—i.e., **how many coin
 Because you took a unique number of coins from each bag, this difference directly identifies the counterfeit bag.
 
 - If \\(W = 548\\), you're 2g short → Bag **2** is counterfeit (with 9g coins).
-- If \\(W = 562\\), you're 12g over → Bag **6** is counterfeit (with 11g coins).
+- If \\(W = 556\\), you're 6g over → Bag **6** is counterfeit (with 11g coins).
 
 ---
 
