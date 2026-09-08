@@ -16,6 +16,8 @@ You're faced with a cozy yet classic problem in logic:
 >
 > **Question:** What’s the **minimum number** of socks you must pull out to guarantee a matching pair in the **same color**?
 
+<iframe src="{{ site.baseurl }}/assets/sock_drawer_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Worst-Case Scenario
