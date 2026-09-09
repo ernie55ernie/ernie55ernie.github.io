@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Glass Balls Puzzle — 100 Floors</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#dbe2ea;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --good:#059669;
+      --bad:#dc2626;
+      --panel:#f8fafc;
+      --shadow:0 10px 30px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1,h2,h3,p{margin:0}
+    .hero{
+      background:linear-gradient(135deg,#eff6ff,#ffffff);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+    .hero h1{
+      font-size:clamp(28px,4vw,40px);
+      margin-bottom:10px;
+    }
+    .hero p{
+      color:var(--muted);
+      font-size:16px;
+      max-width:900px;
+    }
+    .badge{
+      display:inline-block;
+      margin-top:14px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid #bfdbfe;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:20px;
+    }
+    @media (max-width: 960px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .controls{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .slider-row{
+      margin-top:18px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--accent);
+    }
+    .x-display{
+      font-size:40px;
+      font-weight:800;
+      text-align:right;
+    }
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+      min-height:44px;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+    }
+    .btn.soft{
+      background:var(--accent-soft);
+      border-color:#bfdbfe;
+      color:var(--accent);
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .status-box{
+      margin-top:18px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+    .status-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+      font-size:14px;
+      font-weight:700;
+    }
+    .drops{
+      font-variant-numeric:tabular-nums;
+    }
+    .status-text{
+      font-size:16px;
+    }
+
+    .history{
+      margin-top:16px;
+    }
+    .history-list{
+      margin-top:8px;
+      max-height:280px;
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      padding:10px;
+    }
+    .log{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      margin-bottom:8px;
+      background:var(--panel);
+      border:1px solid #eef2f7;
+      font-size:14px;
+    }
+    .log:last-child{margin-bottom:0}
+    .ball{
+      display:inline-block;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#f59e0b;
+      margin-right:8px;
+      vertical-align:-3px;
+    }
+    .ball.broken{
+      background:var(--bad);
+      border-radius:45% 55% 35% 65%;
+      transform:rotate(20deg);
+    }
+    .safe{color:var(--good); font-weight:800}
+    .breaks{color:var(--bad); font-weight:800}
+
+    .schedule{
+      margin-top:16px;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .node{
+      min-width:54px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:12px;
+      text-align:center;
+      padding:8px 10px;
+      transition:.18s ease;
+    }
+    .node .floor{
+      font-size:16px;
+      font-weight:800;
+    }
+    .node .jump{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .node.visited{
+      background:var(--accent-soft);
+      border-color:#bfdbfe;
+    }
+    .arrow{
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .formula{
+      margin-top:18px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      text-align:center;
+    }
+    .formula .eq{
+      font-size:26px;
+      font-weight:800;
+      margin:6px 0;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:16px;
+    }
+    .mini{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .mini .num{
+      font-size:28px;
+      font-weight:800;
+      margin:4px 0;
+    }
+
+    .explain{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+    @media (max-width: 860px){
+      .explain{grid-template-columns:1fr}
+      .two-col{grid-template-columns:1fr}
+    }
+    .step-card{
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      padding:16px;
+    }
+    .step-card h3{
+      font-size:16px;
+      margin-bottom:6px;
+    }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Two Glass Balls, 100 Floors</h1>
+      <p>
+        A ball dropped from floor <b>X</b> or higher will break. From any floor below <b>X</b>, it will not break.
+        The challenge is to determine <b>X</b> using the fewest drops possible in the <b>worst case</b>.
+      </p>
+      <div class="badge">Optimal worst-case answer: 14 drops</div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:end; gap:16px;">
+          <div>
+            <div class="section-title">Interactive Simulator</div>
+            <div class="sub">Choose a hidden threshold floor <b>X</b> and watch the optimal strategy find it.</div>
+          </div>
+          <div class="x-display" id="xValue">42</div>
+        </div>
+
+        <div class="slider-row">
+          <input id="xSlider" type="range" min="1" max="100" value="42" />
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="randomBtn">Random X</button>
+          <button class="btn primary" id="stepBtn">Drop once</button>
+          <button class="btn soft" id="runBtn">Run to answer</button>
+          <button class="btn" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="status-box">
+          <div class="status-head">
+            <span>Experiment status</span>
+            <span class="drops" id="dropCount">0 drops</span>
+          </div>
+          <div class="status-text" id="status">
+            Ball 1 is ready. First drop: floor <b>14</b>.
+          </div>
+        </div>
+
+        <div class="history">
+          <div class="section-title" style="font-size:16px; margin-bottom:0;">Drop History</div>
+          <div class="history-list" id="history">
+            <div class="sub">No drops yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Optimal First-Ball Schedule</div>
+        <div class="sub">Drop the first ball at floors with decreasing gaps: <b>14, 27, 39, 50, ...</b></div>
+
+        <div class="schedule" id="schedule"></div>
+
+        <div class="two-col">
+          <div class="mini">
+            <div class="sub">With 13 drops</div>
+            <div class="num">91 floors</div>
+            <div>13 + 12 + ··· + 1 = 91</div>
+            <div style="margin-top:8px; font-weight:800; color:var(--bad)">Not enough ✗</div>
+          </div>
+          <div class="mini">
+            <div class="sub">With 14 drops</div>
+            <div class="num">105 floors</div>
+            <div>14 + 13 + ··· + 1 = 105</div>
+            <div style="margin-top:8px; font-weight:800; color:var(--good)">Enough ✓</div>
+          </div>
+        </div>
+
+        <div class="formula">
+          <div class="sub">Find the smallest <b>k</b> such that</div>
+          <div class="eq">k(k + 1) / 2 ≥ 100</div>
+          <div class="sub">The smallest such value is <b>k = 14</b>.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <div class="section-title">Why the decreasing-gap strategy works</div>
+      <div class="sub">
+        The trick is to make every worst-case branch use at most the same number of drops.
+      </div>
+
+      <div class="explain">
+        <div class="step-card">
+          <h3>1) First drop at floor 14</h3>
+          <p>If it breaks, then you only need to test floors 1 through 13 one-by-one with the second ball.</p>
+        </div>
+        <div class="step-card">
+          <h3>2) Next drop at floor 27</h3>
+          <p>If the first ball survives 14, you have used one drop, so the next jump can be at most 13 floors.</p>
+        </div>
+        <div class="step-card">
+          <h3>3) Keep shrinking the gap</h3>
+          <p>Then go +12, +11, +10, and so on, so every scenario stays within 14 total drops.</p>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Schedule of first-ball drops:
+        <b>14, 27, 39, 50, 60, 69, 77, 84, 90, 95, 99, 100</b>.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const xSlider = document.getElementById("xSlider");
+    const xValue = document.getElementById("xValue");
+    const dropCount = document.getElementById("dropCount");
+    const status = document.getElementById("status");
+    const historyEl = document.getElementById("history");
+    const scheduleEl = document.getElementById("schedule");
+    const randomBtn = document.getElementById("randomBtn");
+    const stepBtn = document.getElementById("stepBtn");
+    const runBtn = document.getElementById("runBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const schedule = [];
+    let cur = 0;
+    for (let jump = 14; jump >= 1 && cur < 100; jump--) {
+      cur = Math.min(100, cur + jump);
+      if (schedule[schedule.length - 1] !== cur) schedule.push(cur);
+    }
+
+    let state = {};
+
+    function renderSchedule() {
+      scheduleEl.innerHTML = "";
+      schedule.forEach((floor, i) => {
+        const node = document.createElement("div");
+        node.className = "node";
+        node.dataset.floor = floor;
+        node.innerHTML = `
+          <div class="floor">${floor}</div>
+          <div class="jump">+${14 - i}</div>
+        `;
+        scheduleEl.appendChild(node);
+
+        if (i < schedule.length - 1) {
+          const arrow = document.createElement("div");
+          arrow.className = "arrow";
+          arrow.textContent = "→";
+          scheduleEl.appendChild(arrow);
+        }
+      });
+    }
+
+    function resetState() {
+      state = {
+        x: Number(xSlider.value),
+        phase: "ball1",
+        schedIndex: 0,
+        lastSafe: 0,
+        breakFloor: null,
+        linearFloor: null,
+        drops: 0,
+        done: false,
+        logs: []
+      };
+      updateUI();
+    }
+
+    function addLog(ball, floor, broke) {
+      state.logs.push({ ball, floor, broke });
+    }
+
+    function doOneDrop() {
+      if (state.done) return;
+
+      const X = state.x;
+
+      if (state.phase === "ball1") {
+        const floor = schedule[state.schedIndex];
+        state.drops++;
+        const broke = floor >= X;
+        addLog(1, floor, broke);
+
+        if (broke) {
+          state.breakFloor = floor;
+          if (floor === state.lastSafe + 1) {
+            state.done = true;
+          } else {
+            state.phase = "ball2";
+            state.linearFloor = state.lastSafe + 1;
+          }
+        } else {
+          state.lastSafe = floor;
+          state.schedIndex++;
+          if (state.lastSafe >= 100 || state.schedIndex >= schedule.length) {
+            state.done = true;
+          }
+        }
+      } else {
+        const floor = state.linearFloor;
+        state.drops++;
+        const broke = floor >= X;
+        addLog(2, floor, broke);
+
+        if (broke) {
+          state.breakFloor = floor;
+          state.done = true;
+        } else {
+          state.lastSafe = floor;
+          state.linearFloor++;
+          if (state.linearFloor >= state.breakFloor) {
+            state.done = true;
+          }
+        }
+      }
+
+      updateUI();
+    }
+
+    function updateUI() {
+      xValue.textContent = state.x;
+      dropCount.textContent = `${state.drops} drop${state.drops === 1 ? "" : "s"}`;
+
+      document.querySelectorAll(".node").forEach(node => {
+        node.classList.remove("visited");
+        const floor = Number(node.dataset.floor);
+        const visited = state.logs.some(log => log.ball === 1 && log.floor === floor);
+        if (visited) node.classList.add("visited");
+      });
+
+      if (state.logs.length === 0) {
+        historyEl.innerHTML = `<div class="sub">No drops yet.</div>`;
+      } else {
+        historyEl.innerHTML = state.logs.map(log => `
+          <div class="log">
+            <div>
+              <span class="ball ${log.broke ? "broken" : ""}"></span>
+              Ball ${log.ball} from floor <b>${log.floor}</b>
+            </div>
+            <div class="${log.broke ? "breaks" : "safe"}">${log.broke ? "BREAKS" : "safe"}</div>
+          </div>
+        `).join("");
+        historyEl.scrollTop = historyEl.scrollHeight;
+      }
+
+      if (state.done) {
+        status.innerHTML = `Found it: <b>X = ${state.x}</b> using <b>${state.drops}</b> drops. ${
+          state.drops === 14
+            ? "This reaches the worst-case bound."
+            : "This case finishes before the worst case."
+        }`;
+        stepBtn.disabled = true;
+        runBtn.disabled = true;
+      } else {
+        stepBtn.disabled = false;
+        runBtn.disabled = false;
+        if (state.phase === "ball1") {
+          status.innerHTML = `Ball 1: next drop from floor <b>${schedule[state.schedIndex]}</b>. Last known safe floor: <b>${state.lastSafe}</b>.`;
+        } else {
+          status.innerHTML = `Ball 1 broke at <b>${state.breakFloor}</b>. Ball 2 now checks upward one floor at a time; next floor: <b>${state.linearFloor}</b>.`;
+        }
+      }
+    }
+
+    xSlider.addEventListener("input", () => {
+      xValue.textContent = xSlider.value;
+      resetState();
+    });
+
+    randomBtn.addEventListener("click", () => {
+      xSlider.value = 1 + Math.floor(Math.random() * 100);
+      resetState();
+    });
+
+    stepBtn.addEventListener("click", doOneDrop);
+
+    runBtn.addEventListener("click", () => {
+      let guard = 0;
+      while (!state.done && guard < 30) {
+        doOneDrop();
+        guard++;
+      }
+    });
+
+    resetBtn.addEventListener("click", resetState);
+
+    renderSchedule();
+    resetState();
+  </script>
+</body>
+</html>
