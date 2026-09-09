@@ -41,7 +41,7 @@ Drop from floor 50, then 25/75, etc.
 
 The idea is to **balance risk** between balls:
 
-> Drop the first ball in **increasing intervals**, reducing by 1 each time.
+> Drop the first ball at **increasing floors**, with the step size between drops reducing by 1 each time.
 
 ### Why?
 
@@ -70,9 +70,9 @@ Each step reduces the interval by 1, so in **worst-case**, you’ll need **14 dr
 
 Suppose it breaks at floor 60 (after 5 drops).
 
-You now know \\(X\\) is between 50 and 59.
+Since it survived floor 50, you now know \\(X\\) is between **51 and 60**.
 
-Use the **second ball** to test linearly from 51, 52, ..., up to 59 → max 9 additional drops.
+Use the **second ball** to test linearly from 51, 52, ..., up to 59 → max 9 additional drops. *(If it survives 59, you automatically know \\(X = 60\\) without needing to drop again).*
 
 Total: 5 + 9 = 14
 
@@ -81,7 +81,7 @@ Total: 5 + 9 = 14
 ## Final Answer
 
 > **Minimum number of drops needed in the worst case is 14**  
-> Drop first ball at increasing intervals: 14, 27, 39, ..., decreasing steps by 1.  
+> Drop first ball at floors: 14, 27, 39, ..., decreasing the step size by 1 each time.  
 > When it breaks, use second ball to search linearly below.
 
 # Reference
