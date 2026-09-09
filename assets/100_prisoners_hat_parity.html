@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>100 Prisoners — Hat Parity Strategy</title>
+<style>
+  :root{
+    --bg:#f7f7f8; --panel:#ffffff; --card:#f1f3f5; --text:#18181b;
+    --muted:#6b7280; --border:#d4d4d8; --accent:#111827;
+    --red:#b94b55; --blue:#4269a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  main{max-width:1100px;margin:0 auto;padding:24px}
+  h1{margin:0 0 8px;font-size:32px}
+  h2{margin:0 0 10px;font-size:18px}
+  p{line-height:1.55}
+  .muted{color:var(--muted)}
+  .grid{display:grid;gap:16px}
+  .top{grid-template-columns:1.4fr .6fr}
+  .twocol{grid-template-columns:.8fr 1.2fr}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px}
+  .soft{background:var(--card)}
+  .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .mini{background:var(--card);border-radius:14px;padding:12px}
+  .pill{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:13px}
+  .stat{font-size:44px;font-weight:800}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  button{min-height:44px;border:1px solid var(--border);border-radius:12px;background:white;padding:10px 14px;font-weight:700;cursor:pointer}
+  button.primary{background:var(--accent);color:white}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .prisoner-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin-top:14px}
+  .prisoner{
+    aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:#fff;border:2px solid transparent;transition:.15s;
+  }
+  .prisoner.red{background:var(--red)}
+  .prisoner.blue{background:var(--blue)}
+  .prisoner.hidden{background:var(--card);color:var(--text);border-style:dashed;border-color:var(--border)}
+  .prisoner.current{border-color:#111;transform:scale(1.08)}
+  .prisoner.called{opacity:.45}
+  .prisoner.current.called{opacity:1}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:14px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px}
+  .order{display:flex;gap:8px;overflow-x:auto;padding-bottom:5px}
+  .chip{white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:5px 9px;font-size:12px}
+  .equation{margin-top:12px;background:var(--card);border-radius:12px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  label{font-size:14px}
+  @media(max-width:800px){.top,.twocol,.steps,.mini-grid{grid-template-columns:1fr}.prisoner-grid{gap:3px}.prisoner{font-size:9px;border-radius:6px}}
+</style>
+</head>
+<body>
+<main>
+  <h1>100 Prisoners — Hat Parity Strategy</h1>
+  <p class="muted">Interactive simulator for the optimal strategy: guarantee 99 survivors; only the first caller is ever at risk.</p>
+
+  <section class="grid top">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>Use the first guess as one bit of information</h2>
+        <span class="pill">Worst case: <strong>99 survive</strong></span>
+      </div>
+      <div class="mini-grid">
+        <div class="mini"><strong>Signal</strong><p>RED = even parity<br>BLUE = odd parity</p></div>
+        <div class="mini"><strong>First caller</strong><p>Counts red hats seen. Their own guess is the only risky one.</p></div>
+        <div class="mini"><strong>Everyone else</strong><p>Uses the signal to deduce their own hat exactly.</p></div>
+      </div>
+    </div>
+
+    <div class="card soft">
+      <div class="muted">Result</div>
+      <div><span id="survivors" class="stat">0</span> survivors</div>
+      <p>Executed: <strong id="deaths">0</strong><br>Called: <strong id="called">0</strong> / 100</p>
+      <hr style="border:0;border-top:1px solid var(--border)">
+      <p><strong>Guaranteed:</strong> at least 99<br><strong>Expected:</strong> 99.5</p>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between">
+      <div>
+        <h2>The 100 prisoners</h2>
+        <div class="muted">The outline marks the current caller.</div>
+      </div>
+      <label><input id="hideOwn" type="checkbox"> Hide current caller's own hat</label>
+    </div>
+    <div id="grid" class="prisoner-grid"></div>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--red)"></span>Red</span>
+      <span><span class="dot" style="background:var(--blue)"></span>Blue</span>
+      <span><span class="dot" style="border:2px solid #111"></span>Current caller</span>
+    </div>
+  </section>
+
+  <section class="grid twocol" style="margin-top:16px">
+    <div class="card soft">
+      <h2>Call order</h2>
+      <div id="order" class="order"></div>
+      <p class="muted">Whoever is called first becomes the parity broadcaster.</p>
+    </div>
+
+    <div class="card">
+      <h2>Reasoning for this call</h2>
+      <p id="reasoning">Press <strong>Next caller</strong> to begin.</p>
+      <div id="equation" class="equation"></div>
+    </div>
+  </section>
+
+  <div class="row" style="margin-top:16px">
+    <button id="randomize">↻ Randomize hats & order</button>
+    <button id="next" class="primary">Next caller →</button>
+    <button id="run">Run all 100</button>
+  </div>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Why it works</h2>
+    <div class="steps">
+      <div><strong>1. Broadcast parity</strong><p class="muted">The first caller announces whether the number of red hats among the other 99 is even or odd.</p></div>
+      <div><strong>2. One missing bit</strong><p class="muted">A later prisoner sees every hat in that 99-person set except their own.</p></div>
+      <div><strong>3. Recover the missing bit</strong><p class="muted">Comparing the visible parity with the announced parity reveals whether their own hat is red or blue.</p></div>
+    </div>
+    <div class="mini" style="margin-top:12px">
+      <strong>Why 100 guaranteed survivors is impossible:</strong>
+      the first caller sees the same 99 hats whether their own hat is red or blue. Any fixed guess must be wrong in one of those two worlds.
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const N=100;
+  let hats=[], order=[], step=0, survivors=0, deaths=0;
+
+  const grid=document.getElementById('grid');
+  const orderEl=document.getElementById('order');
+  const reasoning=document.getElementById('reasoning');
+  const equation=document.getElementById('equation');
+  const sEl=document.getElementById('survivors');
+  const dEl=document.getElementById('deaths');
+  const cEl=document.getElementById('called');
+  const hideOwn=document.getElementById('hideOwn');
+  const nextBtn=document.getElementById('next');
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function name(c){return c==='R'?'RED':'BLUE'}
+  function parityName(p){return p===0?'EVEN':'ODD'}
+
+  function signalParity(){
+    const first=order[0];
+    let reds=0;
+    for(let i=0;i<N;i++) if(i!==first && hats[i]==='R') reds++;
+    return reds%2;
+  }
+
+  function guessFor(k){
+    const pid=order[k];
+    const first=order[0];
+    const parity=signalParity();
+
+    if(k===0) return parity===0?'R':'B';
+
+    let knownRed=0;
+    for(let i=0;i<N;i++){
+      if(i!==first && i!==pid && hats[i]==='R') knownRed++;
+    }
+    const ownIsRed=parity ^ (knownRed%2);
+    return ownIsRed?'R':'B';
+  }
+
+  function renderGrid(){
+    grid.innerHTML='';
+    const current=step<N?order[step]:-1;
+    const called=new Set(order.slice(0,step));
+
+    for(let i=0;i<N;i++){
+      const el=document.createElement('div');
+      const hidden=hideOwn.checked && i===current;
+      el.className='prisoner '+(hidden?'hidden':hats[i]==='R'?'red':'blue');
+      if(i===current) el.classList.add('current');
+      if(called.has(i)) el.classList.add('called');
+      el.textContent=hidden?'?':String(i+1);
+      grid.appendChild(el);
+    }
+  }
+
+  function renderOrder(){
+    orderEl.innerHTML='';
+    order.slice(0,15).forEach((pid,idx)=>{
+      const c=document.createElement('span');
+      c.className='chip';
+      if(idx===step) c.style.fontWeight='800';
+      c.textContent=(idx+1)+': P'+(pid+1);
+      orderEl.appendChild(c);
+    });
+    const more=document.createElement('span');
+    more.className='muted';
+    more.textContent='… 85 more';
+    orderEl.appendChild(more);
+  }
+
+  function updateStats(){
+    sEl.textContent=survivors;
+    dEl.textContent=deaths;
+    cEl.textContent=step;
+  }
+
+  function doStep(render=true){
+    if(step>=N) return;
+
+    const k=step;
+    const pid=order[k];
+    const first=order[0];
+    const parity=signalParity();
+    const guess=guessFor(k);
+    const actual=hats[pid];
+    const correct=guess===actual;
+
+    if(correct) survivors++; else deaths++;
+    step++;
+
+    if(render){
+      if(k===0){
+        let seenRed=0;
+        for(let i=0;i<N;i++) if(i!==pid && hats[i]==='R') seenRed++;
+
+        reasoning.innerHTML=
+          '<strong>P'+(pid+1)+' is first.</strong> They see <strong>'+
+          seenRed+' red hats</strong>, so the parity is '+parityName(parity).toLowerCase()+
+          '. They say <strong>'+name(guess)+'</strong>. This both acts as their guess and broadcasts the parity. '+
+          'Their real hat is <strong>'+name(actual)+'</strong>, so they '+
+          (correct?'<strong>survive</strong>.':'<strong>are executed</strong>.');
+
+        equation.textContent=
+          seenRed+' red hats ≡ '+parity+' (mod 2) → signal = '+name(guess);
+      }else{
+        let knownRed=0;
+        for(let i=0;i<N;i++){
+          if(i!==first && i!==pid && hats[i]==='R') knownRed++;
+        }
+
+        reasoning.innerHTML=
+          '<strong>P'+(pid+1)+'</strong> knows the signal says the 99-person set has '+
+          '<strong>'+parityName(parity).toLowerCase()+' red parity</strong>. '+
+          'They see <strong>'+knownRed+' red hats</strong> among the other members of that set. '+
+          'Therefore their own hat must be <strong>'+name(guess)+'</strong>, so they survive.';
+
+        equation.textContent=
+          'own red-bit = '+parity+' XOR ('+knownRed+' mod 2) = '+
+          (guess==='R'?'1 → RED':'0 → BLUE');
+      }
+
+      updateStats();
+      renderGrid();
+      renderOrder();
+
+      if(step>=N){
+        nextBtn.disabled=true;
+        reasoning.innerHTML+='<br><br><strong>Finished.</strong>';
+      }
+    }
+  }
+
+  function reset(){
+    hats=Array.from({length:N},()=>Math.random()<0.5?'R':'B');
+    order=shuffle(Array.from({length:N},(_,i)=>i));
+    step=0; survivors=0; deaths=0;
+    nextBtn.disabled=false;
+    reasoning.innerHTML='Randomized. <strong>P'+(order[0]+1)+'</strong> will be the first caller and parity broadcaster.';
+    equation.textContent='Press “Next caller” to reveal the first signal.';
+    updateStats(); renderGrid(); renderOrder();
+  }
+
+  document.getElementById('randomize').addEventListener('click',reset);
+  document.getElementById('next').addEventListener('click',()=>doStep(true));
+  document.getElementById('run').addEventListener('click',()=>{
+    while(step<N) doStep(false);
+    updateStats(); renderGrid(); renderOrder();
+    reasoning.innerHTML='<strong>Finished.</strong> Every prisoner after the first was correct. Final result: <strong>'+
+      survivors+' survivors</strong>, <strong>'+deaths+' execution'+(deaths===1?'':'s')+'</strong>.';
+    equation.textContent=deaths===0
+      ? 'The first caller also guessed correctly → all 100 survive.'
+      : 'Only the first caller was wrong → 99 survive.';
+    nextBtn.disabled=true;
+  });
+  hideOwn.addEventListener('change',renderGrid);
+
+  reset();
+})();
+</script>
+</body>
+</html>
