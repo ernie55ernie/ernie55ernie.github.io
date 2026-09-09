@@ -37,27 +37,27 @@ The group decides to use the **parity (XOR sum)** of all 100 hat colors as a **s
 
 ## Step 2: The Strategy
 
-The **first prisoner** to speak is the only one who may **not survive**.
+The **first prisoner** to speak acts as the informant and is the only one who may **not survive**.
 
-They compute the **parity of all 99 visible hats** and use that to infer their own:
+They compute the **parity of all 99 visible hats**. Instead of trying to guess their own hat, they use their turn to communicate this parity to the group:
 
-- They announce a hat color such that the **total parity of all 100 hats** is **even (or pre-agreed value)**.
+- They announce a hat color such that the **assumed total parity of all 100 hats** (their guess + the 99 they see) is **even (0)**.
 
 This means:
-
-- If the total parity is 0 (even), then the first prisoner says the color that **completes the parity to even**.
-- This prisoner has a **50% chance** of survival.
+- If the 99 hats have an odd parity (1), they guess "Red" (1) so the total is even.
+- If the 99 hats have an even parity (0), they guess "Blue" (0).
+- This prisoner has a **50% chance** of survival, since their true hat color is independent of the other 99.
 
 ---
 
 ## Step 3: Everyone Else
 
-Each subsequent prisoner:
+Each subsequent prisoner now knows the exact parity of the 99 hats (excluding the first speaker). 
 
-- **Heard all previous guesses**.
-- **Knows the parity of everyone else's hats**.
-- **Knows the overall parity from the first speaker**.
-- **Can reconstruct their own hat color exactly** using prior information.
+To figure out their own hat, they simply:
+- Look at the other 98 hats (or determine the true colors of previously called prisoners based on their guesses and outcomes).
+- Compare the parity of those 98 hats to the total parity announced by the first speaker.
+- **Reconstruct their own hat color exactly** to make up the difference!
 
 They are thus guaranteed to guess correctly.
 
