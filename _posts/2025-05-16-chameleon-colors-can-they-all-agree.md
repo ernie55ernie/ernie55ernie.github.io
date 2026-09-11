@@ -70,18 +70,19 @@ So both differences **mod 3 remain constant**.
 
 Currently:
 
-- \\( G - R \equiv 2 \mod 3 \\)
-- \\( B - G \equiv 2 \mod 3 \\)
+- \\( G - R \equiv 2 \pmod 3 \\)
+- \\( B - G \equiv 2 \pmod 3 \\)
 
 If all chameleons were to become the same color (say all red), then:
 
-- G = 0, B = 0, R = 45 → \\( G - R = -45 \equiv 0 \mod 3 \\), contradiction.
+- G = 0, B = 0, R = 45 → \\( G - R = -45 \equiv 0 \pmod 3 \\), which is a contradiction!
 
-In fact, for **any** same-color state:
+In fact, for **any** same-color state, two of the color counts will be exactly 0, and the third will be 45.
+This means the differences between any two color counts will always be **0, 45, or -45**. 
 
-- The differences G−R and B−G would be zero → \\( \equiv 0 \mod 3 \\)
+Notice that all of these possible differences are multiples of 3 (i.e., \\( \equiv 0 \pmod 3 \\)).
 
-But our current values are \\( \equiv 2 \mod 3 \\), and they **never change**.
+But our current values are \\( \equiv 2 \pmod 3 \\), and they **never change**.
 
 ---
 
