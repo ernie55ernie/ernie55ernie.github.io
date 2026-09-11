@@ -50,8 +50,8 @@ That is, \\(N\\) and the **sum of its digits** are congruent modulo 9.
 
 ## Therefore:
 
-- \\(N \equiv \text{digit sum} \mod 9\\)
-- So, \\(N \equiv 0 \mod 9 \iff \text{digit sum} \equiv 0 \mod 9\\)
+- \\(N \equiv \text{digit sum} \pmod{9}\\)
+- So, \\(N \equiv 0 \pmod{9} \iff \text{digit sum} \equiv 0 \pmod{9}\\)
 
 ---
 
