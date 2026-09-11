@@ -15,6 +15,8 @@ You’re given a deceptively simple setup:
 > **Question:** Can you always find a starting point so you can complete the lap without running out of gas?  
 > And if so, **how** can you find it?
 
+<iframe src="{{ site.baseurl }}/assets/gas_station_circle_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Reframe as a Difference Array

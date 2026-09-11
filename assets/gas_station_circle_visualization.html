@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gas Station Circle — Safe Starting Point</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #1d2433;
+      --muted: #687386;
+      --border: #dfe4ec;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --series: #0f766e;
+      --shadow: 0 10px 28px rgba(20, 30, 55, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 28px));
+      margin: 28px auto 48px;
+    }
+
+    .hero {
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 850px;
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2, .card h3 {
+      margin-top: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      background: #f2f4f8;
+      color: var(--muted);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .formula {
+      background: #f5f7fb;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin: 12px 0;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .sim {
+      margin-top: 16px;
+    }
+
+    .progress-track {
+      height: 12px;
+      background: #edf0f5;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 12px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .status {
+      font-weight: 800;
+      min-height: 1.5em;
+    }
+
+    .status.good { color: var(--good); }
+    .status.bad { color: var(--bad); }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .answer {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      font-weight: 800;
+    }
+
+    .proof {
+      margin-top: 18px;
+    }
+
+    .proof p {
+      margin-bottom: 10px;
+    }
+
+    .complexity {
+      display: inline-block;
+      margin-top: 6px;
+      font-weight: 800;
+      color: var(--good);
+    }
+
+    .prefix-wrap {
+      overflow-x: auto;
+    }
+
+    .prefix-wrap svg {
+      min-width: 680px;
+    }
+
+    @media (max-width: 820px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>Gas Station Circle</h1>
+      <div class="subtitle">
+        A car travels around a circular one-way track. At each station, you collect gas,
+        then spend gas reaching the next station. If total gas exactly equals total travel cost,
+        can we always find a starting point that completes the lap?
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h2 style="margin-bottom:4px;">Net fuel around the circle</h2>
+            <div style="color:var(--muted);font-size:.92rem;">
+              Define Δᵢ = gas collected − gas needed to reach the next station.
+            </div>
+          </div>
+          <button id="newExample">New example</button>
+        </div>
+
+        <svg id="circleSvg" viewBox="0 0 440 340" aria-label="Circular gas station diagram"></svg>
+
+        <div class="legend">
+          <span class="pill">Δᵢ &gt; 0 → tank gains fuel</span>
+          <span class="pill">Δᵢ &lt; 0 → tank loses fuel</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>The key idea</h2>
+        <p>
+          Pretend you start before station 1 and keep a running balance:
+        </p>
+
+        <div class="formula">
+          S₀ = 0<br>
+          Sₖ = Δ₁ + Δ₂ + ⋯ + Δₖ
+        </div>
+
+        <p>
+          Find the <strong>minimum prefix sum</strong>. Start at the station immediately
+          after that minimum.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <strong>1. Convert each station</strong>
+            Compute Δᵢ = gasᵢ − costᵢ.
+          </div>
+          <div class="step">
+            <strong>2. Find the lowest prefix sum</strong>
+            Track S₀, S₁, …, Sₙ.
+          </div>
+          <div class="step">
+            <strong>3. Start after the valley</strong>
+            From that point onward, your relative balance can never be negative.
+          </div>
+        </div>
+
+        <div class="sim">
+          <h3>Drive from the chosen start</h3>
+          <div id="status" class="status"></div>
+          <div class="progress-track">
+            <div id="progress" class="progress-bar"></div>
+          </div>
+          <div id="tankReadout" style="color:var(--muted);"></div>
+
+          <div class="controls">
+            <button id="stepBtn" class="primary">Step</button>
+            <button id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>Prefix-sum view</h2>
+      <div style="color:var(--muted);font-size:.92rem;">
+        The lowest point determines where the safe start should be.
+      </div>
+
+      <div class="prefix-wrap">
+        <svg id="prefixSvg" viewBox="0 0 780 250" aria-label="Prefix sum chart"></svg>
+      </div>
+
+      <div id="answer" class="answer"></div>
+    </section>
+
+    <section class="card proof">
+      <h2>Why this always works</h2>
+      <p>
+        Because the total fuel is exactly the total travel cost,
+        <strong>ΣΔᵢ = 0</strong>. Therefore the prefix sum ends where it began.
+      </p>
+      <p>
+        Suppose <strong>Sₘ</strong> is the smallest prefix sum. If you start just after
+        that point, then after moving forward to any later point k, your tank level is
+        <strong>Sₖ − Sₘ ≥ 0</strong>.
+      </p>
+      <p>
+        When you wrap around past station N, the same argument still holds because the
+        total change over one complete lap is zero.
+      </p>
+      <p>
+        So a valid starting point <strong>always exists</strong>.
+      </p>
+      <span class="complexity">Finding it takes O(N) time and O(1) extra space.</span>
+    </section>
+  </main>
+
+  <script>
+    const circleSvg = document.getElementById("circleSvg");
+    const prefixSvg = document.getElementById("prefixSvg");
+    const answer = document.getElementById("answer");
+    const status = document.getElementById("status");
+    const progress = document.getElementById("progress");
+    const tankReadout = document.getElementById("tankReadout");
+    const stepBtn = document.getElementById("stepBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const newExample = document.getElementById("newExample");
+
+    let delta = [4, -6, 3, -2, 5, -4, 2, -2];
+    let start = 0;
+    let step = 0;
+    let tank = 0;
+
+    function prefixSums() {
+      const p = [0];
+      for (const d of delta) p.push(p[p.length - 1] + d);
+      return p;
+    }
+
+    function findStart() {
+      const p = prefixSums();
+      let minIndex = 0;
+
+      for (let i = 1; i < p.length - 1; i++) {
+        if (p[i] < p[minIndex]) minIndex = i;
+      }
+      return minIndex % delta.length;
+    }
+
+    function renderCircle() {
+      const n = delta.length;
+      const cx = 220;
+      const cy = 170;
+      const r = 118;
+
+      let out = `
+        <circle cx="${cx}" cy="${cy}" r="${r}"
+                fill="none" stroke="#dfe4ec" stroke-width="20"/>
+        <circle cx="${cx}" cy="${cy}" r="72"
+                fill="#f7f8fb"/>
+        <text x="${cx}" y="${cy - 10}" text-anchor="middle"
+              font-size="12" fill="#687386">SAFE START</text>
+        <text x="${cx}" y="${cy + 22}" text-anchor="middle"
+              font-size="26" font-weight="800" fill="#1d2433">
+          Station ${start + 1}
+        </text>
+      `;
+
+      for (let i = 0; i < n; i++) {
+        const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+
+        const activeIndex = step < n ? (start + step) % n : -1;
+        const isActive = i === activeIndex;
+        const isStart = i === start;
+
+        let fill = "#ffffff";
+        let textFill = "#1d2433";
+
+        if (isStart) fill = "#ccfbf1";
+        if (isActive) {
+          fill = "#4f46e5";
+          textFill = "#ffffff";
+        }
+
+        out += `
+          <circle cx="${x}" cy="${y}" r="26"
+                  fill="${fill}" stroke="#dfe4ec" stroke-width="2"/>
+          <text x="${x}" y="${y - 4}" text-anchor="middle"
+                font-size="11" font-weight="800" fill="${textFill}">
+            ${i + 1}
+          </text>
+          <text x="${x}" y="${y + 13}" text-anchor="middle"
+                font-size="11" fill="${textFill}">
+            ${delta[i] >= 0 ? "+" : ""}${delta[i]}
+          </text>
+        `;
+      }
+
+      circleSvg.innerHTML = out;
+    }
+
+    function renderPrefix() {
+      const p = prefixSums();
+      const W = 780, H = 250;
+      const L = 48, R = 24, T = 24, B = 44;
+
+      const minVal = Math.min(...p);
+      const maxVal = Math.max(...p);
+      const span = Math.max(1, maxVal - minVal);
+
+      const x = i => L + i * (W - L - R) / (p.length - 1);
+      const y = v => T + (maxVal - v) * (H - T - B) / span;
+
+      const minIdx = start;
+      const zeroY = y(0);
+
+      let out = `
+        <line x1="${L}" y1="${zeroY}" x2="${W - R}" y2="${zeroY}"
+              stroke="#dfe4ec" stroke-width="1.5" stroke-dasharray="5 5"/>
+      `;
+
+      const points = p.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+      out += `
+        <polyline points="${points}"
+                  fill="none" stroke="#0f766e" stroke-width="3"
+                  stroke-linejoin="round" stroke-linecap="round"/>
+      `;
+
+      p.forEach((v, i) => {
+        const isMin = i === minIdx;
+        out += `
+          <circle cx="${x(i)}" cy="${y(v)}" r="${isMin ? 8 : 5}"
+                  fill="${isMin ? "#4f46e5" : "#0f766e"}"/>
+          <text x="${x(i)}" y="${y(v) - 12}" text-anchor="middle"
+                font-size="11" fill="#1d2433">${v}</text>
+          <text x="${x(i)}" y="${H - 15}" text-anchor="middle"
+                font-size="11" fill="#687386">${i === 0 ? "S₀" : "S" + i}</text>
+        `;
+      });
+
+      out += `
+        <text x="${x(minIdx)}" y="${Math.min(H - B - 10, y(p[minIdx]) + 30)}"
+              text-anchor="middle" font-size="12" font-weight="800"
+              fill="#4f46e5">
+          minimum → start next
+        </text>
+      `;
+
+      prefixSvg.innerHTML = out;
+      answer.textContent =
+        `Minimum prefix is S${minIdx} = ${p[minIdx]} → start at station ${start + 1}`;
+    }
+
+    function resetSimulation() {
+      start = findStart();
+      step = 0;
+      tank = 0;
+
+      progress.style.width = "0%";
+      status.textContent = "";
+      status.className = "status";
+      tankReadout.textContent = `Start at station ${start + 1} with tank = 0.`;
+      stepBtn.disabled = false;
+
+      renderCircle();
+      renderPrefix();
+    }
+
+    function driveOneStep() {
+      const n = delta.length;
+      if (step >= n) return;
+
+      const idx = (start + step) % n;
+      const before = tank;
+      tank += delta[idx];
+      step += 1;
+
+      progress.style.width = `${100 * step / n}%`;
+
+      tankReadout.innerHTML =
+        `Station <strong>${idx + 1}</strong>: ` +
+        `tank ${before} ${delta[idx] >= 0 ? "+" : "−"} ${Math.abs(delta[idx])} ` +
+        `= <strong>${tank}</strong>`;
+
+      if (tank < 0) {
+        status.textContent = "Ran out of gas";
+        status.className = "status bad";
+        stepBtn.disabled = true;
+      } else if (step === n) {
+        status.textContent = "✓ Full lap completed";
+        status.className = "status good";
+        stepBtn.disabled = true;
+      } else {
+        status.textContent = "Tank remains nonnegative";
+        status.className = "status good";
+      }
+
+      renderCircle();
+    }
+
+    function makeRandomExample() {
+      const n = 8;
+      const arr = [];
+      let sum = 0;
+
+      for (let i = 0; i < n - 1; i++) {
+        let v = Math.floor(Math.random() * 9) - 4;
+        if (v === 0) v = Math.random() < 0.5 ? -2 : 2;
+        arr.push(v);
+        sum += v;
+      }
+
+      arr.push(-sum);
+      delta = arr;
+      resetSimulation();
+    }
+
+    stepBtn.addEventListener("click", driveOneStep);
+    resetBtn.addEventListener("click", resetSimulation);
+    newExample.addEventListener("click", makeRandomExample);
+
+    resetSimulation();
+  </script>
+</body>
+</html>
