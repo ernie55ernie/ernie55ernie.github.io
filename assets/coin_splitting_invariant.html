@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coin Splitting Invariant</title>
+<style>
+  :root{
+    --bg:#f7f7fb; --panel:#ffffff; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --accent:#2563eb; --accent-soft:#dbeafe;
+    --green:#047857; --green-soft:#d1fae5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
+    "Segoe UI",sans-serif; background:var(--bg); color:var(--text);
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:32px 18px 48px}
+  h1{font-size:clamp(28px,4vw,46px);line-height:1.05;margin:0 0 10px}
+  .lead{font-size:18px;color:var(--muted);margin:0 0 28px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;
+  }
+  .big{font-size:34px;font-weight:800;margin-top:4px}
+  .small{font-size:14px;color:var(--muted)}
+  .formula{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:clamp(16px,2.4vw,22px);font-weight:700;line-height:1.55;
+  }
+  .section{margin-top:18px}
+  .section h2{font-size:21px;margin:0 0 8px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+  .stat{background:#f9fafb;border:1px solid var(--border);border-radius:12px;padding:14px}
+  .stat strong{display:block;font-size:27px}
+  .piles{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  button{
+    font:inherit;border:1px solid var(--border);background:#fff;color:var(--text);
+    border-radius:11px;padding:10px 14px;cursor:pointer;min-height:44px;
+  }
+  button:hover{border-color:#cbd5e1;background:#f9fafb}
+  button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .pile{
+    min-width:105px;text-align:left;
+  }
+  .pile.selected{background:var(--accent-soft);border-color:var(--accent)}
+  .dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+  .dot{width:12px;height:12px;border-radius:50%;background:#d1d5db;border:1px solid #9ca3af}
+  .controls{margin-top:16px;border-top:1px solid var(--border);padding-top:16px}
+  .row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+  .grow{flex:1;min-width:220px}
+  input[type=range]{width:100%}
+  .preview{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    background:#f9fafb;border:1px solid var(--border);border-radius:10px;padding:11px 14px;
+    min-width:160px;text-align:center
+  }
+  .history{display:grid;gap:8px;margin-top:14px}
+  .history-item{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    background:#f9fafb;border:1px solid var(--border);border-radius:10px;padding:10px 12px
+  }
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .answer{
+    background:var(--green-soft);border:1px solid #a7f3d0;border-radius:14px;
+    padding:18px;margin-top:18px
+  }
+  .answer strong{color:var(--green);font-size:24px}
+  @media (max-width:760px){
+    .grid,.stats,.proof-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Coin Splitting Invariant</h1>
+  <p class="lead">
+    Start with 1,000 coins. Split piles any way you like. Each split
+    <b>n → x + (n−x)</b> adds <b>x(n−x)</b>. Why is the final total always the same?
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="small">Final total</div>
+      <div class="big">499,500</div>
+      <div class="small">= C(1000, 2)</div>
+    </div>
+    <div class="card" style="grid-column:span 2">
+      <div class="small">Invariant</div>
+      <div class="formula">
+        running total + Σ C(pile size, 2) = C(1000, 2)
+      </div>
+      <div class="small">
+        Every split transfers exactly x(n−x) from “remaining pair potential”
+        into the running total.
+      </div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>Interactive example with 8 coins</h2>
+    <div class="small">
+      Click any pile larger than 1, choose where to split it, and watch the invariant stay fixed at 28.
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="small">Running total</span>
+        <strong id="running">0</strong>
+      </div>
+      <div class="stat">
+        <span class="small">Remaining pair potential</span>
+        <strong id="potential">28</strong>
+      </div>
+      <div class="stat">
+        <span class="small">Their sum</span>
+        <strong id="invariant">28</strong>
+      </div>
+    </div>
+
+    <div class="small"><b>Current piles</b></div>
+    <div id="piles" class="piles"></div>
+
+    <div class="controls">
+      <div id="selectionText" style="font-weight:700;margin-bottom:10px">Select a pile larger than 1.</div>
+      <div class="row">
+        <label class="grow">
+          <span class="small">Left part x</span>
+          <input id="range" type="range" min="1" max="7" value="4" disabled>
+        </label>
+        <div id="preview" class="preview">—</div>
+        <button id="splitBtn" class="primary" disabled>Split</button>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button id="balancedBtn">Finish with balanced splits</button>
+        <button id="randomBtn">Finish randomly</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div id="history" class="history"></div>
+  </div>
+
+  <div class="proof-grid section">
+    <div class="card">
+      <h2>Algebraic proof</h2>
+      <div class="formula">
+        C(n,2) − C(x,2) − C(n−x,2)
+        <br>= x(n−x)
+      </div>
+      <p class="small">
+        Before splitting, a pile of size n contributes C(n,2) to the remaining potential.
+        After splitting, its two children contribute C(x,2)+C(n−x,2).
+        The drop is exactly x(n−x), the amount added to the running total.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Combinatorial proof</h2>
+      <p>
+        Consider every unordered pair of coins. A pair stays together until one particular split
+        separates its two coins for the first time.
+      </p>
+      <p>
+        A split into x and n−x separates exactly <b>x(n−x)</b> pairs.
+        Therefore every pair of coins is counted exactly once.
+      </p>
+      <div class="formula">C(1000,2) = 1000×999/2</div>
+    </div>
+  </div>
+
+  <div class="answer">
+    <div class="small">Answer</div>
+    <strong>499,500</strong>
+    <div style="margin-top:6px">
+      The total is independent of the splitting strategy because each unordered pair of coins
+      contributes exactly once—at the moment the pair is first separated.
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const N = 8;
+  let piles = [N];
+  let total = 0;
+  let selected = -1;
+  let steps = [];
+
+  const running = document.getElementById('running');
+  const potentialEl = document.getElementById('potential');
+  const invariantEl = document.getElementById('invariant');
+  const pilesEl = document.getElementById('piles');
+  const range = document.getElementById('range');
+  const preview = document.getElementById('preview');
+  const splitBtn = document.getElementById('splitBtn');
+  const selectionText = document.getElementById('selectionText');
+  const history = document.getElementById('history');
+
+  const choose2 = n => n * (n - 1) / 2;
+  const remainingPotential = () => piles.reduce((s,n) => s + choose2(n), 0);
+
+  function dots(n){
+    return Array.from({length:n},()=>'<span class="dot"></span>').join('');
+  }
+
+  function render(){
+    running.textContent = total;
+    potentialEl.textContent = remainingPotential();
+    invariantEl.textContent = total + remainingPotential();
+
+    pilesEl.innerHTML = '';
+    piles.forEach((n,i)=>{
+      const b = document.createElement('button');
+      b.className = 'pile' + (i===selected ? ' selected' : '');
+      b.disabled = n===1;
+      b.innerHTML = `<div><b>Pile ${i+1}</b> · size ${n}</div><div class="dots">${dots(n)}</div>`;
+      if(n>1) b.addEventListener('click',()=>selectPile(i));
+      pilesEl.appendChild(b);
+    });
+
+    if(steps.length===0){
+      history.innerHTML = '<div class="small">No splits yet.</div>';
+    }else{
+      history.innerHTML = steps.map((s,i)=>
+        `<div class="history-item">${i+1}. ${s.n} → ${s.x} + ${s.n-s.x} &nbsp;&nbsp; adds ${s.add}</div>`
+      ).join('');
+    }
+
+    if(piles.every(n=>n===1)){
+      selected=-1;
+      range.disabled=true;
+      splitBtn.disabled=true;
+      selectionText.textContent='Finished: all piles are size 1.';
+      preview.textContent='Total = '+total;
+    }
+  }
+
+  function selectPile(i){
+    selected=i;
+    const n=piles[i];
+    range.min=1;
+    range.max=n-1;
+    range.value=Math.floor(n/2);
+    range.disabled=false;
+    splitBtn.disabled=false;
+    selectionText.textContent=`Selected pile of size ${n}.`;
+    updatePreview();
+    render();
+  }
+
+  function updatePreview(){
+    if(selected<0) return;
+    const n=piles[selected];
+    const x=Number(range.value);
+    preview.textContent=`${x} + ${n-x}  →  +${x*(n-x)}`;
+  }
+
+  function performSplit(index,x){
+    const n=piles[index];
+    if(!(n>1 && x>=1 && x<n)) return;
+    const add=x*(n-x);
+    total += add;
+    steps.push({n,x,add});
+    piles.splice(index,1,x,n-x);
+    selected=-1;
+    range.disabled=true;
+    splitBtn.disabled=true;
+    selectionText.textContent='Select another pile larger than 1.';
+    preview.textContent='—';
+    render();
+  }
+
+  function finish(mode){
+    let guard=0;
+    while(piles.some(n=>n>1) && guard<100){
+      guard++;
+      const candidates=piles.map((n,i)=>({n,i})).filter(v=>v.n>1);
+      const pick=candidates[Math.floor(Math.random()*candidates.length)];
+      const x = mode==='balanced'
+        ? Math.floor(pick.n/2)
+        : 1 + Math.floor(Math.random()*(pick.n-1));
+      performSplit(pick.i,x);
+    }
+  }
+
+  range.addEventListener('input',updatePreview);
+  splitBtn.addEventListener('click',()=>{
+    if(selected>=0) performSplit(selected,Number(range.value));
+  });
+  document.getElementById('balancedBtn').addEventListener('click',()=>finish('balanced'));
+  document.getElementById('randomBtn').addEventListener('click',()=>finish('random'));
+  document.getElementById('resetBtn').addEventListener('click',()=>{
+    piles=[N]; total=0; selected=-1; steps=[];
+    range.disabled=true; splitBtn.disabled=true;
+    selectionText.textContent='Select a pile larger than 1.';
+    preview.textContent='—';
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

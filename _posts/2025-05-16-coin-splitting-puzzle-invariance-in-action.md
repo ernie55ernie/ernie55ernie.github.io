@@ -13,6 +13,8 @@ You begin with a single pile of **1,000 identical coins**. You repeatedly do the
 
 > **Question:** What is the final total, and why is it **always the same**, no matter how you split?
 
+<iframe src="{{ site.baseurl }}/assets/coin_splitting_invariant.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Process
