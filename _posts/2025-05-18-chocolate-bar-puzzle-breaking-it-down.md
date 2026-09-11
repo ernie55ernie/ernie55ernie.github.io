@@ -14,6 +14,8 @@ You’re handed a sweet but tricky problem:
 >
 > **Question:** How many total breaks are required?
 
+<iframe src="{{ site.baseurl }}/assets/chocolate_bar_breaking_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Process

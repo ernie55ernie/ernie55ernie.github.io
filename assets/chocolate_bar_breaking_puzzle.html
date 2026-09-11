@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chocolate Bar Breaks</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #7c3aed;
+      --accent-2: #a78bfa;
+      --border: #e2e8f0;
+      --good: #059669;
+      --choco: #8b5e3c;
+      --choco-light: #b4835a;
+      --piece: #f3e8d8;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 900px;
+      margin-bottom: 24px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    button.secondary {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    button.ghost {
+      background: #f8fafc;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .bar-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 360px;
+      background: linear-gradient(180deg, #fff 0%, #faf8f6 100%);
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .pieces-board {
+      position: relative;
+      width: fit-content;
+      min-width: 520px;
+      min-height: 300px;
+    }
+
+    .piece {
+      position: absolute;
+      background: linear-gradient(145deg, var(--choco-light), var(--choco));
+      border: 2px solid #6b4428;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(139, 94, 60, 0.22);
+      transition: all 500ms ease;
+      overflow: hidden;
+    }
+
+    .piece-grid {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      gap: 2px;
+      padding: 4px;
+    }
+
+    .cell {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 2px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat .label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .explanation {
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .formula {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 1.05rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .answer-box {
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      border: 1px solid #a7f3d0;
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .answer-box .big {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--good);
+      margin-top: 4px;
+    }
+
+    .steps {
+      margin: 12px 0 0;
+      padding-left: 20px;
+      color: #334155;
+      line-height: 1.8;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .progress-wrap {
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 400ms ease;
+    }
+
+    .caption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Chocolate Bar Breaking Puzzle</h1>
+    <div class="subtitle">
+      A <strong>6 × 8</strong> chocolate bar has <strong>48 small squares</strong>.
+      Each break must split <strong>one existing rectangular piece</strong> into
+      <strong>two smaller rectangles</strong> along the grid lines.
+      <br />
+      <strong>Question:</strong> How many total breaks are required to split it into all individual squares?
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <div class="section-title">Interactive Visualization</div>
+        <div class="bar-area">
+          <div class="pieces-board" id="piecesBoard"></div>
+        </div>
+
+        <div class="controls">
+          <button class="primary" id="nextBtn">Make One Break</button>
+          <button class="secondary" id="autoBtn">Auto Solve</button>
+          <button class="ghost" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Breaks</div>
+            <div class="value" id="breakCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Pieces</div>
+            <div class="value" id="pieceCount">1</div>
+          </div>
+          <div class="stat">
+            <div class="label">Goal</div>
+            <div class="value">48</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="caption" id="statusText">
+            Start with 1 piece. Every break increases the number of pieces by exactly 1.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Key Idea</div>
+        <div class="explanation">
+          The important invariant is:
+          <div class="formula">
+            One break: <span class="highlight">1 piece → 2 pieces</span><br />
+            So each break changes the total by <span class="highlight">+1 piece</span>.
+          </div>
+
+          You start with:
+          <ul class="steps">
+            <li><strong>1</strong> whole chocolate bar</li>
+            <li>You want to end with <strong>48</strong> separate squares</li>
+            <li>So the number of pieces must increase by <strong>48 − 1 = 47</strong></li>
+          </ul>
+
+          <div class="answer-box">
+            <div>Therefore, the total number of breaks required is:</div>
+            <div class="big">47</div>
+          </div>
+
+          <div class="note">
+            It does <strong>not matter</strong> how you choose to break the bar.
+            Long strips, big chunks, or tiny pieces — every legal break increases
+            the number of pieces by exactly one, so the answer is always <code>47</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROWS = 6;
+    const COLS = 8;
+    const TOTAL = ROWS * COLS;
+    const BOARD_W = 560;
+    const BOARD_H = 340;
+    const GAP = 8;
+
+    let pieces = [];
+    let breaks = 0;
+    let autoTimer = null;
+
+    const boardEl = document.getElementById("piecesBoard");
+    const breakCountEl = document.getElementById("breakCount");
+    const pieceCountEl = document.getElementById("pieceCount");
+    const progressFillEl = document.getElementById("progressFill");
+    const statusTextEl = document.getElementById("statusText");
+    const nextBtn = document.getElementById("nextBtn");
+    const autoBtn = document.getElementById("autoBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function resetState() {
+      pieces = [{ r: 0, c: 0, h: ROWS, w: COLS }];
+      breaks = 0;
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+      autoBtn.textContent = "Auto Solve";
+      render();
+    }
+
+    function canSplit(piece) {
+      return piece.h > 1 || piece.w > 1;
+    }
+
+    function choosePieceToSplit() {
+      const candidates = pieces
+        .map((p, i) => ({ p, i, area: p.h * p.w }))
+        .filter(x => canSplit(x.p))
+        .sort((a, b) => b.area - a.area);
+      return candidates.length ? candidates[0].i : -1;
+    }
+
+    function splitOnePiece() {
+      if (pieces.length >= TOTAL) return false;
+
+      const idx = choosePieceToSplit();
+      if (idx === -1) return false;
+
+      const piece = pieces[idx];
+      let p1, p2;
+
+      if (piece.w > 1 && (piece.w >= piece.h || piece.h === 1)) {
+        const leftW = Math.floor(piece.w / 2);
+        const rightW = piece.w - leftW;
+        p1 = { r: piece.r, c: piece.c, h: piece.h, w: leftW };
+        p2 = { r: piece.r, c: piece.c + leftW, h: piece.h, w: rightW };
+      } else {
+        const topH = Math.floor(piece.h / 2);
+        const bottomH = piece.h - topH;
+        p1 = { r: piece.r, c: piece.c, h: topH, w: piece.w };
+        p2 = { r: piece.r + topH, c: piece.c, h: bottomH, w: piece.w };
+      }
+
+      pieces.splice(idx, 1, p1, p2);
+      breaks += 1;
+      render();
+      return true;
+    }
+
+    function layoutPieces() {
+      const cellW = (BOARD_W - (COLS - 1) * GAP) / COLS;
+      const cellH = (BOARD_H - (ROWS - 1) * GAP) / ROWS;
+      return pieces.map(piece => {
+        const left = piece.c * (cellW + GAP);
+        const top = piece.r * (cellH + GAP);
+        const width = piece.w * cellW + (piece.w - 1) * GAP;
+        const height = piece.h * cellH + (piece.h - 1) * GAP;
+        return { ...piece, left, top, width, height, cellW, cellH };
+      });
+    }
+
+    function renderPieceGrid(piece) {
+      const cells = piece.h * piece.w;
+      let html = "";
+      for (let i = 0; i < cells; i++) {
+        html += `<div class="cell"></div>`;
+      }
+      return `
+        <div class="piece-grid"
+             style="grid-template-columns: repeat(${piece.w}, 1fr); grid-template-rows: repeat(${piece.h}, 1fr);">
+          ${html}
+        </div>
+      `;
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      const laidOut = layoutPieces();
+
+      for (const piece of laidOut) {
+        const el = document.createElement("div");
+        el.className = "piece";
+        el.style.left = piece.left + "px";
+        el.style.top = piece.top + "px";
+        el.style.width = piece.width + "px";
+        el.style.height = piece.height + "px";
+        el.innerHTML = renderPieceGrid(piece);
+        boardEl.appendChild(el);
+      }
+
+      breakCountEl.textContent = breaks;
+      pieceCountEl.textContent = pieces.length;
+
+      const pct = (breaks / (TOTAL - 1)) * 100;
+      progressFillEl.style.width = pct + "%";
+
+      if (pieces.length === TOTAL) {
+        statusTextEl.textContent =
+          "Done! There are 48 separate squares, reached in exactly 47 breaks.";
+      } else {
+        statusTextEl.textContent =
+          `After ${breaks} break${breaks === 1 ? "" : "s"}, you have ${pieces.length} piece${pieces.length === 1 ? "" : "s"}.`;
+      }
+
+      nextBtn.disabled = pieces.length === TOTAL;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      splitOnePiece();
+    });
+
+    autoBtn.addEventListener("click", () => {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        autoBtn.textContent = "Auto Solve";
+        return;
+      }
+
+      autoBtn.textContent = "Pause";
+      autoTimer = setInterval(() => {
+        const ok = splitOnePiece();
+        if (!ok || pieces.length === TOTAL) {
+          clearInterval(autoTimer);
+          autoTimer = null;
+          autoBtn.textContent = "Auto Solve";
+        }
+      }, 350);
+    });
+
+    resetBtn.addEventListener("click", resetState);
+
+    resetState();
+  </script>
+</body>
+</html>
