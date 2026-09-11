@@ -38,14 +38,15 @@ You want to find an index \\(s\\) where starting the trip at \\(s\\) ensures you
 
 ---
 
-## Step 2: Cumulative Deficit Insight
+## Step 2: The Cumulative Deficit Insight
 
-Compute cumulative sum of \\(\Delta_i\\) as you go:
+Imagine starting at Station 1 and driving the full lap, **allowing your fuel tank to drop below zero**. 
+Compute the running cumulative fuel balance (the sum of \\(\Delta_i\\)) as you arrive at each station.
 
-- If total sum \\(\sum \Delta_i = 0\\), then at least **one place** must be the **lowest point** in the cumulative sum curve.
-- Starting **just after** that lowest point ensures that all cumulative fuel balances from that point onward stay **non-negative**.
+- Because the total gas equals the total cost, your balance at the very end of the lap will be exactly **0**.
+- During the lap, your balance will fluctuate. There must be at least **one place** where this running balance hits its **absolute lowest point** (the maximum deficit).
 
-This ensures you **never run out of fuel**—you always get the gas you need just in time.
+If you shift your starting point to be **immediately after** that lowest point, you effectively "reset" the lowest point to 0. Since no other point was lower, your running balance will **never drop below zero** for the rest of the lap!
 
 ---
 
