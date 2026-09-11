@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Drunk Passenger Puzzle</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#64748b;
+      --border:#dbe2ea;
+      --accent:#2563eb;
+      --good:#15803d;
+      --bad:#b91c1c;
+      --good-bg:#ecfdf5;
+      --bad-bg:#fef2f2;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{
+      max-width:1000px;
+      margin:0 auto;
+      padding:32px 18px 60px;
+    }
+    h1{margin:0 0 8px;font-size:clamp(30px,5vw,48px);line-height:1.1}
+    h2{margin-top:0}
+    .subtitle{color:var(--muted);margin-bottom:28px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin:20px 0 28px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:18px;
+    }
+    .stat-label{font-size:14px;color:var(--muted)}
+    .stat-value{font-size:30px;font-weight:800;margin-top:3px}
+    .section{margin-top:24px}
+    button{
+      border:0;
+      border-radius:10px;
+      padding:11px 16px;
+      font-size:15px;
+      cursor:pointer;
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+    }
+    button.secondary{
+      background:white;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .chain{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      overflow-x:auto;
+      padding:8px 0 2px;
+    }
+    .step{
+      min-width:140px;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      text-align:center;
+      flex:0 0 auto;
+    }
+    .arrow{font-size:22px;color:var(--muted)}
+    .outcome{margin-top:12px;padding:12px;border-radius:10px}
+    .good{background:var(--good-bg);color:var(--good)}
+    .bad{background:var(--bad-bg);color:var(--bad)}
+    .specials{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:16px;
+      align-items:center;
+      margin-top:16px;
+    }
+    .special{
+      text-align:center;
+      border:2px solid var(--border);
+      border-radius:16px;
+      background:white;
+      padding:20px;
+    }
+    .special .big{font-size:42px;font-weight:900}
+    .vs{font-size:30px;color:var(--muted)}
+    .formula{
+      font-size:clamp(22px,4vw,34px);
+      font-weight:800;
+      text-align:center;
+      padding:24px;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:16px;
+      margin-top:18px;
+    }
+    .bar-shell{
+      height:34px;
+      background:#e5e7eb;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:14px;
+      border:1px solid var(--border);
+    }
+    .bar{
+      height:100%;
+      width:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#60a5fa;
+      font-weight:800;
+      transition:width .25s ease;
+    }
+    .proof{
+      background:white;
+      border-left:5px solid var(--accent);
+      padding:18px 20px;
+      border-radius:12px;
+      margin-top:16px;
+    }
+    code{
+      background:#eef2ff;
+      padding:2px 6px;
+      border-radius:6px;
+    }
+    @media (max-width:700px){
+      .grid{grid-template-columns:1fr}
+      .specials{grid-template-columns:1fr}
+      .vs{transform:rotate(90deg)}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>The Drunk Passenger Puzzle</h1>
+    <p class="subtitle">
+      100 passengers, 100 seats. Passenger 1 chooses randomly. Everyone else takes their own seat if possible; otherwise they choose randomly from the remaining seats.
+    </p>
+
+    <section class="grid">
+      <div class="card">
+        <div class="stat-label">Passengers</div>
+        <div class="stat-value">100</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">Probability passenger 100 gets seat 100</div>
+        <div class="stat-value">1/2</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">Answer</div>
+        <div class="stat-value">50%</div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2 style="margin-bottom:4px">Follow one random flight</h2>
+          <div style="color:var(--muted)">Only the chain of displaced passengers matters.</div>
+        </div>
+        <button id="runOne">Run a flight</button>
+      </div>
+      <div id="chain" class="chain"></div>
+      <div id="outcome" class="outcome"></div>
+    </section>
+
+    <section class="section">
+      <h2>The key idea</h2>
+      <p>
+        Ignore passengers who sit in their own seats normally. Track only the passenger whose seat was stolen.
+        That “displacement chain” continues until it reaches one of two special seats:
+      </p>
+
+      <div class="specials">
+        <div class="special">
+          <div style="color:var(--muted)">Chain reaches</div>
+          <div class="big">Seat 1</div>
+          <strong style="color:var(--good)">Passenger 100 is safe ✓</strong>
+        </div>
+        <div class="vs">↔</div>
+        <div class="special">
+          <div style="color:var(--muted)">Chain reaches</div>
+          <div class="big">Seat 100</div>
+          <strong style="color:var(--bad)">Passenger 100 loses ✗</strong>
+        </div>
+      </div>
+
+      <div class="proof">
+        Suppose passenger <code>k</code> finds their own seat occupied. Among the remaining seats:
+        choosing seat 1 ends the chain in success, choosing seat 100 ends it in failure, and choosing any intermediate seat
+        <code>j</code> simply transfers the problem to passenger <code>j</code>.
+      </div>
+
+      <div class="formula">
+        P(last passenger gets own seat)
+        = P(seat 1 is hit before seat 100)
+        = 1/2.
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>Why exactly 1/2?</h2>
+      <p>
+        Seats 1 and 100 are symmetric in the random displacement process. Neither has any advantage.
+        The chain must eventually hit one of them, and exactly one is hit first.
+      </p>
+      <p>
+        Therefore:
+        <strong>P(seat 1 first) = P(seat 100 first) = 1/2</strong>.
+      </p>
+    </section>
+
+    <section class="card section">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2 style="margin-bottom:4px">Monte Carlo check</h2>
+          <div style="color:var(--muted)">Simulate the complete boarding process many times.</div>
+        </div>
+        <div class="row">
+          <button class="secondary simBtn" data-n="1000">1,000</button>
+          <button class="secondary simBtn" data-n="10000">10,000</button>
+          <button class="secondary simBtn" data-n="50000">50,000</button>
+        </div>
+      </div>
+
+      <div class="bar-shell">
+        <div id="bar" class="bar">50%</div>
+      </div>
+      <p id="simText" style="text-align:center;color:var(--muted)">
+        The theoretical result is exactly 50%.
+      </p>
+    </section>
+
+    <section class="card section">
+      <h2>Mental shortcut</h2>
+      <p style="margin-bottom:0">
+        Don’t track all 100 passengers. Track only the “stolen-seat chain.”
+        Eventually it hits either seat 1 or seat 100. Since these two outcomes are symmetric,
+        the last passenger gets their own seat with probability <strong>50%</strong>.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    function randIndex(n){
+      return Math.floor(Math.random()*n);
+    }
+
+    function simulate(record=false){
+      const available = Array.from({length:100},(_,i)=>i+1);
+      let passenger = 1;
+      const steps = [];
+
+      while(true){
+        let seat;
+        const ownIdx = available.indexOf(passenger);
+
+        if(passenger !== 1 && ownIdx !== -1){
+          seat = passenger;
+        }else{
+          seat = available[randIndex(available.length)];
+        }
+
+        available.splice(available.indexOf(seat),1);
+
+        if(record && (passenger === 1 || seat !== passenger)){
+          steps.push({passenger,seat});
+        }
+
+        if(seat === 1) return {success:true,steps};
+        if(seat === 100) return {success:false,steps};
+
+        if(seat !== passenger){
+          passenger = seat;
+        }else{
+          return {success:true,steps};
+        }
+      }
+    }
+
+    function runOne(){
+      const result = simulate(true);
+      const chain = document.getElementById("chain");
+      const outcome = document.getElementById("outcome");
+      chain.innerHTML = "";
+
+      result.steps.forEach((s,i)=>{
+        const node = document.createElement("div");
+        node.className = "step";
+        node.innerHTML = `<div style="font-size:12px;color:var(--muted)">Passenger ${s.passenger}</div><strong>takes seat ${s.seat}</strong>`;
+        chain.appendChild(node);
+
+        if(i < result.steps.length-1){
+          const arrow = document.createElement("div");
+          arrow.className = "arrow";
+          arrow.textContent = "→";
+          chain.appendChild(arrow);
+        }
+      });
+
+      outcome.className = "outcome " + (result.success ? "good" : "bad");
+      outcome.innerHTML = result.success
+        ? "<strong>Success ✓</strong> — the chain reached seat 1 before seat 100, so passenger 100 gets their own seat."
+        : "<strong>Failure ✗</strong> — the chain reached seat 100 first, so passenger 100 finds it occupied.";
+    }
+
+    function runMonteCarlo(n){
+      let wins = 0;
+      for(let i=0;i<n;i++){
+        if(simulate(false).success) wins++;
+      }
+      const pct = wins/n*100;
+      const bar = document.getElementById("bar");
+      bar.style.width = pct + "%";
+      bar.textContent = pct.toFixed(2) + "%";
+      document.getElementById("simText").innerHTML =
+        `<strong>${wins.toLocaleString()}</strong> of <strong>${n.toLocaleString()}</strong> trials succeeded → <strong>${pct.toFixed(2)}%</strong>.`;
+    }
+
+    document.getElementById("runOne").addEventListener("click",runOne);
+    document.querySelectorAll(".simBtn").forEach(btn=>{
+      btn.addEventListener("click",()=>runMonteCarlo(Number(btn.dataset.n)));
+    });
+
+    runOne();
+  </script>
+</body>
+</html>
