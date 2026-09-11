@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Divisibility by 9 — Interactive Proof</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#17181c;
+    --muted:#68707d;
+    --border:#dfe3ea;
+    --accent:#405cf5;
+    --accent-soft:#eef1ff;
+    --good:#157a55;
+    --bad:#b13b3b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:32px 18px 56px;
+  }
+  h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin:0 0 12px}
+  h2{font-size:1.25rem;margin:0 0 14px}
+  p{margin:0}
+  .lead{font-size:1.08rem;color:var(--muted);max-width:760px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px;
+  }
+  .rule{
+    margin-top:18px;
+    padding:16px 18px;
+    background:var(--accent-soft);
+    border-radius:14px;
+    font-size:1.1rem;
+  }
+  label{display:block;font-weight:700;margin-bottom:8px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  input{
+    flex:1 1 260px;
+    min-width:0;
+    padding:12px 14px;
+    font-size:1rem;
+    border:1px solid var(--border);
+    border-radius:12px;
+    outline:none;
+  }
+  input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(64,92,245,.13)}
+  button{
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:white;
+    font-weight:700;
+    padding:12px 18px;
+    cursor:pointer;
+  }
+  button:hover{filter:brightness(.96)}
+  .result{
+    margin-top:16px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    background:#fbfcfe;
+  }
+  .math{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    overflow-wrap:anywhere;
+  }
+  .big{
+    font-size:clamp(1.1rem,3vw,1.45rem);
+    font-weight:800;
+  }
+  .muted{color:var(--muted)}
+  .good{color:var(--good)}
+  .bad{color:var(--bad)}
+  .steps{display:grid;gap:12px}
+  .step{
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fbfcfe;
+  }
+  .badge{
+    display:inline-block;
+    font-size:.8rem;
+    font-weight:800;
+    background:var(--accent-soft);
+    color:#2c46d9;
+    padding:4px 8px;
+    border-radius:999px;
+    margin-bottom:8px;
+  }
+  .proof{margin-top:18px}
+  .proof-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  .proof-box{
+    background:#fbfcfe;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+  }
+  .arrow{
+    text-align:center;
+    font-size:1.5rem;
+    color:var(--muted);
+    margin:8px 0;
+  }
+  footer{
+    margin-top:18px;
+    color:var(--muted);
+    font-size:.95rem;
+  }
+  @media (max-width:760px){
+    .grid,.proof-grid{grid-template-columns:1fr}
+    main{padding-top:22px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Divisibility by 9</h1>
+    <p class="lead">A simple rule, an interactive test, and a proof showing exactly why adding the digits preserves divisibility by 9.</p>
+    <div class="rule">
+      <strong>Rule:</strong> A number is divisible by <strong>9</strong> exactly when the <strong>sum of its digits</strong> is divisible by 9.
+    </div>
+  </header>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Try it</h2>
+      <label for="number">Enter a non-negative integer</label>
+      <div class="row">
+        <input id="number" inputmode="numeric" value="5724" aria-describedby="message">
+        <button id="test" type="button">Test</button>
+      </div>
+      <div id="message" class="result" aria-live="polite"></div>
+    </div>
+
+    <div class="card">
+      <h2>The key observation</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="badge">Key fact</span>
+          <div class="big math">10 ≡ 1 (mod 9)</div>
+          <p class="muted">Because 10 = 9 + 1.</p>
+        </div>
+        <div class="step">
+          <span class="badge">Therefore</span>
+          <div class="big math">10² ≡ 1, 10³ ≡ 1, … (mod 9)</div>
+          <p class="muted">Every decimal place value behaves like 1 when looking only at remainders mod 9.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card proof">
+    <h2>Why the rule works</h2>
+    <div class="proof-grid">
+      <div class="proof-box">
+        <span class="badge">1 · Expand by place value</span>
+        <div class="math">
+          N = a₀ + 10a₁ + 10²a₂ + ··· + 10ᵏaₖ
+        </div>
+      </div>
+      <div class="proof-box">
+        <span class="badge">2 · Work mod 9</span>
+        <div class="math">
+          Since 10ᶦ ≡ 1,<br>
+          N ≡ a₀ + a₁ + ··· + aₖ (mod 9)
+        </div>
+      </div>
+      <div class="proof-box">
+        <span class="badge">3 · Conclude</span>
+        <div>
+          The number and its digit sum have the <strong>same remainder when divided by 9</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="result">
+      So the original number has remainder <strong>0</strong> mod 9 exactly when its digit sum has remainder <strong>0</strong> mod 9. Therefore, the test is correct.
+    </div>
+  </section>
+
+  <section class="card proof">
+    <h2>Concrete example: 5,724</h2>
+    <div class="math">
+      5724 = 5×1000 + 7×100 + 2×10 + 4
+    </div>
+    <div class="arrow">mod 9</div>
+    <div class="math">
+      5724 ≡ 5×1 + 7×1 + 2×1 + 4 = 18 ≡ 0
+    </div>
+    <p style="margin-top:12px"><strong>Therefore 5,724 is divisible by 9.</strong></p>
+  </section>
+
+  <section class="card proof">
+    <h2>Mental shortcut</h2>
+    <p>You can keep summing digits until one digit remains.</p>
+    <div class="result math" style="margin-top:12px">
+      7,236 → 7+2+3+6 = 18 → 1+8 = 9
+    </div>
+    <p style="margin-top:12px">Since the final digit is 9, the original number is divisible by 9.</p>
+  </section>
+
+  <footer>
+    The same idea also explains the divisibility rule for 3, because 10 ≡ 1 (mod 3).
+  </footer>
+</main>
+
+<script>
+(() => {
+  const input = document.getElementById('number');
+  const button = document.getElementById('test');
+  const message = document.getElementById('message');
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'
+    }[c]));
+  }
+
+  function testNumber() {
+    const raw = input.value.trim().replace(/,/g, '');
+
+    if (!/^\d+$/.test(raw)) {
+      message.innerHTML = '<span class="bad"><strong>Please enter digits only.</strong></span>';
+      return;
+    }
+
+    if (raw.length > 200) {
+      message.innerHTML = '<span class="bad"><strong>Please use at most 200 digits.</strong></span>';
+      return;
+    }
+
+    const digits = [...raw].map(Number);
+    const sum = digits.reduce((a,b) => a+b, 0);
+    const remainder = sum % 9;
+    const divisible = remainder === 0;
+    const formatted = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    message.innerHTML = `
+      <div class="muted">Digit sum</div>
+      <div class="big math">${digits.join(' + ')} = ${sum}</div>
+      <div style="margin-top:10px" class="math">${sum} mod 9 = <strong>${remainder}</strong></div>
+      <div style="margin-top:12px" class="${divisible ? 'good' : 'bad'}">
+        <strong>${escapeHtml(formatted)} is ${divisible ? '' : 'not '}divisible by 9.</strong>
+      </div>
+    `;
+  }
+
+  button.addEventListener('click', testNumber);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') testNumber();
+  });
+  input.addEventListener('input', testNumber);
+
+  testNumber();
+})();
+</script>
+</body>
+</html>
