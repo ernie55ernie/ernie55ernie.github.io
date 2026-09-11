@@ -54,21 +54,17 @@ P_{100} = \frac{1}{2}
 
 ---
 
-## Step 3: General Pattern and Intuition
+## Step 3: The Symmetry Argument
 
-Key realization:
+To solve this elegantly, notice what happens when *any* displaced passenger is forced to pick a random seat:
 
-- The first passenger creates the only randomness.
-- The process preserves a surprising symmetry:
-  - Whenever the first passenger chooses seat 1 → everyone else sits normally.
-  - If they choose seat 100 → passenger 100 loses their seat.
-  - Any other choice just "reshuffles" the issue among the remaining passengers.
+- If they pick **Seat 1**: The chain of displacement ends immediately. Every remaining passenger will find their assigned seat empty, including Passenger 100.
+- If they pick **Seat 100**: Passenger 100's seat is gone, and they will definitely lose.
+- If they pick **Seat \\(k\\)** (some other seat): The problem is simply deferred to Passenger \\(k\\), who will later find their seat taken and have to pick a random seat themselves.
 
-The only time passenger 100 **definitely loses** is if passenger 1 **chooses seat 100**.
+Here is the magic symmetry: Whenever a passenger makes a random choice, **Seat 1 and Seat 100 are always both available**. Since they are picking randomly from the remaining pool, they are exactly equally likely to pick Seat 1 as they are to pick Seat 100. 
 
-There are two equally likely endpoints:
-- Seat 1 is taken first → passenger 100 wins.
-- Seat 100 is taken first → passenger 100 loses.
+The cycle of displacement bounces around until someone finally picks either Seat 1 or Seat 100. Because those two specific seats are perfectly symmetric in every random draw, there is exactly a **50/50 chance** of which one gets picked first.
 
 ---
 
