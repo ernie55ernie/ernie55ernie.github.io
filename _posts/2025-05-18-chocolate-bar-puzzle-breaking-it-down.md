@@ -41,6 +41,20 @@ Each break contributes **exactly one new piece**.
 
 ---
 
+## Bonus Interview Trick: What If You Can Stack?
+
+In quantitative interviews, a common follow-up is: **"What if you are allowed to stack the pieces on top of each other and cut through the stack simultaneously?"**
+
+If you stack the pieces, each cut can theoretically double the total number of independent blocks you have. Therefore, the minimum number of cuts needed to reach 48 independent pieces is determined by the base-2 logarithm:
+
+\\[
+2^k \ge 48 \implies k = 6 \text{ cuts}
+\\]
+
+With stacking allowed, the answer drops from 47 down to **6**!
+
+---
+
 ## Final Answer
 
 > **47 breaks** are always required to split a chocolate bar into 48 individual squares—no matter the strategy.
