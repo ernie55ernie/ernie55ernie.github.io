@@ -45,10 +45,10 @@ Observe what happens in one split:
 
 So each split **reduces \\(F\\)** by exactly:
 \\[
-\Delta F = -2x(n - x)
+F_{\text{old}} - F_{\text{new}} = 2x(n - x)
 \\]
 
-Hence, the term \\(x(n - x)\\) added to the running total corresponds to a **drop of \\( \Delta F = -2x(n - x) \\)**.
+Hence, the term \\(x(n - x)\\) added to the running total corresponds to exactly **half the drop** in \\(F\\).
 
 So if \\(T\\) is the running total sum of all \\(x(n - x)\\), then:
 
