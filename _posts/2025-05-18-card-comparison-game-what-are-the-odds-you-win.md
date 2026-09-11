@@ -31,38 +31,44 @@ P(\text{your card rank} > \text{dealer's card rank})
 
 ## Step 2: Use Symmetry
 
-Instead of brute-force enumeration, let’s use a key insight:
+Instead of brute-force counting every card combination, let’s use a key insight: **Symmetry**.
 
-- The game is symmetric—each pair of distinct ranks occurs equally often.
-- For example, there are:
-  - 4 × 4 = 16 ways for you to draw a 7 and dealer a 5.
-  - Also 16 ways to draw a 5 and 7 in the opposite order.
+There are only three possible outcomes: you win, you lose, or you tie.
+Because you and the dealer are drawing from the same deck, the game is perfectly symmetric. Therefore, your probability of winning is exactly equal to the dealer's probability of winning (which is your probability of losing):
+
+\\[
+P(\text{Win}) = P(\text{Lose})
+\\]
 
 ---
 
-## Step 3: Count Winning Pairs
+## Step 3: Calculate the Tie Probability
 
-There are a total of:
+It is much easier to calculate the probability of a **tie**.
+
+1. You draw your card (it doesn't matter what rank it is).
+2. There are **51 cards left** in the deck.
+3. For the dealer to tie you, they must draw one of the remaining **3 cards** that share the exact same rank as your card.
+
+So, the probability of a tie is trivially:
 \\[
-52 × 51 = 2652 \text{ possible (ordered) card pairs}
+P(\text{Tie}) = \frac{3}{51} = \frac{1}{17}
 \\]
 
-Let’s compute how many of these result in **your rank > dealer’s rank**.
-
-There are 13 ranks, and for every pair of distinct ranks \\( (r_i, r_j) \\), there are:
-
-- 4 × 4 = 16 ways to draw one card of each rank.
-
-Among the \\(\binom{13}{2} = 78\\) unordered rank pairs, **half** of the 16 × 78 = 1248 ordered pairs favor you (i.e., you have the higher rank), the other half favor the dealer.
-
-So:
-- Total wins: **1248**
-- Total losses or ties: **2652 - 1248 = 1404**
-
-Hence, the probability of winning is:
-
+Since all probabilities must sum to 1:
 \\[
-\frac{1248}{2652} = \frac{8}{17}
+P(\text{Win}) + P(\text{Lose}) + P(\text{Tie}) = 1
+\\]
+
+Substitute our known values and solve:
+\\[
+2 \times P(\text{Win}) + \frac{1}{17} = 1
+\\]
+\\[
+2 \times P(\text{Win}) = \frac{16}{17}
+\\]
+\\[
+P(\text{Win}) = \frac{8}{17}
 \\]
 
 ---
