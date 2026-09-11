@@ -14,6 +14,8 @@ You play a simple game against the house:
 
 **Question:** What’s the probability that your card beats the dealer’s?
 
+<iframe src="{{ site.baseurl }}/assets/probability_your_cards_beat_the_dealer%27s.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Deck and the Rules

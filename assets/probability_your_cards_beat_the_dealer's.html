@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probability Your Card Beats the Dealer's</title>
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe2ea;
+      --accent: #2563eb;
+      --green: #16a34a;
+      --orange: #f59e0b;
+      --red: #dc2626;
+      --shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .big {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .equation {
+      background: #f3f6fb;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+
+    .bar-wrap {
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      height: 42px;
+      display: flex;
+      background: #fff;
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .win { background: var(--green); width: 47.0588%; }
+    .tie { background: var(--orange); width: 5.8824%; }
+    .lose { background: var(--red); width: 47.0588%; }
+
+    .steps ol {
+      padding-left: 22px;
+      margin-bottom: 0;
+    }
+
+    .steps li {
+      margin-bottom: 14px;
+    }
+
+    .answer {
+      text-align: center;
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #eff6ff, #f8fafc);
+      border: 1px solid #bfdbfe;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .fraction {
+      font-size: 2rem;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .hero, .card { padding: 18px; }
+      .big { font-size: 1.6rem; }
+      .fraction { font-size: 1.6rem; }
+      .bar { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Probability Your Card Beats the Dealer’s</h1>
+      <p class="subtitle">
+        You draw one card from a standard 52-card deck. Then the dealer draws one card
+        without replacement. You win only if your card’s <strong>rank</strong> is
+        <strong>strictly higher</strong>.
+      </p>
+
+      <div class="answer">
+        Final Answer:
+        <div class="fraction">8/17 ≈ 47.06%</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Win</h3>
+        <div class="big">8/17</div>
+        <div class="muted">≈ 47.06%</div>
+      </div>
+
+      <div class="card">
+        <h3>Tie</h3>
+        <div class="big">1/17</div>
+        <div class="muted">≈ 5.88%</div>
+      </div>
+
+      <div class="card">
+        <h3>Lose</h3>
+        <div class="big">8/17</div>
+        <div class="muted">≈ 47.06%</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Visual Breakdown</h2>
+      <p class="muted">
+        By symmetry, excluding ties, you and the dealer are equally likely to have the higher rank.
+        The only catch is that ties count as losses for you.
+      </p>
+
+      <div class="bar-wrap" aria-label="Probability breakdown">
+        <div class="bar win">Win 47.06%</div>
+        <div class="bar tie">Tie 5.88%</div>
+        <div class="bar lose">Lose 47.06%</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card steps">
+        <h2>Method 1: Symmetry + Ties</h2>
+        <ol>
+          <li>
+            After you draw a card, there are <strong>51</strong> cards left.
+          </li>
+          <li>
+            Exactly <strong>3</strong> of them have the same rank as yours, so
+            <div class="equation">P(tie) = 3 / 51 = 1 / 17</div>
+          </li>
+          <li>
+            Therefore,
+            <div class="equation">P(non-tie) = 1 - 1/17 = 16/17</div>
+          </li>
+          <li>
+            On all non-ties, symmetry gives:
+            <div class="equation">P(you higher | non-tie) = 1/2</div>
+          </li>
+          <li>
+            So,
+            <div class="equation">P(win) = (1/2) × (16/17) = 8/17</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card steps">
+        <h2>Method 2: Count Ordered Pairs</h2>
+        <ol>
+          <li>
+            Total ordered pairs of draws:
+            <div class="equation">52 × 51 = 2652</div>
+          </li>
+          <li>
+            Tie pairs: choose the rank in 13 ways, your suit in 4 ways, dealer suit in 3 ways:
+            <div class="equation">13 × 4 × 3 = 156</div>
+          </li>
+          <li>
+            Non-tie pairs:
+            <div class="equation">2652 - 156 = 2496</div>
+          </li>
+          <li>
+            Half of the non-ties are wins for you:
+            <div class="equation">2496 / 2 = 1248</div>
+          </li>
+          <li>
+            Hence,
+            <div class="equation">P(win) = 1248 / 2652 = 8 / 17</div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Key Insight</h2>
+      <p>
+        If ties did <em>not</em> exist, the game would be exactly 50-50 by symmetry.
+        But ties do exist, and they happen with probability <strong>1/17</strong>.
+        Since ties count against you, your winning probability becomes:
+      </p>
+      <div class="equation">1/2 × (1 - 1/17) = 1/2 × 16/17 = 8/17</div>
+      <p class="footer-note">
+        So the probability that your card beats the dealer’s is <strong>8/17</strong>,
+        approximately <strong>47.06%</strong>.
+      </p>
+    </section>
+  </div>
+</body>
+</html>
