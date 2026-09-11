@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probability that #1 and #2 Meet Only in the Final</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --border: #d9deea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --best: #7c3aed;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 22px;
+      font-size: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .big {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 240px;
+    }
+
+    .formula {
+      background: #f3f6fc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .halves {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .halves {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .half-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .slot {
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .slot.best {
+      background: var(--best);
+      color: white;
+    }
+
+    .slot.bad {
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--bad);
+    }
+
+    .slot.good {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--good);
+    }
+
+    .slot-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .stat {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .stat .prob {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 6px 0 2px;
+    }
+
+    .stat .pct {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .steps {
+      margin-top: 10px;
+    }
+
+    .step {
+      border: 1px solid var(--border);
+      background: #fafbfe;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .explanation {
+      margin-top: 18px;
+      font-size: 15px;
+    }
+
+    .math {
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+    }
+
+    .footer-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #f9fbff;
+      border: 1px solid var(--border);
+    }
+
+    .footer-box h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .footer-box p {
+      margin: 8px 0;
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>When do players #1 and #2 meet only in the final?</h1>
+    <div class="subtitle">
+      Single-elimination tournament with <span class="math">2<sup>n</sup></span> players,
+      random pairings each round, and the better player always wins.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="top-row">
+          <div>
+            <div class="label">Tournament size</div>
+            <div class="big"><span id="playerCount">16</span> players</div>
+            <div class="label">Choose <span class="math">n</span> so total players = <span class="math">2<sup>n</sup></span></div>
+          </div>
+          <div>
+            <label for="nSlider" class="label">n = <span id="nValue">4</span></label><br />
+            <input id="nSlider" type="range" min="1" max="8" value="4" />
+          </div>
+        </div>
+
+        <div class="formula" id="formula">
+          P = 2<sup>n-1</sup> / (2<sup>n</sup> - 1)
+        </div>
+
+        <div class="halves">
+          <div class="card" style="padding: 14px;">
+            <div class="half-title">Half containing player #1</div>
+            <div class="slots" id="leftHalf"></div>
+            <div class="slot-note">
+              If player #2 is placed anywhere in this half, then #1 and #2 must meet <strong>before</strong> the final.
+            </div>
+          </div>
+
+          <div class="card" style="padding: 14px;">
+            <div class="half-title">Opposite half</div>
+            <div class="slots" id="rightHalf"></div>
+            <div class="slot-note">
+              If player #2 is placed anywhere in this half, then #1 and #2 can only meet in the <strong>final</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-box">
+          <h3>Main idea</h3>
+          <p>
+            Fix player <span class="highlight">#1</span> somewhere in the bracket.
+            There are <span class="math" id="remainingSlots">15</span> remaining positions for player <span class="highlight">#2</span>.
+          </p>
+          <p>
+            Exactly <span class="math" id="goodSlots">8</span> of those are in the opposite half of the bracket.
+            Those are the only positions that make them meet <strong>only in the final</strong>.
+          </p>
+          <p class="math" id="countArgument">
+            Probability = good positions / all possible positions = 8 / 15
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stat">
+          <div class="label">Probability that #1 and #2 meet only in the final</div>
+          <div class="prob" id="probText">8 / 15</div>
+          <div class="pct" id="pctText">53.33%</div>
+        </div>
+
+        <h3 style="margin-top: 0;">Round-by-round view</h3>
+        <div class="steps" id="roundSteps"></div>
+
+        <div class="explanation">
+          <p>
+            Since player <strong>#1</strong> beats everyone, #1 always reaches the final.
+            Player <strong>#2</strong> loses only to #1, so #2 also reaches the final
+            <strong>iff</strong> #2 avoids #1 in every earlier round.
+          </p>
+          <p>
+            That happens exactly when #2 starts in the opposite half of the tournament tree.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const nSlider = document.getElementById("nSlider");
+    const nValue = document.getElementById("nValue");
+    const playerCount = document.getElementById("playerCount");
+    const formula = document.getElementById("formula");
+    const leftHalf = document.getElementById("leftHalf");
+    const rightHalf = document.getElementById("rightHalf");
+    const probText = document.getElementById("probText");
+    const pctText = document.getElementById("pctText");
+    const remainingSlots = document.getElementById("remainingSlots");
+    const goodSlots = document.getElementById("goodSlots");
+    const countArgument = document.getElementById("countArgument");
+    const roundSteps = document.getElementById("roundSteps");
+
+    function gcd(a, b) {
+      while (b !== 0) {
+        const t = b;
+        b = a % b;
+        a = t;
+      }
+      return a;
+    }
+
+    function makeSlot(text, cls) {
+      const div = document.createElement("div");
+      div.className = `slot ${cls}`;
+      div.textContent = text;
+      return div;
+    }
+
+    function update() {
+      const n = parseInt(nSlider.value, 10);
+      const N = 2 ** n;
+      const half = N / 2;
+      const totalPossible = N - 1;
+      const favorable = half;
+
+      const g = gcd(favorable, totalPossible);
+      const a = favorable / g;
+      const b = totalPossible / g;
+      const percent = (100 * favorable / totalPossible).toFixed(2);
+
+      nValue.textContent = n;
+      playerCount.textContent = N;
+      remainingSlots.textContent = totalPossible;
+      goodSlots.textContent = favorable;
+      probText.textContent = `${a} / ${b}`;
+      pctText.textContent = `${percent}%`;
+      countArgument.textContent =
+        `Probability = ${favorable} / ${totalPossible} = ${a} / ${b}`;
+      formula.innerHTML =
+        `P = ${half} / ${N - 1} = 2<sup>${n - 1}</sup> / (2<sup>${n}</sup> - 1)`;
+
+      leftHalf.innerHTML = "";
+      rightHalf.innerHTML = "";
+
+      const maxShow = Math.min(half, 16);
+
+      for (let i = 0; i < maxShow; i++) {
+        if (i === 0) {
+          leftHalf.appendChild(makeSlot("#1", "best"));
+        } else {
+          leftHalf.appendChild(makeSlot("×", "bad"));
+        }
+      }
+
+      for (let i = 0; i < maxShow; i++) {
+        rightHalf.appendChild(makeSlot("✓", "good"));
+      }
+
+      if (half > maxShow) {
+        leftHalf.appendChild(makeSlot(`+${half - maxShow}`, "bad"));
+        rightHalf.appendChild(makeSlot(`+${half - maxShow}`, "good"));
+      }
+
+      roundSteps.innerHTML = "";
+
+      if (n === 1) {
+        const div = document.createElement("div");
+        div.className = "step";
+        div.innerHTML = `
+          With only 2 players, #1 and #2 are forced to meet in the final.<br>
+          <span class="math">P = 1</span>
+        `;
+        roundSteps.appendChild(div);
+        return;
+      }
+
+      let size = N;
+      let factors = [];
+
+      for (let r = 1; r <= n - 1; r++) {
+        const num = size - 2;
+        const den = size - 1;
+        factors.push(`${num}/${den}`);
+
+        const div = document.createElement("div");
+        div.className = "step";
+        div.innerHTML = `
+          <strong>Before round ${r}</strong>: there are <span class="math">${size}</span> players left.<br>
+          Among the other <span class="math">${size - 1}</span> players, #2 must avoid exactly one player: <span class="math">#1</span>.<br>
+          So the survival factor is <span class="math">${num}/${den}</span>.
+        `;
+        roundSteps.appendChild(div);
+
+        size /= 2;
+      }
+
+      const finalDiv = document.createElement("div");
+      finalDiv.className = "step";
+      finalDiv.innerHTML = `
+        Multiplying all factors:
+        <div class="math" style="margin-top:8px;">
+          P = ${factors.join(" × ")} = ${a}/${b}
+        </div>
+      `;
+      roundSteps.appendChild(finalDiv);
+    }
+
+    nSlider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>

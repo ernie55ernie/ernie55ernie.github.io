@@ -14,6 +14,8 @@ A knockout tournament poses a surprising question about randomness and ranking:
 >
 > **Question:** What is the probability that **players 1 and 2** will meet **only in the final**, not in any earlier round?
 
+<iframe src="{{ site.baseurl }}/assets/when_do_player1_and_player2_meet_only_in_the_final.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Structure
