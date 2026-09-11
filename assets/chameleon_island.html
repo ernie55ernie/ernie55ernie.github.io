@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chameleon Island Invariant Explorer</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --border: #334155;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --red: #ef4444;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --warning: #f59e0b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .hero {
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      margin-bottom: 12px;
+      font-size: 2rem;
+    }
+
+    .hero .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(31, 41, 55, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .counts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0 22px;
+    }
+
+    .count-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+    }
+
+    .dot.red { background: var(--red); }
+    .dot.green { background: var(--green); }
+    .dot.blue { background: var(--blue); }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease;
+    }
+
+    button:hover:not(:disabled) { transform: translateY(-1px); }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .btn-meet {
+      background: #0ea5e9;
+      color: white;
+    }
+
+    .btn-reset {
+      background: #475569;
+      color: white;
+      margin-top: 12px;
+    }
+
+    .status {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      min-height: 56px;
+    }
+
+    .history {
+      margin-top: 18px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .mod-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .mod-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .mono {
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .big {
+      font-size: 1.45rem;
+      font-weight: bold;
+    }
+
+    .highlight {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .answer {
+      border-left: 5px solid var(--warning);
+      padding-left: 14px;
+      margin-top: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .counts, .mod-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Chameleon Island — Interactive Invariant Puzzle</h1>
+      <p class="subtitle">
+        There are 13 red chameleons, 15 green chameleons, and 17 blue chameleons.
+        When two chameleons of different colors meet, they both change to the third color.
+        Can all chameleons ever become the same color?
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Simulation</h2>
+        <p style="color: var(--muted);">
+          Try any sequence of meetings. Watch what happens to the counts and the invariant.
+        </p>
+
+        <div class="counts">
+          <div class="count-box">
+            <div class="dot red"></div>
+            <div class="label">Red</div>
+            <div class="value" id="redCount">13</div>
+          </div>
+          <div class="count-box">
+            <div class="dot green"></div>
+            <div class="label">Green</div>
+            <div class="value" id="greenCount">15</div>
+          </div>
+          <div class="count-box">
+            <div class="dot blue"></div>
+            <div class="label">Blue</div>
+            <div class="value" id="blueCount">17</div>
+          </div>
+        </div>
+
+        <h3>Choose a meeting</h3>
+        <div class="buttons">
+          <button class="btn-meet" id="btnRG">Red + Green → Blue</button>
+          <button class="btn-meet" id="btnGB">Green + Blue → Red</button>
+          <button class="btn-meet" id="btnBR">Blue + Red → Green</button>
+          <button class="btn-reset" id="btnReset">Reset</button>
+        </div>
+
+        <div class="status" id="statusBox">
+          Each meeting preserves an important modulo-3 invariant.
+        </div>
+
+        <div class="history">
+          <h3>Meeting history</h3>
+          <div class="history-list" id="historyList">
+            <span class="chip">No meetings yet.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Invariant Tracker</h2>
+        <p style="color: var(--muted);">
+          The key idea is to look at the counts modulo 3.
+        </p>
+
+        <div class="mod-grid">
+          <div class="mod-box">
+            <div class="label">R mod 3</div>
+            <div class="big mono" id="rMod">1</div>
+          </div>
+          <div class="mod-box">
+            <div class="label">G mod 3</div>
+            <div class="big mono" id="gMod">0</div>
+          </div>
+          <div class="mod-box">
+            <div class="label">B mod 3</div>
+            <div class="big mono" id="bMod">2</div>
+          </div>
+        </div>
+
+        <div class="highlight">
+          <h3>Why this works</h3>
+          <p>
+            In a legal meeting, one count decreases by 1, another decreases by 1,
+            and the third increases by 2.
+          </p>
+          <p class="mono">
+            Since +2 ≡ -1 (mod 3),
+          </p>
+          <p>
+            all three counts are shifted by the same amount modulo 3. Therefore,
+            the differences between residues stay unchanged.
+          </p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Invariant</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">R - G (mod 3)</td>
+              <td class="mono" id="rgDiff">1</td>
+            </tr>
+            <tr>
+              <td class="mono">G - B (mod 3)</td>
+              <td class="mono" id="gbDiff">1</td>
+            </tr>
+            <tr>
+              <td class="mono">R - B (mod 3)</td>
+              <td class="mono" id="rbDiff">2</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="answer">
+          <h3>Answer</h3>
+          <p>
+            <strong>No — it is impossible.</strong>
+          </p>
+          <p>
+            Initially, the state is
+            <span class="mono">(13, 15, 17) ≡ (1, 0, 2) mod 3</span>.
+          </p>
+          <p>
+            Any all-one-color state would be one of:
+          </p>
+          <ul>
+            <li><span class="mono">(45, 0, 0)</span></li>
+            <li><span class="mono">(0, 45, 0)</span></li>
+            <li><span class="mono">(0, 0, 45)</span></li>
+          </ul>
+          <p>
+            Each of these is congruent to <span class="mono">(0, 0, 0) mod 3</span>,
+            which does <em>not</em> have the same invariant differences as the initial state.
+            Since legal moves preserve those differences, such a state can never be reached.
+          </p>
+        </div>
+
+        <p class="footer-note">
+          In short: the modulo-3 residue pattern blocks any path to a monochromatic population.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const initialState = { r: 13, g: 15, b: 17, history: [] };
+    let state = JSON.parse(JSON.stringify(initialState));
+
+    const redCount = document.getElementById("redCount");
+    const greenCount = document.getElementById("greenCount");
+    const blueCount = document.getElementById("blueCount");
+
+    const rMod = document.getElementById("rMod");
+    const gMod = document.getElementById("gMod");
+    const bMod = document.getElementById("bMod");
+
+    const rgDiff = document.getElementById("rgDiff");
+    const gbDiff = document.getElementById("gbDiff");
+    const rbDiff = document.getElementById("rbDiff");
+
+    const statusBox = document.getElementById("statusBox");
+    const historyList = document.getElementById("historyList");
+
+    const btnRG = document.getElementById("btnRG");
+    const btnGB = document.getElementById("btnGB");
+    const btnBR = document.getElementById("btnBR");
+    const btnReset = document.getElementById("btnReset");
+
+    function mod3(x) {
+      return ((x % 3) + 3) % 3;
+    }
+
+    function updateView(message = "Each meeting preserves an important modulo-3 invariant.") {
+      redCount.textContent = state.r;
+      greenCount.textContent = state.g;
+      blueCount.textContent = state.b;
+
+      rMod.textContent = mod3(state.r);
+      gMod.textContent = mod3(state.g);
+      bMod.textContent = mod3(state.b);
+
+      rgDiff.textContent = mod3(state.r - state.g);
+      gbDiff.textContent = mod3(state.g - state.b);
+      rbDiff.textContent = mod3(state.r - state.b);
+
+      statusBox.textContent = message;
+
+      btnRG.disabled = !(state.r > 0 && state.g > 0);
+      btnGB.disabled = !(state.g > 0 && state.b > 0);
+      btnBR.disabled = !(state.b > 0 && state.r > 0);
+
+      historyList.innerHTML = "";
+      if (state.history.length === 0) {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = "No meetings yet.";
+        historyList.appendChild(chip);
+      } else {
+        state.history.forEach((item, idx) => {
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          chip.textContent = `${idx + 1}. ${item}`;
+          historyList.appendChild(chip);
+        });
+      }
+    }
+
+    function meetRG() {
+      if (state.r > 0 && state.g > 0) {
+        state.r -= 1;
+        state.g -= 1;
+        state.b += 2;
+        state.history.push("Red + Green → Blue");
+        updateView("After this move, the modulo-3 differences are unchanged.");
+      }
+    }
+
+    function meetGB() {
+      if (state.g > 0 && state.b > 0) {
+        state.g -= 1;
+        state.b -= 1;
+        state.r += 2;
+        state.history.push("Green + Blue → Red");
+        updateView("After this move, the modulo-3 differences are unchanged.");
+      }
+    }
+
+    function meetBR() {
+      if (state.b > 0 && state.r > 0) {
+        state.b -= 1;
+        state.r -= 1;
+        state.g += 2;
+        state.history.push("Blue + Red → Green");
+        updateView("After this move, the modulo-3 differences are unchanged.");
+      }
+    }
+
+    function resetState() {
+      state = JSON.parse(JSON.stringify(initialState));
+      updateView("Reset to the initial state (13, 15, 17).");
+    }
+
+    btnRG.addEventListener("click", meetRG);
+    btnGB.addEventListener("click", meetGB);
+    btnBR.addEventListener("click", meetBR);
+    btnReset.addEventListener("click", resetState);
+
+    updateView();
+  </script>
+</body>
+</html>
