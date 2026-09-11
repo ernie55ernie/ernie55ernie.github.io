@@ -49,18 +49,24 @@ This is true **for all values of \\(n\\)**.
 
 ---
 
-## Step 4: Intuitive Explanation
+## Step 4: The Symmetry Argument
 
-Here’s one way to see why:
+Consider the first \\(n\\) coins flipped by both A and B. Let \\(H_A(n)\\) be A's heads in these first \\(n\\) flips, and \\(H_B\\) be B's heads. There are three mutually exclusive scenarios:
 
-- Let’s fix the outcomes of B’s \\(n\\) flips.
-- A's first \\(n\\) flips can match that exactly—and the **extra coin** then acts as a tiebreaker.
+1. **\\(H_A(n) > H_B\\):** A already has strictly more heads. A has won, regardless of what happens on the extra \\((n+1)\\)-th flip.
+2. **\\(H_A(n) < H_B\\):** A has fewer heads. Even if A flips a head on the extra flip, A can at best tie. A has lost.
+3. **\\(H_A(n) = H_B\\):** They are tied. A's extra flip now acts as the tiebreaker!
 
-When A and B tie on the first \\(n\\) flips:
-- A wins **half the time** (when the extra coin is heads).
-- So overall, A has **exactly a 50% chance** of ending up with more heads.
+Because A and B flip the exact same number of coins in this first phase, scenarios 1 and 2 are **perfectly symmetric**. This means \\(P(H_A(n) > H_B) = P(H_A(n) < H_B)\\).
 
-This matches formal derivations using summations and generating functions as well.
+Let \\(p_{tie}\\) be the probability they tie. Then the probability A wins outright in the first phase is exactly half of the non-tie probability: \\(\frac{1 - p_{tie}}{2}\\).
+
+If they tie, A wins if their final extra coin lands heads (which happens half the time): \\(\frac{p_{tie}}{2}\\).
+
+Adding A's winning probabilities together yields the exact answer:
+\\[
+P(\text{A wins}) = \frac{1 - p_{tie}}{2} + \frac{p_{tie}}{2} = \frac{1}{2} - \frac{p_{tie}}{2} + \frac{p_{tie}}{2} = \frac{1}{2}
+\\]
 
 ---
 
