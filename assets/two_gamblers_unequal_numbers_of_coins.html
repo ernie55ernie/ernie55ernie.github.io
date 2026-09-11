@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Gamblers Coin Flip Puzzle</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#22c55e;
+      --accent2:#60a5fa;
+      --accent3:#f59e0b;
+      --border:#334155;
+      --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1,h2,h3{margin:0 0 12px}
+    h1{
+      font-size:clamp(1.8rem, 2.7vw, 2.8rem);
+      line-height:1.2;
+    }
+    h2{
+      font-size:1.25rem;
+      color:#f8fafc;
+    }
+    p{margin:10px 0}
+    .subtitle{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:1.02rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.9fr;
+      gap:20px;
+      margin-top:22px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+    .panel{
+      background:rgba(17,24,39,0.9);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    }
+    .problem ul{
+      margin:12px 0 0 0;
+      padding-left:20px;
+    }
+    .answer-box{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:160px;
+      background:linear-gradient(135deg, rgba(34,197,94,0.18), rgba(96,165,250,0.16));
+      border:1px solid #3b82f6;
+      border-radius:18px;
+      margin-top:12px;
+      text-align:center;
+      padding:18px;
+    }
+    .answer-box .big{
+      font-size:clamp(2.4rem, 5vw, 4rem);
+      font-weight:800;
+      color:#f8fafc;
+      line-height:1;
+    }
+    .answer-box .small{
+      color:#cbd5e1;
+      margin-top:8px;
+      font-size:1rem;
+    }
+    .math{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px 14px;
+      margin:10px 0;
+      overflow:auto;
+      white-space:nowrap;
+    }
+    .step{
+      background:rgba(31,41,55,0.8);
+      border-left:4px solid var(--accent2);
+      border-radius:12px;
+      padding:14px 16px;
+      margin:12px 0;
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:16px;
+      margin-top:12px;
+    }
+    .slider-wrap{
+      flex:1 1 320px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--accent);
+    }
+    .stat-row{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 680px){
+      .stat-row{grid-template-columns:1fr}
+    }
+    .stat{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+    .stat .label{
+      color:var(--muted);
+      font-size:0.92rem;
+    }
+    .stat .value{
+      font-size:1.6rem;
+      font-weight:700;
+      margin-top:4px;
+    }
+    .chart-wrap{
+      margin-top:18px;
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+    }
+    .chart-title{
+      margin-bottom:10px;
+      color:#cbd5e1;
+      font-weight:600;
+    }
+    canvas{
+      width:100%;
+      height:300px;
+      display:block;
+      background:transparent;
+    }
+    .legend{
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+    .legend span::before{
+      content:"";
+      display:inline-block;
+      width:12px;
+      height:12px;
+      border-radius:3px;
+      margin-right:8px;
+      vertical-align:-1px;
+    }
+    .lose::before{background:var(--danger)}
+    .win::before{background:var(--accent)}
+    .table-wrap{
+      overflow-x:auto;
+      margin-top:14px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:550px;
+      background:#0b1220;
+      border-radius:12px;
+      overflow:hidden;
+    }
+    th, td{
+      border:1px solid var(--border);
+      padding:10px 12px;
+      text-align:center;
+    }
+    th{
+      background:#111827;
+      color:#f8fafc;
+    }
+    td{
+      color:#dbeafe;
+    }
+    .footnote{
+      color:var(--muted);
+      font-size:0.95rem;
+      margin-top:14px;
+    }
+    .highlight{
+      color:#fde68a;
+      font-weight:700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel problem">
+      <h1>Two Gamblers, Unequal Numbers of Coins</h1>
+      <p class="subtitle">
+        Gambler A flips <strong>n+1</strong> fair coins. Gambler B flips <strong>n</strong> fair coins.
+        What is the probability that <strong>A gets strictly more heads than B</strong>?
+      </p>
+
+      <div class="grid">
+        <div>
+          <h2>Problem Setup</h2>
+          <ul>
+            <li>A flips <strong>n+1</strong> independent fair coins.</li>
+            <li>B flips <strong>n</strong> independent fair coins.</li>
+            <li>We want: <strong>P(A has more heads than B)</strong>.</li>
+          </ul>
+
+          <h2 style="margin-top:18px;">Key Idea</h2>
+          <div class="step">
+            Let <span class="highlight">H<sub>A</sub></span> be A's number of heads and
+            <span class="highlight">H<sub>B</sub></span> be B's number of heads.
+            Then A wins exactly when:
+            <div class="math">H<sub>A</sub> &gt; H<sub>B</sub></div>
+          </div>
+
+          <div class="step">
+            Since B flips <strong>n</strong> coins, its number of tails is:
+            <div class="math">T<sub>B</sub> = n - H<sub>B</sub></div>
+            So
+            <div class="math">H<sub>A</sub> &gt; H<sub>B</sub> &nbsp;&Longleftrightarrow;&nbsp; H<sub>A</sub> + T<sub>B</sub> &gt; n</div>
+          </div>
+
+          <div class="step">
+            Now interpret <span class="highlight">H<sub>A</sub></span> as “successes” among A's <strong>n+1</strong> coins,
+            and <span class="highlight">T<sub>B</sub></span> as “successes” among B's <strong>n</strong> coins.
+            Altogether, that gives <strong>2n+1</strong> fair independent trials.
+          </div>
+
+          <div class="step">
+            Therefore
+            <div class="math">X = H<sub>A</sub> + T<sub>B</sub> ~ Binomial(2n+1, 1/2)</div>
+            and A wins exactly when
+            <div class="math">X &gt; n</div>
+          </div>
+
+          <div class="step">
+            Because <strong>2n+1 is odd</strong>, the binomial distribution is perfectly symmetric,
+            and there is <strong>no middle tie case</strong>. So:
+            <div class="math">P(X &gt; n) = 1/2</div>
+          </div>
+        </div>
+
+        <div>
+          <h2>Final Answer</h2>
+          <div class="answer-box">
+            <div>
+              <div class="big">1/2</div>
+              <div class="small">The probability that A gets strictly more heads than B is always <strong>1/2</strong>.</div>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat">
+              <div class="label">A flips</div>
+              <div class="value" id="aCoins">5</div>
+            </div>
+            <div class="stat">
+              <div class="label">B flips</div>
+              <div class="value" id="bCoins">4</div>
+            </div>
+            <div class="stat">
+              <div class="label">Combined trials</div>
+              <div class="value" id="totalTrials">9</div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="slider-wrap">
+              <label for="nSlider"><strong>Choose n:</strong> <span id="nValue">4</span></label>
+              <input id="nSlider" type="range" min="1" max="20" value="4" />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Quantity</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>A wins if</td>
+                  <td id="condition1">H<sub>A</sub> &gt; H<sub>B</sub></td>
+                </tr>
+                <tr>
+                  <td>Equivalent condition</td>
+                  <td id="condition2">H<sub>A</sub> + T<sub>B</sub> &gt; 4</td>
+                </tr>
+                <tr>
+                  <td>Random variable</td>
+                  <td id="distributionText">X ~ Binomial(9, 1/2)</td>
+                </tr>
+                <tr>
+                  <td>Desired probability</td>
+                  <td id="probText">P(X &gt; 4) = 1/2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="footnote">
+            This result does <strong>not</strong> depend on n.  
+            For every positive integer n, the answer stays <strong>1/2</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:20px;">
+      <h2>Binomial Symmetry Visualization</h2>
+      <p class="subtitle">
+        The bars show the distribution of <strong>X = H<sub>A</sub> + T<sub>B</sub></strong>, where
+        <strong>X ~ Binomial(2n+1, 1/2)</strong>.  
+        Red bars correspond to <strong>X ≤ n</strong> (A does not win), and green bars correspond to <strong>X &gt; n</strong> (A wins).
+      </p>
+
+      <div class="chart-wrap">
+        <div class="chart-title" id="chartTitle">Distribution for X ~ Binomial(9, 1/2)</div>
+        <canvas id="chart" width="1000" height="300"></canvas>
+        <div class="legend">
+          <span class="lose">A does not win: X ≤ n</span>
+          <span class="win">A wins: X &gt; n</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:20px;">
+      <h2>One-Line Proof</h2>
+      <div class="math">
+        Let X = H<sub>A</sub> + T<sub>B</sub>. Then X ~ Binomial(2n+1, 1/2), and
+        A wins iff X &gt; n. Since 2n+1 is odd, symmetry gives P(X &gt; n) = 1/2.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function choose(n, k) {
+      if (k < 0 || k > n) return 0;
+      k = Math.min(k, n - k);
+      let res = 1;
+      for (let i = 1; i <= k; i++) {
+        res = res * (n - k + i) / i;
+      }
+      return res;
+    }
+
+    function binomPmf(n, k) {
+      return choose(n, k) / Math.pow(2, n);
+    }
+
+    function render() {
+      const slider = document.getElementById("nSlider");
+      const n = parseInt(slider.value, 10);
+      const m = 2 * n + 1;
+
+      document.getElementById("nValue").textContent = n;
+      document.getElementById("aCoins").textContent = n + 1;
+      document.getElementById("bCoins").textContent = n;
+      document.getElementById("totalTrials").textContent = m;
+
+      document.getElementById("condition2").innerHTML = "H<sub>A</sub> + T<sub>B</sub> &gt; " + n;
+      document.getElementById("distributionText").innerHTML = "X ~ Binomial(" + m + ", 1/2)";
+      document.getElementById("probText").innerHTML = "P(X &gt; " + n + ") = 1/2";
+      document.getElementById("chartTitle").textContent = "Distribution for X ~ Binomial(" + m + ", 1/2)";
+
+      const probs = [];
+      let maxP = 0;
+      for (let k = 0; k <= m; k++) {
+        const p = binomPmf(m, k);
+        probs.push(p);
+        maxP = Math.max(maxP, p);
+      }
+
+      const canvas = document.getElementById("chart");
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+
+      const leftPad = 40;
+      const rightPad = 20;
+      const topPad = 20;
+      const bottomPad = 45;
+
+      const innerW = W - leftPad - rightPad;
+      const innerH = H - topPad - bottomPad;
+
+      // axes
+      ctx.strokeStyle = "#64748b";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(leftPad, topPad);
+      ctx.lineTo(leftPad, topPad + innerH);
+      ctx.lineTo(leftPad + innerW, topPad + innerH);
+      ctx.stroke();
+
+      const barGap = 6;
+      const count = probs.length;
+      const barW = Math.max(6, (innerW - barGap * (count + 1)) / count);
+
+      // bars
+      for (let k = 0; k < count; k++) {
+        const p = probs[k];
+        const barH = (p / maxP) * (innerH - 10);
+        const x = leftPad + barGap + k * (barW + barGap);
+        const y = topPad + innerH - barH;
+
+        ctx.fillStyle = (k <= n) ? "#ef4444" : "#22c55e";
+        ctx.fillRect(x, y, barW, barH);
+
+        // x labels
+        ctx.fillStyle = "#cbd5e1";
+        ctx.font = "12px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(String(k), x + barW / 2, topPad + innerH + 18);
+
+        // probability labels for smaller m
+        if (m <= 15) {
+          ctx.save();
+          ctx.translate(x + barW / 2, y - 6);
+          ctx.rotate(-0.45);
+          ctx.fillStyle = "#93c5fd";
+          ctx.font = "11px sans-serif";
+          ctx.fillText(p.toFixed(3), 0, 0);
+          ctx.restore();
+        }
+      }
+
+      // title labels
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Number of successes X", leftPad + innerW / 2, H - 10);
+
+      ctx.save();
+      ctx.translate(14, topPad + innerH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("Probability", 0, 0);
+      ctx.restore();
+
+      // divider between lose/win regions
+      const dividerX = leftPad + barGap + (n + 1) * (barW + barGap) - barGap / 2;
+      ctx.setLineDash([6, 6]);
+      ctx.strokeStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.moveTo(dividerX, topPad);
+      ctx.lineTo(dividerX, topPad + innerH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "13px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("X ≤ n", leftPad + 10, topPad + 18);
+      ctx.textAlign = "right";
+      ctx.fillText("X > n", leftPad + innerW - 10, topPad + 18);
+    }
+
+    document.getElementById("nSlider").addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
