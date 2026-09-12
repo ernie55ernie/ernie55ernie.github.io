@@ -24,41 +24,41 @@ Visually, this means you could take a semicircle "window" and rotate it around t
 
 ## Step 2: Strategy
 
-For all \( N \) points to fit inside a semicircle, exactly one of the points must act as the "starting" or "leading" edge of that semicircle (e.g., the counter-clockwise most point).
+For all \\( N \\) points to fit inside a semicircle, exactly one of the points must act as the "starting" or "leading" edge of that semicircle (e.g., the counter-clockwise most point).
 
 Let's calculate the probability that a specific point, say point A, is this leading edge.
-For A to be the leading edge, all the other \(N-1\) points must fall within the \(180^\circ\) arc immediately following point A.
+For A to be the leading edge, all the other \\(N-1\\) points must fall within the \\(180^\circ\\) arc immediately following point A.
 
-Since the points are placed independently and uniformly, the probability of any given point landing in that specific \(180^\circ\) arc is \(1/2\). Therefore, the probability that **all** \(N-1\) remaining points fall into this arc is \((1/2)^{N-1}\).
+Since the points are placed independently and uniformly, the probability of any given point landing in that specific \\(180^\circ\\) arc is \\(1/2\\). Therefore, the probability that **all** \\(N-1\\) remaining points fall into this arc is \\((1/2)^{N-1}\\).
 
 ---
 
 ## Step 3: Core Result
 
-Since any of the \( N \) points could be the leading edge, and these \( N \) events are mutually exclusive (probability of a tie is 0), we can add their probabilities together.
+Since any of the \\( N \\) points could be the leading edge, and these \\( N \\) events are mutually exclusive (probability of a tie is 0), we can add their probabilities together.
 
-The probability that \( N \) points all lie in some semicircle is:
+The probability that \\( N \\) points all lie in some semicircle is:
 
-\[
+\\[
 P(N) = N \times \left(\frac{1}{2}\right)^{N-1} = \frac{N}{2^{N-1}}
-\]
+\\]
 
 ### Examples:
 
-- \( P(2) = \frac{2}{2^1} = 1 \)
-- \( P(3) = \frac{3}{4} \)
-- \( P(4) = \frac{4}{8} = \frac{1}{2} \)
-- \( P(5) = \frac{5}{16} \)
+- \\( P(2) = \frac{2}{2^1} = 1 \\)
+- \\( P(3) = \frac{3}{4} \\)
+- \\( P(4) = \frac{4}{8} = \frac{1}{2} \\)
+- \\( P(5) = \frac{5}{16} \\)
 
 ---
 
 ## Final Answer
 
-> The probability that \( N \) random points lie within **some semicircle** is:
+> The probability that \\( N \\) random points lie within **some semicircle** is:
 >
-> \[
+> \\[
 > \boxed{\frac{N}{2^{N-1}}}
-> \]
+> \\]
 
 # Reference
 
