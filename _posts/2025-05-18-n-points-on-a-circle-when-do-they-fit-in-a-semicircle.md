@@ -10,6 +10,8 @@ Here’s a beautiful geometric probability puzzle:
 > **Problem:** Place \\( N \\) points **independently and uniformly at random** on the circumference of a circle.  
 > What is the probability that **all \\( N \\) points** lie within some **semicircle** (i.e., an arc of length \\(180^\circ\\))?
 
+<iframe src="{{ site.baseurl }}/assets/probability_that_n_random_points_lie_in_some_semicircle.html" width="100%" height="900px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Understand the Event
