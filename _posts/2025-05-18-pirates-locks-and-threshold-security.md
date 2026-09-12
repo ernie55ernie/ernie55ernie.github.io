@@ -5,8 +5,6 @@ date: 2025-05-18
 category: quantitative interview
 ---
 
-## Pirates, Locks, and Threshold Security
-
 This puzzle explores a physical version of **threshold secret-sharing** using locks and keys:
 
 > There are **11 pirates** and a safe containing treasure.  
