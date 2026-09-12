@@ -11,6 +11,8 @@ This puzzle explores a physical version of **threshold secret-sharing** using lo
 > They want a **majority group (6 or more)** to be able to **open the safe**,  
 > but **no group of 5 or fewer** should be able to do so.
 
+<iframe src="{{ site.baseurl }}/assets/11_pirates_majority_safe.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 The locksmith uses a number \\( L \\) of **distinct locks**.  
 To open the safe, **all locks must be opened**, and each lock can have keys given to multiple pirates.
 
