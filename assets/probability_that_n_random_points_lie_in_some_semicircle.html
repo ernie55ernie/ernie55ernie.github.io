@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Points on a Circle — Semicircle Probability</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --border: #334155;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --accent-3: #f59e0b;
+      --danger: #f87171;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 220px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    .formula {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent-2);
+      margin: 12px 0 8px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .status.ok {
+      background: rgba(52, 211, 153, 0.12);
+      color: #a7f3d0;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+
+    .status.no {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.35);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .statbox {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .statbox .label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .statbox .value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .steps {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #0b1220;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Probability That N Random Points Lie in Some Semicircle</h1>
+    <div class="subtitle">
+      Place <b>N</b> points independently and uniformly at random on the circumference of a circle.
+      What is the probability that all <b>N</b> points lie within some semicircle?
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Interactive Visualization</h2>
+        <div class="controls">
+          <label for="nSlider">N = <span id="nValue">5</span></label>
+          <input id="nSlider" type="range" min="1" max="16" step="1" value="5" />
+          <button id="randomBtn">New Random Points</button>
+          <button id="simBtn">Run 5000 Simulations</button>
+        </div>
+
+        <svg id="circleSvg" viewBox="0 0 500 380" aria-label="Circle with random points">
+          <defs>
+            <clipPath id="circleClip">
+              <circle cx="250" cy="190" r="150"></circle>
+            </clipPath>
+          </defs>
+
+          <g id="semiFill" clip-path="url(#circleClip)"></g>
+          <circle cx="250" cy="190" r="150" fill="none" stroke="#64748b" stroke-width="3"></circle>
+          <line id="diameterLine" x1="250" y1="40" x2="250" y2="340"
+                stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 8" opacity="0"></line>
+          <g id="pointsLayer"></g>
+        </svg>
+
+        <div id="statusBox" class="status ok">Checking configuration...</div>
+
+        <div class="stats">
+          <div class="statbox">
+            <div class="label">Exact Probability</div>
+            <div id="exactProb" class="value">31.25%</div>
+          </div>
+          <div class="statbox">
+            <div class="label">Simulated Probability</div>
+            <div id="simProb" class="value">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Exact Answer</h2>
+        <div class="formula" id="formulaText">P = 5 / 2<sup>4</sup> = 31.25%</div>
+        <div class="small">
+          In general,
+          <br><br>
+          <code>P(N) = N / 2<sup>N-1</sup></code>
+        </div>
+
+        <h3 style="margin-top:20px;">Why is this true?</h3>
+        <ol class="steps">
+          <li>
+            If all points fit in some semicircle, then we can rotate that semicircle until its left endpoint
+            lands on one of the points.
+          </li>
+          <li>
+            So it is enough to check <b>N possible anchor points</b>, one for each point.
+          </li>
+          <li>
+            Fix one anchor point. Starting from it, consider the clockwise semicircle of length 180°.
+          </li>
+          <li>
+            Each of the other <b>N − 1</b> points has probability <b>1/2</b> of falling into that semicircle.
+          </li>
+          <li>
+            Since the points are independent, the probability for this anchor is
+            <code>(1/2)<sup>N-1</sup></code>.
+          </li>
+          <li>
+            There are <b>N</b> possible anchors, and except for probability-zero boundary ties,
+            these anchor events do not overlap.
+          </li>
+          <li>
+            Therefore,
+            <code>P = N · (1/2)<sup>N-1</sup> = N / 2<sup>N-1</sup></code>.
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Key Interview Insight</h2>
+      <div class="footer-note">
+        The hard part is reducing an “infinite search over all semicircles” to a finite one.
+        The trick is: if a covering semicircle exists, slide/rotate it until one boundary hits a point.
+        That means every successful configuration is captured by one of the <b>N anchor semicircles</b>.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const nSlider = document.getElementById("nSlider");
+    const nValue = document.getElementById("nValue");
+    const randomBtn = document.getElementById("randomBtn");
+    const simBtn = document.getElementById("simBtn");
+    const exactProb = document.getElementById("exactProb");
+    const simProb = document.getElementById("simProb");
+    const formulaText = document.getElementById("formulaText");
+    const statusBox = document.getElementById("statusBox");
+
+    const pointsLayer = document.getElementById("pointsLayer");
+    const semiFill = document.getElementById("semiFill");
+    const diameterLine = document.getElementById("diameterLine");
+
+    const cx = 250, cy = 190, r = 150;
+    let angles = [];
+
+    function normalize(a) {
+      const twoPi = Math.PI * 2;
+      return ((a % twoPi) + twoPi) % twoPi;
+    }
+
+    function polarToXY(angle, radius = r) {
+      return {
+        x: cx + radius * Math.cos(angle),
+        y: cy - radius * Math.sin(angle)
+      };
+    }
+
+    function randomAngles(n) {
+      return Array.from({ length: n }, () => Math.random() * Math.PI * 2);
+    }
+
+    function findAnchorIndex(arr) {
+      const pi = Math.PI;
+      const eps = 1e-12;
+
+      for (let i = 0; i < arr.length; i++) {
+        const start = arr[i];
+        let ok = true;
+        for (let j = 0; j < arr.length; j++) {
+          const diff = normalize(arr[j] - start);
+          if (diff > pi + eps) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) return i;
+      }
+      return -1;
+    }
+
+    function exactProbability(n) {
+      return n / Math.pow(2, n - 1);
+    }
+
+    function percent(x) {
+      return (100 * x).toFixed(x < 0.01 ? 3 : 2) + "%";
+    }
+
+    function updateFormula(n) {
+      const p = exactProbability(n);
+      exactProb.textContent = percent(p);
+      formulaText.innerHTML = `P = ${n} / 2<sup>${n - 1}</sup> = ${percent(p)}`;
+      nValue.textContent = n;
+    }
+
+    function drawConfiguration() {
+      const n = Number(nSlider.value);
+      updateFormula(n);
+
+      pointsLayer.innerHTML = "";
+      semiFill.innerHTML = "";
+
+      const anchor = findAnchorIndex(angles);
+
+      if (anchor !== -1) {
+        const a = angles[anchor];
+        const p1 = polarToXY(a);
+        const p2 = polarToXY(a + Math.PI);
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute(
+          "d",
+          `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 0 ${p2.x} ${p2.y} L ${p1.x} ${p1.y} Z`
+        );
+        path.setAttribute("fill", "#34d399");
+        path.setAttribute("opacity", "0.18");
+        semiFill.appendChild(path);
+
+        diameterLine.setAttribute("x1", p1.x);
+        diameterLine.setAttribute("y1", p1.y);
+        diameterLine.setAttribute("x2", p2.x);
+        diameterLine.setAttribute("y2", p2.y);
+        diameterLine.setAttribute("opacity", "0.9");
+
+        statusBox.className = "status ok";
+        statusBox.textContent = "✓ These points all lie within some semicircle.";
+      } else {
+        diameterLine.setAttribute("opacity", "0");
+        statusBox.className = "status no";
+        statusBox.textContent = "✗ These points do not all fit inside any semicircle.";
+      }
+
+      angles.forEach((angle, i) => {
+        const p = polarToXY(angle);
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", p.x);
+        circle.setAttribute("cy", p.y);
+        circle.setAttribute("r", i === anchor ? 8 : 6);
+        circle.setAttribute("fill", i === anchor ? "#f59e0b" : "#e5e7eb");
+        pointsLayer.appendChild(circle);
+
+        if (i === anchor) {
+          const labelPos = polarToXY(angle, r + 24);
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", labelPos.x);
+          text.setAttribute("y", labelPos.y);
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("dominant-baseline", "middle");
+          text.setAttribute("font-size", "13");
+          text.setAttribute("fill", "#f8fafc");
+          text.setAttribute("font-weight", "bold");
+          text.textContent = "anchor";
+          pointsLayer.appendChild(text);
+        }
+      });
+    }
+
+    function regenerate() {
+      angles = randomAngles(Number(nSlider.value));
+      simProb.textContent = "—";
+      drawConfiguration();
+    }
+
+    function runSimulation() {
+      const n = Number(nSlider.value);
+      const trials = 5000;
+      let success = 0;
+
+      for (let t = 0; t < trials; t++) {
+        const arr = randomAngles(n);
+        if (findAnchorIndex(arr) !== -1) success++;
+      }
+
+      simProb.textContent = percent(success / trials);
+    }
+
+    nSlider.addEventListener("input", regenerate);
+    randomBtn.addEventListener("click", regenerate);
+    simBtn.addEventListener("click", runSimulation);
+
+    regenerate();
+  </script>
+</body>
+</html>
