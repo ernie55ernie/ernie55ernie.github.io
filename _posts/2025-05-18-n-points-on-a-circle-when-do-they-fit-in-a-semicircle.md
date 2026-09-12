@@ -22,44 +22,42 @@ Visually, this means you could take a semicircle "window" and rotate it around t
 
 ## Step 2: Strategy
 
-We fix one of the points (say, point A) to be at angle \\(0^\circ\\) without loss of generality—because the circle is rotationally symmetric.
+For all \( N \) points to fit inside a semicircle, exactly one of the points must act as the "starting" or "leading" edge of that semicircle (e.g., the counter-clockwise most point).
 
-Then the rest of the \\(N-1\\) points are placed uniformly at random on the circle.
+Let's calculate the probability that a specific point, say point A, is this leading edge.
+For A to be the leading edge, all the other \(N-1\) points must fall within the \(180^\circ\) arc immediately following point A.
 
-The configuration **fits inside a semicircle** **if and only if** all the other \\(N-1\\) points fall within an arc of \\(180^\circ\\) starting from point A.
-
-We now ask: What's the probability that the angular **spread** between the largest and smallest of the \\(N\\) points is \\( \leq 180^\circ \\)?
+Since the points are placed independently and uniformly, the probability of any given point landing in that specific \(180^\circ\) arc is \(1/2\). Therefore, the probability that **all** \(N-1\) remaining points fall into this arc is \((1/2)^{N-1}\).
 
 ---
 
 ## Step 3: Core Result
 
-The probability that \\( N \\) points all lie in some semicircle is:
+Since any of the \( N \) points could be the leading edge, and these \( N \) events are mutually exclusive (probability of a tie is 0), we can add their probabilities together.
 
-\\[
-P(N) = \frac{N}{2^{N-1}}
-\\]
+The probability that \( N \) points all lie in some semicircle is:
+
+\[
+P(N) = N \times \left(\frac{1}{2}\right)^{N-1} = \frac{N}{2^{N-1}}
+\]
 
 ### Examples:
 
-- \\( P(2) = \frac{2}{2^1} = 1 \\)
-- \\( P(3) = \frac{3}{4} \\)
-- \\( P(4) = \frac{4}{8} = \frac{1}{2} \\)
-- \\( P(5) = \frac{5}{16} \\)
-
-This formula emerges from symmetry and combinatorics:  
-For each point, consider whether the other \\(N - 1\\) points fall within a half-circle arc originating at that point.
+- \( P(2) = \frac{2}{2^1} = 1 \)
+- \( P(3) = \frac{3}{4} \)
+- \( P(4) = \frac{4}{8} = \frac{1}{2} \)
+- \( P(5) = \frac{5}{16} \)
 
 ---
 
 ## Final Answer
 
-> The probability that \\( N \\) random points lie within **some semicircle** is:
+> The probability that \( N \) random points lie within **some semicircle** is:
 >
-> \\[
+> \[
 > \boxed{\frac{N}{2^{N-1}}}
-> \\]
+> \]
 
 # Reference
 
-* [1] [Probability that n points on a circle are in one semicircle](https://math.stackexchange.com/questions/325141/probability-that-n-points-on-a-circle-are-in-one-semicircle6)
+* [1] [Probability that n points on a circle are in one semicircle](https://math.stackexchange.com/questions/325141/probability-that-n-points-on-a-circle-are-in-one-semicircle)
