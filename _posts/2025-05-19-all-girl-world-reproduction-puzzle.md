@@ -11,6 +11,8 @@ In this hypothetical society, every couple continues to have children until they
 
 **What fraction of the population will be girls in the long run?**
 
+<iframe src="{{ site.baseurl }}/assets/girls_until_first_girl.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Intuitive Trap

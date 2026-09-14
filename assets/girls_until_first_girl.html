@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Girls Until First Girl</title>
+  <style>
+    :root{
+      --bg:#f7f7f8;
+      --card:#ffffff;
+      --panel:#f1f3f5;
+      --text:#171717;
+      --muted:#686868;
+      --border:#dedede;
+      --accent:#111827;
+      --boy:#9ca3af;
+      --girl:#d1a1b7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:32px 18px 48px;
+    }
+    h1{font-size:34px;margin:0 0 8px}
+    .lead{color:var(--muted);margin:0 0 24px}
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+    }
+    .eyebrow{font-size:13px;color:var(--muted);font-weight:600}
+    .answer{font-size:42px;font-weight:800;margin:8px 0 12px}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:18px;
+    }
+    .stat{
+      background:var(--panel);
+      border-radius:14px;
+      padding:14px;
+      text-align:center;
+    }
+    .stat small{display:block;color:var(--muted)}
+    .stat b{display:block;font-size:24px;margin-top:4px}
+    .formula{
+      margin-top:18px;
+      background:var(--panel);
+      border-radius:14px;
+      padding:14px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    }
+    .families{margin-top:12px}
+    .row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      padding:10px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .row:last-child{border-bottom:none}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .sim{margin-top:18px}
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    button{
+      border:1px solid var(--border);
+      background:white;
+      color:var(--text);
+      border-radius:10px;
+      padding:10px 14px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+    }
+    button:hover{background:var(--panel)}
+    .results{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:18px;
+    }
+    .result{
+      background:var(--panel);
+      border-radius:12px;
+      padding:13px;
+    }
+    .result small{color:var(--muted);display:block}
+    .result b{font-size:21px}
+    .bar{
+      display:flex;
+      height:54px;
+      border-radius:12px;
+      overflow:hidden;
+      margin-top:18px;
+      border:1px solid var(--border);
+    }
+    .bar > div{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      min-width:0;
+    }
+    #boyBar{background:var(--boy)}
+    #girlBar{background:var(--girl)}
+    .note{
+      margin-top:18px;
+      padding:16px;
+      border-left:4px solid var(--accent);
+      background:#fff;
+      border-radius:10px;
+    }
+    @media(max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .stats,.results{grid-template-columns:1fr 1fr}
+      h1{font-size:28px}
+      .answer{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Families Keep Having Children Until They Have a Girl</h1>
+    <p class="lead">Each birth is independent, with probability 1/2 of being a girl.</p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="eyebrow">CORE IDEA</div>
+        <div class="answer">50% girls</div>
+        <p>
+          Every family ends with exactly <strong>one girl</strong>. Before that girl,
+          there may be 0, 1, 2, 3, ... boys.
+        </p>
+
+        <div class="stats">
+          <div class="stat"><small>Girls / family</small><b>1</b></div>
+          <div class="stat"><small>Expected boys</small><b>1</b></div>
+          <div class="stat"><small>Expected size</small><b>2</b></div>
+        </div>
+
+        <div class="formula">
+          E[boys] = 0(1/2)+1(1/4)+2(1/8)+... = 1<br/>
+          Girl fraction = 1 / (1+1) = <strong>1/2</strong>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">POSSIBLE FAMILIES</div>
+        <div class="families">
+          <div class="row"><span><code>G</code> → 1 child</span><code>P = 1/2</code></div>
+          <div class="row"><span><code>B G</code> → 2 children</span><code>P = 1/4</code></div>
+          <div class="row"><span><code>B B G</code> → 3 children</span><code>P = 1/8</code></div>
+          <div class="row"><span><code>B B B G</code> → 4 children</span><code>P = 1/16</code></div>
+          <div class="row"><span>⋮</span><span>⋮</span></div>
+        </div>
+
+        <div class="note">
+          The stopping rule changes <strong>family size</strong>, not the probability that an individual birth is a girl.
+        </div>
+      </section>
+    </div>
+
+    <section class="card sim">
+      <div class="eyebrow">INTERACTIVE SIMULATION</div>
+      <h2 style="margin:6px 0 0">Watch the population ratio approach 50%</h2>
+
+      <div class="controls">
+        <button data-n="10">10 families</button>
+        <button data-n="1000">1,000 families</button>
+        <button data-n="100000">100,000 families</button>
+      </div>
+
+      <div class="results">
+        <div class="result"><small>Families</small><b id="families">—</b></div>
+        <div class="result"><small>Girls</small><b id="girls">—</b></div>
+        <div class="result"><small>Boys</small><b id="boys">—</b></div>
+        <div class="result"><small>Girls among children</small><b id="fraction">—</b></div>
+      </div>
+
+      <div class="bar" aria-label="Population gender ratio">
+        <div id="boyBar" style="width:50%">50%</div>
+        <div id="girlBar" style="width:50%">50%</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function simulate(n){
+      let boys = 0;
+
+      for(let f = 0; f < n; f++){
+        while(Math.random() >= 0.5){
+          boys++;
+        }
+      }
+
+      const girls = n;
+      const total = girls + boys;
+      const girlPct = 100 * girls / total;
+      const boyPct = 100 - girlPct;
+
+      document.getElementById("families").textContent = n.toLocaleString();
+      document.getElementById("girls").textContent = girls.toLocaleString();
+      document.getElementById("boys").textContent = boys.toLocaleString();
+      document.getElementById("fraction").textContent = girlPct.toFixed(2) + "%";
+
+      const g = document.getElementById("girlBar");
+      const b = document.getElementById("boyBar");
+
+      g.style.width = girlPct + "%";
+      b.style.width = boyPct + "%";
+      g.textContent = girlPct.toFixed(1) + "%";
+      b.textContent = boyPct.toFixed(1) + "%";
+    }
+
+    document.querySelectorAll("button[data-n]").forEach(btn => {
+      btn.addEventListener("click", () => simulate(Number(btn.dataset.n)));
+    });
+
+    simulate(100000);
+  </script>
+</body>
+</html>
