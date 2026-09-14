@@ -11,6 +11,8 @@ This classic combinatorics puzzle is also known as the "hopping rabbit" problem:
 > Each move, it can hop up **either 1 or 2 steps**.  
 > **How many distinct ways** can the rabbit reach the top?
 
+<iframe src="{{ site.baseurl }}/assets/rabbit_staircase_fibonacci.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Build a Recurrence

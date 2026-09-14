@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rabbit Staircase — Fibonacci Ways</title>
+  <style>
+    :root{
+      --bg:#f7f8fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --border:#d9dee8; --accent:#2563eb; --accent-soft:#eaf2ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+    h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}
+    .subtitle{color:var(--muted);margin-bottom:22px}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px;
+    }
+    .controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:14px}
+    input[type="range"]{width:min(340px,75vw)}
+    .stairs{display:flex;align-items:flex-end;gap:6px;overflow-x:auto;padding:12px 4px 18px}
+    .step{
+      min-width:42px;height:42px;border:1px solid var(--border);background:#fff;
+      border-radius:8px 8px 2px 2px;display:flex;align-items:center;justify-content:center;font-weight:700;
+    }
+    .active{outline:3px solid var(--accent);outline-offset:2px}
+    button{
+      border:1px solid var(--border);background:#fff;color:var(--text);border-radius:10px;
+      min-height:44px;padding:0 14px;font-weight:650;cursor:pointer;
+    }
+    button.primary{background:var(--accent-soft);border-color:#b8cdfa}
+    button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+    .buttons{display:flex;flex-wrap:wrap;gap:10px}
+    .answer{font-size:46px;font-weight:800;margin:4px 0}
+    .muted{color:var(--muted)}
+    .eq{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .mini{background:#f9fafb;border-radius:12px;padding:14px}
+    .paths{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .chip{
+      border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 10px;
+      font:inherit;cursor:pointer;
+    }
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:center}
+    th:first-child,td:first-child{text-align:left}
+    .section{margin-top:18px}
+    @media(max-width:760px){
+      .grid,.two{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>🐇 Rabbit Staircase</h1>
+    <div class="subtitle">
+      A rabbit can hop either <strong>1</strong> or <strong>2</strong> steps at a time.
+      How many distinct ways can it reach the top of a staircase with <strong>n</strong> steps?
+    </div>
+
+    <section class="grid">
+      <div class="card">
+        <div class="controls">
+          <label for="n"><strong>Number of steps:</strong> <span id="nLabel">5</span></label>
+          <input id="n" type="range" min="1" max="10" value="5" />
+        </div>
+
+        <div id="stairs" class="stairs" aria-label="Interactive staircase"></div>
+
+        <div class="buttons">
+          <button id="show" class="primary" type="button">Show one way</button>
+          <button id="next" type="button">Next way</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+        <p id="pathText" class="muted" aria-live="polite">
+          Choose a sequence below, or click “Show one way”.
+        </p>
+      </div>
+
+      <aside class="card">
+        <div class="muted">Total distinct ways</div>
+        <div id="answer" class="answer">8</div>
+        <div id="fibLabel" class="muted">= Fibonacci(6)</div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+        <strong>Key recurrence</strong>
+        <div class="eq" style="font-size:20px;margin-top:8px">W(n) = W(n−1) + W(n−2)</div>
+      </aside>
+    </section>
+
+    <section class="card section">
+      <h2 style="margin-top:0">Why does the recurrence work?</h2>
+      <div class="two">
+        <div class="mini">
+          <strong>Last hop = 1 step</strong>
+          <p class="muted">Before the last hop, the rabbit must be standing on step <strong>n−1</strong>.</p>
+          <div id="fromOne" class="eq"><strong>W(4) = 5 ways</strong></div>
+        </div>
+        <div class="mini">
+          <strong>Last hop = 2 steps</strong>
+          <p class="muted">Before the last hop, the rabbit must be standing on step <strong>n−2</strong>.</p>
+          <div id="fromTwo" class="eq"><strong>W(3) = 3 ways</strong></div>
+        </div>
+      </div>
+      <p id="recurrenceExample" class="eq"><strong>So W(5) = 5 + 3 = 8.</strong></p>
+    </section>
+
+    <section class="card section">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 style="margin:0">All hop sequences</h2>
+        <span id="sequenceCount" class="muted">8 sequences</span>
+      </div>
+      <div id="paths" class="paths"></div>
+    </section>
+
+    <section class="card section">
+      <h2 style="margin-top:0">The pattern</h2>
+      <div style="overflow-x:auto">
+        <table id="table"></table>
+      </div>
+      <p class="muted">
+        Base cases: <span class="eq">W(0)=1</span> and <span class="eq">W(1)=1</span>.
+        Therefore the number of ways for <strong>n</strong> steps is
+        <span class="eq">F(n+1)</span>.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const slider = document.getElementById('n');
+    const nLabel = document.getElementById('nLabel');
+    const stairs = document.getElementById('stairs');
+    const answer = document.getElementById('answer');
+    const fibLabel = document.getElementById('fibLabel');
+    const fromOne = document.getElementById('fromOne');
+    const fromTwo = document.getElementById('fromTwo');
+    const recurrenceExample = document.getElementById('recurrenceExample');
+    const pathsEl = document.getElementById('paths');
+    const sequenceCount = document.getElementById('sequenceCount');
+    const pathText = document.getElementById('pathText');
+    const table = document.getElementById('table');
+
+    let paths = [];
+    let currentPath = 0;
+    let timer = null;
+
+    function ways(n){
+      if(n === 0 || n === 1) return 1;
+      let a = 1, b = 1;
+      for(let i=2;i<=n;i++){
+        [a,b] = [b,a+b];
+      }
+      return b;
+    }
+
+    function generatePaths(n){
+      const out = [];
+      function dfs(left, cur){
+        if(left === 0){ out.push([...cur]); return; }
+        if(left >= 1){ cur.push(1); dfs(left-1,cur); cur.pop(); }
+        if(left >= 2){ cur.push(2); dfs(left-2,cur); cur.pop(); }
+      }
+      dfs(n,[]);
+      return out;
+    }
+
+    function clearTimer(){
+      if(timer){ clearInterval(timer); timer = null; }
+    }
+
+    function drawStairs(n){
+      stairs.innerHTML = "";
+      const start = document.createElement("div");
+      start.className = "step";
+      start.dataset.pos = "0";
+      start.textContent = "🐇";
+      stairs.appendChild(start);
+
+      for(let i=1;i<=n;i++){
+        const s = document.createElement("div");
+        s.className = "step";
+        s.dataset.pos = String(i);
+        s.style.height = (38 + i*8) + "px";
+        s.textContent = i;
+        stairs.appendChild(s);
+      }
+    }
+
+    function markPosition(pos){
+      document.querySelectorAll(".step").forEach(el=>{
+        el.classList.remove("active");
+        const p = Number(el.dataset.pos);
+        el.textContent = p === 0 ? "Start" : p;
+      });
+      const target = document.querySelector(`.step[data-pos="${pos}"]`);
+      if(target){
+        target.classList.add("active");
+        target.textContent = "🐇";
+      }
+    }
+
+    function showPath(index, animate=true){
+      clearTimer();
+      if(!paths.length) return;
+      currentPath = ((index % paths.length) + paths.length) % paths.length;
+      const p = paths[currentPath];
+      pathText.textContent = `Way ${currentPath+1}: ${p.join(" + ")} = ${slider.value} steps`;
+
+      if(!animate || matchMedia("(prefers-reduced-motion: reduce)").matches){
+        markPosition(Number(slider.value));
+        return;
+      }
+
+      let i = 0, pos = 0;
+      markPosition(0);
+      timer = setInterval(()=>{
+        pos += p[i];
+        markPosition(pos);
+        i++;
+        if(i >= p.length) clearTimer();
+      },450);
+    }
+
+    function renderTable(n){
+      let html = "<tr><th>n</th>";
+      for(let i=0;i<=n;i++) html += `<th>${i}</th>`;
+      html += "</tr><tr><td><strong>W(n)</strong></td>";
+      for(let i=0;i<=n;i++) html += `<td><strong>${ways(i)}</strong></td>`;
+      html += "</tr>";
+      table.innerHTML = html;
+    }
+
+    function render(){
+      clearTimer();
+      const n = Math.max(1, Math.min(10, Number(slider.value)||1));
+      nLabel.textContent = n;
+      answer.textContent = ways(n);
+      fibLabel.textContent = `= Fibonacci(${n+1})`;
+
+      const w1 = ways(n-1);
+      const w2 = n >= 2 ? ways(n-2) : 0;
+      fromOne.innerHTML = `<strong>W(${n-1}) = ${w1} ${w1===1?"way":"ways"}</strong>`;
+      fromTwo.innerHTML = n >= 2
+        ? `<strong>W(${n-2}) = ${w2} ${w2===1?"way":"ways"}</strong>`
+        : "<strong>No 2-step final hop is possible</strong>";
+      recurrenceExample.innerHTML = n >= 2
+        ? `<strong>So W(${n}) = ${w1} + ${w2} = ${ways(n)}.</strong>`
+        : "<strong>So W(1) = 1.</strong>";
+
+      drawStairs(n);
+      paths = generatePaths(n);
+      currentPath = 0;
+      sequenceCount.textContent = `${paths.length} ${paths.length===1?"sequence":"sequences"}`;
+      pathsEl.innerHTML = "";
+
+      paths.forEach((p,i)=>{
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = p.join(" + ");
+        b.addEventListener("click",()=>showPath(i,true));
+        pathsEl.appendChild(b);
+      });
+
+      pathText.textContent = "Choose a sequence below, or click “Show one way”.";
+      renderTable(n);
+    }
+
+    slider.addEventListener("input", render);
+    document.getElementById("show").addEventListener("click",()=>showPath(currentPath,true));
+    document.getElementById("next").addEventListener("click",()=>{
+      currentPath = (currentPath+1) % paths.length;
+      showPath(currentPath,true);
+    });
+    document.getElementById("reset").addEventListener("click",()=>{
+      clearTimer();
+      currentPath = 0;
+      markPosition(0);
+      pathText.textContent = "Reset to the bottom.";
+    });
+
+    render();
+  </script>
+</body>
+</html>
