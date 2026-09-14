@@ -11,6 +11,8 @@ You deal a **standard 52-card deck** evenly to **four players** (13 cards each).
 
 **Question:** What is the probability that **each player gets exactly one Ace**?
 
+<iframe src="{{ site.baseurl }}/assets/four_players_one_ace_each.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Total Number of Deals
