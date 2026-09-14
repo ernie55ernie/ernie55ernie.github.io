@@ -32,7 +32,7 @@ We'll calculate the number of favorable hands for each case and divide by this t
 
 - Choose the **rank** for the four-of-a-kind: \\(13\\) choices
 - Choose **4 suits** for that rank: exactly 1 way
-- Choose the **fifth card**: any of the remaining \\(52 - 4 = 48\\) cards (but **not** the same rank)
+- Choose the **fifth card**: any of the remaining \\(52 - 4 = 48\\) cards
 
 \\[
 \text{Favorable hands} = 13 \times 48 = 624
