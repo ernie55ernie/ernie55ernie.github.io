@@ -26,34 +26,34 @@ What is the probability that **Player A** wins the game?
 
 Let’s define the game states based on whose turn it is and the previous flip:
 
-- **S_A**: It is A's turn, and there is no previous H (e.g., start of game, or after a T).
-- **S_B**: It is B's turn, and there is no previous H.
-- **H_A**: Last flip was **H** by Player A (it is B's turn).
-- **H_B**: Last flip was **H** by Player B (it is A's turn).
+- \\( S_A \\): It is A's turn, and there is no previous H (e.g., start of game, or after a T).
+- \\( S_B \\): It is B's turn, and there is no previous H.
+- \\( H_A \\): Last flip was **H** by Player A (it is B's turn).
+- \\( H_B \\): Last flip was **H** by Player B (it is A's turn).
 
-### From **S_A**:
+### From \\( S_A \\):
 
 - A flips:
-  - H with probability \\( \frac{1}{2} \\) → state **H_A**
-  - T with probability \\( \frac{1}{2} \\) → state **S_B** (it is now B's turn)
+  - H with probability \\( \frac{1}{2} \\) → state \\( H_A \\)
+  - T with probability \\( \frac{1}{2} \\) → state \\( S_B \\) (it is now B's turn)
 
-### From **S_B**:
+### From \\( S_B \\):
 
 - B flips:
-  - H with probability \\( \frac{1}{2} \\) → state **H_B**
-  - T with probability \\( \frac{1}{2} \\) → state **S_A** (it is now A's turn)
+  - H with probability \\( \frac{1}{2} \\) → state \\( H_B \\)
+  - T with probability \\( \frac{1}{2} \\) → state \\( S_A \\) (it is now A's turn)
 
-### From **H_A**:
+### From \\( H_A \\):
 
 - B flips:
   - T → **B wins** (completes HT, A wins with prob 0)
-  - H → state **H_B**
+  - H → state \\( H_B \\)
 
-### From **H_B**:
+### From \\( H_B \\):
 
 - A flips:
   - T → **A wins** (completes HT, A wins with prob 1)
-  - H → state **H_A**
+  - H → state \\( H_A \\)
 
 ---
 
