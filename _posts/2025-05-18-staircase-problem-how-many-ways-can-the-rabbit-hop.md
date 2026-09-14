@@ -5,8 +5,6 @@ date: 2025-05-18
 category: quantitative interview
 ---
 
-## Staircase Problem: How Many Ways Can the Rabbit Hop?
-
 This classic combinatorics puzzle is also known as the "hopping rabbit" problem:
 
 > A rabbit is at the bottom of a staircase with \\(n\\) steps.  
