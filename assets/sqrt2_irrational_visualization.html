@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why √2 Is Irrational</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dfe3ea;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --success: #0f766e;
+      --danger: #b42318;
+      --danger-soft: #fef3f2;
+      --shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 32px auto 60px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.08;
+    }
+
+    .hero p {
+      margin: 0 auto;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .note {
+      margin: 18px auto 0;
+      max-width: 760px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      text-align: left;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .goal {
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+    }
+
+    .goal .equation {
+      text-align: center;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin: 14px 0 6px;
+    }
+
+    .label {
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .78rem;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 15px;
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      background: #fff;
+      opacity: .42;
+      transition: .2s ease;
+    }
+
+    .step.revealed { opacity: 1; }
+
+    .step.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex: 0 0 auto;
+      background: #fff;
+    }
+
+    .step.active .badge {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .step h3 {
+      margin: 2px 0 5px;
+      font-size: 1rem;
+    }
+
+    .step p { margin: 0; }
+
+    .eq {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-weight: 700;
+    }
+
+    .arrow {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 10px 14px;
+      min-height: 44px;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .aside-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .parity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .result {
+      margin-top: 12px;
+      min-height: 70px;
+      padding: 13px;
+      border-radius: 12px;
+      background: #f3f4f6;
+    }
+
+    .flow {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .flow-box {
+      width: min(100%, 300px);
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 700;
+    }
+
+    .flow-box.bad {
+      background: var(--danger-soft);
+      border-color: #fda29b;
+      color: var(--danger);
+    }
+
+    .flow-arrow {
+      color: var(--muted);
+      font-size: 1.5rem;
+    }
+
+    .conclusion {
+      text-align: center;
+      padding: 18px;
+      border-radius: 14px;
+      background: #ecfdf3;
+      border: 1px solid #a7f3d0;
+    }
+
+    .conclusion strong {
+      color: var(--success);
+      font-size: 1.25rem;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 500px) {
+      .page {
+        width: min(100% - 20px, 1100px);
+        margin-top: 18px;
+      }
+
+      .panel { padding: 15px; }
+      .parity-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>Why √2 Cannot Be a Fraction</h1>
+      <p>
+        We will use <strong>proof by contradiction</strong>: assume √2 can be written
+        as a ratio of integers, then show that assumption forces an impossibility.
+      </p>
+      <div class="note">
+        <strong>Important:</strong> the irrational number here is <strong>√2</strong>,
+        not 2. The number 2 is rational because <span class="eq">2 = 2/1</span>.
+      </div>
+    </header>
+
+    <section class="layout">
+      <div>
+        <div class="panel goal">
+          <div class="label">Goal</div>
+          <div class="equation">√2 ≠ a / b</div>
+          <p class="tiny">
+            for every pair of integers <span class="eq">a, b</span> with
+            <span class="eq">b ≠ 0</span>.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="steps">
+            <div class="step active revealed" data-step="0">
+              <div class="badge">1</div>
+              <div>
+                <h3>Assume the opposite</h3>
+                <p>
+                  Suppose <span class="eq">√2 = a/b</span>, and choose the fraction
+                  in <strong>lowest terms</strong>. So <span class="eq">a</span> and
+                  <span class="eq">b</span> have no common factor.
+                </p>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="1">
+              <div class="badge">2</div>
+              <div>
+                <h3>Square both sides</h3>
+                <p class="eq">
+                  2 = a² / b²<br />
+                  a² = 2b²
+                </p>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="2">
+              <div class="badge">3</div>
+              <div>
+                <h3>Therefore a is even</h3>
+                <p>
+                  Since <span class="eq">a² = 2b²</span>, the number
+                  <span class="eq">a²</span> is even. A square can be even only if
+                  the original integer is even. So write
+                  <span class="eq">a = 2k</span>.
+                </p>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="3">
+              <div class="badge">4</div>
+              <div>
+                <h3>Substitute a = 2k</h3>
+                <p class="eq">
+                  a² = 2b²<br />
+                  (2k)² = 2b²<br />
+                  4k² = 2b²<br />
+                  b² = 2k²
+                </p>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="4">
+              <div class="badge">5</div>
+              <div>
+                <h3>Therefore b is even too</h3>
+                <p>
+                  Because <span class="eq">b² = 2k²</span>,
+                  <span class="eq">b²</span> is even, so
+                  <span class="eq">b</span> must also be even.
+                </p>
+              </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="step" data-step="5">
+              <div class="badge">!</div>
+              <div>
+                <h3>Contradiction</h3>
+                <p>
+                  Both <span class="eq">a</span> and <span class="eq">b</span>
+                  are divisible by 2. But we started by saying
+                  <span class="eq">a/b</span> was already in lowest terms.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button id="prevBtn">← Previous</button>
+            <button id="nextBtn" class="primary">Next step →</button>
+            <button id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="aside-stack">
+        <div class="panel">
+          <div class="label">Key fact</div>
+          <h2>Why does “a² is even” imply “a is even”?</h2>
+
+          <div class="parity-grid">
+            <button class="parity-btn" data-n="5">Try 5²</button>
+            <button class="parity-btn" data-n="6">Try 6²</button>
+          </div>
+
+          <div class="result" id="parityResult">
+            Click one of the examples above.
+          </div>
+
+          <p class="tiny">
+            More generally, if an integer is odd, it has the form
+            <span class="eq">2m + 1</span>. Then
+          </p>
+
+          <p class="eq">
+            (2m + 1)² = 4m² + 4m + 1<br />
+            = 2(2m² + 2m) + 1,
+          </p>
+
+          <p class="tiny">
+            which is odd. Therefore an even square cannot come from an odd integer.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="label">The contradiction</div>
+          <div class="flow">
+            <div class="flow-box">a / b is in lowest terms</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-box">a is even</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-box">b is even</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-box bad">
+              a and b both share factor 2<br />
+              → not lowest terms
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="conclusion">
+            <div class="label">Conclusion</div>
+            <p>
+              Our assumption that <span class="eq">√2 = a/b</span> creates a
+              contradiction.
+            </p>
+            <strong>∴ √2 is irrational.</strong>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const steps = [...document.querySelectorAll(".step")];
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    let current = 0;
+
+    function render() {
+      steps.forEach((step, index) => {
+        step.classList.toggle("revealed", index <= current);
+        step.classList.toggle("active", index === current);
+      });
+
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === steps.length - 1;
+
+      if (current === steps.length - 2) {
+        nextBtn.textContent = "Reveal contradiction →";
+      } else if (current === steps.length - 1) {
+        nextBtn.textContent = "Contradiction found ✓";
+      } else {
+        nextBtn.textContent = "Next step →";
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      current = Math.max(0, current - 1);
+      render();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      current = Math.min(steps.length - 1, current + 1);
+      render();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      current = 0;
+      render();
+    });
+
+    const parityResult = document.getElementById("parityResult");
+
+    document.querySelectorAll(".parity-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const n = Number(button.dataset.n);
+        const square = n * n;
+        const kind = n % 2 === 0 ? "even" : "odd";
+
+        parityResult.innerHTML =
+          `<strong>${n}² = ${square}</strong><br>` +
+          `${n} is ${kind}, and ${square} is also ${kind}.`;
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -10,6 +10,8 @@ One of the earliest known proofs in number theory tackles this elegant question:
 > **Problem:** Show that \\( \sqrt{2} \\) **cannot** be written as a ratio of two integers.  
 > In other words, **prove that \\( \sqrt{2} \\) is irrational**.
 
+<iframe src="{{ site.baseurl }}/assets/sqrt2_irrational_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step-by-Step Proof (By Contradiction)
