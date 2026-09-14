@@ -22,59 +22,73 @@ What is the probability that **Player A** wins the game?
 
 ## Strategy and State Analysis
 
-Let’s define some game states:
+Let’s define the game states based on whose turn it is and the previous flip:
 
-- **Start (S)**: No flips yet.
-- **H_A**: Last flip was **H** by Player A.
-- **H_B**: Last flip was **H** by Player B.
-- **A_Wins**, **B_Wins**: terminal winning states.
+- **S_A**: It is A's turn, and there is no previous H (e.g., start of game, or after a T).
+- **S_B**: It is B's turn, and there is no previous H.
+- **H_A**: Last flip was **H** by Player A (it is B's turn).
+- **H_B**: Last flip was **H** by Player B (it is A's turn).
 
-### From the start:
+### From **S_A**:
 
 - A flips:
   - H with probability \\( \frac{1}{2} \\) → state **H_A**
-  - T with probability \\( \frac{1}{2} \\) → back to **S** (no pattern HT)
+  - T with probability \\( \frac{1}{2} \\) → state **S_B** (it is now B's turn)
+
+### From **S_B**:
+
+- B flips:
+  - H with probability \\( \frac{1}{2} \\) → state **H_B**
+  - T with probability \\( \frac{1}{2} \\) → state **S_A** (it is now A's turn)
 
 ### From **H_A**:
 
 - B flips:
-  - T → **B wins** (completes HT)
+  - T → **B wins** (completes HT, A wins with prob 0)
   - H → state **H_B**
 
 ### From **H_B**:
 
 - A flips:
-  - T → **A wins** (completes HT)
-  - H → back to **H_A**
+  - T → **A wins** (completes HT, A wins with prob 1)
+  - H → state **H_A**
 
 ---
 
 ## Recursive Probabilities
 
-Let:
+Let \\( P(\text{State}) \\) be the probability that **Player A** wins starting from that state. We want to find \\( P_{S_A} \\).
 
-- \\( P_A \\): probability that A wins starting from the initial state
-
-Using the recursive transitions, we derive:
-
-\\[
-P_A = \frac{1}{2}P_{H_A} + \frac{1}{2}P_A
-\\]
-
-Solve for \\( P_{H_A} \\) via:
+First, solve the subsystem for the states where an **H** was just flipped:
 
 \\[
 P_{H_A} = \frac{1}{2} \cdot 0 + \frac{1}{2} \cdot P_{H_B} = \frac{1}{2} P_{H_B}
 \\]
 
 \\[
-P_{H_B} = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot P_{H_A}
+P_{H_B} = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot P_{H_A} = \frac{1}{2} + \frac{1}{2} \left( \frac{1}{2} P_{H_B} \right) = \frac{1}{2} + \frac{1}{4} P_{H_B}
 \\]
 
-Substitute backwards and solve the system to get:
+Solving gives \\( P_{H_B} = \frac{2}{3} \\) and therefore \\( P_{H_A} = \frac{1}{3} \\).
+
+Next, use the initial states to find \\( P_{S_A} \\):
 
 \\[
-P_A = \frac{4}{9}
+P_{S_B} = \frac{1}{2} P_{H_B} + \frac{1}{2} P_{S_A} = \frac{1}{3} + \frac{1}{2} P_{S_A}
+\\]
+
+\\[
+P_{S_A} = \frac{1}{2} P_{H_A} + \frac{1}{2} P_{S_B} = \frac{1}{6} + \frac{1}{2} P_{S_B}
+\\]
+
+Substitute \\( P_{S_B} \\) into \\( P_{S_A} \\):
+
+\\[
+P_{S_A} = \frac{1}{6} + \frac{1}{2} \left( \frac{1}{3} + \frac{1}{2} P_{S_A} \right) = \frac{1}{3} + \frac{1}{4} P_{S_A}
+\\]
+
+\\[
+\frac{3}{4} P_{S_A} = \frac{1}{3} \implies P_{S_A} = \frac{4}{9}
 \\]
 
 ---
