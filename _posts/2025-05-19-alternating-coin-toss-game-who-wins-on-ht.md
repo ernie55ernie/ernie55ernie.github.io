@@ -18,6 +18,8 @@ category: quantitative interview
 
 What is the probability that **Player A** wins the game?
 
+<iframe src="{{ site.baseurl }}/assets/ht_coin_game_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Strategy and State Analysis
