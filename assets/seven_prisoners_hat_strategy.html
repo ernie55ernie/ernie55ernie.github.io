@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seven Prisoners — Modular Hat Strategy</title>
+  <style>
+    :root{
+      --bg:#f7f7fb;
+      --panel:#ffffff;
+      --text:#171717;
+      --muted:#666;
+      --border:#d9d9e3;
+      --accent:#2563eb;
+      --good:#16a34a;
+      --bad:#9ca3af;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      padding:32px 18px;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{margin:0 0 8px;font-size:32px}
+    .lead{color:var(--muted);font-size:17px;line-height:1.6;margin:0 0 24px}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:20px;
+    }
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:11px 16px;
+      background:var(--accent);
+      color:#fff;
+      cursor:pointer;
+      font-weight:700;
+      font-size:15px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .prisoner{text-align:center;min-width:0}
+    .hat{
+      width:58px;height:42px;
+      border-radius:30px 30px 10px 10px;
+      position:relative;
+      margin:0 auto;
+      border:2px solid rgba(0,0,0,.18);
+    }
+    .hat::after{
+      content:'';
+      position:absolute;
+      left:-8px;right:-8px;bottom:-5px;
+      height:8px;border-radius:999px;
+      background:inherit;
+      border:2px solid rgba(0,0,0,.16);
+    }
+    .person{
+      width:56px;height:56px;
+      border-radius:50%;
+      border:2px solid var(--border);
+      background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      margin:9px auto 0;
+      font-weight:800;
+    }
+    .correct{outline:3px solid var(--good);outline-offset:3px}
+    .wrong{opacity:.58}
+    .c0{background:#ef4444}.c1{background:#f97316}.c2{background:#facc15}
+    .c3{background:#22c55e}.c4{background:#3b82f6}.c5{background:#4f46e5}.c6{background:#a855f7}
+    select{
+      width:100%;
+      margin-top:6px;
+      padding:9px 6px;
+      border:1px solid var(--border);
+      border-radius:9px;
+      background:#fff;
+      font-size:14px;
+    }
+    .tiny{font-size:13px;margin-top:8px;line-height:1.5}
+    .muted{color:var(--muted)}
+    .formula{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+    .big{font-size:22px;font-weight:800;margin-top:8px}
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+    .step{
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fafafa;
+      line-height:1.55;
+    }
+    .step b{display:block;margin-bottom:6px}
+    @media(max-width:850px){
+      .grid{grid-template-columns:repeat(4,1fr)}
+      .steps{grid-template-columns:1fr}
+    }
+    @media(max-width:620px){
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .two{grid-template-columns:1fr}
+      h1{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Seven Prisoners — Guaranteed Hat Strategy</h1>
+    <p class="lead">
+      Number the seven hat colors <b>0–6</b>. Prisoner <b>i</b> guesses the unique color that would make
+      the sum of all seven hat values equal <b>i modulo 7</b>. Exactly one prisoner must be correct.
+    </p>
+
+    <div class="card">
+      <div class="toolbar">
+        <div>
+          <b>Try different hat assignments</b><br>
+          <span class="muted">Each prisoner sees the other six hats but not their own.</span>
+        </div>
+        <button id="randomize">🎲 Random hats</button>
+      </div>
+      <div id="prisoners" class="grid"></div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <div class="muted">Actual total</div>
+        <div id="sum" class="big formula"></div>
+        <p id="winnerRule"></p>
+      </div>
+      <div class="card">
+        <div class="muted">Result</div>
+        <div id="result" class="big"></div>
+        <p class="muted">This strategy guarantees exactly one correct guess.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Why the winning prisoner is correct</h2>
+      <div id="focusCalc" class="formula" style="line-height:1.8"></div>
+    </div>
+
+    <div class="card">
+      <h2>The idea in 3 steps</h2>
+      <div class="steps">
+        <div class="step">
+          <b>① Encode colors</b>
+          Call the seven colors <span class="formula">0,1,2,3,4,5,6</span>.
+        </div>
+        <div class="step">
+          <b>② Give each prisoner a target</b>
+          Prisoner <span class="formula">i</span> assumes the total hat sum should be
+          <span class="formula">i mod 7</span>.
+        </div>
+        <div class="step">
+          <b>③ One target must match reality</b>
+          The real total has exactly one remainder among
+          <span class="formula">0,…,6</span>. The prisoner assigned that remainder is correct.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const names = ['Red','Orange','Yellow','Green','Blue','Indigo','Violet'];
+    let hats = [0,1,2,3,4,5,6];
+
+    function mod(n,m){ return ((n % m) + m) % m; }
+
+    function render(){
+      const total = hats.reduce((a,b)=>a+b,0);
+      const remainder = mod(total,7);
+
+      // Prisoner i sees all hats except their own.
+      // They guess x such that:
+      // seenSum + x ≡ i (mod 7)
+      const guesses = hats.map((_,i)=>{
+        const seenSum = total - hats[i];
+        return mod(i - seenSum, 7);
+      });
+
+      const wrap = document.getElementById('prisoners');
+      wrap.innerHTML = '';
+
+      for(let i=0;i<7;i++){
+        const correct = guesses[i] === hats[i];
+        const cell = document.createElement('div');
+        cell.className = 'prisoner';
+        cell.innerHTML = `
+          <div class="hat c${hats[i]} ${correct ? 'correct' : 'wrong'}"></div>
+          <div class="person ${correct ? 'correct' : 'wrong'}">P${i}</div>
+          <div class="tiny muted">Actual hat</div>
+          <select data-i="${i}">
+            ${names.map((n,v)=>`<option value="${v}" ${v===hats[i]?'selected':''}>${v} · ${n}</option>`).join('')}
+          </select>
+          <div class="tiny">Guess: <b>${guesses[i]}</b></div>
+          <div class="tiny">${correct ? '<b style="color:#16a34a">✓ CORRECT</b>' : '✗ wrong'}</div>
+        `;
+        wrap.appendChild(cell);
+      }
+
+      document.querySelectorAll('select[data-i]').forEach(sel=>{
+        sel.addEventListener('change', e=>{
+          hats[Number(e.target.dataset.i)] = Number(e.target.value);
+          render();
+        });
+      });
+
+      document.getElementById('sum').textContent =
+        `${hats.join(' + ')} = ${total} ≡ ${remainder} (mod 7)`;
+
+      document.getElementById('winnerRule').innerHTML =
+        `The real total has remainder <b>${remainder}</b>, so prisoner <b>P${remainder}</b> is the one whose target matches reality.`;
+
+      document.getElementById('result').innerHTML =
+        `🎉 P${remainder} is correct → everyone goes free`;
+
+      const i = remainder;
+      const seenSum = total - hats[i];
+      const guess = mod(i - seenSum, 7);
+
+      document.getElementById('focusCalc').innerHTML = `
+        P${i} sees the other six hats, whose values sum to <b>${seenSum}</b>.<br>
+        Their rule is: <b>seen sum + my hat ≡ ${i} (mod 7)</b>.<br>
+        Therefore they guess: <b>${i} − ${seenSum} ≡ ${guess} (mod 7)</b>.<br>
+        Their actual hat is <b>${hats[i]}</b>, so the guess is correct.
+      `;
+    }
+
+    document.getElementById('randomize').addEventListener('click', ()=>{
+      hats = Array.from({length:7}, ()=>Math.floor(Math.random()*7));
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
