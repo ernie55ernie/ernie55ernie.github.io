@@ -14,6 +14,8 @@ In 5-card poker, the odds of specific hands reveal the beautiful combinatorics o
 > 2. **Full house**  
 > 3. **Two pairs**
 
+<iframe src="{{ site.baseurl }}/assets/poker_hand_probabilities.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Total Possible Hands

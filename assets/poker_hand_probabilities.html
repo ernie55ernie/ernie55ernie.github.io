@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5-Card Poker Hand Probabilities</title>
+  <style>
+    :root{
+      --bg:#f7f7f8; --panel:#ffffff; --text:#171717; --muted:#666;
+      --border:#d9d9de; --accent:#2563eb; --accent-bg:#e8f0ff;
+      --green:#2f855a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:1000px;margin:0 auto;padding:28px 18px 48px}
+    h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px)}
+    .sub{color:var(--muted);margin-bottom:22px}
+    .grid{display:grid;grid-template-columns:1fr 1.15fr;gap:18px}
+    .card{
+      background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px;
+    }
+    .total{font-size:28px;font-weight:800;margin-top:5px}
+    .choices{display:grid;gap:10px;margin-top:14px}
+    .choice{
+      appearance:none;border:1px solid var(--border);background:white;border-radius:14px;
+      padding:14px 16px;text-align:left;font-size:16px;cursor:pointer;
+      display:flex;justify-content:space-between;gap:16px;
+    }
+    .choice.active{border-color:var(--accent);background:var(--accent-bg)}
+    .choice:focus{outline:3px solid rgba(37,99,235,.2);outline-offset:2px}
+    .prob{margin-top:16px}
+    .prob-row{display:flex;justify-content:space-between;gap:14px;align-items:end}
+    .big{font-size:24px;font-weight:800}
+    .meter{height:9px;background:#e8e8eb;border-radius:999px;overflow:hidden;margin-top:12px}
+    .fill{height:100%;background:var(--green);width:.5%;transition:width .3s ease}
+    .hand-head{display:flex;justify-content:space-between;gap:12px;align-items:start}
+    .badge{border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:14px;white-space:nowrap}
+    .playing-cards{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:22px 0}
+    .pcard{
+      width:62px;height:84px;border:1px solid var(--border);border-radius:10px;background:#fff;
+      padding:8px;font-weight:800;display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .suit{text-align:center;font-size:24px;font-weight:500}
+    .red{color:#b42318}
+    .steps{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .step{border:1px solid var(--border);border-radius:12px;padding:12px}
+    .label{font-size:12px;color:var(--muted)}
+    .step strong{display:block;margin-top:3px}
+    .formula{margin-top:14px;border:1px solid var(--border);border-radius:12px;padding:14px;background:#fafafa}
+    .formula .expr{font-size:20px;font-weight:800;margin-top:4px}
+    table{width:100%;border-collapse:collapse;margin-top:14px;background:white;border-radius:14px;overflow:hidden}
+    th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left}
+    th{color:var(--muted);font-weight:600}
+    tr:last-child td{border-bottom:none}
+    .table-wrap{overflow-x:auto}
+    @media(max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr}
+    }
+    @media(prefers-reduced-motion:reduce){.fill{transition:none}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>5-Card Poker Hand Probabilities</h1>
+    <div class="sub">Click a hand type to see how the combinatorial count is built.</div>
+
+    <section class="grid">
+      <div>
+        <div class="card">
+          <div class="label">Total possible 5-card hands</div>
+          <div class="total">C(52, 5) = 2,598,960</div>
+          <p class="sub" style="margin:8px 0 0">Every 5-card subset of a standard 52-card deck is equally likely.</p>
+        </div>
+
+        <div class="choices">
+          <button class="choice active" data-hand="four">
+            <span><strong>1. Four-of-a-kind</strong></span><span>0.0240%</span>
+          </button>
+          <button class="choice" data-hand="full">
+            <span><strong>2. Full house</strong></span><span>0.1441%</span>
+          </button>
+          <button class="choice" data-hand="two">
+            <span><strong>3. Two pairs</strong></span><span>4.7539%</span>
+          </button>
+        </div>
+
+        <div class="card prob">
+          <div class="prob-row">
+            <div>
+              <div class="label">Probability</div>
+              <div id="fraction" class="big">624 / 2,598,960</div>
+            </div>
+            <div id="percent" class="big">0.0240%</div>
+          </div>
+          <div class="meter"><div id="meter" class="fill"></div></div>
+          <p id="odds" class="sub" style="margin:9px 0 0">About 1 in 4,165 hands</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hand-head">
+          <div>
+            <h2 id="name" style="margin:0 0 6px">Four-of-a-kind</h2>
+            <div id="desc" class="sub" style="margin:0">Four cards of one rank, plus one unrelated card.</div>
+          </div>
+          <div id="countBadge" class="badge">624 hands</div>
+        </div>
+
+        <div id="cards" class="playing-cards"></div>
+
+        <h3>Count it step by step</h3>
+        <div id="steps" class="steps"></div>
+
+        <div class="formula">
+          <div class="label">Multiply the independent choices</div>
+          <div id="formula" class="expr">13 × C(4,4) × 48 = 624</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <h2 style="margin-top:0">Final answers</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Hand</th>
+              <th>Count</th>
+              <th>Probability</th>
+              <th>Percent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Four-of-a-kind</td>
+              <td>624</td>
+              <td>624 / 2,598,960</td>
+              <td>0.0240%</td>
+            </tr>
+            <tr>
+              <td>Full house</td>
+              <td>3,744</td>
+              <td>3,744 / 2,598,960</td>
+              <td>0.1441%</td>
+            </tr>
+            <tr>
+              <td>Two pairs</td>
+              <td>123,552</td>
+              <td>123,552 / 2,598,960</td>
+              <td>4.7539%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const total = 2598960;
+    const hands = {
+      four: {
+        name: "Four-of-a-kind",
+        desc: "Four cards of one rank, plus one unrelated card.",
+        count: 624,
+        pct: 0.0240096038,
+        odds: "About 1 in 4,165 hands",
+        cards: [["A","♠"],["A","♥"],["A","♦"],["A","♣"],["7","♠"]],
+        steps: [
+          ["Choose the rank for the four","13 choices"],
+          ["Take all 4 suits of that rank","C(4,4) = 1"],
+          ["Choose the fifth card","48 choices"]
+        ],
+        formula: "13 × C(4,4) × 48 = 624"
+      },
+      full: {
+        name: "Full house",
+        desc: "Three cards of one rank and two cards of another rank.",
+        count: 3744,
+        pct: 0.1440576230,
+        odds: "About 1 in 694 hands",
+        cards: [["K","♠"],["K","♥"],["K","♦"],["5","♣"],["5","♦"]],
+        steps: [
+          ["Choose rank for the triple","13 choices"],
+          ["Choose 3 of its 4 suits","C(4,3) = 4"],
+          ["Choose rank for the pair","12 choices"],
+          ["Choose 2 of its 4 suits","C(4,2) = 6"]
+        ],
+        formula: "13 × C(4,3) × 12 × C(4,2) = 3,744"
+      },
+      two: {
+        name: "Two pairs",
+        desc: "Two cards of one rank, two of another, plus a fifth card of a third rank.",
+        count: 123552,
+        pct: 4.7539015606,
+        odds: "About 1 in 21 hands",
+        cards: [["Q","♠"],["Q","♦"],["8","♥"],["8","♣"],["3","♠"]],
+        steps: [
+          ["Choose the 2 paired ranks","C(13,2) = 78"],
+          ["Choose suits for first pair","C(4,2) = 6"],
+          ["Choose suits for second pair","C(4,2) = 6"],
+          ["Choose fifth card from another rank","11 × 4 = 44"]
+        ],
+        formula: "C(13,2) × C(4,2)² × 11 × 4 = 123,552"
+      }
+    };
+
+    const $ = s => document.querySelector(s);
+
+    function render(key){
+      const h = hands[key];
+      document.querySelectorAll(".choice").forEach(b => b.classList.toggle("active", b.dataset.hand === key));
+
+      $("#name").textContent = h.name;
+      $("#desc").textContent = h.desc;
+      $("#countBadge").textContent = h.count.toLocaleString() + " hands";
+      $("#fraction").textContent = h.count.toLocaleString() + " / " + total.toLocaleString();
+      $("#percent").textContent = h.pct.toFixed(4) + "%";
+      $("#odds").textContent = h.odds;
+      $("#meter").style.width = Math.max(.5, Math.min(100, h.pct * 10)) + "%";
+      $("#formula").textContent = h.formula;
+
+      $("#cards").innerHTML = "";
+      h.cards.forEach(([rank,suit]) => {
+        const div = document.createElement("div");
+        div.className = "pcard";
+        const red = suit === "♥" || suit === "♦";
+        div.innerHTML = `<span>${rank}</span><span class="suit ${red ? "red":""}">${suit}</span>`;
+        $("#cards").appendChild(div);
+      });
+
+      $("#steps").innerHTML = "";
+      h.steps.forEach(([a,b],i) => {
+        const div = document.createElement("div");
+        div.className = "step";
+        div.innerHTML = `<div class="label">Step ${i+1}</div><strong>${a}</strong><div style="margin-top:4px">${b}</div>`;
+        $("#steps").appendChild(div);
+      });
+    }
+
+    document.querySelectorAll(".choice").forEach(btn => {
+      btn.addEventListener("click", () => render(btn.dataset.hand));
+    });
+
+    render("four");
+  </script>
+</body>
+</html>
