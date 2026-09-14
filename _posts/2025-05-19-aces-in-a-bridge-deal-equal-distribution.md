@@ -60,10 +60,10 @@ Combining both steps, the probability is:
 This simplifies numerically to:
 
 \\[
-\boxed{\frac{778169210}{12493275315}} \approx \boxed{0.0626}
+\frac{24 \times 13^4}{52 \times 51 \times 50 \times 49} = \frac{2197}{20825} \approx \boxed{0.1055}
 \\]
 
-So, there's about a **6.26%** chance that each player in a Bridge deal ends up with exactly one Ace.
+So, there's about a **10.55%** chance that each player in a Bridge deal ends up with exactly one Ace.
 
 ---
 
