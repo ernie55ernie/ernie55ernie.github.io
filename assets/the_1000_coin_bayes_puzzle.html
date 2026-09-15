@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1000-Coin Bayes Puzzle</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --soft:#334155;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#22c55e;
+      --accent2:#60a5fa;
+      --accent3:#f59e0b;
+      --border:#475569;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:linear-gradient(180deg,#0b1220,#111827);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.8rem,3vw,2.6rem);
+      line-height:1.15;
+    }
+    .subtitle{
+      color:var(--muted);
+      margin-bottom:24px;
+      font-size:1rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.2fr 1fr;
+      gap:20px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+    .panel{
+      background:rgba(17,24,39,0.9);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 600px){
+      .row{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+    }
+    .label{
+      font-size:0.92rem;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .big{
+      font-size:clamp(2rem,4vw,3.2rem);
+      font-weight:800;
+      color:var(--accent);
+    }
+    .mid{
+      font-size:1.2rem;
+      font-weight:700;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      word-break:break-word;
+    }
+    .formula{
+      background:#0b1220;
+      border:1px solid var(--soft);
+      border-radius:12px;
+      padding:14px;
+      margin-top:12px;
+      overflow:auto;
+    }
+    .bar-wrap{
+      margin-top:10px;
+    }
+    .bar-head{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:6px;
+      font-size:0.95rem;
+    }
+    .bar{
+      height:16px;
+      width:100%;
+      border-radius:999px;
+      overflow:hidden;
+      background:#0b1220;
+      border:1px solid var(--soft);
+    }
+    .fill{
+      height:100%;
+      transition:width .25s ease;
+    }
+    .green{background:var(--accent)}
+    .blue{background:var(--accent2)}
+    .orange{background:var(--accent3)}
+    .coins{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+      min-height:44px;
+    }
+    .coin{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#0b1220;
+      border:1px solid var(--soft);
+      font-weight:700;
+    }
+    input[type="range"]{
+      width:100%;
+      margin-top:8px;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 700px){
+      .kpi{grid-template-columns:1fr}
+    }
+    .kpi .card{
+      text-align:center;
+    }
+    .answer{
+      margin-top:20px;
+      padding:16px;
+      border-radius:14px;
+      border:1px solid #166534;
+      background:rgba(34,197,94,.1);
+    }
+    .footer-note{
+      color:var(--muted);
+      margin-top:10px;
+      font-size:0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>The 1,000-Coin Bayes Puzzle</h1>
+    <div class="subtitle">
+      You pick 1 coin uniformly at random from a bag with
+      <strong>1 double-headed coin</strong> and <strong>999 fair coins</strong>.
+      After flipping the chosen coin and seeing only heads, what is the probability it is the double-headed coin?
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="label">Interactive evidence</div>
+        <div class="mid">
+          Consecutive heads observed:
+          <span id="nLabel" style="color:var(--accent2)">10</span>
+        </div>
+        <input id="nSlider" type="range" min="0" max="20" value="10" step="1" />
+        <div class="coins" id="coins"></div>
+
+        <div class="kpi">
+          <div class="card">
+            <div class="label">Prior</div>
+            <div class="mid mono">P(D) = 1/1000</div>
+          </div>
+          <div class="card">
+            <div class="label">Likelihood</div>
+            <div class="mid mono" id="likelihoodFair">P(H^10 | F) = 1/1024</div>
+          </div>
+          <div class="card">
+            <div class="label">Posterior</div>
+            <div class="mid mono" id="posteriorFrac">1024 / 2023</div>
+          </div>
+        </div>
+
+        <div class="answer">
+          <div class="label">Answer</div>
+          <div class="big" id="posteriorPct">50.62%</div>
+          <div class="footer-note" id="answerText">
+            After 10 heads in a row, the coin is slightly more likely than not to be the double-headed one.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="label">Bayes' Rule</div>
+        <div class="formula mono">
+          P(D | H<sup>n</sup>) =
+          <br><br>
+          [ P(H<sup>n</sup> | D) · P(D) ] /
+          [ P(H<sup>n</sup> | D) · P(D) + P(H<sup>n</sup> | F) · P(F) ]
+        </div>
+
+        <div class="formula mono" id="substitution">
+          For n = 10:
+          <br><br>
+          P(D | H<sup>10</sup>) =
+          [ 1 · (1/1000) ] /
+          [ 1 · (1/1000) + (1/1024) · (999/1000) ]
+          <br><br>
+          = 1024 / 2023 ≈ 50.62%
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar-head">
+            <span>Probability coin is double-headed</span>
+            <span id="dhPct">50.62%</span>
+          </div>
+          <div class="bar">
+            <div id="dhBar" class="fill green" style="width:50.62%"></div>
+          </div>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar-head">
+            <span>Probability coin is fair</span>
+            <span id="fairPct">49.38%</span>
+          </div>
+          <div class="bar">
+            <div id="fairBar" class="fill blue" style="width:49.38%"></div>
+          </div>
+        </div>
+
+        <div class="formula" id="intuitionBox">
+          <strong>Intuition:</strong><br>
+          The double-headed coin starts with a tiny prior chance: only <span class="mono">1/1000</span>.
+          But seeing 10 heads in a row is <span class="mono">1024</span> times more likely under a double-headed coin than under a fair coin.
+          That evidence almost exactly cancels the huge prior disadvantage.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const nSlider = document.getElementById("nSlider");
+    const nLabel = document.getElementById("nLabel");
+    const coins = document.getElementById("coins");
+    const likelihoodFair = document.getElementById("likelihoodFair");
+    const posteriorFrac = document.getElementById("posteriorFrac");
+    const posteriorPct = document.getElementById("posteriorPct");
+    const dhPct = document.getElementById("dhPct");
+    const fairPct = document.getElementById("fairPct");
+    const dhBar = document.getElementById("dhBar");
+    const fairBar = document.getElementById("fairBar");
+    const substitution = document.getElementById("substitution");
+    const answerText = document.getElementById("answerText");
+    const intuitionBox = document.getElementById("intuitionBox");
+
+    function gcd(a, b){
+      while(b !== 0){
+        const t = a % b;
+        a = b;
+        b = t;
+      }
+      return a;
+    }
+
+    function pct(x){
+      return (x * 100).toFixed(2) + "%";
+    }
+
+    function buildCoins(n){
+      coins.innerHTML = "";
+      if(n === 0){
+        const msg = document.createElement("div");
+        msg.style.color = "var(--muted)";
+        msg.textContent = "No flips observed yet.";
+        coins.appendChild(msg);
+        return;
+      }
+      for(let i = 0; i < n; i++){
+        const c = document.createElement("div");
+        c.className = "coin";
+        c.textContent = "H";
+        coins.appendChild(c);
+      }
+    }
+
+    function update(){
+      const n = parseInt(nSlider.value, 10);
+      nLabel.textContent = n;
+      buildCoins(n);
+
+      const twoPow = Math.pow(2, n);
+
+      // P(D | H^n) = (1/1000) / [(1/1000) + (999/1000)*(1/2^n)]
+      // Simplifies to 2^n / (2^n + 999)
+      const num = twoPow;
+      const den = twoPow + 999;
+      const post = num / den;
+      const fairPost = 1 - post;
+
+      const g = gcd(num, den);
+
+      likelihoodFair.innerHTML = `P(H<sup>${n}</sup> | F) = 1/${twoPow.toLocaleString()}`;
+      posteriorFrac.textContent = `${num / g} / ${den / g}`;
+      posteriorPct.textContent = pct(post);
+      dhPct.textContent = pct(post);
+      fairPct.textContent = pct(fairPost);
+      dhBar.style.width = (post * 100) + "%";
+      fairBar.style.width = (fairPost * 100) + "%";
+
+      substitution.innerHTML = `
+        For n = ${n}:<br><br>
+        P(D | H<sup>${n}</sup>) =
+        [ 1 · (1/1000) ] /
+        [ 1 · (1/1000) + (1/${twoPow.toLocaleString()}) · (999/1000) ]
+        <br><br>
+        = ${num / g} / ${den / g} ≈ ${pct(post)}
+      `;
+
+      answerText.textContent =
+        n === 10
+          ? "After 10 heads in a row, the coin is slightly more likely than not to be the double-headed one."
+          : `After ${n} consecutive heads, the probability the coin is double-headed is ${pct(post)}.`;
+
+      intuitionBox.innerHTML = `
+        <strong>Intuition:</strong><br>
+        The double-headed coin starts with prior probability <span class="mono">1/1000</span>.
+        A fair coin produces ${n} straight heads with probability
+        <span class="mono">1/${twoPow.toLocaleString()}</span>.
+        So the evidence favors the double-headed coin by a likelihood ratio of
+        <span class="mono">${twoPow.toLocaleString()}:1</span>.
+        Combining prior odds with that evidence gives the posterior
+        <span class="mono">${num / g}/${den / g}</span> = <span class="mono">${pct(post)}</span>.
+      `;
+    }
+
+    nSlider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>

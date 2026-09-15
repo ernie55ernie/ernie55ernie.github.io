@@ -18,6 +18,8 @@ You draw one coin uniformly at random and flip it **10 times**. It lands **heads
 
 What is the probability that the coin you picked is the **double-headed** one?
 
+<iframe src="{{ site.baseurl }}/assets/the_1000_coin_bayes_puzzle.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Solution Using Bayes' Theorem
