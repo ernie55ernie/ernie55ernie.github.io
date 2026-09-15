@@ -58,8 +58,8 @@ P(T_r < T_b \text{ and } T_r < T_g) = P(T_r < T_b < T_g) + P(T_r < T_g < T_b)
 
 ### First Scenario: \\( T_r < T_b < T_g \\)
 
-- Probability that the last candy drawn is green: \\( \frac{30}{60} \\)
-- Given that, the probability that the last blue candy is drawn before the last green candy: \\( \frac{20}{30} \\)
+- Probability that the very last candy drawn is green: \\( \frac{30}{60} \\)
+- Given that the last candy is green, we need the last red candy to be drawn before the last blue candy. This happens if, among the red and blue candies, the last one drawn is blue: \\( \frac{20}{10+20} = \frac{20}{30} \\)
 
 So:
 
@@ -69,8 +69,8 @@ P(T_r < T_b < T_g) = \frac{30}{60} \cdot \frac{20}{30} = \frac{1}{2} \cdot \frac
 
 ### Second Scenario: \\( T_r < T_g < T_b \\)
 
-- Probability that the last candy drawn is blue: \\( \frac{20}{60} \\)
-- Given that, the probability that the last green candy is drawn before the last blue candy: \\( \frac{30}{40} \\)
+- Probability that the very last candy drawn is blue: \\( \frac{20}{60} \\)
+- Given that the last candy is blue, we need the last red candy to be drawn before the last green candy. This happens if, among the red and green candies, the last one drawn is green: \\( \frac{30}{10+30} = \frac{30}{40} \\)
 
 So:
 
