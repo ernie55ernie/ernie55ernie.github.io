@@ -334,15 +334,6 @@
         fill: "#2563eb"
       }));
 
-      svg.appendChild(svgEl("text", {
-        x: bx,
-        y: by - 17,
-        "text-anchor": "middle",
-        "font-size": 12,
-        "font-weight": 700,
-        fill: "#2563eb"
-      }, "best: #20"));
-
       const sel = data.find(d => d.k === selected);
 
       svg.appendChild(svgEl("circle", {
@@ -354,14 +345,42 @@
         "stroke-width": 3
       }));
 
-      svg.appendChild(svgEl("text", {
-        x: x(sel.k),
-        y: Math.max(16, y(sel.p) - 13),
-        "text-anchor": "middle",
-        "font-size": 12,
-        "font-weight": 700,
-        fill: "#2563eb"
-      }, `${(sel.p * 100).toFixed(3)}%`));
+      if (selected === 20) {
+        // Combine them if selected is 20 to avoid redundancy and copy-paste issues
+        svg.appendChild(svgEl("text", {
+          x: bx,
+          y: by - 24,
+          "text-anchor": "middle",
+          "font-size": 12,
+          "font-weight": 700,
+          fill: "#2563eb"
+        }, `best: #20 (${(sel.p * 100).toFixed(3)}%)`));
+      } else {
+        // Draw best label
+        svg.appendChild(svgEl("text", {
+          x: bx,
+          y: by - 24,
+          "text-anchor": "middle",
+          "font-size": 12,
+          "font-weight": 700,
+          fill: "#2563eb"
+        }, "best: #20 ")); // Added trailing space for copy-paste
+
+        // If selected is very close to 20, push its label down so it doesn't overlap with 'best'
+        const isNearBest = Math.abs(selected - 20) <= 3;
+        const selectedLabelY = isNearBest
+          ? y(sel.p) + 24
+          : Math.max(16, y(sel.p) - 13);
+
+        svg.appendChild(svgEl("text", {
+          x: x(sel.k),
+          y: selectedLabelY,
+          "text-anchor": "middle",
+          "font-size": 12,
+          "font-weight": 700,
+          fill: "#2563eb"
+        }, `${(sel.p * 100).toFixed(3)}%`));
+      }
     }
 
     function update() {
