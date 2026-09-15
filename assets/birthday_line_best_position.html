@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Line — Best Position</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --panel: #f1f4f8;
+      --text: #172033;
+      --muted: #667085;
+      --border: #d9dee7;
+      --accent: #2563eb;
+      --accent-soft: #eaf2ff;
+      --series: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 32px 18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .big {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .prob {
+      font-size: 28px;
+      font-weight: 750;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .small {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .formula {
+      margin-top: 10px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+
+    .section {
+      margin-top: 18px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .range-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .chart-wrap {
+      overflow-x: auto;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 650px;
+      height: auto;
+      display: block;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .answer {
+      margin-top: 16px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      padding: 16px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    strong { color: var(--text); }
+
+    @media (max-width: 720px) {
+      body { padding: 20px 12px; }
+      .grid, .insight-grid { grid-template-columns: 1fr; }
+      .row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>Birthday Line — Best Position</h1>
+    <p class="subtitle">
+      You want enough people ahead of you to create many possible birthday matches,
+      but not so many that someone else is likely to have already won.
+    </p>
+
+    <section class="grid">
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="label">Best position</div>
+            <div class="big">#20</div>
+          </div>
+          <div>
+            <div class="label">Maximum win probability</div>
+            <div class="prob">3.232%</div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:16px;">
+          To win at position <em>k</em>, the first <em>k−1</em> people must all have
+          different birthdays, and then your birthday must match one of theirs.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="label">Exact probability at position <span id="posLabel">20</span></div>
+        <div id="formula" class="formula">P(20) = P(first 19 distinct) × 19/365</div>
+        <div id="probLabel" class="prob" style="margin-top:12px;">3.23199%</div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <label for="positionSlider"><strong>Explore position:</strong> <span id="sliderLabel">20</span></label>
+      <input id="positionSlider" type="range" min="2" max="60" value="20" />
+      <div class="range-row"><span>2</span><span>60</span></div>
+    </section>
+
+    <section class="section card chart-wrap">
+      <svg id="chart" viewBox="0 0 760 330" role="img" aria-label="Win probability by line position"></svg>
+    </section>
+
+    <section class="section insight-grid">
+      <div class="panel">
+        <strong>Why moving later helps at first</strong>
+        <p class="small">
+          At position <span id="laterK">20</span>, there are
+          <strong id="matchCount">19</strong> earlier birthdays you could match.
+          More people ahead means more possible matching birthdays.
+        </p>
+      </div>
+      <div class="panel">
+        <strong>Why moving too late hurts</strong>
+        <p class="small">
+          Every extra person ahead also creates another chance that a duplicate birthday
+          appears before your turn, ending the game before you can win.
+        </p>
+      </div>
+    </section>
+
+    <section class="section card">
+      <strong>The clean comparison</strong>
+      <p class="small">
+        Let P(k) be your chance of winning from position k. Comparing adjacent positions:
+      </p>
+      <div class="formula" style="text-align:center;">
+        P(k+1) / P(k) = [k/(k−1)] × [(366−k)/365]
+      </div>
+      <p class="small">
+        Moving one spot later helps exactly when
+        <strong>k² − k − 365 &lt; 0</strong>.
+        The positive root is about <strong>19.61</strong>, so the probability rises through
+        position <strong>20</strong> and falls after that.
+      </p>
+      <div class="answer">Optimal choice: position #20</div>
+    </section>
+  </main>
+
+  <script>
+    const slider = document.getElementById("positionSlider");
+    const posLabel = document.getElementById("posLabel");
+    const sliderLabel = document.getElementById("sliderLabel");
+    const probLabel = document.getElementById("probLabel");
+    const formula = document.getElementById("formula");
+    const laterK = document.getElementById("laterK");
+    const matchCount = document.getElementById("matchCount");
+    const svg = document.getElementById("chart");
+
+    function probability(k) {
+      let distinct = 1;
+      for (let i = 0; i < k - 1; i++) {
+        distinct *= (365 - i) / 365;
+      }
+      return distinct * (k - 1) / 365;
+    }
+
+    const data = [];
+    for (let k = 2; k <= 60; k++) {
+      data.push({ k, p: probability(k) });
+    }
+
+    const maxP = Math.max(...data.map(d => d.p));
+
+    function svgEl(name, attrs = {}, text = "") {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+      if (text) el.textContent = text;
+      return el;
+    }
+
+    function draw(selected) {
+      const W = 760, H = 330;
+      const m = { l: 62, r: 20, t: 22, b: 48 };
+      const iw = W - m.l - m.r;
+      const ih = H - m.t - m.b;
+
+      const x = k => m.l + ((k - 2) / 58) * iw;
+      const y = p => m.t + ih - (p / (maxP * 1.12)) * ih;
+
+      svg.replaceChildren();
+
+      [0, 0.01, 0.02, 0.03].forEach(v => {
+        svg.appendChild(svgEl("line", {
+          x1: m.l, x2: W - m.r,
+          y1: y(v), y2: y(v),
+          stroke: "#d9dee7", "stroke-width": 1
+        }));
+
+        svg.appendChild(svgEl("text", {
+          x: m.l - 10, y: y(v) + 4,
+          "text-anchor": "end",
+          "font-size": 12,
+          fill: "#667085"
+        }, (v * 100).toFixed(0) + "%"));
+      });
+
+      [2, 10, 20, 30, 40, 50, 60].forEach(k => {
+        svg.appendChild(svgEl("text", {
+          x: x(k), y: H - 16,
+          "text-anchor": "middle",
+          "font-size": 12,
+          fill: "#667085"
+        }, String(k)));
+      });
+
+      const pathData = data.map((d, i) =>
+        `${i ? "L" : "M"} ${x(d.k).toFixed(2)} ${y(d.p).toFixed(2)}`
+      ).join(" ");
+
+      svg.appendChild(svgEl("path", {
+        d: pathData,
+        fill: "none",
+        stroke: "#6b7280",
+        "stroke-width": 3,
+        "stroke-linejoin": "round"
+      }));
+
+      const best = data.find(d => d.k === 20);
+
+      svg.appendChild(svgEl("line", {
+        x1: x(20), x2: x(20),
+        y1: m.t, y2: H - m.b,
+        stroke: "#2563eb",
+        "stroke-width": 1.5,
+        "stroke-dasharray": "5 5",
+        opacity: 0.7
+      }));
+
+      const bx = x(20), by = y(best.p);
+      svg.appendChild(svgEl("path", {
+        d: `M ${bx} ${by - 10} L ${bx - 7} ${by + 5} L ${bx + 7} ${by + 5} Z`,
+        fill: "#2563eb"
+      }));
+
+      svg.appendChild(svgEl("text", {
+        x: bx,
+        y: by - 17,
+        "text-anchor": "middle",
+        "font-size": 12,
+        "font-weight": 700,
+        fill: "#2563eb"
+      }, "best: #20"));
+
+      const sel = data.find(d => d.k === selected);
+
+      svg.appendChild(svgEl("circle", {
+        cx: x(sel.k),
+        cy: y(sel.p),
+        r: 6,
+        fill: "#ffffff",
+        stroke: "#2563eb",
+        "stroke-width": 3
+      }));
+
+      svg.appendChild(svgEl("text", {
+        x: x(sel.k),
+        y: Math.max(16, y(sel.p) - 13),
+        "text-anchor": "middle",
+        "font-size": 12,
+        "font-weight": 700,
+        fill: "#2563eb"
+      }, `${(sel.p * 100).toFixed(3)}%`));
+    }
+
+    function update() {
+      const k = Number(slider.value);
+      const p = probability(k);
+
+      posLabel.textContent = k;
+      sliderLabel.textContent = k;
+      probLabel.textContent = (p * 100).toFixed(5) + "%";
+      formula.textContent = `P(${k}) = P(first ${k - 1} distinct) × ${k - 1}/365`;
+      laterK.textContent = k;
+      matchCount.textContent = k - 1;
+
+      draw(k);
+    }
+
+    slider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
