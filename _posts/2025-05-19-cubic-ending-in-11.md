@@ -63,15 +63,8 @@ Try small values:
 
 Success! \\( x \equiv 21 \mod 25 \\) is a solution.
 
-Verify uniqueness:
-Since the cube map modulo 25 is not injective, we check if there are other solutions.
-
-Try:
-- \\( x = 71 \\): then \\( x = 25 \cdot 2 + 21 = 71 \\)
-- \\( x^3 = 71^3 = (70 + 1)^3 = 343000 + 3 \cdot 4900 + 3 \cdot 70 + 1 = 357911 \\)
-- Ends in 11 ✔️
-
-So \\( x \equiv 21 \mod 25 \\) yields \\( x^3 \equiv 11 \mod 100 \\) if and only if \\( x \equiv 3 \mod 4 \\)
+Is this solution unique modulo 25?
+Since \\( 11 \\) is not divisible by 5, any solution \\( x \\) must be coprime to 25. The number of units modulo 25 is \\( \phi(25) = 20 \\). Because \\( \gcd(3, 20) = 1 \\), the mapping \\( x \mapsto x^3 \pmod{25} \\) is a bijection on the units. Therefore, \\( x \equiv 21 \pmod{25} \\) is the **unique** solution.
 
 Use CRT to combine:
 
