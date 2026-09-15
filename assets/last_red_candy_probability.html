@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Last Red Candy Probability</title>
+<style>
+  :root {
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #d1d5db;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --accent: #7c3aed;
+    --accent-bg: #f3e8ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .container {
+    width: min(980px, calc(100% - 32px));
+    margin: 32px auto;
+  }
+  h1 { margin: 0 0 8px; font-size: clamp(28px, 5vw, 44px); }
+  .subtitle { color: var(--muted); margin-bottom: 24px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .count {
+    font-size: 34px;
+    font-weight: 800;
+  }
+  .red { color: var(--red); }
+  .blue { color: var(--blue); }
+  .green { color: var(--green); }
+  .section { margin-top: 18px; }
+  .timeline {
+    position: relative;
+    height: 135px;
+    margin-top: 16px;
+  }
+  .line {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    top: 65px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 999px;
+  }
+  .dot {
+    position: absolute;
+    top: 53px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+  .label {
+    position: absolute;
+    top: 18px;
+    transform: translateX(-50%);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .axis-label {
+    position: absolute;
+    top: 88px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .formula {
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: 800;
+    text-align: center;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-top: 12px;
+  }
+  .answer {
+    margin-top: 18px;
+    border: 2px solid var(--accent);
+    background: var(--accent-bg);
+    text-align: center;
+    border-radius: 18px;
+    padding: 24px;
+  }
+  .answer .big {
+    font-size: clamp(42px, 8vw, 72px);
+    line-height: 1;
+    font-weight: 900;
+    margin: 8px 0;
+  }
+  .sim-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 16px;
+  }
+  .sim-controls label { flex: 1 1 260px; }
+  input[type=range] { width: 100%; }
+  button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 18px;
+    background: var(--accent);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(.96); }
+  .sim-result {
+    margin-top: 14px;
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+  code { font-size: 0.95em; }
+  @media (max-width: 700px) {
+    .grid, .two-col { grid-template-columns: 1fr; }
+    .container { width: min(100% - 20px, 980px); margin: 18px auto; }
+    .label { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+  <main class="container">
+    <h1>Last Red Candy Probability</h1>
+    <div class="subtitle">
+      10 red, 20 blue, 30 green candies are drawn uniformly at random without replacement.
+    </div>
+
+    <section class="grid">
+      <div class="card">
+        <div class="count red">10</div>
+        <strong>Red candies</strong>
+      </div>
+      <div class="card">
+        <div class="count blue">20</div>
+        <strong>Blue candies</strong>
+      </div>
+      <div class="card">
+        <div class="count green">30</div>
+        <strong>Green candies</strong>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>What does “success” mean?</h2>
+      <p>
+        When the <strong>last red</strong> candy is removed, at least one blue and one green
+        must still remain. Equivalently, the last red must appear
+        <strong>before both the last blue and the last green</strong>.
+      </p>
+
+      <div class="timeline" aria-label="Timeline of the last red, blue, and green candies">
+        <div class="line"></div>
+
+        <div class="label" style="left:40%;">last R</div>
+        <div class="dot" style="left:40%; background:var(--red);"></div>
+
+        <div class="label" style="left:67%;">last B</div>
+        <div class="dot" style="left:67%; background:var(--blue);"></div>
+
+        <div class="label" style="left:85%;">last G</div>
+        <div class="dot" style="left:85%; background:var(--green);"></div>
+
+        <div class="axis-label" style="left:4%;">first draw</div>
+        <div class="axis-label" style="right:4%;">last draw</div>
+      </div>
+    </section>
+
+    <section class="two-col section">
+      <div class="card">
+        <h2>Bad event 1: blue runs out first</h2>
+        <p>
+          Ignore all green candies. Among the 10 red and 20 blue candies, the last candy
+          is equally likely to be any one of those 30 candies.
+        </p>
+        <p>
+          For the <strong>last blue to occur before the last red</strong>, the final
+          candy among red+blue must be red.
+        </p>
+        <div class="formula">P(B before R) = 10 / 30 = 1/3</div>
+      </div>
+
+      <div class="card">
+        <h2>Bad event 2: green runs out first</h2>
+        <p>
+          Ignore all blue candies. Among the 10 red and 30 green candies, the last candy
+          is equally likely to be any one of those 40 candies.
+        </p>
+        <p>
+          For the <strong>last green to occur before the last red</strong>, the final
+          candy among red+green must be red.
+        </p>
+        <div class="formula">P(G before R) = 10 / 40 = 1/4</div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>Correct the double-counting</h2>
+      <p>
+        Both bad events happen simultaneously exactly when
+        <strong>red is the color of the very last candy overall</strong>.
+      </p>
+      <div class="formula">
+        P(B before R and G before R) = 10 / 60 = 1/6
+      </div>
+
+      <p style="text-align:center; margin-top:18px;">
+        By inclusion–exclusion:
+      </p>
+      <div class="formula">
+        P(bad) = 1/3 + 1/4 − 1/6 = 5/12
+      </div>
+    </section>
+
+    <section class="answer">
+      <div><strong>Therefore</strong></div>
+      <div>P(success) = 1 − 5/12</div>
+      <div class="big">7/12</div>
+      <div style="font-size:26px;font-weight:800;">≈ 58.33%</div>
+    </section>
+
+    <section class="card section">
+      <h2>Monte Carlo check</h2>
+      <p>
+        Shuffle all 60 candies repeatedly and check whether
+        <code>lastRed &lt; lastBlue</code> and <code>lastRed &lt; lastGreen</code>.
+      </p>
+
+      <div class="sim-controls">
+        <label>
+          Simulations: <strong id="trialLabel">5,000</strong><br />
+          <input id="trialRange" type="range" min="100" max="50000" step="100" value="5000" />
+        </label>
+        <button id="runBtn" type="button">Run simulation</button>
+      </div>
+
+      <div id="simResult" class="sim-result">
+        Press <strong>Run simulation</strong> to compare with the exact answer 58.33%.
+      </div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  const range = document.getElementById("trialRange");
+  const label = document.getElementById("trialLabel");
+  const btn = document.getElementById("runBtn");
+  const result = document.getElementById("simResult");
+
+  range.addEventListener("input", () => {
+    label.textContent = Number(range.value).toLocaleString();
+  });
+
+  btn.addEventListener("click", () => {
+    const trials = Math.max(100, Math.min(50000, Number(range.value) || 5000));
+    let successes = 0;
+    const candies = new Array(60);
+
+    for (let t = 0; t < trials; t++) {
+      let k = 0;
+      for (let i = 0; i < 10; i++) candies[k++] = 0;
+      for (let i = 0; i < 20; i++) candies[k++] = 1;
+      for (let i = 0; i < 30; i++) candies[k++] = 2;
+
+      for (let i = candies.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candies[i], candies[j]] = [candies[j], candies[i]];
+      }
+
+      let lastR = -1, lastB = -1, lastG = -1;
+      for (let i = 0; i < candies.length; i++) {
+        if (candies[i] === 0) lastR = i;
+        else if (candies[i] === 1) lastB = i;
+        else lastG = i;
+      }
+
+      if (lastR < lastB && lastR < lastG) successes++;
+    }
+
+    const pct = successes / trials * 100;
+    const exact = 7 / 12 * 100;
+    const diff = pct - exact;
+
+    result.innerHTML =
+      `<strong>${successes.toLocaleString()} / ${trials.toLocaleString()}</strong> succeeded`
+      + ` → <strong>${pct.toFixed(2)}%</strong><br>`
+      + `<span style="color:var(--muted)">Difference from exact answer: `
+      + `${diff >= 0 ? "+" : ""}${diff.toFixed(2)} percentage points</span>`;
+  });
+})();
+</script>
+</body>
+</html>
