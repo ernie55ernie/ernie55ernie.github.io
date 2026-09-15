@@ -31,29 +31,27 @@ You want to be the **first person** whose birthday matches someone earlier in li
 
 ## Probabilistic Structure
 
-Let’s define:
+Let's define what needs to happen for the person in position \\( i \\) to win:
 
-- For position \\( i \\), the probability that **no one before** has your birthday is:
+1. **No repeats among the first \\( i-1 \\) people.**  
+   The probability that all \\( i-1 \\) people have distinct birthdays is:
+   \\[
+   P(\text{no repeats}) = \frac{365}{365} \times \frac{364}{365} \times \dots \times \frac{365 - (i-2)}{365}
+   \\]
 
-\\[
-P(\text{no match before}) = \left( \frac{364}{365} \right)^{i-1}
-\\]
+2. **Person \\( i \\) matches one of those \\( i-1 \\) distinct birthdays.**  
+   Since there are exactly \\( i-1 \\) distinct birthdays before them, the probability that person \\( i \\)'s birthday is one of them is simply:
+   \\[
+   P(\text{match}) = \frac{i-1}{365}
+   \\]
 
-- The probability that **someone before you has** your birthday is:
-
-\\[
-1 - \left( \frac{364}{365} \right)^{i-1}
-\\]
-
-- But for you to win, **no one before you** can have matched someone **before them**—you must be the **first** repeater.
-
-So we compute:
+So we compute the total probability that position \\( i \\) wins:
 
 \\[
-P(i \text{ wins}) = \left[\text{probability no repeats among first } i-1\right] \times \left[\text{probability person } i \text{ matches someone before}\right]
+P(i \text{ wins}) = P(\text{no repeats}) \times P(\text{match})
 \\]
 
-This is maximized at position:
+To maximize this, we check where \\( P(i+1) > P(i) \\). After simplifying the ratio \\( P(i+1)/P(i) \\), the probability is maximized at position:
 
 \\[
 \boxed{20}
