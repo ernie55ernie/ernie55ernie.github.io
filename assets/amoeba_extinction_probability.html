@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Amoeba Extinction Probability</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --panel:#121a2f;
+    --card:#18223d;
+    --text:#eef4ff;
+    --muted:#9fb0d0;
+    --border:#2b385d;
+    --accent:#75a7ff;
+    --accent2:#77d6a0;
+    --warn:#ffcc70;
+    --danger:#ff7b86;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(117,167,255,.12), transparent 28%),
+      var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 18px 56px}
+  h1{font-size:clamp(30px,5vw,54px);line-height:1.05;margin:0 0 10px}
+  h2{font-size:22px;margin:0 0 14px}
+  p{margin:8px 0}
+  .subtitle{color:var(--muted);font-size:18px;margin-bottom:26px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{
+    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01)),var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+  }
+  .offspring{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px
+  }
+  .offspring .box{
+    border:1px solid var(--border);border-radius:14px;padding:14px 8px;text-align:center;
+    background:rgba(255,255,255,.025)
+  }
+  .emoji{font-size:26px;min-height:40px}
+  .big{font-size:28px;font-weight:800}
+  .muted{color:var(--muted)}
+  .formula{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    background:#0f1730;
+    border:1px solid var(--border);
+    padding:14px 16px;
+    border-radius:12px;
+    margin:14px 0;
+    overflow-x:auto;
+  }
+  .highlight{
+    background:linear-gradient(90deg,rgba(117,167,255,.18),rgba(119,214,160,.14));
+    border:1px solid rgba(117,167,255,.35);
+    border-radius:16px;
+    padding:18px;
+    text-align:center;
+  }
+  .answer{font-size:clamp(30px,5vw,48px);font-weight:900;margin:4px 0}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+  button{
+    appearance:none;border:1px solid var(--border);background:#172443;color:var(--text);
+    padding:11px 15px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer
+  }
+  button.primary{background:var(--accent);border-color:transparent;color:#08101f}
+  button:hover{filter:brightness(1.08)}
+  .iteration{
+    display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start
+  }
+  svg{width:100%;height:auto;display:block;background:#0f1730;border-radius:14px}
+  .stat{
+    background:#0f1730;border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:10px
+  }
+  .stat .value{font-size:24px;font-weight:800;margin-top:4px}
+  .step-list{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:12px;
+  }
+  .step{
+    border-left:4px solid var(--accent);
+    background:#0f1730;
+    border-radius:10px;
+    padding:12px;
+  }
+  .step strong{display:block;margin-bottom:4px}
+  code{color:#dce9ff}
+  .footer{margin-top:22px;color:var(--muted);font-size:14px;text-align:center}
+  @media(max-width:760px){
+    .grid,.iteration{grid-template-columns:1fr}
+    .offspring{grid-template-columns:repeat(2,1fr)}
+    .step-list{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:420px){
+    .step-list{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Amoeba Extinction Probability</h1>
+  <div class="subtitle">
+    A branching-process visualization for finding the probability that the population eventually disappears.
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>1. One amoeba produces…</h2>
+      <div class="offspring">
+        <div class="box">
+          <div class="emoji">💀</div>
+          <div class="big">0</div>
+          <div class="muted">25%</div>
+        </div>
+        <div class="box">
+          <div class="emoji">🦠</div>
+          <div class="big">1</div>
+          <div class="muted">25%</div>
+        </div>
+        <div class="box">
+          <div class="emoji">🦠🦠</div>
+          <div class="big">2</div>
+          <div class="muted">25%</div>
+        </div>
+        <div class="box">
+          <div class="emoji">🦠🦠🦠</div>
+          <div class="big">3</div>
+          <div class="muted">25%</div>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:14px">
+        Average offspring:
+        <strong style="color:var(--text)">(0 + 1 + 2 + 3)/4 = 1.5</strong>.
+        Since this is greater than 1, extinction is not certain.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>2. Define the extinction probability</h2>
+      <p>
+        Let <strong>q</strong> be the probability that a population starting from
+        one amoeba eventually becomes extinct.
+      </p>
+      <div class="formula">
+        q = ¼·1 + ¼·q + ¼·q² + ¼·q³
+      </div>
+      <p class="muted">
+        Why <code>q²</code>? If there are two offspring, both independent
+        family lines must eventually die out. Likewise, three offspring gives
+        <code>q³</code>.
+      </p>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <h2>3. Watch the fixed point appear</h2>
+    <p class="muted">
+      Starting with <code>q₀ = 0</code>, repeatedly apply
+      <code>f(q) = (1 + q + q² + q³)/4</code>.
+      The values converge to the extinction probability.
+    </p>
+
+    <div class="controls">
+      <button id="nextBtn" class="primary">Next step</button>
+      <button id="autoBtn">Auto iterate</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <div class="iteration">
+      <div>
+        <svg id="plot" viewBox="0 0 560 330" role="img" aria-label="Fixed point iteration graph">
+          <line x1="58" y1="278" x2="522" y2="278" stroke="#46567f" stroke-width="2"/>
+          <line x1="58" y1="278" x2="58" y2="28" stroke="#46567f" stroke-width="2"/>
+
+          <line x1="58" y1="278" x2="522" y2="28" stroke="#9fb0d0" stroke-width="2" opacity=".8"/>
+          <text x="462" y="52" fill="#9fb0d0" font-size="14">y = q</text>
+
+          <path id="curve" fill="none" stroke="#75a7ff" stroke-width="4"/>
+          <text x="330" y="112" fill="#75a7ff" font-size="14">y = f(q)</text>
+
+          <polyline id="cobweb" fill="none" stroke="#77d6a0" stroke-width="3" points=""/>
+          <circle id="rootDot" r="7" fill="#ffcc70"/>
+
+          <text x="49" y="300" fill="#9fb0d0" font-size="13">0</text>
+          <text x="510" y="300" fill="#9fb0d0" font-size="13">1</text>
+          <text x="35" y="34" fill="#9fb0d0" font-size="13">1</text>
+          <text x="500" y="320" fill="#9fb0d0" font-size="13">q</text>
+        </svg>
+      </div>
+
+      <div>
+        <div class="stat">
+          <div class="muted">Current iteration</div>
+          <div id="iterVal" class="value">q₀ = 0</div>
+        </div>
+
+        <div class="stat">
+          <div class="muted">Interpretation</div>
+          <div id="meaning" style="margin-top:5px">
+            Probability the process is extinct by generation 0.
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="muted">Limit</div>
+          <div class="value">√2 − 1</div>
+          <div style="font-size:20px">≈ 0.4142</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>4. Solve the fixed-point equation</h2>
+
+    <div class="step-list">
+      <div class="step">
+        <strong>Start</strong>
+        <code>q = (1 + q + q² + q³)/4</code>
+      </div>
+      <div class="step">
+        <strong>Multiply by 4</strong>
+        <code>4q = 1 + q + q² + q³</code>
+      </div>
+      <div class="step">
+        <strong>Rearrange</strong>
+        <code>q³ + q² − 3q + 1 = 0</code>
+      </div>
+      <div class="step">
+        <strong>Factor</strong>
+        <code>(q − 1)(q² + 2q − 1)=0</code>
+      </div>
+    </div>
+
+    <div class="formula">
+      q = 1 &nbsp;&nbsp;or&nbsp;&nbsp; q = −1 + √2
+    </div>
+
+    <p>
+      For a branching process, the extinction probability is the
+      <strong>smallest fixed point in [0,1]</strong>.
+    </p>
+
+    <div class="highlight">
+      <div class="muted">Probability of eventual extinction</div>
+      <div class="answer">√2 − 1 ≈ 41.42%</div>
+      <div>Probability of surviving forever ≈ <strong>58.58%</strong></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    Galton–Watson branching process • offspring distribution {0,1,2,3} with equal probability
+  </div>
+</div>
+
+<script>
+(() => {
+  const f = q => (1 + q + q*q + q*q*q) / 4;
+  const X = q => 58 + 464*q;
+  const Y = y => 278 - 250*y;
+
+  const curve = document.getElementById("curve");
+  const cobweb = document.getElementById("cobweb");
+  const rootDot = document.getElementById("rootDot");
+  const iterVal = document.getElementById("iterVal");
+  const meaning = document.getElementById("meaning");
+  const nextBtn = document.getElementById("nextBtn");
+  const autoBtn = document.getElementById("autoBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  let path = "";
+  for (let i = 0; i <= 200; i++) {
+    const q = i / 200;
+    const px = X(q);
+    const py = Y(f(q));
+    path += (i === 0 ? "M" : "L") + px.toFixed(2) + " " + py.toFixed(2) + " ";
+  }
+  curve.setAttribute("d", path.trim());
+
+  const qStar = Math.SQRT2 - 1;
+  rootDot.setAttribute("cx", X(qStar));
+  rootDot.setAttribute("cy", Y(qStar));
+
+  let q = 0;
+  let n = 0;
+  let pts = [];
+  let timer = null;
+
+  function render() {
+    cobweb.setAttribute("points", pts.map(p => p[0] + "," + p[1]).join(" "));
+    iterVal.textContent = "q" + toSubscript(n) + " = " + q.toFixed(6);
+    meaning.textContent =
+      n === 0
+      ? "Probability the process is extinct by generation 0."
+      : "Probability the process is extinct by generation " + n +
+        ". As n increases, this approaches 0.414214.";
+  }
+
+  function toSubscript(num) {
+    const map = {"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉"};
+    return String(num).split("").map(ch => map[ch] || ch).join("");
+  }
+
+  function step() {
+    const next = f(q);
+    if (pts.length === 0) pts.push([X(q), Y(q)]);
+    pts.push([X(q), Y(next)]);
+    pts.push([X(next), Y(next)]);
+    q = next;
+    n++;
+    render();
+  }
+
+  function reset() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+      autoBtn.textContent = "Auto iterate";
+    }
+    q = 0;
+    n = 0;
+    pts = [[X(0), Y(0)]];
+    render();
+  }
+
+  nextBtn.addEventListener("click", step);
+
+  autoBtn.addEventListener("click", () => {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+      autoBtn.textContent = "Auto iterate";
+      return;
+    }
+    autoBtn.textContent = "Pause";
+    timer = setInterval(() => {
+      step();
+      if (n >= 18) {
+        clearInterval(timer);
+        timer = null;
+        autoBtn.textContent = "Auto iterate";
+      }
+    }, 550);
+  });
+
+  resetBtn.addEventListener("click", reset);
+
+  reset();
+})();
+</script>
+</body>
+</html>
