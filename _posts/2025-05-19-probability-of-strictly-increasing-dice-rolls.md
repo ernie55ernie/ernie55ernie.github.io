@@ -11,6 +11,8 @@ You roll **three fair six-sided dice** in sequence.
 
 **Question:** What is the probability that the three outcomes come up in **strictly increasing order** (i.e. first < second < third)?
 
+<iframe src="{{ site.baseurl }}/assets/probability_of_strictly_increasing_dice_rolls.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Total Outcomes
