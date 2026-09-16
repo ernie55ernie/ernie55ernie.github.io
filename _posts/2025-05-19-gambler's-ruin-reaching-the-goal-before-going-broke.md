@@ -21,6 +21,8 @@ He continues playing until:
 
 What is the probability that he **reaches \\( N \\)** before going broke?
 
+<iframe src="{{ site.baseurl }}/assets/gamblers_ruin_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Solution

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gambler's Ruin — Probability of Reaching N Before 0</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a2f;
+      --card:#18233d;
+      --text:#eef4ff;
+      --muted:#9fb0cd;
+      --border:#2a3a5e;
+      --accent:#6ea8fe;
+      --accent2:#8bd3dd;
+      --good:#65d6a6;
+      --bad:#ff8b8b;
+      --warn:#ffd166;
+      --shadow:0 14px 40px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(110,168,254,.14), transparent 35%),
+        radial-gradient(circle at 100% 20%, rgba(139,211,221,.10), transparent 30%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 48px}
+    h1{font-size:clamp(28px,4vw,46px);line-height:1.08;margin:0}
+    .sub{color:var(--muted);max-width:780px;margin:10px 0 24px}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .controls{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:14px}
+    label{display:block;font-weight:700;font-size:14px}
+    label span{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px}
+    input[type="number"]{
+      width:100%;font:inherit;color:var(--text);background:#0d1528;border:1px solid var(--border);
+      border-radius:11px;padding:10px 12px;outline:none
+    }
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(110,168,254,.14)}
+    input[type="range"]{width:100%;accent-color:var(--accent)}
+    .prob-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-top:24px}
+    .big{font-size:34px;font-weight:800;letter-spacing:-.03em}
+    .bar{height:14px;border-radius:999px;background:#0d1528;border:1px solid var(--border);overflow:hidden;margin-top:10px}
+    .fill{height:100%;width:40%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+    .track{position:relative;margin:34px 10px 16px;height:110px}
+    .track-line{position:absolute;left:4%;right:4%;top:42px;height:6px;border-radius:999px;background:#314361}
+    .node{position:absolute;top:28px;width:34px;height:34px;border-radius:50%;transform:translateX(-50%);border:5px solid var(--panel)}
+    .ruin{left:4%;background:var(--bad)}
+    .goal{left:96%;background:var(--good)}
+    .marker{left:40%;background:var(--accent);transition:left .25s ease}
+    .track-label{position:absolute;top:72px;transform:translateX(-50%);font-size:13px;text-align:center}
+    .track-label small{display:block;color:var(--muted)}
+    .formula{
+      font-family:"SFMono-Regular",Consolas,monospace;
+      background:#0d1528;border:1px solid var(--border);border-radius:13px;padding:14px;
+      text-align:center;font-size:16px;overflow-x:auto
+    }
+    .aside h3,.card h2{margin:0 0 10px}
+    .muted{color:var(--muted)}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+    .step b{display:block;margin-bottom:5px}
+    button{
+      border:0;border-radius:11px;padding:11px 14px;font:inherit;font-weight:800;cursor:pointer;
+      background:var(--accent);color:#07101d
+    }
+    button.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .sim{margin-top:12px;color:var(--muted)}
+    .path{
+      margin-top:12px;padding:12px;border-radius:12px;background:#0d1528;border:1px solid var(--border);
+      font-family:"SFMono-Regular",Consolas,monospace;font-size:13px;word-break:break-word;display:none
+    }
+    .answer{
+      margin-top:18px;padding:16px;border-radius:14px;background:linear-gradient(90deg,rgba(101,214,166,.12),rgba(110,168,254,.09));
+      border:1px solid rgba(101,214,166,.35)
+    }
+    .eq{font-family:"SFMono-Regular",Consolas,monospace}
+    @media (max-width:800px){
+      .grid{grid-template-columns:1fr}
+      .controls,.steps{grid-template-columns:1fr}
+      .track{margin-left:0;margin-right:0}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Gambler’s Ruin</h1>
+    <p class="sub">
+      Start with <b>i</b> dollars. Each play wins $1 with probability <b>p</b> and loses $1 with
+      probability <b>q = 1 − p</b>. What is the probability of reaching <b>N</b> before hitting 0?
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="controls">
+          <label>
+            <span><span>Goal N</span></span>
+            <input id="N" type="number" min="2" max="100" value="10">
+          </label>
+          <label>
+            <span><span>Starting dollars i</span></span>
+            <input id="i" type="number" min="1" max="9" value="4">
+          </label>
+          <label>
+            <span><span>Win probability p</span><strong id="pLabel">0.50</strong></span>
+            <input id="p" type="range" min="0" max="1" step="0.01" value="0.50">
+          </label>
+        </div>
+
+        <div class="prob-head">
+          <div>
+            <div class="muted">Probability of reaching N first</div>
+            <div class="big" id="result">40.00%</div>
+          </div>
+          <div class="muted" id="qLabel">q = 0.50</div>
+        </div>
+        <div class="bar"><div class="fill" id="fill"></div></div>
+
+        <div class="track">
+          <div class="track-line"></div>
+          <div class="node ruin"></div>
+          <div class="node goal"></div>
+          <div class="node marker" id="marker"></div>
+
+          <div class="track-label" style="left:4%">$0<small>RUIN</small></div>
+          <div class="track-label" id="startLabel" style="left:40%">$4<small>START</small></div>
+          <div class="track-label" id="goalLabel" style="left:96%">$10<small>GOAL</small></div>
+        </div>
+
+        <div class="buttons">
+          <button id="one">Simulate one game</button>
+          <button id="many" class="secondary">Simulate 1,000 games</button>
+        </div>
+        <div class="sim" id="simText">Run a simulation and compare it with the exact answer.</div>
+        <div class="path" id="path"></div>
+      </section>
+
+      <aside class="card aside">
+        <h3>1. Define the state</h3>
+        <p class="muted">
+          Let <span class="eq">Pᵢ</span> be the probability of reaching <b>N</b> before 0,
+          starting from <b>i</b>.
+        </p>
+
+        <h3>2. Look one step ahead</h3>
+        <div class="formula">Pᵢ = pPᵢ₊₁ + qPᵢ₋₁</div>
+        <p class="muted">
+          With probability <b>p</b> you move to <b>i+1</b>; with probability <b>q</b> you move to <b>i−1</b>.
+        </p>
+
+        <h3>3. Boundary conditions</h3>
+        <div class="formula">P₀ = 0 &nbsp;&nbsp;&nbsp; Pₙ = 1</div>
+
+        <h3 style="margin-top:18px">Closed-form solution</h3>
+        <div class="formula" id="formula"></div>
+        <p class="muted" id="substitution"></p>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:18px">
+      <h2>How to derive the formula</h2>
+      <div class="steps">
+        <div class="step">
+          <b>① Rearrange the recurrence</b>
+          <span class="muted eq">pPᵢ₊₁ − Pᵢ + qPᵢ₋₁ = 0</span>
+        </div>
+        <div class="step">
+          <b>② Solve the difference equation</b>
+          <span class="muted">
+            The characteristic roots are <span class="eq">1</span> and <span class="eq">q/p</span>.
+          </span>
+        </div>
+        <div class="step">
+          <b>③ Use the two boundaries</b>
+          <span class="muted">
+            Enforce <span class="eq">P₀=0</span> and <span class="eq">Pₙ=1</span> to determine the constants.
+          </span>
+        </div>
+      </div>
+
+      <div class="answer">
+        <b>Final answer</b><br><br>
+        If <span class="eq">p = q = 1/2</span>:
+        <div class="formula" style="margin-top:8px">Pᵢ = i / N</div>
+        Otherwise:
+        <div class="formula" style="margin-top:8px">Pᵢ = [1 − (q/p)ⁱ] / [1 − (q/p)ᴺ]</div>
+      </div>
+    </section>
+  </main>
+
+<script>
+  const NEl = document.getElementById('N');
+  const iEl = document.getElementById('i');
+  const pEl = document.getElementById('p');
+  const resultEl = document.getElementById('result');
+  const fillEl = document.getElementById('fill');
+  const markerEl = document.getElementById('marker');
+  const startLabelEl = document.getElementById('startLabel');
+  const goalLabelEl = document.getElementById('goalLabel');
+  const pLabelEl = document.getElementById('pLabel');
+  const qLabelEl = document.getElementById('qLabel');
+  const formulaEl = document.getElementById('formula');
+  const substitutionEl = document.getElementById('substitution');
+  const simText = document.getElementById('simText');
+  const pathEl = document.getElementById('path');
+
+  function clamp(x,a,b){ return Math.min(b, Math.max(a,x)); }
+
+  function readState(){
+    let N = Math.round(Number(NEl.value));
+    if(!Number.isFinite(N)) N = 10;
+    N = clamp(N,2,100);
+    NEl.value = N;
+
+    let i = Math.round(Number(iEl.value));
+    if(!Number.isFinite(i)) i = 1;
+    i = clamp(i,1,N-1);
+    iEl.max = N-1;
+    iEl.value = i;
+
+    let p = Number(pEl.value);
+    if(!Number.isFinite(p)) p = .5;
+    p = clamp(p,0,1);
+    return {N,i,p,q:1-p};
+  }
+
+  function exact(N,i,p){
+    if(p <= 0) return 0;
+    if(p >= 1) return 1;
+    if(Math.abs(p-.5) < 1e-12) return i/N;
+    const r = (1-p)/p;
+    const num = 1 - Math.pow(r,i);
+    const den = 1 - Math.pow(r,N);
+    return clamp(num/den,0,1);
+  }
+
+  function update(){
+    const {N,i,p,q} = readState();
+    const P = exact(N,i,p);
+
+    pLabelEl.textContent = p.toFixed(2);
+    qLabelEl.textContent = 'q = ' + q.toFixed(2);
+    resultEl.textContent = (100*P).toFixed(2) + '%';
+    fillEl.style.width = (100*P) + '%';
+
+    const left = 4 + 92*(i/N);
+    markerEl.style.left = left + '%';
+    startLabelEl.style.left = left + '%';
+    startLabelEl.innerHTML = '$' + i + '<small>START</small>';
+    goalLabelEl.innerHTML = '$' + N + '<small>GOAL</small>';
+
+    if(p === 0){
+      formulaEl.textContent = 'Pᵢ = 0';
+      substitutionEl.textContent = 'You always lose, so ruin is certain.';
+    } else if(p === 1){
+      formulaEl.textContent = 'Pᵢ = 1';
+      substitutionEl.textContent = 'You always win, so the goal is certain.';
+    } else if(Math.abs(p-.5) < 1e-12){
+      formulaEl.textContent = 'Pᵢ = i / N';
+      substitutionEl.innerHTML = `Here: ${i}/${N} = <b>${(100*P).toFixed(2)}%</b>.`;
+    } else {
+      const r = q/p;
+      formulaEl.textContent = 'Pᵢ = [1 − (q/p)ⁱ] / [1 − (q/p)ᴺ]';
+      substitutionEl.innerHTML =
+        `q/p = ${q.toFixed(2)}/${p.toFixed(2)} = <b>${r.toFixed(4)}</b>. ` +
+        `With i=${i}, N=${N}, the probability is <b>${(100*P).toFixed(2)}%</b>.`;
+    }
+  }
+
+  function simulate(keepPath){
+    const {N,i,p} = readState();
+    let x = i, steps = 0;
+    const path = [x];
+    const limit = 200000;
+
+    while(x>0 && x<N && steps<limit){
+      x += Math.random() < p ? 1 : -1;
+      steps++;
+      if(keepPath && path.length < 160) path.push(x);
+    }
+    return {won:x>=N, steps, path, truncated:steps>=limit};
+  }
+
+  document.getElementById('one').addEventListener('click', ()=>{
+    const s = simulate(true);
+    simText.innerHTML = s.truncated
+      ? 'Simulation stopped at the safety limit.'
+      : `This run <b>${s.won ? 'reached the goal' : 'went broke'}</b> after ${s.steps} steps.`;
+    pathEl.style.display = 'block';
+    pathEl.textContent = s.path.join(' → ') + (s.path.length >= 160 ? ' → …' : '');
+  });
+
+  document.getElementById('many').addEventListener('click', ()=>{
+    const {N,i,p} = readState();
+    let wins = 0, valid = 0;
+    for(let k=0;k<1000;k++){
+      const s = simulate(false);
+      if(!s.truncated){
+        valid++;
+        if(s.won) wins++;
+      }
+    }
+    const empirical = valid ? wins/valid : 0;
+    const theoretical = exact(N,i,p);
+    simText.innerHTML =
+      `Simulation: <b>${wins}/${valid}</b> successes = <b>${(100*empirical).toFixed(1)}%</b>. ` +
+      `Exact: <b>${(100*theoretical).toFixed(2)}%</b>.`;
+    pathEl.style.display = 'none';
+  });
+
+  [NEl,iEl,pEl].forEach(el => el.addEventListener('input', update));
+  update();
+</script>
+</body>
+</html>
