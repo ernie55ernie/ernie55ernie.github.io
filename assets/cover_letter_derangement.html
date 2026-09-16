@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5 Cover Letters — Derangement Probability</title>
+  <style>
+    :root{
+      --bg:#f7f7f8;
+      --card:#ffffff;
+      --text:#18181b;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --good:#166534;
+      --good-bg:#dcfce7;
+      --bad:#991b1b;
+      --bad-bg:#fee2e2;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:1000px;
+      margin:0 auto;
+      padding:32px 18px 56px;
+    }
+    h1{margin:0 0 8px;font-size:clamp(28px,4vw,44px);line-height:1.1}
+    .subtitle{margin:0 0 24px;color:var(--muted);font-size:17px}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+    }
+    .topline{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+    h2{margin:0 0 6px;font-size:18px}
+    p{margin:0;color:var(--muted)}
+    button{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      border-radius:10px;
+      padding:11px 16px;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+    }
+    button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    button:hover{filter:brightness(.98)}
+    .rows{display:grid;gap:8px;margin-top:16px}
+    .row{
+      display:grid;
+      grid-template-columns:1fr auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px;
+    }
+    .badge{
+      font-size:12px;
+      font-weight:800;
+      border-radius:999px;
+      padding:4px 8px;
+      background:#f3f4f6;
+    }
+    .badge.match{background:var(--bad-bg);color:var(--bad)}
+    .badge.wrong{background:var(--good-bg);color:var(--good)}
+    .status{
+      margin-top:14px;
+      border-radius:10px;
+      padding:12px 14px;
+      border:1px solid var(--border);
+    }
+    .status.good{background:var(--good-bg);color:var(--good)}
+    .status.bad{background:var(--bad-bg);color:var(--bad)}
+    .answer{
+      font-size:44px;
+      font-weight:900;
+      letter-spacing:-.04em;
+      margin-top:8px;
+    }
+    .answer-sub{color:var(--muted);font-size:20px;margin-top:2px}
+    .kv{margin-top:18px;border-top:1px solid var(--border);padding-top:14px;display:grid;gap:8px}
+    .kvrow{display:flex;justify-content:space-between;gap:20px}
+    code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .section{margin-top:18px}
+    .formula{
+      margin-top:14px;
+      padding:14px;
+      text-align:center;
+      border-radius:10px;
+      background:#f3f4f6;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      overflow-x:auto;
+    }
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:8px;
+      margin-top:16px;
+      min-width:720px;
+    }
+    .step{
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px 8px;
+      text-align:center;
+      background:#fafafa;
+    }
+    .step small{display:block;color:var(--muted);margin-bottom:4px}
+    .step strong{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .scroll{overflow-x:auto}
+    .insight{
+      margin-top:14px;
+      padding:14px;
+      border-left:4px solid var(--accent);
+      background:var(--accent-soft);
+      border-radius:8px;
+    }
+    .sim-result{margin-top:12px;color:var(--muted)}
+    @media (max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .row{grid-template-columns:1fr auto 1fr}
+      .row .badge{grid-column:1/-1;justify-self:start}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>5 Firms, 5 Cover Letters</h1>
+    <p class="subtitle">
+      Each personalized letter is randomly placed into an envelope. What is the probability that
+      <strong>no letter</strong> goes to the correct firm?
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="topline">
+          <div>
+            <h2>Try a random assignment</h2>
+            <p>Each row shows which letter lands in each firm's envelope.</p>
+          </div>
+          <button class="primary" id="shuffleBtn">Shuffle letters</button>
+        </div>
+
+        <div class="rows" id="rows"></div>
+        <div class="status" id="status"></div>
+      </section>
+
+      <section class="card">
+        <h2>Exact probability</h2>
+        <div class="answer">11/30</div>
+        <div class="answer-sub">≈ 36.67%</div>
+
+        <div class="kv">
+          <div class="kvrow"><span>Total assignments</span><strong class="mono">5! = 120</strong></div>
+          <div class="kvrow"><span>Assignments with no matches</span><strong class="mono">!5 = 44</strong></div>
+          <div class="kvrow"><span>Probability</span><strong class="mono">44 / 120 = 11 / 30</strong></div>
+        </div>
+
+        <div class="insight">
+          A permutation with <strong>no fixed points</strong> is called a <strong>derangement</strong>.
+        </div>
+      </section>
+    </div>
+
+    <section class="card section">
+      <h2>Why are there 44 derangements?</h2>
+      <p>
+        Use <strong>inclusion–exclusion</strong>. Start with all 120 assignments, subtract those where
+        at least one letter is correct, then add back cases counted twice, and so on.
+      </p>
+
+      <div class="scroll">
+        <div class="steps">
+          <div class="step"><small>All</small><strong>5!</strong><div>120</div></div>
+          <div class="step"><small>Subtract 1 fixed</small><strong>− C(5,1)4!</strong><div>−120</div></div>
+          <div class="step"><small>Add 2 fixed</small><strong>+ C(5,2)3!</strong><div>+60</div></div>
+          <div class="step"><small>Subtract 3 fixed</small><strong>− C(5,3)2!</strong><div>−20</div></div>
+          <div class="step"><small>Add 4 fixed</small><strong>+ C(5,4)1!</strong><div>+5</div></div>
+          <div class="step"><small>Subtract 5 fixed</small><strong>− C(5,5)0!</strong><div>−1</div></div>
+        </div>
+      </div>
+
+      <div class="formula">
+        !5 = 120 − 120 + 60 − 20 + 5 − 1 = 44
+      </div>
+
+      <div class="formula">
+        P(no correct letter) = 44 / 120 = 11 / 30 ≈ 0.3667
+      </div>
+    </section>
+
+    <section class="card section">
+      <div class="topline">
+        <div>
+          <h2>Monte Carlo simulation</h2>
+          <p>Run 10,000 random assignments and compare with the exact answer.</p>
+        </div>
+        <button id="simulateBtn">Run 10,000 trials</button>
+      </div>
+      <div class="sim-result" id="simResult">Expected result: about 36.67%.</div>
+    </section>
+  </main>
+
+  <script>
+    const firms = ["A","B","C","D","E"];
+    const rows = document.getElementById("rows");
+    const status = document.getElementById("status");
+    const simResult = document.getElementById("simResult");
+
+    function shuffled() {
+      const a = [...firms];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function render(assign) {
+      rows.innerHTML = "";
+      let matches = 0;
+
+      firms.forEach((env, i) => {
+        const correct = env === assign[i];
+        if (correct) matches++;
+
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `
+          <strong>Envelope ${env}</strong>
+          <span>←</span>
+          <span>Letter ${assign[i]}</span>
+          <span class="badge ${correct ? "match" : "wrong"}">
+            ${correct ? "MATCH" : "wrong"}
+          </span>
+        `;
+        rows.appendChild(row);
+      });
+
+      status.className = "status " + (matches === 0 ? "good" : "bad");
+      status.innerHTML = matches === 0
+        ? "<strong>Success — derangement!</strong> No letter is in its correct envelope."
+        : `<strong>Not a derangement.</strong> ${matches} letter${matches === 1 ? "" : "s"} landed correctly.`;
+    }
+
+    document.getElementById("shuffleBtn").addEventListener("click", () => {
+      render(shuffled());
+    });
+
+    document.getElementById("simulateBtn").addEventListener("click", () => {
+      const trials = 10000;
+      let successes = 0;
+
+      for (let t = 0; t < trials; t++) {
+        const a = shuffled();
+        let ok = true;
+        for (let i = 0; i < firms.length; i++) {
+          if (a[i] === firms[i]) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) successes++;
+      }
+
+      const pct = (100 * successes / trials).toFixed(2);
+      simResult.innerHTML =
+        `Derangements: <strong>${successes.toLocaleString()} / ${trials.toLocaleString()}</strong> = ` +
+        `<strong>${pct}%</strong> &nbsp; (exact: 36.67%)`;
+    });
+
+    render(shuffled());
+  </script>
+</body>
+</html>

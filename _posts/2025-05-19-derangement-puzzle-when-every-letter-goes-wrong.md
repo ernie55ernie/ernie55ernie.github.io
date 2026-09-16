@@ -12,6 +12,8 @@ This classic probability puzzle takes on a new face:
 >
 > **Question:** What is the probability that **no letter** ends up in the correct envelope?
 
+<iframe src="{{ site.baseurl }}/assets/cover_letter_derangement.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 This is a textbook case of the **derangement problem**—also known as the **hat-check puzzle**.
 
 ---
