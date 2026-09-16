@@ -19,6 +19,8 @@ Jason plays a game involving darts thrown at a board, all aimed at the center. H
 
 All throws are **independent and identically distributed** around the center.
 
+<iframe src="{{ site.baseurl }}/assets/dart_distance_probability.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Reasoning

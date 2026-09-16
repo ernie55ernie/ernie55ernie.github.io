@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dart Distance Probability</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #18202a;
+      --muted: #687386;
+      --border: #dfe4ec;
+      --accent: #3758f9;
+      --accent-soft: #eef1ff;
+      --good: #1f8a55;
+      --bad: #c43d3d;
+      --shadow: 0 10px 30px rgba(28, 39, 60, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(980px, calc(100% - 32px));
+      margin: 40px auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f4f6ff 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .answer {
+      margin-top: 26px;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 12px;
+      background: var(--accent-soft);
+      border: 1px solid #d7dcff;
+      border-radius: 18px;
+      padding: 14px 18px;
+    }
+
+    .answer .fraction {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .answer .percent {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .subtext {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid #ccd3ff;
+      background: var(--accent-soft);
+      color: #243aa7;
+      border-radius: 12px;
+      padding: 11px 16px;
+      min-height: 44px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { filter: brightness(0.98); }
+    button:focus-visible {
+      outline: 3px solid rgba(55, 88, 249, 0.22);
+      outline-offset: 2px;
+    }
+
+    .rankings {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ranking {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      min-width: 0;
+      background: #fbfcfe;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .ranking.condition-fails {
+      opacity: 0.38;
+    }
+
+    .ranking .order {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 17px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .success .status { color: var(--good); font-weight: 700; }
+    .failure .status { color: var(--bad); font-weight: 700; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fbfcfe;
+    }
+
+    .metric .label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .metric .value {
+      margin-top: 3px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .logic {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .logic-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #fbfcfe;
+    }
+
+    .logic-row .n {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #edf0f5;
+      font-weight: 800;
+    }
+
+    .logic-row code {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .logic-row .tag {
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag.good { color: var(--good); }
+    .tag.bad { color: var(--bad); }
+
+    .big-conclusion {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .sim-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #simResult {
+      margin-top: 14px;
+      color: var(--muted);
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 980px); margin: 20px auto; }
+      .hero, .section { padding: 20px; border-radius: 18px; }
+      .rankings, .summary-grid { grid-template-columns: 1fr; }
+      .logic-row { grid-template-columns: 34px 1fr; }
+      .logic-row .tag { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>Dart Distance Probability</h1>
+      <p class="lead">
+        Jason throws three independent, identically distributed darts.
+        We are told that the second dart landed farther from the center than the first.
+        What is the probability that the third dart also lands farther than the first?
+      </p>
+
+      <div class="answer" aria-label="Final answer">
+        <span class="fraction">2/3</span>
+        <span class="percent">≈ 66.7%</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>The key idea: only the ranking matters</h2>
+      <p class="subtext">
+        Let <strong>D₁, D₂, D₃</strong> be the three distances from the center.
+        Since the throws are i.i.d. and ties have probability zero for a continuous distribution,
+        all six orderings are equally likely.
+      </p>
+
+      <div class="controls">
+        <button id="toggleCondition" type="button">Show only D₂ &gt; D₁</button>
+      </div>
+
+      <div id="rankings" class="rankings" aria-live="polite"></div>
+
+      <div class="summary-grid">
+        <div class="metric">
+          <div class="label">Orderings satisfying D₂ &gt; D₁</div>
+          <div class="value">3</div>
+        </div>
+        <div class="metric">
+          <div class="label">Also satisfying D₃ &gt; D₁</div>
+          <div class="value">2</div>
+        </div>
+        <div class="metric">
+          <div class="label">Conditional probability</div>
+          <div class="value">2/3</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Condition on what we know</h2>
+      <p class="subtext">
+        Once we know <strong>D₂ &gt; D₁</strong>, exactly three equally likely rankings remain:
+      </p>
+
+      <div class="logic">
+        <div class="logic-row">
+          <div class="n">1</div>
+          <code>D₁ &lt; D₂ &lt; D₃</code>
+          <div class="tag good">✓ D₃ &gt; D₁</div>
+        </div>
+
+        <div class="logic-row">
+          <div class="n">2</div>
+          <code>D₁ &lt; D₃ &lt; D₂</code>
+          <div class="tag good">✓ D₃ &gt; D₁</div>
+        </div>
+
+        <div class="logic-row">
+          <div class="n">3</div>
+          <code>D₃ &lt; D₁ &lt; D₂</code>
+          <div class="tag bad">✗ D₃ &lt; D₁</div>
+        </div>
+      </div>
+
+      <div class="big-conclusion">
+        Two of the three possible rankings work, so
+        P(D₃ &gt; D₁ | D₂ &gt; D₁) = <strong>2/3</strong>.
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sim-box">
+        <div>
+          <h2>Monte Carlo check</h2>
+          <p class="subtext" style="margin-bottom:0">
+            Simulate 100,000 triples, keep only trials where D₂ &gt; D₁,
+            and measure how often D₃ &gt; D₁.
+          </p>
+        </div>
+        <button id="simulate" type="button">Run 100,000 trials</button>
+      </div>
+
+      <div id="simResult" aria-live="polite">
+        Expected result: about <strong>66.7%</strong>.
+      </div>
+
+      <div class="note">
+        The exact shape of the dart-distance distribution does not matter, as long as the three
+        throws are independent, identically distributed, and ties occur with probability zero.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const rankingData = [
+        [1, 2, 3],
+        [1, 3, 2],
+        [2, 1, 3],
+        [2, 3, 1],
+        [3, 1, 2],
+        [3, 2, 1]
+      ].map(order => {
+        const pos = {};
+        order.forEach((dart, i) => pos[dart] = i);
+        return {
+          order,
+          condition: pos[2] > pos[1],
+          success: pos[3] > pos[1]
+        };
+      });
+
+      const rankingsEl = document.getElementById("rankings");
+      const toggleBtn = document.getElementById("toggleCondition");
+      const simBtn = document.getElementById("simulate");
+      const simResult = document.getElementById("simResult");
+
+      let filtered = false;
+
+      function renderRankings() {
+        const rows = filtered ? rankingData.filter(r => r.condition) : rankingData;
+        rankingsEl.innerHTML = "";
+
+        rows.forEach(row => {
+          const card = document.createElement("div");
+
+          let stateClass = "";
+          if (!row.condition) stateClass = "condition-fails";
+          else if (row.success) stateClass = "success";
+          else stateClass = "failure";
+
+          card.className = "ranking " + stateClass;
+
+          const orderText = row.order.map(n => "D" + n).join(" < ");
+
+          let status;
+          if (!row.condition) {
+            status = "Condition fails: D₂ is not farther than D₁";
+          } else if (row.success) {
+            status = "✓ Third dart is farther than the first";
+          } else {
+            status = "✗ Third dart is closer than the first";
+          }
+
+          card.innerHTML =
+            '<div class="order">' + orderText + '</div>' +
+            '<div class="status">' + status + '</div>';
+
+          rankingsEl.appendChild(card);
+        });
+
+        toggleBtn.textContent = filtered
+          ? "Show all 6 rankings"
+          : "Show only D₂ > D₁";
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        filtered = !filtered;
+        renderRankings();
+      });
+
+      simBtn.addEventListener("click", () => {
+        const N = 100000;
+        let kept = 0;
+        let success = 0;
+
+        for (let i = 0; i < N; i++) {
+          const d1 = Math.random();
+          const d2 = Math.random();
+          const d3 = Math.random();
+
+          if (d2 > d1) {
+            kept++;
+            if (d3 > d1) success++;
+          }
+        }
+
+        const pct = kept ? (100 * success / kept).toFixed(2) : "0.00";
+
+        simResult.innerHTML =
+          "Kept <strong>" + kept.toLocaleString() +
+          "</strong> trials with D₂ &gt; D₁. Of those, <strong>" +
+          success.toLocaleString() +
+          "</strong> also had D₃ &gt; D₁ → <strong>" +
+          pct + "%</strong>.";
+      });
+
+      renderRankings();
+    })();
+  </script>
+</body>
+</html>
