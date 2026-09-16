@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Free Throw Reinforcement Probability</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#141b2d;
+      --panel2:#1b243a;
+      --text:#f4f7fb;
+      --muted:#aeb8cc;
+      --border:#2b3652;
+      --accent:#7dd3fc;
+      --accent2:#a78bfa;
+      --good:#86efac;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(180deg,#09101d,#0b1020 40%,#0d1424);
+      color:var(--text);
+      line-height:1.55;
+    }
+    .wrap{
+      width:min(1100px,calc(100% - 32px));
+      margin:40px auto;
+    }
+    h1{font-size:clamp(28px,5vw,48px);line-height:1.05;margin:0 0 12px}
+    h2{margin:0 0 14px;font-size:22px}
+    p{margin:8px 0}
+    .lead{color:var(--muted);font-size:18px;max-width:850px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      margin-top:28px;
+    }
+    .card{
+      background:rgba(20,27,45,.9);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+    }
+    .state{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      margin:18px 0;
+    }
+    .pill{
+      min-width:120px;
+      padding:14px 18px;
+      text-align:center;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:var(--panel2);
+    }
+    .pill .big{font-size:34px;font-weight:800}
+    .muted{color:var(--muted)}
+    code,.math{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    }
+    .step{
+      padding:13px 15px;
+      border-radius:13px;
+      background:var(--panel2);
+      margin:10px 0;
+    }
+    .answer{
+      border:1px solid var(--border);
+      background:linear-gradient(135deg,rgba(125,211,252,.12),rgba(167,139,250,.10));
+      border-radius:16px;
+      padding:22px;
+      text-align:center;
+      margin-top:18px;
+    }
+    .answer .prob{
+      font-size:clamp(38px,7vw,68px);
+      font-weight:900;
+      line-height:1;
+      margin:8px 0;
+      color:var(--good);
+    }
+    .uniform{
+      position:relative;
+      height:180px;
+      margin:14px 0 0;
+      border-left:2px solid var(--border);
+      border-bottom:2px solid var(--border);
+    }
+    .uniform .bar{
+      position:absolute;
+      left:8px;
+      right:8px;
+      bottom:0;
+      height:82px;
+      background:linear-gradient(90deg,rgba(125,211,252,.35),rgba(167,139,250,.35));
+      border-top:3px solid var(--accent);
+      border-radius:6px 6px 0 0;
+    }
+    .uniform .mid{
+      position:absolute;
+      left:50%;
+      bottom:0;
+      height:112px;
+      border-left:2px dashed var(--text);
+    }
+    .uniform .dot{
+      position:absolute;
+      left:calc(50% - 5px);
+      bottom:77px;
+      width:10px;height:10px;border-radius:50%;
+      background:var(--text);
+    }
+    .uniform .label{
+      position:absolute;
+      bottom:-26px;
+      transform:translateX(-50%);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .uniform .l1{left:2%}
+    .uniform .l50{left:50%;color:var(--text)}
+    .uniform .l99{left:98%}
+    .uniform .y{
+      position:absolute;
+      left:6px;
+      bottom:86px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .formula{
+      overflow-x:auto;
+      white-space:nowrap;
+      padding:14px 16px;
+      border-radius:12px;
+      background:var(--panel2);
+      text-align:center;
+      font-size:18px;
+      margin:15px 0;
+    }
+    .footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    @media(max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .wrap{margin:24px auto 40px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Self-Reinforcing Free Throws</h1>
+    <p class="lead">
+      She makes shot 1, misses shot 2, and from then on her probability of making
+      the next shot equals her current fraction of makes.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Initial state</h2>
+        <p class="muted">After two shots:</p>
+
+        <div class="state">
+          <div class="pill">
+            <div class="muted">Makes</div>
+            <div class="big">1</div>
+          </div>
+          <div style="font-size:28px">:</div>
+          <div class="pill">
+            <div class="muted">Misses</div>
+            <div class="big">1</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <strong>Shot 3:</strong>
+          <div class="math">P(make) = 1 / 2</div>
+        </div>
+
+        <div class="step">
+          <strong>If shot 3 is made:</strong>
+          <div class="math">2 makes, 1 miss → P(next make) = 2 / 3</div>
+        </div>
+
+        <div class="step">
+          <strong>If shot 3 is missed:</strong>
+          <div class="math">1 make, 2 misses → P(next make) = 1 / 3</div>
+        </div>
+
+        <p>
+          This is a classic <strong>Pólya urn</strong> process:
+          success reinforces future success, and failure reinforces future failure.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>2. Final number of makes</h2>
+        <p class="muted">
+          Among shots 3 through 100, there are 98 additional shots.
+        </p>
+
+        <div class="uniform" aria-label="Uniform distribution from 1 to 99 total makes">
+          <div class="bar"></div>
+          <div class="mid"></div>
+          <div class="dot"></div>
+          <div class="y">probability = 1/99</div>
+          <div class="label l1">1</div>
+          <div class="label l50">50</div>
+          <div class="label l99">99</div>
+        </div>
+
+        <p style="margin-top:38px">
+          Surprisingly, the final total number of makes is
+          <strong>uniformly distributed</strong> over
+          <span class="math">1, 2, ..., 99</span>.
+        </p>
+
+        <div class="answer">
+          <div class="muted">Probability of exactly 50 makes</div>
+          <div class="prob">1 / 99</div>
+          <div>≈ 1.0101%</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:18px">
+      <h2>3. Why is it uniform?</h2>
+      <p>
+        Let <span class="math">X</span> be the number of makes among shots 3–100.
+        Then <span class="math">X ∈ {0,1,...,98}</span>.
+      </p>
+
+      <p>
+        A Pólya urn starting with one “make” and one “miss” has a
+        Beta-binomial distribution:
+      </p>
+
+      <div class="formula">
+        P(X = k) = C(98,k) · B(k+1, 99-k) / B(1,1)
+      </div>
+
+      <p>Using factorials:</p>
+
+      <div class="formula">
+        C(98,k) · k! · (98-k)! / 99! = 98! / 99! = 1 / 99
+      </div>
+
+      <p>
+        So every value <span class="math">k = 0,...,98</span> is equally likely.
+        Since the first shot was already a make,
+      </p>
+
+      <div class="formula">
+        total makes = 1 + X
+      </div>
+
+      <p>
+        Therefore the total is uniform over
+        <span class="math">1,...,99</span>. To finish with exactly 50 makes,
+        we need <span class="math">X = 49</span>.
+      </p>
+
+      <div class="answer">
+        <div class="math" style="font-size:22px">
+          P(total makes = 50) = <strong>1 / 99 ≈ 1.01%</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Key insight: the reinforcement rule turns the process into a Pólya urn, and
+      starting from 1 make + 1 miss makes every eventual count equally likely.
+    </div>
+  </main>
+</body>
+</html>

@@ -20,6 +20,8 @@ A basketball player takes **100 free throws** under the following conditions:
 
 **Question:** What is the probability that, after all 100 shots, she has made **exactly 50** baskets?
 
+<iframe src="{{ site.baseurl }}/assets/free_throw_polya_urn.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Understanding the Process
