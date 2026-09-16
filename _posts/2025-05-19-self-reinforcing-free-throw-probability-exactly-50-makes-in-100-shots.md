@@ -9,7 +9,7 @@ category: quantitative interview
 
 A basketball player takes **100 free throws** under the following conditions:
 
-- She **makes** her first two shots with certainty.
+- She **makes** her first shot and **misses** her second.
 - For each subsequent shot (from the 3rd to the 100th), her chance of making it equals:
 
   \\[
@@ -26,13 +26,13 @@ A basketball player takes **100 free throws** under the following conditions:
 
 This scenario describes a **self-reinforcing stochastic process**, where the probability of success at each step depends on the cumulative success rate up to that point. This is akin to a **Pólya urn model**, where the composition of the urn evolves based on previous outcomes, leading to a form of **reinforcement learning**.
 
-In this specific case, the process starts with two successes, and from the 3rd shot onwards, the success probability at each step is determined by the ratio of total successes to total attempts so far.
+In this specific case, the process starts with one make and one miss, and from the 3rd shot onwards, the success probability at each step is determined by the ratio of total successes to total attempts so far.
 
 ---
 
 ## Key Insight: Uniform Distribution of Final Scores
 
-An intriguing property of this process is that, despite its self-reinforcing nature, the distribution of the total number of successful shots after 100 attempts (with the first two being successes) is **uniform** over the integers from 2 to 100. That is, each total number of makes from 2 to 100 is equally likely.
+An intriguing property of this process is that, despite its self-reinforcing nature, the distribution of the total number of successful shots after 100 attempts (starting with 1 make and 1 miss) is **uniform** over the integers from 1 to 99. That is, each total number of makes from 1 to 99 is equally likely.
 
 This uniformity arises because the reinforcement mechanism balances out over time, leading to an equal likelihood of ending up with any total number of successes in the specified range.
 
@@ -40,7 +40,7 @@ This uniformity arises because the reinforcement mechanism balances out over tim
 
 ## Calculating the Desired Probability
 
-Given the uniform distribution over the integers 2 through 100, there are \\( 99 \\) possible total make counts. Therefore, the probability of ending up with exactly 50 successful shots is:
+Given the uniform distribution over the integers 1 through 99, there are \\( 99 \\) possible total make counts. Therefore, the probability of ending up with exactly 50 successful shots is:
 
 \\[
 \boxed{\frac{1}{99}}
