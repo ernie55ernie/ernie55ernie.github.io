@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 100th Decimal Digit of (1 + √2)^3000</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --border: #475569;
+      --accent: #38bdf8;
+      --good: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.15;
+      margin: 0 0 10px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .equation {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 700;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .term {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .tiny {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .decimal-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: clamp(17px, 2.2vw, 24px);
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .nines {
+      color: #fde047;
+      font-weight: 800;
+    }
+
+    .answer {
+      border: 2px solid var(--good);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .answer-digit {
+      min-width: 74px;
+      height: 74px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--good);
+      color: #052e16;
+      font-size: 46px;
+      font-weight: 900;
+    }
+
+    .steps {
+      margin: 0;
+      padding-left: 24px;
+    }
+
+    .steps li {
+      margin: 10px 0;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+      .answer { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>What is the 100th digit after the decimal point?</h1>
+    <div class="subtitle">
+      For <strong>(1 + √2)<sup>3000</sup></strong>
+    </div>
+
+    <section class="grid">
+      <div class="card">
+        <div class="label">Start</div>
+        <div class="equation">
+          x = (1 + √2)<sup>3000</sup>
+        </div>
+        <p>
+          Directly computing this enormous number is unnecessary.
+          The trick is to introduce its conjugate.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="label">Conjugate</div>
+        <div class="equation">
+          y = (1 − √2)<sup>3000</sup>
+        </div>
+        <p>
+          Since |1 − √2| ≈ 0.4142 &lt; 1, this number is extremely small.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="label">Step 1 — Their sum is an integer</div>
+      <div class="flow">
+        <div class="term">(1 + √2)<sup>3000</sup></div>
+        <div>+</div>
+        <div class="term">(1 − √2)<sup>3000</sup></div>
+        <div>=</div>
+        <div class="term">N, an integer</div>
+      </div>
+
+      <p>
+        In the two binomial expansions, all terms containing odd powers of √2 cancel.
+        The remaining even powers of √2 are integers. Therefore the sum is an integer.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="label">Step 2 — The conjugate is tiny and positive</div>
+      <p>
+        Because 3000 is even,
+      </p>
+      <div class="equation center">
+        0 &lt; (1 − √2)<sup>3000</sup> &lt; 10<sup>−100</sup>.
+      </div>
+
+      <p>
+        One simple bound is:
+      </p>
+      <ol class="steps">
+        <li>|1 − √2| &lt; 1/2</li>
+        <li>(1 − √2)<sup>3000</sup> &lt; (1/2)<sup>3000</sup> = 2<sup>−3000</sup></li>
+        <li>2<sup>3000</sup> &gt; 10<sup>100</sup>, so 2<sup>−3000</sup> &lt; 10<sup>−100</sup></li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <div class="label">Step 3 — So x is just below an integer</div>
+      <div class="equation center">
+        x = N − y
+      </div>
+      <p>
+        with <span class="tiny">0 &lt; y &lt; 10<sup>−100</sup></span>.
+        Therefore x is less than the integer N by less than
+        one unit in the 100th decimal place.
+      </p>
+
+      <div class="decimal-box">
+        x = (N − 1).<span class="nines">99999999999999999999999999999999999999999999999999</span>...
+      </div>
+
+      <p>
+        In fact, the first 100 digits after the decimal point are all 9.
+      </p>
+    </section>
+
+    <section class="card answer">
+      <div>
+        <div class="label">Answer</div>
+        <div class="equation">
+          The 100th digit after the decimal point is
+        </div>
+      </div>
+      <div class="answer-digit">9</div>
+    </section>
+  </main>
+</body>
+</html>
