@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fair Coin from a Biased Coin</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #222;
+    }
+
+    h1, h2 {
+      color: #16324f;
+    }
+
+    .box {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      background: #fafafa;
+    }
+
+    .pairs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .pair {
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .keep {
+      background: #eaf7ea;
+    }
+
+    .discard {
+      background: #f5f5f5;
+    }
+
+    .formula {
+      font-family: "Courier New", monospace;
+      background: #f0f0f0;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #b22222;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Simulating a Fair Coin Using a Biased Coin</h1>
+
+  <p>
+    Suppose we have a coin that lands Heads with some unknown probability
+    <strong>p</strong>, where
+  </p>
+
+  <div class="formula">
+    0 &lt; p &lt; 1
+  </div>
+
+  <p>
+    We do <strong>not</strong> need to know what <code>p</code> is.
+    We can still generate a perfectly fair 50/50 result.
+  </p>
+
+  <h2>The Trick</h2>
+
+  <div class="box">
+    <ol>
+      <li>Flip the biased coin twice.</li>
+      <li>If the result is <strong>HT</strong>, output <strong>Heads</strong>.</li>
+      <li>If the result is <strong>TH</strong>, output <strong>Tails</strong>.</li>
+      <li>
+        If the result is <strong>HH</strong> or <strong>TT</strong>,
+        ignore those flips and start again.
+      </li>
+    </ol>
+  </div>
+
+  <div class="pairs">
+    <div class="pair discard">
+      <h3>HH</h3>
+      Discard
+    </div>
+
+    <div class="pair keep">
+      <h3>HT</h3>
+      Output Heads
+    </div>
+
+    <div class="pair keep">
+      <h3>TH</h3>
+      Output Tails
+    </div>
+
+    <div class="pair discard">
+      <h3>TT</h3>
+      Discard
+    </div>
+  </div>
+
+  <h2>Why Does This Work?</h2>
+
+  <p>
+    Let
+  </p>
+
+  <div class="formula">
+    P(H) = p
+    <br>
+    P(T) = 1 - p
+  </div>
+
+  <p>
+    Because the two flips are independent:
+  </p>
+
+  <div class="formula">
+    P(HT) = p(1-p)
+  </div>
+
+  <p>and</p>
+
+  <div class="formula">
+    P(TH) = (1-p)p
+  </div>
+
+  <p>
+    But multiplication is commutative:
+  </p>
+
+  <div class="formula">
+    p(1-p) = (1-p)p
+  </div>
+
+  <p>
+    Therefore,
+  </p>
+
+  <div class="formula">
+    P(HT) = P(TH)
+  </div>
+
+  <p>
+    So whenever we get one of the two usable outcomes
+    <strong>HT</strong> or <strong>TH</strong>,
+    they are equally likely.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Pair</th>
+        <th>Probability</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>HH</td>
+        <td>p²</td>
+        <td>Discard</td>
+      </tr>
+
+      <tr>
+        <td>HT</td>
+        <td>p(1-p)</td>
+        <td>Output Heads</td>
+      </tr>
+
+      <tr>
+        <td>TH</td>
+        <td>(1-p)p</td>
+        <td>Output Tails</td>
+      </tr>
+
+      <tr>
+        <td>TT</td>
+        <td>(1-p)²</td>
+        <td>Discard</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Conditional Probability</h2>
+
+  <p>
+    Given that the two flips are different, the only possibilities are
+    <strong>HT</strong> and <strong>TH</strong>.
+  </p>
+
+  <div class="formula">
+    P(HT | different)
+    =
+    p(1-p) / [p(1-p) + (1-p)p]
+    =
+    1/2
+  </div>
+
+  <p>Similarly,</p>
+
+  <div class="formula">
+    P(TH | different) = 1/2
+  </div>
+
+  <p class="highlight">
+    Therefore the final output is a perfectly fair 50/50 coin.
+  </p>
+
+  <h2>Example</h2>
+
+  <p>
+    Suppose the original coin is extremely biased:
+  </p>
+
+  <div class="formula">
+    P(H) = 0.8
+    <br>
+    P(T) = 0.2
+  </div>
+
+  <p>Then:</p>
+
+  <div class="formula">
+    P(HT) = 0.8 × 0.2 = 0.16
+    <br><br>
+    P(TH) = 0.2 × 0.8 = 0.16
+  </div>
+
+  <p>
+    Even though Heads itself occurs 80% of the time,
+    the patterns <strong>HT</strong> and <strong>TH</strong>
+    occur with exactly the same probability.
+  </p>
+
+  <h2>Algorithm</h2>
+
+  <pre class="box"><code>while true:
+
+    flip coin twice
+
+    if result == HT:
+        return Heads
+
+    if result == TH:
+        return Tails
+
+    # HH or TT
+    # throw them away and repeat
+</code></pre>
+
+  <h2>Intuition</h2>
+
+  <div class="box">
+    <p>
+      Don't try to make a single biased flip fair.
+    </p>
+
+    <p>
+      Instead, look for two events that are
+      <strong>guaranteed to have equal probability</strong>.
+    </p>
+
+    <p>
+      The two sequences
+    </p>
+
+    <div class="formula">
+      HT and TH
+    </div>
+
+    <p>
+      contain exactly one Head and one Tail,
+      just in opposite orders.
+    </p>
+
+    <p>
+      Therefore both have probability
+    </p>
+
+    <div class="formula">
+      p(1-p)
+    </div>
+
+    <p>
+      and we can use them as our two equally likely outcomes.
+    </p>
+  </div>
+
+  <h2>Important Assumption</h2>
+
+  <p>
+    The flips must be independent and must use the same fixed probability
+    <code>p</code> each time.
+  </p>
+
+  <p>
+    Also, if <code>p = 0</code> or <code>p = 1</code>,
+    the method cannot work because the coin never produces both Heads and Tails.
+  </p>
+
+  <p>
+    This method is known as the
+    <strong>von Neumann extractor</strong>.
+  </p>
+
+</body>
+</html>
