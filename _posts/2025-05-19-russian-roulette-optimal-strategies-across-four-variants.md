@@ -7,6 +7,8 @@ category: quantitative interview
 
 Russian roulette presents various strategic decisions depending on the game's rules. Let's analyze four distinct scenarios to determine the optimal choice in each.
 
+<iframe src="{{ site.baseurl }}/assets/russian_roulette_probability_explorer.html" width="100%" height="900px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Variant 1: One Bullet, No Re-Spin

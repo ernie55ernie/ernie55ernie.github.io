@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Russian Roulette Probability Explorer</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --card: #1d222b;
+      --text: #f5f7fa;
+      --muted: #a7b0bf;
+      --border: #303744;
+      --accent: #7aa2f7;
+      --good: #7dcfff;
+      --bad: #f7768e;
+      --alt: #bb9af7;
+      --warn: #e0af68;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    main {
+      width: min(1000px, calc(100% - 32px));
+      margin: 32px auto 60px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
+    .subtitle { color: var(--muted); margin-bottom: 24px; }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-height: 44px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    button.active {
+      background: #24324d;
+      border-color: var(--accent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(280px, .9fr) minmax(320px, 1.1fr);
+      gap: 18px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .section-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .muted { color: var(--muted); }
+    .bar-row { margin: 18px 0; }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 7px;
+    }
+    .track {
+      height: 14px;
+      background: #11151c;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      transition: width .3s ease;
+    }
+    .explanation {
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .result {
+      margin-top: 18px;
+      border-left: 4px solid var(--accent);
+      background: #151b26;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .math {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #11151c;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .extra {
+      margin-top: 18px;
+      display: none;
+    }
+    .extra.show { display: block; }
+    .series {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(90px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+    .cell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px;
+      text-align: center;
+      min-width: 90px;
+    }
+    .header-cell {
+      color: var(--muted);
+      font-weight: 700;
+      background: transparent;
+    }
+    .warning {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fill { transition: none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Russian Roulette Probability Explorer</h1>
+  <div class="subtitle">Four probability variants, with the eventual-risk correction for repeated re-spins.</div>
+
+  <div class="tabs" id="tabs">
+    <button data-v="1" class="active">1 · One bullet, fixed</button>
+    <button data-v="2">2 · One bullet, re-spin</button>
+    <button data-v="3">3 · Two random</button>
+    <button data-v="4">4 · Two adjacent</button>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="section-title">Cylinder</div>
+      <svg viewBox="0 0 360 320" aria-label="Six-chamber revolver diagram">
+        <circle cx="180" cy="150" r="112" fill="none" stroke="var(--border)" stroke-width="3"/>
+        <circle cx="180" cy="150" r="28" fill="#11151c" stroke="var(--border)" stroke-width="2"/>
+        <g id="chambers"></g>
+        <path d="M180 20 L169 40 L191 40 Z" fill="var(--text)"/>
+        <text x="180" y="305" fill="var(--muted)" font-size="13" text-anchor="middle">▲ next firing position</text>
+      </svg>
+      <div id="legend" class="muted" style="text-align:center;font-size:14px;"></div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div id="name" class="section-title"></div>
+        <div id="setup" class="muted"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <div id="question" class="section-title" style="font-size:17px;"></div>
+        <div id="bars"></div>
+      </div>
+
+      <div id="explanation" class="explanation"></div>
+      <div id="result" class="result"></div>
+    </section>
+  </div>
+
+  <section id="extra" class="card extra">
+    <div class="section-title">Variant 2: why 5/36 is not Player 2's final risk</div>
+    <p class="muted">
+      <span class="math">5/36</span> is only the chance that Player 2 is shot on the first cycle.
+      With probability <span class="math">(5/6)^2 = 25/36</span>, both players survive and the game restarts in the same state.
+    </p>
+    <div class="series" id="series"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px;">
+      <div class="card">
+        <strong>Player 1 eventual risk</strong><br/>
+        <span class="math">1/6 + (5/6)^2(1/6) + ... = 6/11 ≈ 54.55%</span>
+      </div>
+      <div class="card">
+        <strong>Player 2 eventual risk</strong><br/>
+        <span class="math">(5/6)(1/6) + (5/6)^3(1/6) + ... = 5/11 ≈ 45.45%</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="warning">Probability puzzle only. Real Russian roulette is potentially fatal and should never be attempted.</div>
+</main>
+
+<script>
+const data = {
+  1: {
+    name: "Variant 1 · One bullet, no re-spin",
+    setup: "The cylinder is spun once, then left fixed. Player 1 gets pulls 1, 3, 5; Player 2 gets pulls 2, 4, 6.",
+    question: "Which position has the lower eventual probability of being shot?",
+    bars: [
+      ["Go first", 0.5, "3/6 = 50%"],
+      ["Go second", 0.5, "3/6 = 50%"]
+    ],
+    explanation: `
+      <strong>Reasoning.</strong>
+      The bullet is equally likely to be in any of the six positions.
+      Player 1 receives positions <span class="math">{1,3,5}</span> and Player 2 receives
+      <span class="math">{2,4,6}</span>. Each owns exactly three of six possible bullet positions.
+    `,
+    result: "<strong>Conclusion:</strong> it does not matter. Each player has a 50% eventual risk.",
+    mode: "alternate"
+  },
+  2: {
+    name: "Variant 2 · One bullet, re-spin every turn",
+    setup: "The cylinder is spun before every trigger pull, so each individual pull is independent and has probability 1/6 of firing.",
+    question: "What is each player's eventual probability of being shot?",
+    bars: [
+      ["Go first", 6/11, "6/11 ≈ 54.55%"],
+      ["Go second", 5/11, "5/11 ≈ 45.45%"]
+    ],
+    explanation: `
+      <strong>The subtle point:</strong> Player 2's probability is not just
+      <span class="math">(5/6)(1/6)=5/36</span>, because that counts only Player 2's first turn.
+      With probability <span class="math">(5/6)^2=25/36</span>, both survive and the same two-turn situation repeats.
+      Summing the geometric series gives
+      <span class="math">P(P1)=6/11</span> and <span class="math">P(P2)=5/11</span>.
+    `,
+    result: "<strong>Conclusion:</strong> going second gives lower eventual risk: 45.45% versus 54.55%.",
+    mode: "one"
+  },
+  3: {
+    name: "Variant 3 · Two bullets in random chambers",
+    setup: "Two chambers are chosen uniformly at random. The previous player just survived.",
+    question: "Should you spin before your turn?",
+    bars: [
+      ["Spin", 1/3, "2/6 = 33.33%"],
+      ["Do not spin", 2/5, "2/5 = 40%"]
+    ],
+    explanation: `
+      <strong>If you spin:</strong> the next chamber is uniformly random, so the firing probability is
+      <span class="math">2/6 = 1/3</span>.<br/><br/>
+      <strong>If you do not spin:</strong> you now know the chamber just used was empty.
+      Two bullets remain among the other five chambers. By symmetry, the next chamber has probability
+      <span class="math">2/5</span> of containing a bullet.
+    `,
+    result: "<strong>Conclusion:</strong> spin. 33.33% is lower than 40%.",
+    mode: "random2"
+  },
+  4: {
+    name: "Variant 4 · Two bullets in consecutive chambers",
+    setup: "The bullets occupy adjacent chambers. The previous player just survived.",
+    question: "Should you spin before your turn?",
+    bars: [
+      ["Spin", 1/3, "2/6 = 33.33%"],
+      ["Do not spin", 1/4, "1/4 = 25%"]
+    ],
+    explanation: `
+      Fix the chamber that just clicked empty as position 0.
+      There are six possible adjacent bullet pairs around the cylinder. Two pairs touch position 0 and are therefore impossible.
+      The four remaining pairs are
+      <span class="math">{1,2}, {2,3}, {3,4}, {4,5}</span>.
+      Only one of those four puts a bullet in the very next chamber, so
+      <span class="math">P(next bullet | current empty)=1/4</span>.
+    `,
+    result: "<strong>Conclusion:</strong> do not spin. 25% is lower than 33.33%.",
+    mode: "adjacent"
+  }
+};
+
+const tabs = [...document.querySelectorAll("#tabs button")];
+const nameEl = document.getElementById("name");
+const setupEl = document.getElementById("setup");
+const questionEl = document.getElementById("question");
+const barsEl = document.getElementById("bars");
+const explanationEl = document.getElementById("explanation");
+const resultEl = document.getElementById("result");
+const chambersEl = document.getElementById("chambers");
+const legendEl = document.getElementById("legend");
+const extraEl = document.getElementById("extra");
+const seriesEl = document.getElementById("series");
+
+function chamberXY(i) {
+  const angle = (-90 + i * 60) * Math.PI / 180;
+  return [180 + 77 * Math.cos(angle), 150 + 77 * Math.sin(angle)];
+}
+
+function drawCylinder(mode) {
+  chambersEl.innerHTML = "";
+  for (let i = 0; i < 6; i++) {
+    const [x,y] = chamberXY(i);
+    let fill = "#1d222b";
+    let label = "○";
+
+    if (mode === "alternate") {
+      fill = i % 2 === 0 ? "var(--good)" : "var(--alt)";
+      label = i % 2 === 0 ? "P1" : "P2";
+    } else if (mode === "one" && i === 0) {
+      fill = "var(--bad)";
+      label = "●";
+    } else if (mode === "random2" && (i === 1 || i === 4)) {
+      fill = "var(--bad)";
+      label = "●";
+    } else if (mode === "adjacent" && (i === 2 || i === 3)) {
+      fill = "var(--bad)";
+      label = "●";
+    }
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg","g");
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx", x);
+    c.setAttribute("cy", y);
+    c.setAttribute("r", 27);
+    c.setAttribute("fill", fill);
+    c.setAttribute("stroke", "var(--border)");
+    c.setAttribute("stroke-width", "2");
+
+    const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x", x);
+    t.setAttribute("y", y + 5);
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("font-size", "14");
+    t.setAttribute("fill", "var(--text)");
+    t.textContent = label;
+
+    g.appendChild(c);
+    g.appendChild(t);
+    chambersEl.appendChild(g);
+  }
+
+  const legends = {
+    alternate: "Odd trigger pulls → Player 1 · Even trigger pulls → Player 2",
+    one: "● loaded · ○ empty · cylinder is re-spun before every pull",
+    random2: "Illustrative random placement of two bullets",
+    adjacent: "Illustrative adjacent placement of two bullets"
+  };
+  legendEl.textContent = legends[mode];
+}
+
+function drawBars(items) {
+  barsEl.innerHTML = "";
+  items.forEach((item, idx) => {
+    const pct = item[1] * 100;
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `
+      <div class="bar-head">
+        <strong>${item[0]}</strong>
+        <span>${item[2]}</span>
+      </div>
+      <div class="track">
+        <div class="fill" style="width:${pct}%;background:${idx === 0 ? "var(--good)" : "var(--warn)"}"></div>
+      </div>
+    `;
+    barsEl.appendChild(row);
+  });
+}
+
+function drawSeries() {
+  const headers = ["Cycle", "P1 shot", "P2 shot", "Both survive", "Next"];
+  headers.forEach(h => {
+    const d = document.createElement("div");
+    d.className = "cell header-cell";
+    d.textContent = h;
+    seriesEl.appendChild(d);
+  });
+
+  for (let k = 0; k < 3; k++) {
+    const survivePrev = Math.pow(25/36, k);
+    const vals = [
+      k + 1,
+      (survivePrev * 1/6 * 100).toFixed(2) + "%",
+      (survivePrev * 5/36 * 100).toFixed(2) + "%",
+      (survivePrev * 25/36 * 100).toFixed(2) + "%",
+      k < 2 ? "repeat" : "..."
+    ];
+    vals.forEach(v => {
+      const d = document.createElement("div");
+      d.className = "cell";
+      d.textContent = v;
+      seriesEl.appendChild(d);
+    });
+  }
+}
+
+function selectVariant(v) {
+  const d = data[v];
+  tabs.forEach(btn => btn.classList.toggle("active", Number(btn.dataset.v) === v));
+  nameEl.textContent = d.name;
+  setupEl.textContent = d.setup;
+  questionEl.textContent = d.question;
+  drawBars(d.bars);
+  explanationEl.innerHTML = d.explanation;
+  resultEl.innerHTML = d.result;
+  drawCylinder(d.mode);
+  extraEl.classList.toggle("show", v === 2);
+}
+
+tabs.forEach(btn => {
+  btn.addEventListener("click", () => selectVariant(Number(btn.dataset.v)));
+});
+
+drawSeries();
+selectVariant(1);
+</script>
+</body>
+</html>
