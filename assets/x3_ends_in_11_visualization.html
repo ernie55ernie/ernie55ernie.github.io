@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probability that x³ ends in 11</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111831;
+      --card:#151f3d;
+      --text:#eef3ff;
+      --muted:#aeb9d6;
+      --accent:#77a7ff;
+      --accent2:#66e0b8;
+      --border:#2a3761;
+      --bad:#7f8aab;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:linear-gradient(180deg,#09101f,#0e1530);
+      color:var(--text);
+      line-height:1.55;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 48px;
+    }
+    h1{font-size:clamp(28px,4vw,46px);margin:0 0 8px}
+    h2{font-size:22px;margin:0 0 10px}
+    p{margin:8px 0}
+    .lead{color:var(--muted);font-size:18px;margin-bottom:24px}
+    .grid{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+    }
+    .card{
+      background:rgba(21,31,61,.92);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 8px 30px rgba(0,0,0,.18);
+    }
+    .formula{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      background:#0e1730;
+      border:1px solid var(--border);
+      padding:12px 14px;
+      border-radius:12px;
+      margin:12px 0;
+      font-size:18px;
+      overflow-x:auto;
+    }
+    .residue-grid{
+      display:grid;
+      grid-template-columns:repeat(10,1fr);
+      gap:6px;
+      margin-top:14px;
+    }
+    .residue{
+      border:1px solid var(--border);
+      background:#101833;
+      color:var(--text);
+      border-radius:9px;
+      padding:8px 2px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-size:13px;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .residue:hover{transform:translateY(-1px);border-color:var(--accent)}
+    .residue.hit{
+      background:#173c46;
+      border-color:var(--accent2);
+      color:#d9fff3;
+      font-weight:800;
+    }
+    .result{
+      margin-top:14px;
+      background:#0d162e;
+      border-radius:12px;
+      padding:12px;
+      color:var(--muted);
+      min-height:52px;
+    }
+    .steps{
+      display:grid;
+      gap:12px;
+    }
+    .step{
+      padding:14px;
+      border-radius:14px;
+      background:#101833;
+      border:1px solid var(--border);
+    }
+    .step strong{color:#fff}
+    .big{
+      font-size:36px;
+      font-weight:900;
+      color:var(--accent2);
+      margin-top:4px;
+    }
+    .check{
+      color:var(--accent2);
+      font-weight:800;
+    }
+    .summary{
+      margin-top:18px;
+      text-align:center;
+      padding:18px;
+      background:linear-gradient(135deg,#152047,#143b41);
+      border:1px solid var(--border);
+      border-radius:18px;
+    }
+    .fraction{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:18px;
+      font-size:26px;
+      font-weight:800;
+      margin:10px 0;
+    }
+    .muted{color:var(--muted)}
+    .tiny{font-size:13px;color:var(--muted)}
+    @media(max-width:800px){
+      .grid{grid-template-columns:1fr}
+      .residue-grid{grid-template-columns:repeat(5,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>When does <em>x³</em> end in “11”?</h1>
+    <p class="lead">
+      Let <strong>x</strong> be uniformly random from 1 to 10<sup>12</sup>.
+      We want the probability that the decimal representation of <strong>x³</strong> ends in <strong>11</strong>.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Reduce to the last two digits</h2>
+        <p>Ending in “11” means exactly:</p>
+        <div class="formula">x³ ≡ 11 (mod 100)</div>
+        <p class="muted">
+          So the whole 12-digit range is irrelevant except for how often each residue modulo 100 appears.
+          We only need to inspect x mod 100.
+        </p>
+
+        <div class="residue-grid" id="grid"></div>
+        <div class="result" id="result">
+          Click any residue to see its cube modulo 100.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Solve the congruence</h2>
+        <div class="steps">
+          <div class="step">
+            <strong>Modulo 4</strong>
+            <div class="formula">11 ≡ 3 (mod 4)</div>
+            <p>So x³ ≡ 3 (mod 4), which forces:</p>
+            <div class="formula">x ≡ 3 (mod 4)</div>
+          </div>
+
+          <div class="step">
+            <strong>Modulo 25</strong>
+            <div class="formula">x³ ≡ 11 (mod 25)</div>
+            <p>The solution is:</p>
+            <div class="formula">x ≡ 21 (mod 25)</div>
+          </div>
+
+          <div class="step">
+            <strong>Combine them</strong>
+            <p>The residues congruent to 21 mod 25 are:</p>
+            <div class="formula">21, 46, 71, 96 (mod 100)</div>
+            <p>Only <strong>71</strong> is also congruent to 3 mod 4.</p>
+            <div class="formula">x ≡ 71 (mod 100)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="summary">
+      <h2>3. Final probability</h2>
+      <p>Exactly <strong>1 residue out of 100</strong> works.</p>
+      <div class="fraction">
+        <span>1 good residue</span>
+        <span>÷</span>
+        <span>100 residues</span>
+      </div>
+      <div class="big">1/100 = 1%</div>
+      <p class="tiny">
+        Since 10<sup>12</sup> is divisible by 100, each residue modulo 100 occurs exactly 10<sup>10</sup> times.
+      </p>
+      <p class="check">Check: 71³ = 357911, which ends in 11.</p>
+    </div>
+  </main>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const result = document.getElementById("result");
+
+    for (let r = 0; r < 100; r++) {
+      const value = (r * r * r) % 100;
+      const btn = document.createElement("button");
+      btn.className = "residue" + (value === 11 ? " hit" : "");
+      btn.textContent = String(r).padStart(2, "0");
+
+      btn.addEventListener("click", () => {
+        result.innerHTML =
+          "<strong>" + String(r).padStart(2, "0") + "³ ≡ " +
+          String(value).padStart(2, "0") + " (mod 100)</strong>" +
+          (value === 11
+            ? ' <span class="check">✓ works</span>'
+            : ' <span class="muted">— not 11</span>');
+      });
+
+      grid.appendChild(btn);
+    }
+  </script>
+</body>
+</html>
