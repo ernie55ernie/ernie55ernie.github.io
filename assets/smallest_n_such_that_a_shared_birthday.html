@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Paradox — 50% Threshold</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --panel:#ffffff;
+      --card:#f3f6fb;
+      --text:#16202a;
+      --muted:#5f6b7a;
+      --border:#d9e1ec;
+      --accent:#2563eb;
+      --green:#16a34a;
+      --orange:#ea580c;
+      --shadow:0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius:20px;
+    }
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#f8fbff 0%,#f3f6fb 100%);
+    }
+    .container{
+      max-width:1150px;
+      margin:0 auto;
+      padding:28px 18px 40px;
+    }
+    .hero{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:24px;
+      margin-bottom:18px;
+    }
+    .eyebrow{
+      display:inline-block;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent);
+      background:#eaf1ff;
+      padding:8px 12px;
+      border-radius:999px;
+      margin-bottom:14px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.9rem, 3vw, 3rem);
+      line-height:1.15;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:1.03rem;
+      line-height:1.6;
+      max-width:850px;
+    }
+    .answer{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+    }
+    .answer-pill{
+      background:#eef6ff;
+      border:1px solid #cfe0ff;
+      border-radius:18px;
+      padding:14px 18px;
+      font-weight:700;
+      font-size:1.05rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.9fr;
+      gap:18px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+      min-width:0;
+    }
+    .section-title{
+      margin:0 0 4px;
+      font-size:1.2rem;
+      font-weight:800;
+    }
+    .section-subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+    .stat-row{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .stat{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+    .stat .label{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:4px;
+    }
+    .stat .value{
+      font-size:2rem;
+      font-weight:800;
+      line-height:1.1;
+      word-break:break-word;
+    }
+    .slider-wrap{
+      margin-top:10px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--accent);
+      cursor:pointer;
+    }
+    .slider-scale{
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:.83rem;
+      margin-top:6px;
+    }
+    .bars{
+      margin-top:20px;
+    }
+    .bar-group{
+      margin-bottom:18px;
+    }
+    .bar-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:8px;
+      font-size:.95rem;
+      align-items:center;
+    }
+    .bar-bg{
+      width:100%;
+      height:18px;
+      background:#edf2f8;
+      border-radius:999px;
+      overflow:hidden;
+      position:relative;
+      border:1px solid #e1e8f0;
+    }
+    .bar-fill{
+      height:100%;
+      border-radius:999px;
+      transition:width .25s ease;
+    }
+    .bar-fill.green{ background:var(--green); }
+    .bar-fill.orange{ background:var(--orange); }
+    .formula{
+      background:#0f172a;
+      color:#eff6ff;
+      border-radius:18px;
+      padding:16px;
+      overflow-x:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:.95rem;
+      line-height:1.7;
+      margin:14px 0 0;
+    }
+    .compare{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-top:16px;
+    }
+    .compare-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+    }
+    .compare-card.highlight{
+      outline:3px solid #d7e6ff;
+      background:#eff6ff;
+    }
+    .compare-card .small{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:6px;
+    }
+    .compare-card .big{
+      font-size:1.6rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .chart-wrap{
+      margin-top:12px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#fbfdff 0%,#f5f8fc 100%);
+      border-radius:18px;
+      padding:14px;
+      overflow:hidden;
+    }
+    .chart-title{
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .chart-subtitle{
+      color:var(--muted);
+      font-size:.93rem;
+      margin-bottom:10px;
+      line-height:1.45;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .note{
+      margin-top:18px;
+      background:#fffaf0;
+      border:1px solid #fde3b0;
+      border-radius:18px;
+      padding:16px;
+      line-height:1.6;
+    }
+    .steps{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+    .step{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px 16px;
+      line-height:1.6;
+    }
+    .step strong{
+      color:var(--accent);
+    }
+    .footer-answer{
+      margin-top:18px;
+      background:#eefbf2;
+      border:1px solid #c8efd4;
+      border-radius:18px;
+      padding:18px;
+      font-size:1.08rem;
+      font-weight:700;
+    }
+
+    @media (max-width: 900px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+    @media (max-width: 560px){
+      .stat-row,
+      .compare{
+        grid-template-columns:1fr;
+      }
+      .hero, .panel{
+        padding:16px;
+      }
+      .stat .value{
+        font-size:1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">Birthday Paradox</div>
+      <h1>Smallest <em>n</em> such that a shared birthday is more than 50%</h1>
+      <p class="subtitle">
+        Birthdays are assumed to be uniformly distributed over 365 days.
+        We want the smallest number of people <strong>n</strong> for which the probability
+        that <strong>at least two people share a birthday</strong> is greater than 50%.
+      </p>
+      <div class="answer">
+        <div class="answer-pill">Final answer: <strong>n = 23</strong></div>
+        <div class="answer-pill">At n = 23, probability ≈ <strong>50.73%</strong></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <h2 class="section-title">Interactive probability explorer</h2>
+        <p class="section-subtitle">
+          Move the slider to see how the probability changes as the group gets larger.
+        </p>
+
+        <div class="stat-row">
+          <div class="stat">
+            <div class="label">Number of people</div>
+            <div class="value" id="nValue">23</div>
+          </div>
+          <div class="stat">
+            <div class="label">P(at least one shared birthday)</div>
+            <div class="value" id="matchValue">50.73%</div>
+          </div>
+        </div>
+
+        <div class="slider-wrap">
+          <label for="nSlider"><strong>Choose n</strong></label>
+          <input id="nSlider" type="range" min="1" max="60" value="23" />
+          <div class="slider-scale">
+            <span>1</span>
+            <span>23</span>
+            <span>60</span>
+          </div>
+        </div>
+
+        <div class="bars">
+          <div class="bar-group">
+            <div class="bar-head">
+              <span>No shared birthday</span>
+              <strong id="noMatchLabel">49.27%</strong>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill green" id="noMatchBar" style="width:49.27%"></div>
+            </div>
+          </div>
+
+          <div class="bar-group">
+            <div class="bar-head">
+              <span>At least one shared birthday</span>
+              <strong id="matchLabel">50.73%</strong>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill orange" id="matchBar" style="width:50.73%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-title">How the probability grows</div>
+          <div class="chart-subtitle">
+            The chance rises quickly because each new person can potentially match many people already in the room.
+          </div>
+
+          <svg id="chart" viewBox="0 0 760 320" aria-label="Probability curve">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#94a3b8"></path>
+              </marker>
+            </defs>
+
+            <!-- axes -->
+            <line x1="60" y1="260" x2="715" y2="260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"></line>
+            <line x1="60" y1="260" x2="60" y2="30" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"></line>
+
+            <!-- gridline at 50% -->
+            <line x1="60" y1="145" x2="715" y2="145" stroke="#cbd5e1" stroke-dasharray="6 6" stroke-width="1.5"></line>
+            <text x="68" y="138" font-size="13" fill="#64748b">50%</text>
+
+            <!-- labels -->
+            <text x="720" y="282" font-size="13" fill="#64748b">n</text>
+            <text x="14" y="36" font-size="13" fill="#64748b">P</text>
+
+            <text x="55" y="280" font-size="12" fill="#64748b">1</text>
+            <text x="295" y="280" font-size="12" fill="#64748b">23</text>
+            <text x="684" y="280" font-size="12" fill="#64748b">60</text>
+
+            <path id="curvePath" fill="none" stroke="#ea580c" stroke-width="4" stroke-linecap="round"></path>
+
+            <circle id="curveDot" r="7" fill="#2563eb" stroke="#ffffff" stroke-width="4"></circle>
+            <text id="curveDotText" font-size="13" font-weight="700" text-anchor="middle" fill="#16202a"></text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Why we use the complement</h2>
+        <p class="section-subtitle">
+          It is easier to compute the probability that <strong>all birthdays are different</strong>,
+          then subtract from 1.
+        </p>
+
+        <div class="formula">
+P(no match) = 365/365 × 364/365 × 363/365 × ··· × (365 - n + 1)/365
+
+P(at least one match) = 1 - P(no match)
+        </div>
+
+        <div class="compare">
+          <div class="compare-card">
+            <div class="small">n = 22</div>
+            <div class="big">47.57%</div>
+            <div>Still below 50%</div>
+          </div>
+          <div class="compare-card highlight">
+            <div class="small">n = 23</div>
+            <div class="big">50.73%</div>
+            <div>First value above 50%</div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <strong>Step 1.</strong> The first person can have any birthday, so the probability is
+            <strong>365/365</strong>.
+          </div>
+          <div class="step">
+            <strong>Step 2.</strong> The second person must avoid the first person's birthday, so the probability is
+            <strong>364/365</strong>.
+          </div>
+          <div class="step">
+            <strong>Step 3.</strong> The third person must avoid the first two birthdays, so the probability is
+            <strong>363/365</strong>.
+          </div>
+          <div class="step">
+            <strong>Continue.</strong> For n people, multiply all these terms together.
+          </div>
+          <div class="step">
+            <strong>Finally.</strong> Subtract from 1 to get the probability that there is at least one shared birthday.
+          </div>
+        </div>
+
+        <div class="note">
+          <strong>Intuition:</strong> even though 23 is much smaller than 365, what matters is the number of
+          <strong>pairs</strong> of people. With 23 people, there are
+          <strong>23 × 22 / 2 = 253</strong> pairs, which creates many chances for a birthday collision.
+        </div>
+
+        <div class="footer-answer">
+          Therefore, the smallest number of people for which the probability exceeds 50% is
+          <strong>23</strong>.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function probNoMatch(n) {
+      if (n <= 1) return 1;
+      if (n > 365) return 0;
+      let p = 1;
+      for (let i = 0; i < n; i++) {
+        p *= (365 - i) / 365;
+      }
+      return p;
+    }
+
+    function fmtPercent(x) {
+      return (x * 100).toFixed(2) + "%";
+    }
+
+    const slider = document.getElementById("nSlider");
+    const nValue = document.getElementById("nValue");
+    const matchValue = document.getElementById("matchValue");
+    const noMatchLabel = document.getElementById("noMatchLabel");
+    const matchLabel = document.getElementById("matchLabel");
+    const noMatchBar = document.getElementById("noMatchBar");
+    const matchBar = document.getElementById("matchBar");
+
+    const curvePath = document.getElementById("curvePath");
+    const curveDot = document.getElementById("curveDot");
+    const curveDotText = document.getElementById("curveDotText");
+
+    const chart = {
+      x0: 60,
+      x1: 715,
+      y0: 260,
+      y1: 30
+    };
+
+    function xScale(n) {
+      return chart.x0 + (n - 1) * (chart.x1 - chart.x0) / (60 - 1);
+    }
+
+    function yScale(p) {
+      return chart.y0 - p * (chart.y0 - chart.y1);
+    }
+
+    function buildCurve() {
+      let d = "";
+      for (let n = 1; n <= 60; n++) {
+        const p = 1 - probNoMatch(n);
+        const x = xScale(n);
+        const y = yScale(p);
+        d += (n === 1 ? "M " : " L ") + x.toFixed(2) + " " + y.toFixed(2);
+      }
+      curvePath.setAttribute("d", d);
+    }
+
+    function update() {
+      const n = Number(slider.value);
+      const noMatch = probNoMatch(n);
+      const match = 1 - noMatch;
+
+      nValue.textContent = n;
+      matchValue.textContent = fmtPercent(match);
+      noMatchLabel.textContent = fmtPercent(noMatch);
+      matchLabel.textContent = fmtPercent(match);
+      noMatchBar.style.width = (noMatch * 100).toFixed(2) + "%";
+      matchBar.style.width = (match * 100).toFixed(2) + "%";
+
+      const cx = xScale(n);
+      const cy = yScale(match);
+
+      curveDot.setAttribute("cx", cx);
+      curveDot.setAttribute("cy", cy);
+      curveDotText.setAttribute("x", cx);
+      curveDotText.setAttribute("y", Math.max(20, cy - 14));
+      curveDotText.textContent = `n=${n}, ${fmtPercent(match)}`;
+    }
+
+    buildCurve();
+    update();
+    slider.addEventListener("input", update);
+  </script>
+</body>
+</html>
