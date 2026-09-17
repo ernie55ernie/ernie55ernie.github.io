@@ -11,6 +11,8 @@ You take a stick of **unit length** and break it at **two points**, chosen **uni
 
 **Question:** What is the probability that these three segments can form a **triangle**?
 
+<iframe src="{{ site.baseurl }}/assets/broken_stick_problem.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Triangle Inequality Condition

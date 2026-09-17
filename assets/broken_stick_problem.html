@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broken Stick Triangle Probability</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #dbe4ee;
+      --accent: #2563eb;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --seg1: #60a5fa;
+      --seg2: #f59e0b;
+      --seg3: #34d399;
+      --shade: rgba(37, 99, 235, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .controls {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .good {
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--good);
+      border: 1px solid rgba(22, 163, 74, 0.25);
+    }
+
+    .bad {
+      background: rgba(220, 38, 38, 0.12);
+      color: var(--bad);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+    }
+
+    .formula {
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      font-family: "Courier New", Courier, monospace;
+      overflow-x: auto;
+    }
+
+    .summary {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    ul {
+      margin: 8px 0 0 20px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .big-answer {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 10px;
+    }
+
+    .two-col-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .two-col-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container stack">
+    <div class="card">
+      <h1>Broken Stick Problem</h1>
+      <p>
+        A stick of length <strong>1</strong> is broken at two points, chosen
+        <strong>uniformly at random</strong> and <strong>independently</strong>.
+        This creates three segment lengths.
+      </p>
+      <p class="summary">
+        Question: What is the probability that the three pieces can form a triangle?
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>1) Interactive stick view</h2>
+        <p class="small">
+          Move the two break points. The stick is reordered automatically so the left break is first.
+        </p>
+
+        <svg id="stickSvg" viewBox="0 0 760 160" aria-label="Broken stick visualization">
+          <line x1="60" y1="85" x2="700" y2="85" stroke="#0f172a" stroke-width="10" stroke-linecap="round"></line>
+
+          <line id="piece1" x1="60" y1="85" x2="260" y2="85" stroke="#60a5fa" stroke-width="16" stroke-linecap="round"></line>
+          <line id="piece2" x1="260" y1="85" x2="444" y2="85" stroke="#f59e0b" stroke-width="16"></line>
+          <line id="piece3" x1="444" y1="85" x2="700" y2="85" stroke="#34d399" stroke-width="16" stroke-linecap="round"></line>
+
+          <circle id="breakA" cx="260" cy="85" r="11" fill="#fff" stroke="#0f172a" stroke-width="3"></circle>
+          <circle id="breakB" cx="444" cy="85" r="11" fill="#fff" stroke="#0f172a" stroke-width="3"></circle>
+
+          <text x="60" y="125" text-anchor="middle" fill="#475569" font-size="16">0</text>
+          <text x="700" y="125" text-anchor="middle" fill="#475569" font-size="16">1</text>
+
+          <text id="len1Label" x="160" y="50" text-anchor="middle" font-size="18" fill="#0f172a">0.31</text>
+          <text id="len2Label" x="352" y="50" text-anchor="middle" font-size="18" fill="#0f172a">0.29</text>
+          <text id="len3Label" x="572" y="50" text-anchor="middle" font-size="18" fill="#0f172a">0.40</text>
+        </svg>
+
+        <div class="controls">
+          <div>
+            <label for="xSlider">First random break x = <span id="xValue">0.31</span></label>
+            <input id="xSlider" type="range" min="0" max="1" step="0.01" value="0.31" />
+          </div>
+          <div>
+            <label for="ySlider">Second random break y = <span id="yValue">0.60</span></label>
+            <input id="ySlider" type="range" min="0" max="1" step="0.01" value="0.60" />
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <div id="triangleStatus" class="badge good">Triangle possible</div>
+          <p id="segmentInfo" style="margin-top:12px;"></p>
+          <p id="longestInfo" class="small"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2) Key triangle condition</h2>
+        <p>
+          Three lengths form a triangle iff the sum of any two is greater than the third.
+        </p>
+        <p>
+          Since the three broken pieces always add up to <strong>1</strong>, this simplifies nicely:
+        </p>
+
+        <div class="formula">
+          largest piece &lt; 1/2
+        </div>
+
+        <p style="margin-top: 14px;">
+          Why? If the longest piece has length <code>L</code>, the other two pieces sum to <code>1 - L</code>.
+          For a triangle, we need:
+        </p>
+
+        <div class="formula">
+          1 - L &gt; L
+          <br />
+          1 &gt; 2L
+          <br />
+          L &lt; 1/2
+        </div>
+
+        <p style="margin-top: 14px;">
+          So the problem becomes:
+        </p>
+        <ul>
+          <li>Pick two random break points in <code>[0,1]</code></li>
+          <li>Compute the 3 piece lengths</li>
+          <li>Ask whether the longest one is less than <code>1/2</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>3) Geometric probability in the unit square</h2>
+        <p class="small">
+          Every pair of break points <code>(x,y)</code> is equally likely, so probability = area of success region.
+        </p>
+
+        <svg id="squareSvg" viewBox="0 0 560 560" aria-label="Unit square geometry">
+          <rect x="60" y="40" width="440" height="440" fill="#ffffff" stroke="#dbe4ee" stroke-width="2"></rect>
+
+          <!-- shaded success region -->
+          <polygon points="60,260 280,260 280,40" fill="rgba(37,99,235,0.18)"></polygon>
+          <polygon points="280,480 280,260 500,260" fill="rgba(37,99,235,0.18)"></polygon>
+
+          <!-- guide lines -->
+          <line x1="280" y1="40" x2="280" y2="480" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+          <line x1="60" y1="260" x2="500" y2="260" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+          <line x1="60" y1="260" x2="280" y2="40" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+          <line x1="280" y1="480" x2="500" y2="260" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+
+          <!-- dynamic point -->
+          <circle id="xyPoint" cx="196.4" cy="216" r="8" fill="#2563eb" stroke="#0f172a" stroke-width="2"></circle>
+
+          <!-- axes labels -->
+          <text x="280" y="530" text-anchor="middle" fill="#0f172a" font-size="18">first break x</text>
+          <text x="18" y="260" text-anchor="middle" fill="#0f172a" font-size="18" transform="rotate(-90 18 260)">second break y</text>
+
+          <text x="60" y="505" text-anchor="middle" fill="#475569" font-size="14">0</text>
+          <text x="280" y="505" text-anchor="middle" fill="#475569" font-size="14">1/2</text>
+          <text x="500" y="505" text-anchor="middle" fill="#475569" font-size="14">1</text>
+
+          <text x="48" y="484" text-anchor="end" fill="#475569" font-size="14">0</text>
+          <text x="48" y="264" text-anchor="end" fill="#475569" font-size="14">1/2</text>
+          <text x="48" y="46" text-anchor="end" fill="#475569" font-size="14">1</text>
+        </svg>
+      </div>
+
+      <div class="card">
+        <h2>4) Area calculation</h2>
+        <p>
+          The successful region consists of <strong>two congruent right triangles</strong>.
+        </p>
+
+        <div class="two-col-list">
+          <div class="formula">
+            Each triangle has legs:
+            <br /><br />
+            1/2 and 1/2
+          </div>
+          <div class="formula">
+            Area of one triangle:
+            <br /><br />
+            (1/2) × (1/2) × (1/2) = 1/8
+          </div>
+        </div>
+
+        <p style="margin-top: 16px;">
+          So total successful area is:
+        </p>
+
+        <div class="formula">
+          2 × (1/8) = 1/4
+        </div>
+
+        <div class="center big-answer">
+          Probability = 1/4 = 25%
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5) Final answer</h2>
+      <p>
+        The probability that the three pieces can form a triangle is
+      </p>
+      <div class="center big-answer">1/4</div>
+      <p class="center small" style="margin-top: 8px;">equivalently, 25%</p>
+    </div>
+  </div>
+
+  <script>
+    const xSlider = document.getElementById("xSlider");
+    const ySlider = document.getElementById("ySlider");
+    const xValue = document.getElementById("xValue");
+    const yValue = document.getElementById("yValue");
+
+    const breakA = document.getElementById("breakA");
+    const breakB = document.getElementById("breakB");
+
+    const piece1 = document.getElementById("piece1");
+    const piece2 = document.getElementById("piece2");
+    const piece3 = document.getElementById("piece3");
+
+    const len1Label = document.getElementById("len1Label");
+    const len2Label = document.getElementById("len2Label");
+    const len3Label = document.getElementById("len3Label");
+
+    const triangleStatus = document.getElementById("triangleStatus");
+    const segmentInfo = document.getElementById("segmentInfo");
+    const longestInfo = document.getElementById("longestInfo");
+
+    const xyPoint = document.getElementById("xyPoint");
+
+    function update() {
+      const x = parseFloat(xSlider.value);
+      const y = parseFloat(ySlider.value);
+
+      xValue.textContent = x.toFixed(2);
+      yValue.textContent = y.toFixed(2);
+
+      const u = Math.min(x, y);
+      const v = Math.max(x, y);
+
+      const a = u;
+      const b = v - u;
+      const c = 1 - v;
+
+      const longest = Math.max(a, b, c);
+      const isTriangle = longest < 0.5 && a > 0 && b > 0 && c > 0;
+
+      // stick coordinates
+      const left = 60;
+      const right = 700;
+      const width = right - left;
+
+      const px1 = left + u * width;
+      const px2 = left + v * width;
+
+      breakA.setAttribute("cx", px1);
+      breakB.setAttribute("cx", px2);
+
+      piece1.setAttribute("x1", left);
+      piece1.setAttribute("x2", px1);
+
+      piece2.setAttribute("x1", px1);
+      piece2.setAttribute("x2", px2);
+
+      piece3.setAttribute("x1", px2);
+      piece3.setAttribute("x2", right);
+
+      len1Label.setAttribute("x", (left + px1) / 2);
+      len2Label.setAttribute("x", (px1 + px2) / 2);
+      len3Label.setAttribute("x", (px2 + right) / 2);
+
+      len1Label.textContent = a.toFixed(2);
+      len2Label.textContent = b.toFixed(2);
+      len3Label.textContent = c.toFixed(2);
+
+      segmentInfo.innerHTML =
+        `Segment lengths: <strong>${a.toFixed(2)}</strong>, <strong>${b.toFixed(2)}</strong>, <strong>${c.toFixed(2)}</strong>`;
+
+      longestInfo.textContent =
+        `Longest piece = ${longest.toFixed(2)} ${isTriangle ? "<" : "≥"} 0.50`;
+
+      if (isTriangle) {
+        triangleStatus.textContent = "Triangle possible";
+        triangleStatus.className = "badge good";
+      } else {
+        triangleStatus.textContent = "Cannot form triangle";
+        triangleStatus.className = "badge bad";
+      }
+
+      // square point
+      const sqLeft = 60;
+      const sqBottom = 480;
+      const sqSize = 440;
+
+      const cx = sqLeft + x * sqSize;
+      const cy = sqBottom - y * sqSize;
+
+      xyPoint.setAttribute("cx", cx);
+      xyPoint.setAttribute("cy", cy);
+    }
+
+    xSlider.addEventListener("input", update);
+    ySlider.addEventListener("input", update);
+
+    update();
+  </script>
+</body>
+</html>
