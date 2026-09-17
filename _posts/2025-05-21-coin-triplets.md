@@ -59,7 +59,7 @@ The game is non-transitive, meaning that for any sequence chosen by Player 1, th
 
 A general strategy for Player 2 is:
 
-- Take the last two elements of Player 1's sequence.
+- Take the **first** two elements of Player 1's sequence.
 - Prefix them with the opposite of Player 1's second element.
 
 For example, if Player 1 chooses HHH:
