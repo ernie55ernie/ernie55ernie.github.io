@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expected Total Payout of the Die Game</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --panel:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#dbe3ef;
+      --accent:#2563eb;
+      --accent-soft:#eaf2ff;
+      --good:#059669;
+      --stop:#dc2626;
+      --again:#7c3aed;
+      --shadow:0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:32px 20px 48px;
+    }
+    h1,h2,h3,p{margin:0}
+    .hero{
+      background:linear-gradient(135deg, #eff6ff, #ffffff);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+    }
+    .hero h1{
+      font-size:clamp(28px, 4vw, 42px);
+      margin-bottom:10px;
+    }
+    .hero p{
+      color:var(--muted);
+      max-width:900px;
+      font-size:17px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr 0.85fr;
+      gap:24px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .section-title{
+      font-size:22px;
+      margin-bottom:10px;
+    }
+    .sub{
+      color:var(--muted);
+      margin-bottom:18px;
+    }
+    .dice-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 560px){
+      .dice-grid{grid-template-columns:repeat(2, 1fr)}
+    }
+    .die{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px 12px;
+      background:#fbfdff;
+      text-align:center;
+    }
+    .die .face{
+      width:58px;
+      height:58px;
+      margin:0 auto 10px;
+      border:2px solid #c7d2fe;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      font-weight:800;
+      color:#1e3a8a;
+      background:#fff;
+    }
+    .tag{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      margin-top:8px;
+    }
+    .tag.stop{
+      background:#fef2f2;
+      color:var(--stop);
+    }
+    .tag.again{
+      background:#f5f3ff;
+      color:var(--again);
+    }
+    .formula{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      margin:14px 0;
+      overflow-x:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:16px;
+    }
+    .steps{
+      display:grid;
+      gap:12px;
+      margin-top:8px;
+    }
+    .step{
+      border-left:4px solid var(--accent);
+      background:#f8fbff;
+      padding:12px 14px;
+      border-radius:10px;
+    }
+    .answer{
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #bbf7d0;
+      background:#f0fdf4;
+    }
+    .answer .big{
+      font-size:34px;
+      font-weight:800;
+      color:var(--good);
+      margin-top:6px;
+    }
+    .mini-stats{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+    .stat{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:#fcfdff;
+    }
+    .stat .label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .stat .value{
+      font-size:26px;
+      font-weight:800;
+    }
+    .tree{
+      margin-top:10px;
+      padding:12px;
+      border:1px dashed var(--border);
+      border-radius:16px;
+      background:#fcfdff;
+    }
+    .tree ul{
+      list-style:none;
+      padding-left:18px;
+      margin:10px 0 0;
+    }
+    .tree li{
+      margin:8px 0;
+      position:relative;
+      padding-left:14px;
+    }
+    .tree li::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--accent);
+      position:absolute;
+      left:0;
+      top:10px;
+    }
+    .sim-box{
+      margin-top:20px;
+      border-top:1px solid var(--border);
+      padding-top:18px;
+    }
+    button{
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      padding:12px 18px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:15px;
+      box-shadow:0 8px 20px rgba(37,99,235,0.18);
+    }
+    button:hover{filter:brightness(1.05)}
+    #simResult{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#f8fafc;
+      color:var(--text);
+      min-height:56px;
+    }
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .highlight{
+      color:var(--accent);
+      font-weight:700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Expected Total Payout of the Die Game</h1>
+      <p>
+        You roll a fair six-sided die repeatedly. Each roll pays its face value.
+        If the roll is <strong>4, 5, or 6</strong>, you roll again.
+        If the roll is <strong>1, 2, or 3</strong>, the game stops immediately.
+        We want the <strong>expected total payout</strong>.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="section-title">1) Outcome-by-outcome view</h2>
+        <p class="sub">
+          Let <span class="highlight">E</span> be the expected total payout from the start of the game.
+          After one roll, six things can happen:
+        </p>
+
+        <div class="dice-grid">
+          <div class="die">
+            <div class="face">1</div>
+            <div>Payout = <strong>1</strong></div>
+            <div class="tag stop">STOP</div>
+          </div>
+          <div class="die">
+            <div class="face">2</div>
+            <div>Payout = <strong>2</strong></div>
+            <div class="tag stop">STOP</div>
+          </div>
+          <div class="die">
+            <div class="face">3</div>
+            <div>Payout = <strong>3</strong></div>
+            <div class="tag stop">STOP</div>
+          </div>
+          <div class="die">
+            <div class="face">4</div>
+            <div>Payout = <strong>4 + E</strong></div>
+            <div class="tag again">ROLL AGAIN</div>
+          </div>
+          <div class="die">
+            <div class="face">5</div>
+            <div>Payout = <strong>5 + E</strong></div>
+            <div class="tag again">ROLL AGAIN</div>
+          </div>
+          <div class="die">
+            <div class="face">6</div>
+            <div>Payout = <strong>6 + E</strong></div>
+            <div class="tag again">ROLL AGAIN</div>
+          </div>
+        </div>
+
+        <div class="formula">
+E = (1/6)[1 + 2 + 3 + (4 + E) + (5 + E) + (6 + E)]
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            Combine constants:
+            <strong>1 + 2 + 3 + 4 + 5 + 6 = 21</strong>
+          </div>
+          <div class="step">
+            There are three continuing outcomes (4, 5, 6), so:
+            <strong>(E + E + E) = 3E</strong>
+          </div>
+          <div class="step">
+            Therefore:
+            <div class="formula">E = (1/6)(21 + 3E) = 21/6 + 3E/6 = 3.5 + 0.5E</div>
+          </div>
+          <div class="step">
+            Move <strong>0.5E</strong> to the left:
+            <div class="formula">E - 0.5E = 3.5 ⟹ 0.5E = 3.5 ⟹ E = 7</div>
+          </div>
+        </div>
+
+        <div class="answer">
+          <div><strong>Final Answer</strong></div>
+          <div class="big">Expected total payout = 7</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">2) Intuition / recursive view</h2>
+        <p class="sub">
+          Every roll gives you some money right away, and sometimes it restarts the same game.
+        </p>
+
+        <div class="mini-stats">
+          <div class="stat">
+            <div class="label">Average value of one roll</div>
+            <div class="value">3.5</div>
+          </div>
+          <div class="stat">
+            <div class="label">Probability of continuing</div>
+            <div class="value">1/2</div>
+          </div>
+        </div>
+
+        <div class="formula">
+E = (average from current roll) + (chance to continue) × (same expectation again)
+        </div>
+
+        <div class="formula">
+E = 3.5 + (1/2)E
+        </div>
+
+        <p class="sub" style="margin-top:10px;">
+          Because with probability <strong>1/2</strong> (rolling 4, 5, or 6),
+          you are back in exactly the same situation as before — so the expected future payout is still <strong>E</strong>.
+        </p>
+
+        <div class="tree">
+          <strong>Game flow</strong>
+          <ul>
+            <li>Roll 1, 2, or 3 → collect that amount and stop</li>
+            <li>Roll 4, 5, or 6 → collect that amount and restart the whole problem</li>
+          </ul>
+        </div>
+
+        <div class="sim-box">
+          <h3 style="margin-bottom:10px;">3) Simulation</h3>
+          <p class="sub">
+            Click the button to simulate many games and compare with the theoretical answer.
+          </p>
+          <button id="simulateBtn">Simulate 100,000 Games</button>
+          <div id="simResult">No simulation yet.</div>
+        </div>
+
+        <div class="footer-note">
+          The simulated average should get closer to <strong>7</strong> as the number of games increases.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function playGame() {
+      let total = 0;
+      let rolls = 0;
+      while (true) {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        total += roll;
+        rolls++;
+        if (roll <= 3) break;
+      }
+      return { total, rolls };
+    }
+
+    document.getElementById("simulateBtn").addEventListener("click", () => {
+      const n = 100000;
+      let totalPayout = 0;
+      let totalRolls = 0;
+
+      for (let i = 0; i < n; i++) {
+        const result = playGame();
+        totalPayout += result.total;
+        totalRolls += result.rolls;
+      }
+
+      const avgPayout = totalPayout / n;
+      const avgRolls = totalRolls / n;
+
+      document.getElementById("simResult").innerHTML = `
+        <strong>Simulation Results (${n.toLocaleString()} games)</strong><br>
+        Average payout: <strong>${avgPayout.toFixed(4)}</strong><br>
+        Average number of rolls: <strong>${avgRolls.toFixed(4)}</strong><br>
+        Theoretical expected payout: <strong>7</strong>
+      `;
+    });
+  </script>
+</body>
+</html>
