@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expected Cards Until First Ace</title>
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --panel:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:#dbe3ee;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --good:#059669;
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(15,23,42,0.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{
+      max-width:1000px;
+      margin:0 auto;
+      padding:32px 20px 48px;
+    }
+    h1,h2,h3{margin:0 0 12px}
+    h1{font-size:2rem}
+    h2{font-size:1.35rem; margin-top:24px}
+    p{margin:10px 0}
+    .subtitle{
+      color:var(--muted);
+      font-size:1.05rem;
+      margin-bottom:24px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:20px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+    .answer-box{
+      display:inline-block;
+      background:var(--accent-soft);
+      border:1px solid #bfdbfe;
+      color:#1d4ed8;
+      padding:12px 18px;
+      border-radius:14px;
+      font-size:1.15rem;
+      font-weight:700;
+      margin:8px 0 14px;
+    }
+    .formula{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 16px;
+      font-family:"Courier New", monospace;
+      overflow-x:auto;
+      margin:14px 0;
+    }
+    .steps{
+      margin:0;
+      padding-left:20px;
+    }
+    .steps li{
+      margin:10px 0;
+    }
+    .deck-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 8px;
+    }
+    .gap{
+      min-width:100px;
+      min-height:62px;
+      border:2px dashed var(--border);
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 10px;
+      color:var(--muted);
+      background:#f8fafc;
+      text-align:center;
+      font-size:0.95rem;
+    }
+    .ace{
+      width:52px;
+      height:72px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:var(--card);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.4rem;
+      font-weight:800;
+      color:#dc2626;
+      box-shadow:0 4px 12px rgba(15,23,42,0.06);
+    }
+    .mini-title{
+      font-size:0.95rem;
+      font-weight:700;
+      margin-top:4px;
+      color:var(--muted);
+    }
+    .highlight{
+      color:var(--good);
+      font-weight:700;
+    }
+    .sim-controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    select, button{
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      font-size:1rem;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      border-color:var(--accent);
+      cursor:pointer;
+      font-weight:700;
+    }
+    button:hover{
+      filter:brightness(0.96);
+    }
+    .sim-result{
+      margin-top:14px;
+      padding:14px;
+      border-radius:12px;
+      background:#f8fafc;
+      border:1px solid var(--border);
+    }
+    .note{
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+    @media (max-width: 800px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      h1{font-size:1.7rem}
+      .gap{
+        min-width:82px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Expected Number of Cards Turned Over Until the First Ace</h1>
+    <p class="subtitle">
+      A standard 52-card deck contains 4 aces. You reveal cards one by one and stop at the first ace.
+      What is the expected number of cards revealed?
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Answer</h2>
+        <div class="answer-box">Expected number = 53 / 5 = 10.6</div>
+
+        <p>
+          So on average, you will turn over <strong>10.6 cards</strong> before seeing the first ace.
+        </p>
+
+        <h2>Key idea: Think in terms of gaps</h2>
+        <p>
+          Imagine placing the 4 aces into the deck. These 4 aces split the deck into
+          <strong>5 gaps</strong>:
+        </p>
+
+        <div class="deck-row">
+          <div class="gap">before<br>1st ace</div>
+          <div class="ace">A</div>
+          <div class="gap">between</div>
+          <div class="ace">A</div>
+          <div class="gap">between</div>
+          <div class="ace">A</div>
+          <div class="gap">between</div>
+          <div class="ace">A</div>
+          <div class="gap">after<br>last ace</div>
+        </div>
+
+        <p>
+          The remaining <strong>48 non-ace cards</strong> are distributed among these 5 gaps.
+          By symmetry, each gap has the same expected number of cards.
+        </p>
+
+        <div class="formula">
+Expected non-aces before first ace = 48 / 5 = 9.6
+        </div>
+
+        <p>
+          Then we add <strong>1 more card</strong> for the first ace itself:
+        </p>
+
+        <div class="formula">
+Expected position of first ace = 9.6 + 1 = 10.6
+        </div>
+      </section>
+
+      <aside class="panel">
+        <h2>General formula</h2>
+        <p>
+          If a deck has <strong>n</strong> total cards and <strong>k</strong> special cards,
+          then the expected position of the first special card is:
+        </p>
+
+        <div class="formula">
+E[first special card] = (n + 1) / (k + 1)
+        </div>
+
+        <p>For this problem:</p>
+
+        <div class="formula">
+n = 52, k = 4
+
+E[first ace] = (52 + 1) / (4 + 1)
+             = 53 / 5
+             = 10.6
+        </div>
+
+        <p class="highlight">Final answer: 10.6 cards</p>
+
+        <h2>Simulation</h2>
+        <p class="note">
+          Run a quick simulation to see the average approach 10.6.
+        </p>
+
+        <div class="sim-controls">
+          <select id="trials">
+            <option value="100">100 trials</option>
+            <option value="1000" selected>1,000 trials</option>
+            <option value="10000">10,000 trials</option>
+          </select>
+          <button id="runBtn">Run simulation</button>
+        </div>
+
+        <div class="sim-result" id="result">
+          Theoretical expected value: <strong>10.6</strong>
+        </div>
+      </aside>
+    </div>
+
+    <section class="panel" style="margin-top:20px;">
+      <h2>Short derivation summary</h2>
+      <ol class="steps">
+        <li>There are 4 aces, so they create 5 possible gaps for non-ace cards.</li>
+        <li>The 48 non-aces are symmetrically spread across these 5 gaps.</li>
+        <li>So the expected number of non-aces before the first ace is <strong>48/5</strong>.</li>
+        <li>Add 1 for the first ace itself.</li>
+        <li>Therefore, the expected number of cards turned over is <strong>48/5 + 1 = 53/5 = 10.6</strong>.</li>
+      </ol>
+    </section>
+  </div>
+
+  <script>
+    function firstAcePosition() {
+      const deck = Array(52).fill(0);
+      deck[0] = 1; deck[1] = 1; deck[2] = 1; deck[3] = 1; // 4 aces
+
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+
+      for (let i = 0; i < deck.length; i++) {
+        if (deck[i] === 1) return i + 1; // position is 1-indexed
+      }
+      return 52;
+    }
+
+    document.getElementById("runBtn").addEventListener("click", () => {
+      const n = parseInt(document.getElementById("trials").value, 10);
+      let sum = 0;
+      for (let i = 0; i < n; i++) {
+        sum += firstAcePosition();
+      }
+      const avg = sum / n;
+      document.getElementById("result").innerHTML = `
+        Simulated average over <strong>${n.toLocaleString()}</strong> trials:
+        <strong>${avg.toFixed(4)}</strong><br>
+        <span class="note">Theoretical expected value: 10.6</span>
+      `;
+    });
+  </script>
+</body>
+</html>

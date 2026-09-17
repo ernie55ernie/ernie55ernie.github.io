@@ -13,6 +13,8 @@ You have a **standard 52-card deck** with 4 aces. You shuffle the deck thoroughl
 
 What is the **expected number of cards** you will turn over to see that first ace?
 
+<iframe src="{{ site.baseurl }}/assets/expected_number_of_cards_turned_over_untill_the_first_ace.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Key Insight
