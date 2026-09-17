@@ -16,6 +16,8 @@ Let’s denote:
 - \\( 1_A \\): Indicator for A defaulting
 - \\( 1_B \\): Indicator for B defaulting
 
+<iframe src="{{ site.baseurl }}/assets/default_probability_bounds.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Part 1: Bounds on \\( P(A \cup B) \\)

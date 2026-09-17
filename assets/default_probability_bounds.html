@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Default Probability Bounds</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#dbe1ea;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --series1:#6366f1;
+      --series2:#14b8a6;
+      --good:#059669;
+      --bad:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:1050px;
+      margin:0 auto;
+      padding:32px 18px 48px;
+    }
+    h1{font-size:clamp(1.8rem,3vw,2.6rem);margin:0 0 8px}
+    .sub{color:var(--muted);margin-bottom:26px}
+    .grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+    }
+    .stack{display:grid;gap:18px}
+    .row{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+    .label{font-size:.92rem;font-weight:700}
+    .muted{color:var(--muted);font-size:.85rem}
+    .value{font-size:1.8rem;font-weight:800;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;margin-top:16px;accent-color:var(--accent)}
+    .ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:.75rem}
+    table{width:100%;border-collapse:collapse;margin-top:20px;border:1px solid var(--border);overflow:hidden;border-radius:12px}
+    th,td{padding:12px;text-align:center;border:1px solid var(--border)}
+    th{background:#f3f4f6;font-size:.82rem;color:var(--muted)}
+    td{font-variant-numeric:tabular-nums}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+    .metric{background:#f3f4f6;border-radius:12px;padding:14px}
+    .metric .big{font-size:1.45rem;font-weight:800;margin-top:4px}
+    .steps{display:grid;gap:14px;margin-top:12px}
+    .step{display:flex;gap:12px}
+    .badge{
+      width:30px;height:30px;border-radius:50%;
+      display:grid;place-items:center;background:#f3f4f6;font-weight:800;flex:0 0 auto
+    }
+    .barbox{margin-top:12px}
+    .barlabel{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:5px}
+    .bar{height:14px;border-radius:999px;background:#eef2f7;overflow:hidden}
+    .fill1{height:100%;width:80%;background:var(--series1)}
+    .fill2{height:100%;width:50%;background:var(--series2)}
+    .bounds{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px
+    }
+    .bound{
+      padding:14px;border-radius:12px;background:#f9fafb;border:1px solid var(--border)
+    }
+    .note{
+      margin-top:18px;padding:14px;border-left:4px solid var(--accent);
+      background:var(--accent-soft);border-radius:8px
+    }
+    .formula{
+      margin-top:22px;background:#111827;color:#f9fafb;border-radius:12px;padding:16px;
+      overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem
+    }
+    @media (max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .metrics,.bounds{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Bounds on Default Union Probability and Correlation</h1>
+    <div class="sub">
+      Given P(A defaults) = 0.50 and P(B defaults) = 0.30, explore every feasible value of P(A ∩ B).
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="row">
+          <div>
+            <div class="label">Choose the overlap</div>
+            <div class="muted">x = P(A ∩ B), with 0 ≤ x ≤ 0.30</div>
+          </div>
+          <div id="xValue" class="value">0.150</div>
+        </div>
+
+        <input id="overlap" type="range" min="0" max="0.3" step="0.001" value="0.15"
+               aria-label="Probability that both A and B default" />
+        <div class="ticks"><span>0</span><span>0.30</span></div>
+
+        <table aria-label="Joint probability table">
+          <tr>
+            <th></th>
+            <th>B defaults</th>
+            <th>B survives</th>
+          </tr>
+          <tr>
+            <th>A defaults</th>
+            <td id="both">0.150</td>
+            <td id="aOnly">0.350</td>
+          </tr>
+          <tr>
+            <th>A survives</th>
+            <td id="bOnly">0.150</td>
+            <td id="neither">0.350</td>
+          </tr>
+        </table>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="muted">P(A ∪ B)</div>
+            <div id="union" class="big">0.650</div>
+            <div class="muted">= 0.80 − x</div>
+          </div>
+          <div class="metric">
+            <div class="muted">Corr(1A, 1B)</div>
+            <div id="corr" class="big">0.0000</div>
+            <div class="muted">= (x − 0.15) / √0.0525</div>
+          </div>
+        </div>
+
+        <div class="formula">
+P(A ∪ B) = P(A) + P(B) − P(A ∩ B)
+          = 0.8 − x
+
+Corr(1A,1B)
+= [P(A∩B) − P(A)P(B)]
+  / √[Var(1A)Var(1B)]
+
+= (x − 0.15) / √(0.25 × 0.21)
+        </div>
+      </section>
+
+      <div class="stack">
+        <section class="card">
+          <div class="label">Why can x only range from 0 to 0.30?</div>
+          <div class="steps">
+            <div class="step">
+              <div class="badge">1</div>
+              <div>
+                <strong>Lower bound:</strong>
+                A and B can be completely disjoint, so x can be 0.
+              </div>
+            </div>
+            <div class="step">
+              <div class="badge">2</div>
+              <div>
+                <strong>Upper bound:</strong>
+                the overlap cannot exceed the smaller event:
+                min(0.50, 0.30) = 0.30.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="label">Endpoint picture</div>
+
+          <div class="barbox">
+            <div class="barlabel">
+              <span>Disjoint: x = 0</span>
+              <span>Union = 0.80</span>
+            </div>
+            <div class="bar"><div class="fill1"></div></div>
+            <div class="muted">Correlation ≈ −0.6547</div>
+          </div>
+
+          <div class="barbox">
+            <div class="barlabel">
+              <span>B entirely inside A: x = 0.30</span>
+              <span>Union = 0.50</span>
+            </div>
+            <div class="bar"><div class="fill2"></div></div>
+            <div class="muted">Correlation ≈ +0.6547</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="label">Final bounds</div>
+          <div class="bounds">
+            <div class="bound">
+              <div class="muted">Union probability</div>
+              <strong>0.50 ≤ P(A ∪ B) ≤ 0.80</strong>
+            </div>
+            <div class="bound">
+              <div class="muted">Indicator correlation</div>
+              <strong>−0.6547 ≤ ρ ≤ 0.6547</strong>
+            </div>
+          </div>
+
+          <div class="note">
+            <strong>Important correction:</strong>
+            correlation divides by the product of the standard deviations, so the denominator is
+            √(0.25 × 0.21) = √0.0525 ≈ 0.2291, not 0.0525.
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const slider = document.getElementById("overlap");
+    const denom = Math.sqrt(0.25 * 0.21);
+
+    function update() {
+      const x = Number(slider.value);
+      const aOnly = 0.5 - x;
+      const bOnly = 0.3 - x;
+      const neither = 1 - (x + aOnly + bOnly);
+      const union = 0.8 - x;
+      const corr = (x - 0.15) / denom;
+
+      document.getElementById("xValue").textContent = x.toFixed(3);
+      document.getElementById("both").textContent = x.toFixed(3);
+      document.getElementById("aOnly").textContent = aOnly.toFixed(3);
+      document.getElementById("bOnly").textContent = bOnly.toFixed(3);
+      document.getElementById("neither").textContent = neither.toFixed(3);
+      document.getElementById("union").textContent = union.toFixed(3);
+      document.getElementById("corr").textContent = corr.toFixed(4);
+    }
+
+    slider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
