@@ -34,22 +34,18 @@ This process results in a **random pairing** of the 200 endpoints into **100 edg
 This is a classic result in combinatorics: the **expected number of loops** (cycles) formed when randomly pairing **2n endpoints** is:
 
 \\[
-\boxed{\sum_{k=1}^{n} \frac{1}{2k - 1}} \approx \ln(n) + \gamma + \ln(2)
+\boxed{\sum_{k=1}^{n} \frac{1}{2k - 1}} \approx \frac{1}{2}\ln(n) + \frac{\gamma}{2} + \ln(2)
 \\]
+
+where \\( \gamma \approx 0.577 \\) is the Euler-Mascheroni constant.
 
 For \\( n = 100 \\), the expected number of loops is:
 
 \\[
 \sum_{k=1}^{100} \frac{1}{2k - 1}
 = \frac{1}{1} + \frac{1}{3} + \frac{1}{5} + \cdots + \frac{1}{199}
-\approx \ln(100) + \ln(2) + \gamma
-\approx 4.605 + 0.693 + 0.577 \approx 5.875
-\\]
-
-But this is only approximate. The exact expression is:
-
-\\[
-\boxed{\sum_{k=1}^{100} \frac{1}{2k - 1}}
+\approx \frac{1}{2}\ln(100) + \frac{0.577}{2} + \ln(2)
+\approx 2.302 + 0.288 + 0.693 \approx 3.284
 \\]
 
 ---
@@ -57,10 +53,10 @@ But this is only approximate. The exact expression is:
 ## Final Answer
 
 \\[
-\boxed{\sum_{k=1}^{100} \frac{1}{2k - 1} \approx 5.877}
+\boxed{\sum_{k=1}^{100} \frac{1}{2k - 1} \approx 3.284}
 \\]
 
-So on average, you will end up with **about 5.88 loops** after all the ends are tied.
+So on average, you will end up with **about 3.28 loops** after all the ends are tied.
 
 ---
 
