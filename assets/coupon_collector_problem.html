@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coupon Collector Problem</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 32px 20px;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f6f8fb;
+    color: #172033;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin-bottom: 8px;
+    font-size: 34px;
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+
+  .subtitle {
+    color: #64748b;
+    margin-bottom: 28px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .control {
+    background: white;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+  }
+
+  .value {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid #dbe2ea;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .formula {
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    margin: 14px 0;
+    overflow-x: auto;
+  }
+
+  .answer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .answer {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .answer-number {
+    font-size: 30px;
+    font-weight: 750;
+  }
+
+  .muted {
+    color: #64748b;
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 155px 1fr 85px;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+  }
+
+  .bar-bg {
+    height: 28px;
+    border-radius: 6px;
+    background: #e8edf3;
+    overflow: hidden;
+  }
+
+  .bar {
+    height: 100%;
+    min-width: 5%;
+    border-radius: 6px;
+    background: #5b8def;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .probability-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .prob-box {
+    border-radius: 12px;
+    background: #f8fafc;
+    padding: 16px;
+  }
+
+  .prob-big {
+    font-size: 26px;
+    font-weight: 750;
+  }
+
+  .coupon-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 7px;
+    margin-top: 20px;
+  }
+
+  .coupon {
+    aspect-ratio: 1;
+    border: 1px solid #cad3df;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    background: #e2e8f0;
+  }
+
+  .coupon.seen {
+    background: #86d3b5;
+  }
+
+  .key-idea {
+    border-left: 5px solid #5b8def;
+    background: #eff6ff;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 700px) {
+    .controls,
+    .answer-grid,
+    .probability-row {
+      grid-template-columns: 1fr;
+    }
+
+    .phase {
+      grid-template-columns: 110px 1fr 55px;
+      font-size: 13px;
+    }
+
+    .coupon-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🎟️ Coupon Collector Problem</h1>
+
+  <div class="subtitle">
+    Why collecting the final few coupon types takes surprisingly long.
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+
+    <div class="control">
+      <strong>Number of coupon types: N</strong>
+      <br><br>
+
+      <input
+        id="N"
+        type="range"
+        min="2"
+        max="30"
+        value="10"
+      />
+
+      <div class="value">
+        N = <span id="NValue">10</span>
+      </div>
+    </div>
+
+    <div class="control">
+      <strong>Number of boxes opened: n</strong>
+      <br><br>
+
+      <input
+        id="draws"
+        type="range"
+        min="0"
+        max="100"
+        value="20"
+      />
+
+      <div class="value">
+        n = <span id="drawValue">20</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Part A -->
+  <div class="card">
+
+    <h2>Part A — How long to collect all N coupons?</h2>
+
+    <p>
+      Suppose you have already collected
+      <strong>k</strong> distinct coupon types.
+    </p>
+
+    <p>
+      There are therefore
+    </p>
+
+    <div class="formula">
+      N − k
+    </div>
+
+    <p>
+      coupon types that would count as a new coupon.
+    </p>
+
+    <p>
+      Therefore the probability that the next box gives a new coupon is
+    </p>
+
+    <div class="formula">
+      P(new coupon) = (N − k) / N
+    </div>
+
+    <p>
+      Waiting for a success with probability <em>p</em> takes
+      <strong>1 / p</strong> trials on average.
+    </p>
+
+    <p>
+      Hence the expected waiting time for the next new coupon is
+    </p>
+
+    <div class="formula">
+      N / (N − k)
+    </div>
+
+
+    <h3>Phase-by-phase waiting time</h3>
+
+    <div id="phases"></div>
+
+    <div class="key-idea">
+      The important observation is that collecting coupons gets slower and
+      slower. The final coupon appears with probability only
+      <strong>1/N</strong> on each draw, so the final coupon alone takes
+      <strong>N draws on average</strong>.
+    </div>
+
+    <p>
+      Adding the expected waiting times:
+    </p>
+
+    <div class="formula" id="formulaA"></div>
+
+    <div class="answer-grid">
+
+      <div class="answer">
+        <div class="muted">Exact expectation</div>
+        <div class="answer-number" id="expectedAll"></div>
+        <div class="muted">draws</div>
+      </div>
+
+      <div class="answer">
+        <div class="muted">Large-N approximation</div>
+        <div class="answer-number" id="approxAll"></div>
+        <div class="muted">≈ N(ln N + γ)</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Part B -->
+  <div class="card">
+
+    <h2>Part B — How many distinct coupons after n boxes?</h2>
+
+    <p>
+      Instead of tracking the entire collection process, consider
+      <strong>one particular coupon type</strong>.
+    </p>
+
+    <p>
+      On one draw, the probability of <strong>not</strong> getting that coupon is
+    </p>
+
+    <div class="formula">
+      1 − 1/N
+    </div>
+
+    <p>
+      Therefore, after <strong>n</strong> independent draws,
+      the probability of never seeing it is
+    </p>
+
+    <div class="formula" id="unseenFormula"></div>
+
+    <p>
+      Hence the probability that this coupon has appeared at least once is
+    </p>
+
+    <div class="formula">
+      1 − (1 − 1/N)<sup>n</sup>
+    </div>
+
+
+    <div class="probability-row">
+
+      <div class="prob-box">
+        <div class="muted">P(not seen)</div>
+        <div class="prob-big" id="unseen"></div>
+      </div>
+
+      <div class="prob-box">
+        <div class="muted">P(seen)</div>
+        <div class="prob-big" id="seen"></div>
+      </div>
+
+      <div class="prob-box">
+        <div class="muted">Expected distinct</div>
+        <div class="prob-big" id="distinct"></div>
+      </div>
+
+    </div>
+
+
+    <h3>Visual intuition</h3>
+
+    <p class="muted">
+      Green boxes represent approximately how many coupon types we expect
+      to have seen.
+    </p>
+
+    <div id="couponGrid" class="coupon-grid"></div>
+
+
+    <p>
+      Let
+      <strong>Iᵢ = 1</strong>
+      if coupon type <em>i</em> has been observed, and 0 otherwise.
+    </p>
+
+    <div class="formula">
+      Dₙ = I₁ + I₂ + ··· + Iₙ
+    </div>
+
+    <p>
+      By linearity of expectation,
+    </p>
+
+    <div class="formula">
+      E[Dₙ]
+      =
+      E[I₁] + E[I₂] + ··· + E[I_N]
+    </div>
+
+    <p>
+      Every coupon has the same probability of having appeared, so
+    </p>
+
+    <div class="formula" id="formulaB"></div>
+
+    <div class="key-idea">
+      <strong>Why linearity of expectation is useful:</strong>
+      the events “coupon 1 appeared”, “coupon 2 appeared”, etc. do not need
+      to be independent. We can still add their expected indicator values.
+    </div>
+
+  </div>
+
+
+  <!-- Summary -->
+  <div class="card">
+
+    <h2>Final Answers</h2>
+
+    <p><strong>Expected draws to collect everything:</strong></p>
+
+    <div class="formula">
+      E[T] = N H<sub>N</sub>
+      = N(1 + 1/2 + ··· + 1/N)
+    </div>
+
+    <p>
+      For large N,
+    </p>
+
+    <div class="formula">
+      E[T] ≈ N(ln N + γ)
+    </div>
+
+    <br>
+
+    <p><strong>Expected number of distinct coupons after n draws:</strong></p>
+
+    <div class="formula">
+      E[Dₙ]
+      =
+      N[1 − (1 − 1/N)<sup>n</sup>]
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const nSlider = document.getElementById("N");
+const drawSlider = document.getElementById("draws");
+
+const nValue = document.getElementById("NValue");
+const drawValue = document.getElementById("drawValue");
+
+const phases = document.getElementById("phases");
+
+const expectedAll = document.getElementById("expectedAll");
+const approxAll = document.getElementById("approxAll");
+
+const formulaA = document.getElementById("formulaA");
+const formulaB = document.getElementById("formulaB");
+
+const unseenFormula = document.getElementById("unseenFormula");
+
+const unseenElement = document.getElementById("unseen");
+const seenElement = document.getElementById("seen");
+const distinctElement = document.getElementById("distinct");
+
+const couponGrid = document.getElementById("couponGrid");
+
+const gamma = 0.5772156649;
+
+
+function harmonicNumber(N) {
+
+  let result = 0;
+
+  for (let k = 1; k <= N; k++) {
+    result += 1 / k;
+  }
+
+  return result;
+}
+
+
+function renderPhases(N) {
+
+  phases.innerHTML = "";
+
+  for (let collected = 0; collected < N; collected++) {
+
+    const remaining = N - collected;
+
+    const probability = remaining / N;
+
+    const expectedWait = 1 / probability;
+
+    const row = document.createElement("div");
+
+    row.className = "phase";
+
+    let name;
+
+    if (collected === 0) {
+      name = "First coupon";
+    }
+    else if (remaining === 1) {
+      name = "Final coupon";
+    }
+    else {
+      name = `${collected} collected`;
+    }
+
+    row.innerHTML = `
+      <div>${name}</div>
+
+      <div class="bar-bg">
+        <div
+          class="bar"
+          style="width:${Math.max(8, expectedWait / N * 100)}%"
+        >
+          p = ${remaining}/${N}
+        </div>
+      </div>
+
+      <div>
+        ${expectedWait.toFixed(2)}
+      </div>
+    `;
+
+    phases.appendChild(row);
+  }
+}
+
+
+function renderCoupons(N, expectedDistinct) {
+
+  couponGrid.innerHTML = "";
+
+  const numberSeen = Math.round(expectedDistinct);
+
+  for (let i = 0; i < N; i++) {
+
+    const coupon = document.createElement("div");
+
+    coupon.className =
+      i < numberSeen
+      ? "coupon seen"
+      : "coupon";
+
+    coupon.textContent = i + 1;
+
+    couponGrid.appendChild(coupon);
+  }
+}
+
+
+function update() {
+
+  const N = Number(nSlider.value);
+
+  const n = Number(drawSlider.value);
+
+  nValue.textContent = N;
+
+  drawValue.textContent = n;
+
+
+  // -----------------------
+  // Part A
+  // -----------------------
+
+  const HN = harmonicNumber(N);
+
+  const expected = N * HN;
+
+  const approximation =
+    N * (Math.log(N) + gamma);
+
+  expectedAll.textContent =
+    expected.toFixed(2);
+
+  approxAll.textContent =
+    approximation.toFixed(2);
+
+  formulaA.innerHTML =
+    `E[T]
+     = ${N}(1 + 1/2 + ··· + 1/${N})
+     = ${expected.toFixed(2)}`;
+
+
+  renderPhases(N);
+
+
+  // -----------------------
+  // Part B
+  // -----------------------
+
+  const pUnseen =
+    Math.pow(1 - 1 / N, n);
+
+  const pSeen =
+    1 - pUnseen;
+
+  const expectedDistinct =
+    N * pSeen;
+
+
+  unseenFormula.innerHTML =
+    `(1 − 1/${N})<sup>${n}</sup>
+     = ${pUnseen.toFixed(4)}`;
+
+
+  unseenElement.textContent =
+    (100 * pUnseen).toFixed(2) + "%";
+
+  seenElement.textContent =
+    (100 * pSeen).toFixed(2) + "%";
+
+  distinctElement.textContent =
+    expectedDistinct.toFixed(2)
+    + " / "
+    + N;
+
+
+  formulaB.innerHTML =
+    `E[D<sub>${n}</sub>]
+     =
+     ${N}[1 − (1 − 1/${N})<sup>${n}</sup>]
+     =
+     ${expectedDistinct.toFixed(2)}`;
+
+
+  renderCoupons(
+    N,
+    expectedDistinct
+  );
+}
+
+
+nSlider.addEventListener(
+  "input",
+  update
+);
+
+drawSlider.addEventListener(
+  "input",
+  update
+);
+
+
+update();
+
+</script>
+
+</body>
+</html>

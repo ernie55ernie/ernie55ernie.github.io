@@ -14,6 +14,8 @@ This classic problem models situations where you're collecting items (like cerea
 - There are \\( N \\) **distinct** coupon types.
 - Each box (draw) gives one coupon, chosen **uniformly at random** among the \\( N \\) types.
 
+<iframe src="{{ site.baseurl }}/assets/coupon_collector_problem.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Part A: Expected Number of Draws to Collect All \\( N \\) Coupons
