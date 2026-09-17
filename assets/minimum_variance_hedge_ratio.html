@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimum-Variance Hedge Ratio</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --accent: #2563eb;
+      --curve: #7c3aed;
+      --dot: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .controls {
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 16px;
+    }
+
+    .main-grid {
+      grid-template-columns: 1.35fr 0.85fr;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+    }
+
+    .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 4px 0 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .formula {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      overflow-x: auto;
+    }
+
+    .result {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #eef2ff;
+      text-align: center;
+    }
+
+    .result .big {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .intuition {
+      margin-top: 16px;
+    }
+
+    .intuition-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .intuition-item strong {
+      font-size: 1.1rem;
+    }
+
+    .interpretation {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    @media (max-width: 800px) {
+      body { padding: 14px; }
+      .controls,
+      .main-grid,
+      .intuition-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Minimum-Variance Hedge Ratio</h1>
+
+    <div class="subtitle">
+      Long one share of stock A and hedge with <strong>h</strong> shares of stock B.
+      Choose <strong>h</strong> to minimize
+      <code>Var(RA − hRB)</code>.
+    </div>
+
+    <section class="grid controls">
+      <div class="card">
+        <label for="sigmaA">σA — volatility of A</label>
+        <div id="sigmaAValue" class="value">1.00</div>
+        <input id="sigmaA" type="range" min="0.2" max="2" step="0.05" value="1" />
+      </div>
+
+      <div class="card">
+        <label for="sigmaB">σB — volatility of B</label>
+        <div id="sigmaBValue" class="value">1.00</div>
+        <input id="sigmaB" type="range" min="0.2" max="2" step="0.05" value="1" />
+      </div>
+
+      <div class="card">
+        <label for="rho">ρ — correlation</label>
+        <div id="rhoValue" class="value">0.70</div>
+        <input id="rho" type="range" min="-1" max="1" step="0.05" value="0.70" />
+      </div>
+    </section>
+
+    <section class="grid main-grid">
+      <div class="card">
+        <div class="section-title">Portfolio variance as h changes</div>
+        <div class="muted">
+          The variance is a convex quadratic, so its lowest point gives the optimal hedge.
+        </div>
+
+        <svg id="plot" viewBox="0 0 700 360" aria-label="Variance curve versus hedge ratio">
+          <line x1="65" y1="305" x2="665" y2="305" stroke="#d1d5db" stroke-width="2"/>
+          <line x1="65" y1="30" x2="65" y2="305" stroke="#d1d5db" stroke-width="2"/>
+
+          <text x="660" y="338" text-anchor="end" fill="#6b7280" font-size="14">
+            hedge ratio h
+          </text>
+
+          <text x="20" y="42" fill="#6b7280" font-size="14">
+            variance
+          </text>
+
+          <path id="curve"
+                fill="none"
+                stroke="#7c3aed"
+                stroke-width="4"
+                stroke-linecap="round"/>
+
+          <line id="optLine"
+                y1="35"
+                y2="305"
+                stroke="#6b7280"
+                stroke-width="2"
+                stroke-dasharray="7 6"/>
+
+          <circle id="optDot"
+                  r="7"
+                  fill="#dc2626"
+                  stroke="white"
+                  stroke-width="3"/>
+
+          <text id="optLabel"
+                y="58"
+                text-anchor="middle"
+                fill="#111827"
+                font-size="14"
+                font-weight="700"></text>
+
+          <text x="65" y="326" text-anchor="middle" fill="#6b7280">−</text>
+          <text x="365" y="326" text-anchor="middle" fill="#6b7280">0</text>
+          <text x="665" y="326" text-anchor="middle" fill="#6b7280">+</text>
+        </svg>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="section-title">1. Expand the variance</div>
+
+          <div class="formula">
+Var(RA − hRB)
+= Var(RA) + h²Var(RB) − 2hCov(RA,RB)
+
+= σA² + h²σB² − 2hρσAσB
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">2. Differentiate with respect to h</div>
+
+          <div class="formula">
+dVar/dh
+= 2hσB² − 2ρσAσB
+
+Set equal to 0:
+
+2hσB² − 2ρσAσB = 0
+          </div>
+
+          <div class="result">
+            <div>Optimal hedge ratio</div>
+            <div class="big">h* = ρσA / σB</div>
+            <div id="optimalValue" class="big">= 0.700</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">3. Minimum variance</div>
+          <div class="formula">Var_min = σA²(1 − ρ²)</div>
+          <div id="minVariance" class="value">0.510</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card intuition">
+      <div class="section-title">How to interpret the hedge ratio</div>
+
+      <div class="grid intuition-grid">
+        <div class="intuition-item">
+          <strong>ρ</strong>
+          <div class="muted">
+            Stronger positive correlation means B is a better hedge, so you short more B.
+          </div>
+        </div>
+
+        <div class="intuition-item">
+          <strong>σA</strong>
+          <div class="muted">
+            If A is more volatile, there is more risk to hedge, so h increases.
+          </div>
+        </div>
+
+        <div class="intuition-item">
+          <strong>σB</strong>
+          <div class="muted">
+            If B is more volatile, each share provides more offsetting movement, so fewer shares are needed.
+          </div>
+        </div>
+      </div>
+
+      <div id="interpretation" class="interpretation"></div>
+    </section>
+  </div>
+
+  <script>
+    const sigmaA = document.getElementById("sigmaA");
+    const sigmaB = document.getElementById("sigmaB");
+    const rho = document.getElementById("rho");
+
+    const sigmaAValue = document.getElementById("sigmaAValue");
+    const sigmaBValue = document.getElementById("sigmaBValue");
+    const rhoValue = document.getElementById("rhoValue");
+
+    const optimalValue = document.getElementById("optimalValue");
+    const minVariance = document.getElementById("minVariance");
+    const interpretation = document.getElementById("interpretation");
+
+    const curve = document.getElementById("curve");
+    const optLine = document.getElementById("optLine");
+    const optDot = document.getElementById("optDot");
+    const optLabel = document.getElementById("optLabel");
+
+    function update() {
+      const a = Number(sigmaA.value);
+      const b = Number(sigmaB.value);
+      const r = Number(rho.value);
+
+      const hStar = r * a / b;
+      const vMin = a * a * (1 - r * r);
+
+      sigmaAValue.textContent = a.toFixed(2);
+      sigmaBValue.textContent = b.toFixed(2);
+      rhoValue.textContent = r.toFixed(2);
+
+      optimalValue.textContent = "= " + hStar.toFixed(3);
+      minVariance.textContent = vMin.toFixed(3);
+
+      if (r > 0.001) {
+        interpretation.textContent =
+          "ρ > 0: the minimum-variance position is a short position in B, because h* > 0.";
+      } else if (r < -0.001) {
+        interpretation.textContent =
+          "ρ < 0: h* is negative. Minimizing variance would actually require going long B rather than short B.";
+      } else {
+        interpretation.textContent =
+          "ρ = 0: stock B provides no linear variance reduction, so the optimal hedge is h* = 0.";
+      }
+
+      const span = Math.max(1.5, Math.abs(hStar) * 2 + 0.7);
+      const hMin = -span;
+      const hMax = span;
+
+      const points = [];
+      let maxVariance = 0;
+
+      for (let i = 0; i <= 150; i++) {
+        const h = hMin + (hMax - hMin) * i / 150;
+        const variance =
+          a * a +
+          h * h * b * b -
+          2 * h * r * a * b;
+
+        points.push([h, variance]);
+        maxVariance = Math.max(maxVariance, variance);
+      }
+
+      maxVariance = Math.max(maxVariance, 0.001);
+
+      const x = h =>
+        65 + (h - hMin) / (hMax - hMin) * (665 - 65);
+
+      const y = v =>
+        305 - v / maxVariance * (305 - 35);
+
+      const path = points
+        .map(([h, v], i) =>
+          `${i === 0 ? "M" : "L"}${x(h).toFixed(2)},${y(v).toFixed(2)}`
+        )
+        .join(" ");
+
+      curve.setAttribute("d", path);
+
+      const optX = x(hStar);
+      const optY = y(vMin);
+
+      optLine.setAttribute("x1", optX);
+      optLine.setAttribute("x2", optX);
+
+      optDot.setAttribute("cx", optX);
+      optDot.setAttribute("cy", optY);
+
+      optLabel.setAttribute("x", optX);
+      optLabel.textContent = "h* = " + hStar.toFixed(2);
+    }
+
+    [sigmaA, sigmaB, rho].forEach(input => {
+      input.addEventListener("input", update);
+    });
+
+    update();
+  </script>
+</body>
+</html>

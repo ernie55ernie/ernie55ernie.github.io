@@ -26,6 +26,8 @@ Choose \\( h \\) to **minimize the variance** of your net position:
 \mathrm{Var}(R_A - h R_B)
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/minimum_variance_hedge_ratio.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step-by-Step Solution
