@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poisson Process: 20 Minutes to 5 Minutes</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --border: #dbe3ef;
+      --success: #059669;
+      --success-soft: #d1fae5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .formula {
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .slot {
+      background: var(--accent-soft);
+      border: 1px solid #bfd6ff;
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .slot strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .answer {
+      background: var(--success-soft);
+      border: 2px solid #86efac;
+      border-radius: 18px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .answer .big {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--success);
+      margin-top: 8px;
+    }
+
+    .steps ol {
+      margin: 10px 0 0 20px;
+      padding: 0;
+    }
+
+    .steps li {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .answer .big {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Poisson Process: From 20 Minutes to 5 Minutes</h1>
+    <p class="subtitle">
+      Given the probability of seeing <strong>at least one car</strong> in 20 minutes,
+      find the probability of seeing <strong>at least one car</strong> in 5 minutes.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Given</div>
+        <div class="formula">P(at least 1 car in 20 min) = 609 / 625</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Use the complement</div>
+        <div class="formula">P(0 cars in 20 min) = 1 - 609/625 = 16/625</div>
+      </div>
+    </div>
+
+    <div class="card steps">
+      <div class="label">Key Poisson idea</div>
+      <p>
+        In a Poisson process, disjoint time intervals are independent, and equal-length intervals behave the same.
+        Since 20 minutes consists of four 5-minute intervals:
+      </p>
+
+      <div class="timeline">
+        <div class="slot">
+          <strong>0–5 min</strong>
+          P(0 cars) = q
+        </div>
+        <div class="slot">
+          <strong>5–10 min</strong>
+          P(0 cars) = q
+        </div>
+        <div class="slot">
+          <strong>10–15 min</strong>
+          P(0 cars) = q
+        </div>
+        <div class="slot">
+          <strong>15–20 min</strong>
+          P(0 cars) = q
+        </div>
+      </div>
+
+      <ol>
+        <li>
+          Let <strong>q = P(0 cars in 5 min)</strong>.
+        </li>
+        <li>
+          Then by independence,
+          <div class="formula">P(0 cars in 20 min) = q⁴</div>
+        </li>
+        <li>
+          Substitute the known value:
+          <div class="formula">q⁴ = 16/625 = (2/5)⁴</div>
+        </li>
+        <li>
+          So:
+          <div class="formula">q = 2/5</div>
+        </li>
+        <li>
+          Therefore:
+          <div class="formula">P(at least 1 car in 5 min) = 1 - q = 1 - 2/5 = 3/5</div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="answer">
+      <div>Final Answer</div>
+      <div class="big">P(at least 1 car in 5 min) = 3/5 = 0.6 = 60%</div>
+    </div>
+
+    <div class="card center" style="margin-top: 20px;">
+      <div class="label">Equivalent exponential view</div>
+      <div class="formula">P(0 arrivals in t) = e<sup>-λt</sup></div>
+      <p style="margin-top: 12px;">
+        So from
+        <strong>e<sup>-20λ</sup> = 16/625</strong>,
+        we get
+        <strong>e<sup>-5λ</sup> = (16/625)<sup>1/4</sup> = 2/5</strong>,
+        hence the same answer:
+        <strong>1 - 2/5 = 3/5</strong>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

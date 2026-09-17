@@ -15,6 +15,8 @@ p_{20} = \frac{609}{625}
 
 Assuming car arrivals are uniform and follow a **Poisson process**, what is the probability of seeing **at least one** car in a **5-minute** interval?
 
+<iframe src="{{ site.baseurl }}/assets/poisson_process_from_20_minutes_to_5_minutes.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Use Poisson Properties
