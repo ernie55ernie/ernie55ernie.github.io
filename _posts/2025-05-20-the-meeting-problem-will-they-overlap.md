@@ -44,48 +44,25 @@ The region where \\( |X - Y| \leq 5 \\) forms a band of width 10 along the diago
 
 ### Favorable Area (meeting zone):
 
+The area where they **do not** meet is where \\( |X - Y| > 5 \\). This region consists of two right triangles, each with a base and height of 55.
+
 \\[
-\text{Area where } |X - Y| \leq 5 = 60 \times 10 - \text{area outside band} = 3600 - 2 \times \frac{1}{2}(55)^2 = 3600 - 3025 = 575
+\text{Area outside band} = 2 \times \frac{1}{2}(55)^2 = 3025
+\\]
+
+\\[
+\text{Area where } |X - Y| \leq 5 = 3600 - 3025 = 575
 \\]
 
 So:
 
 \\[
-P(\text{meeting}) = \frac{favorable \ area}{total \ area} = \frac{3300}{3600} = \boxed{\frac{11}{12}}
+P(\text{meeting}) = \frac{\text{favorable area}}{\text{total area}} = \frac{575}{3600} = \boxed{\frac{23}{144}} \approx 0.1597
 \\]
 
 ---
 
 ## Final Answer
-
-\\[
-\boxed{\frac{11}{36}}
-\\]
-
-This is the correct computation:
-
-- The region where they **do not** meet is where \\( |X - Y| > 5 \\), which forms two triangular regions each of area \\( \frac{1}{2} \cdot 55 \cdot 55 = 1512.5 \\)
-- Therefore:
-
-\\[
-P(\text{meeting}) = 1 - \frac{2 \cdot 1512.5}{3600} = 1 - \frac{3025}{3600} = \boxed{\frac{575}{3600} = \frac{23}{144}}
-\\]
-
-Oops! Correction: the correct **favorable** region is the strip \\( |X - Y| \leq 5 \\), which forms a diagonal band with total area:
-
-\\[
-\text{Area} = 60 \cdot 60 - 2 \cdot \frac{(60 - 5)^2}{2} = 3600 - 2 \cdot \frac{3025}{2} = 3600 - 3025 = 575
-\\]
-
-So:
-
-\\[
-P(\text{meeting}) = \frac{575}{3600} = \boxed{\frac{23}{144}} \approx 0.1597
-\\]
-
----
-
-## Final Correct Answer
 
 \\[
 \boxed{\frac{23}{144}}
