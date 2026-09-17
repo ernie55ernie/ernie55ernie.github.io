@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expected Number of Loops from 100 Randomly Tied Noodles</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --card: #f2f4f8;
+      --border: #d9deea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --good: #047857;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .small {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .formula {
+      font-family: "Times New Roman", serif;
+      font-size: 1.35rem;
+      text-align: center;
+      margin: 14px 0;
+    }
+
+    .big-answer {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--good);
+      margin-top: 8px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .k-box {
+      min-width: 62px;
+      text-align: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat {
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .stat .label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .stat .value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .timeline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-top: 14px;
+    }
+
+    .term {
+      min-width: 110px;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 10px;
+      flex: 0 0 auto;
+    }
+
+    .term .top {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .term .bottom {
+      margin-top: 6px;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .plus, .dots {
+      flex: 0 0 auto;
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      background: var(--accent);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .sim-result {
+      margin-top: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code.inline {
+      background: #eef2ff;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>100 Noodles Randomly Tied Together</h1>
+    <p class="subtitle">
+      Start with 100 separate noodles, each with 2 loose ends. Repeatedly pick two free ends uniformly at random and tie them together until no free ends remain.
+      What is the expected number of closed loops formed?
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>The key idea</h2>
+        <p>
+          Suppose at some stage there are <strong>k open chains</strong> remaining.
+          Then there are exactly <strong>2k free ends</strong>.
+        </p>
+        <p>
+          Pick one free end. Among the remaining <strong>2k - 1</strong> possible ends you could tie it to,
+          exactly <strong>one</strong> is the other end of the <em>same chain</em>, which closes a loop.
+        </p>
+        <p>
+          So at stage <code class="inline">k</code>, the probability that the next tie creates a new loop is:
+        </p>
+
+        <div class="formula">P(create a loop when there are k chains) = 1 / (2k - 1)</div>
+
+        <div class="slider-row">
+          <label for="kSlider"><strong>Choose k:</strong></label>
+          <input id="kSlider" type="range" min="1" max="100" value="8" />
+          <div class="k-box">k = <span id="kValue">8</span></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Free ends</div>
+            <div class="value" id="freeEnds">16</div>
+          </div>
+          <div class="stat">
+            <div class="label">Possible partners</div>
+            <div class="value" id="partners">15</div>
+          </div>
+          <div class="stat">
+            <div class="label">Loop probability</div>
+            <div class="value" id="loopProb">1/15</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Why we sum over k = 100, 99, ..., 1</h2>
+        <p class="small">
+          Each tie reduces the number of open chains by exactly 1.
+        </p>
+
+        <svg viewBox="0 0 380 240" aria-label="Diagram showing the two possible outcomes after tying two free ends">
+          <text x="190" y="25" text-anchor="middle" font-size="15" fill="#1f2937" font-weight="700">
+            Tie two free ends
+          </text>
+
+          <line x1="190" y1="35" x2="100" y2="85" stroke="#9ca3af" stroke-width="2"></line>
+          <line x1="190" y1="35" x2="280" y2="85" stroke="#9ca3af" stroke-width="2"></line>
+
+          <rect x="28" y="85" width="144" height="76" rx="14" fill="#f2f4f8" stroke="#d9deea"></rect>
+          <rect x="208" y="85" width="144" height="76" rx="14" fill="#f2f4f8" stroke="#d9deea"></rect>
+
+          <text x="100" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2937">Same chain</text>
+          <text x="100" y="130" text-anchor="middle" font-size="13" fill="#6b7280">Closes a loop</text>
+          <text x="100" y="148" text-anchor="middle" font-size="13" fill="#6b7280">k → k - 1</text>
+
+          <text x="280" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2937">Different chains</text>
+          <text x="280" y="130" text-anchor="middle" font-size="13" fill="#6b7280">Merges two chains</text>
+          <text x="280" y="148" text-anchor="middle" font-size="13" fill="#6b7280">k → k - 1</text>
+
+          <line x1="100" y1="161" x2="190" y2="205" stroke="#9ca3af" stroke-width="2"></line>
+          <line x1="280" y1="161" x2="190" y2="205" stroke="#9ca3af" stroke-width="2"></line>
+
+          <text x="190" y="225" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2937">
+            Therefore we visit each k exactly once
+          </text>
+        </svg>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top: 18px;">
+      <h2>Expected number of loops</h2>
+      <p>
+        Let <code class="inline">L</code> be the total number of loops formed.
+        At each stage with <code class="inline">k</code> open chains, we get a new loop with probability
+        <code class="inline">1 / (2k - 1)</code>.
+      </p>
+      <p>
+        By linearity of expectation:
+      </p>
+
+      <div class="timeline">
+        <div class="term">
+          <div class="top">k = 100</div>
+          <div class="bottom">1/199</div>
+        </div>
+        <div class="plus">+</div>
+        <div class="term">
+          <div class="top">k = 99</div>
+          <div class="bottom">1/197</div>
+        </div>
+        <div class="plus">+</div>
+        <div class="dots">⋯</div>
+        <div class="plus">+</div>
+        <div class="term">
+          <div class="top">k = 2</div>
+          <div class="bottom">1/3</div>
+        </div>
+        <div class="plus">+</div>
+        <div class="term">
+          <div class="top">k = 1</div>
+          <div class="bottom">1</div>
+        </div>
+      </div>
+
+      <div class="formula">
+        E[L] = Σ<sub>k=1</sub><sup>100</sup> 1 / (2k - 1)
+      </div>
+
+      <div class="formula">
+        = 1 + 1/3 + 1/5 + ··· + 1/199
+      </div>
+
+      <div class="formula">
+        = H<sub>200</sub> - (1/2)H<sub>100</sub>
+      </div>
+
+      <div class="big-answer">
+        E[L] ≈ 3.28434
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top: 18px;">
+      <h2>Monte Carlo simulation</h2>
+      <p class="small">
+        Click the button to simulate random pairings of all 200 ends and estimate the average number of loops.
+      </p>
+      <button id="simulateBtn">Run 3000 simulations</button>
+      <div class="sim-result" id="simResult">Theoretical value: 3.28434</div>
+    </section>
+
+    <p class="footer-note">
+      Final answer: the expected number of loops is
+      <strong>1 + 1/3 + 1/5 + ··· + 1/199 ≈ 3.28434</strong>.
+    </p>
+  </div>
+
+  <script>
+    const kSlider = document.getElementById("kSlider");
+    const kValue = document.getElementById("kValue");
+    const freeEnds = document.getElementById("freeEnds");
+    const partners = document.getElementById("partners");
+    const loopProb = document.getElementById("loopProb");
+
+    function updateKDisplay() {
+      const k = parseInt(kSlider.value, 10);
+      kValue.textContent = k;
+      freeEnds.textContent = 2 * k;
+      partners.textContent = 2 * k - 1;
+      loopProb.textContent = `1/${2 * k - 1}`;
+    }
+
+    kSlider.addEventListener("input", updateKDisplay);
+    updateKDisplay();
+
+    function simulateOneTrial(n) {
+      // Pair 2n ends uniformly at random.
+      const partner = new Int32Array(2 * n);
+      partner.fill(-1);
+
+      // Each noodle initially connects its two ends as an open chain.
+      const chainPartner = new Int32Array(2 * n);
+      for (let i = 0; i < n; i++) {
+        chainPartner[2 * i] = 2 * i + 1;
+        chainPartner[2 * i + 1] = 2 * i;
+      }
+
+      const free = [];
+      for (let i = 0; i < 2 * n; i++) free.push(i);
+
+      while (free.length > 0) {
+        const aIndex = Math.floor(Math.random() * free.length);
+        const a = free[aIndex];
+        free[aIndex] = free[free.length - 1];
+        free.pop();
+
+        const bIndex = Math.floor(Math.random() * free.length);
+        const b = free[bIndex];
+        free[bIndex] = free[free.length - 1];
+        free.pop();
+
+        partner[a] = b;
+        partner[b] = a;
+      }
+
+      // Count loops in the final 2-regular graph whose edges alternate:
+      // noodle-edge, tie-edge, noodle-edge, tie-edge, ...
+      const seen = new Uint8Array(2 * n);
+      let loops = 0;
+
+      for (let start = 0; start < 2 * n; start++) {
+        if (seen[start]) continue;
+        loops++;
+        let cur = start;
+        while (!seen[cur]) {
+          seen[cur] = 1;
+          cur = partner[chainPartner[cur]];
+        }
+      }
+
+      return loops;
+    }
+
+    const simulateBtn = document.getElementById("simulateBtn");
+    const simResult = document.getElementById("simResult");
+
+    simulateBtn.addEventListener("click", () => {
+      simulateBtn.disabled = true;
+      simulateBtn.textContent = "Simulating...";
+      simResult.textContent = "Running simulations...";
+
+      setTimeout(() => {
+        const trials = 3000;
+        let total = 0;
+        for (let i = 0; i < trials; i++) {
+          total += simulateOneTrial(100);
+        }
+        const avg = total / trials;
+        simResult.textContent = `Simulation average: ${avg.toFixed(4)} loops | Theory: 3.28434`;
+        simulateBtn.disabled = false;
+        simulateBtn.textContent = "Run 3000 simulations";
+      }, 30);
+    });
+  </script>
+</body>
+</html>
