@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raw Moments of a Standard Normal</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      color: #1f2937;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #111827;
+    }
+    .subtitle {
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+    .formula {
+      background: #f3f4f6;
+      border-left: 5px solid #3b82f6;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .moment-box {
+      background: #eef4ff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .moment-box h3 {
+      margin-bottom: 10px;
+      color: #1d4ed8;
+    }
+    .highlight {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .summary {
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .footer-note {
+      font-size: 0.95rem;
+      color: #6b7280;
+    }
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Raw Moments of a Standard Normal Random Variable</h1>
+      <p class="subtitle">
+        Let \(X \sim N(0,1)\). We want to compute the raw moments
+      </p>
+
+      <div class="formula center">
+        \[
+        E[X^n] \quad \text{for } n=1,2,3,4
+        \]
+      </div>
+
+      <p>
+        The standard normal distribution is symmetric around \(0\). This symmetry is the key idea:
+      </p>
+
+      <ul>
+        <li>If \(n\) is <strong>odd</strong>, then \(x^n\) is an odd function, so the expectation is \(0\).</li>
+        <li>If \(n\) is <strong>even</strong>, then the moment is positive and can be computed directly.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Step-by-Step Moments</h2>
+
+      <div class="grid">
+        <div class="moment-box">
+          <h3>1. First Moment</h3>
+          <div class="formula">
+            \[
+            E[X] = 0
+            \]
+          </div>
+          <p>
+            Since the standard normal distribution is symmetric about \(0\), the positive and negative parts cancel out.
+          </p>
+        </div>
+
+        <div class="moment-box">
+          <h3>2. Second Moment</h3>
+          <div class="formula">
+            \[
+            E[X^2] = 1
+            \]
+          </div>
+          <p>
+            For a standard normal random variable, the variance is
+          </p>
+          <div class="formula">
+            \[
+            \mathrm{Var}(X) = E[X^2] - (E[X])^2
+            \]
+          </div>
+          <p>
+            Since \(E[X]=0\) and \(\mathrm{Var}(X)=1\), we get
+          </p>
+          <div class="formula">
+            \[
+            E[X^2] = 1
+            \]
+          </div>
+        </div>
+
+        <div class="moment-box">
+          <h3>3. Third Moment</h3>
+          <div class="formula">
+            \[
+            E[X^3] = 0
+            \]
+          </div>
+          <p>
+            Because \(x^3\) is an odd function and the normal density is symmetric, the expectation is zero.
+          </p>
+        </div>
+
+        <div class="moment-box">
+          <h3>4. Fourth Moment</h3>
+          <div class="formula">
+            \[
+            E[X^4] = 3
+            \]
+          </div>
+          <p>
+            A standard result for the standard normal distribution is
+          </p>
+          <div class="formula">
+            \[
+            E[X^4] = 3
+            \]
+          </div>
+          <p>
+            This is also consistent with the general even-moment formula for a standard normal:
+          </p>
+          <div class="formula">
+            \[
+            E[X^{2k}] = (2k-1)!!
+            \]
+          </div>
+          <p>
+            For \(k=2\):
+          </p>
+          <div class="formula">
+            \[
+            E[X^4] = 3!! = 3
+            \]
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card summary">
+      <h2>Final Answers</h2>
+      <div class="formula center">
+        \[
+        E[X] = 0,\qquad
+        E[X^2] = 1,\qquad
+        E[X^3] = 0,\qquad
+        E[X^4] = 3
+        \]
+      </div>
+
+      <p>
+        Therefore, the first four raw moments of \(X \sim N(0,1)\) are:
+      </p>
+      <ul>
+        <li>\(E[X^1] = 0\)</li>
+        <li>\(E[X^2] = 1\)</li>
+        <li>\(E[X^3] = 0\)</li>
+        <li>\(E[X^4] = 3\)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Pattern to Remember</h2>
+      <ul>
+        <li>All <strong>odd moments</strong> of a standard normal are <span class="highlight">0</span>.</li>
+        <li>The even moments follow:
+          \[
+          E[X^{2k}] = (2k-1)!!
+          \]
+        </li>
+      </ul>
+      <p class="footer-note">
+        Example: \(E[X^6] = 5!! = 5 \cdot 3 \cdot 1 = 15\).
+      </p>
+    </div>
+  </div>
+</body>
+</html>

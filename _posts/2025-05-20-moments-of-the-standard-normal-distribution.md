@@ -11,6 +11,8 @@ Let \\( X \sim N(0,1) \\) be a **standard normal** random variable. We are asked
 E[X^n] \quad \text{for } n = 1, 2, 3, 4
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/raw_moments_of_a_standard_normal_random_variable.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Moment Definitions
