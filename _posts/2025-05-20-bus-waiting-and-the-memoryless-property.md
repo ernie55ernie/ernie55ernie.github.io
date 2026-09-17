@@ -22,6 +22,8 @@ You show up at a **random time**.
 1. What is your **expected waiting time** until the **next bus**?
 2. On average, how long ago did the **last bus** depart?
 
+<iframe src="{{ site.baseurl }}/assets/poisson_bus_waiting_time.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Key Concept: The Memoryless Property

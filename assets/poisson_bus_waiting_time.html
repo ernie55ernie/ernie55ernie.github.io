@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Poisson Bus Waiting Time</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f6f8fb;
+    color: #1f2937;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 36px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .rate {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .formula {
+    text-align: center;
+    font-size: 24px;
+    font-family: monospace;
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 18px 0;
+  }
+
+  /* Timeline */
+  .timeline-wrapper {
+    overflow-x: auto;
+    margin-top: 30px;
+  }
+
+  .timeline {
+    position: relative;
+    height: 190px;
+    min-width: 650px;
+  }
+
+  .axis {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 90px;
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 2px;
+  }
+
+  .point {
+    position: absolute;
+    top: 78px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+
+  .last {
+    left: 25%;
+    background: #3b82f6;
+  }
+
+  .you {
+    left: 50%;
+    background: #111827;
+  }
+
+  .next {
+    left: 75%;
+    background: #10b981;
+  }
+
+  .label {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .last-label {
+    left: 25%;
+    top: 40px;
+  }
+
+  .you-label {
+    left: 50%;
+    top: 20px;
+  }
+
+  .next-label {
+    left: 75%;
+    top: 40px;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 125px;
+    height: 5px;
+    border-radius: 4px;
+  }
+
+  .arrow-left {
+    left: 25%;
+    width: 25%;
+    background: #3b82f6;
+  }
+
+  .arrow-right {
+    left: 50%;
+    width: 25%;
+    background: #10b981;
+  }
+
+  .arrow-text {
+    position: absolute;
+    top: 140px;
+    transform: translateX(-50%);
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .past-text {
+    left: 37.5%;
+    color: #2563eb;
+  }
+
+  .future-text {
+    left: 62.5%;
+    color: #059669;
+  }
+
+  .answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .answer-box {
+    padding: 24px;
+    border-radius: 14px;
+    text-align: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+  }
+
+  .answer-title {
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  .answer-value {
+    font-size: 34px;
+    font-weight: bold;
+  }
+
+  .explanation {
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .highlight {
+    padding: 16px;
+    margin-top: 18px;
+    border-left: 5px solid #f59e0b;
+    background: #fffbeb;
+    border-radius: 8px;
+  }
+
+  .distribution {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .distribution-box {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f3f4f6;
+  }
+
+  @media (max-width: 650px) {
+    .answers {
+      grid-template-columns: 1fr;
+    }
+
+    body {
+      padding: 20px 12px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🚌 Poisson Bus Waiting Time</h1>
+
+  <div class="subtitle">
+    Buses arrive according to a Poisson process with rate
+    λ = 0.1 per minute.
+  </div>
+
+  <!-- Rate -->
+  <div class="card">
+
+    <div class="rate">
+      Arrival rate:
+      <strong>λ = 0.1 buses/minute</strong>
+    </div>
+
+    <div class="formula">
+      Mean interarrival time =
+      1 / λ =
+      1 / 0.1 =
+      10 minutes
+    </div>
+
+  </div>
+
+  <!-- Timeline -->
+  <div class="card">
+
+    <h2>Imagine arriving at a random time</h2>
+
+    <div class="timeline-wrapper">
+
+      <div class="timeline">
+
+        <div class="axis"></div>
+
+        <div class="point last"></div>
+        <div class="point you"></div>
+        <div class="point next"></div>
+
+        <div class="label last-label">
+          🚌 Last Bus
+        </div>
+
+        <div class="label you-label">
+          👤 You Arrive
+        </div>
+
+        <div class="label next-label">
+          🚌 Next Bus
+        </div>
+
+        <div class="arrow arrow-left"></div>
+        <div class="arrow arrow-right"></div>
+
+        <div class="arrow-text past-text">
+          ← Time since last bus
+        </div>
+
+        <div class="arrow-text future-text">
+          Time until next bus →
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Key idea -->
+  <div class="card explanation">
+
+    <h2>1. How long until the next bus?</h2>
+
+    <p>
+      For a Poisson process, the waiting time until the next arrival
+      follows an <strong>exponential distribution</strong>.
+    </p>
+
+    <div class="formula">
+      W ~ Exp(λ)
+    </div>
+
+    <p>
+      The mean of an exponential random variable is:
+    </p>
+
+    <div class="formula">
+      E[W] = 1 / λ
+    </div>
+
+    <div class="formula">
+      E[W] = 1 / 0.1 = 10 minutes
+    </div>
+
+    <p>
+      Therefore, even if you arrive at a completely random time,
+      your expected wait is still:
+    </p>
+
+    <div class="answer-box">
+      <div class="answer-title">
+        Expected time until next bus
+      </div>
+
+      <div class="answer-value">
+        10 minutes
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Backward waiting time -->
+  <div class="card explanation">
+
+    <h2>2. How long ago did the last bus depart?</h2>
+
+    <p>
+      A stationary Poisson process looks the same if we look
+      <strong>forward or backward in time</strong>.
+    </p>
+
+    <p>
+      Therefore, the time since the previous bus also follows
+      an exponential distribution:
+    </p>
+
+    <div class="formula">
+      A ~ Exp(λ)
+    </div>
+
+    <div class="formula">
+      E[A] = 1 / λ = 10 minutes
+    </div>
+
+    <div class="answer-box">
+      <div class="answer-title">
+        Expected time since last bus
+      </div>
+
+      <div class="answer-value">
+        10 minutes
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Side-by-side -->
+  <div class="card">
+
+    <h2 style="text-align:center;">
+      The surprising symmetry
+    </h2>
+
+    <div class="distribution">
+
+      <div class="distribution-box">
+        <div style="font-size:42px;">🚌 ← 👤</div>
+
+        <h3>Looking backward</h3>
+
+        <div class="formula">
+          E[A] = 10 min
+        </div>
+      </div>
+
+      <div class="distribution-box">
+        <div style="font-size:42px;">👤 → 🚌</div>
+
+        <h3>Looking forward</h3>
+
+        <div class="formula">
+          E[W] = 10 min
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Inspection paradox -->
+  <div class="card explanation">
+
+    <h2>⚠️ A subtle point: the inspection paradox</h2>
+
+    <p>
+      You might now think:
+    </p>
+
+    <div class="formula">
+      Last bus ← 10 min → YOU ← 10 min → Next bus
+    </div>
+
+    <p>
+      So the bus-to-bus interval containing you has expected length:
+    </p>
+
+    <div class="formula">
+      E[A + W]
+      =
+      E[A] + E[W]
+      =
+      10 + 10
+      =
+      20 minutes
+    </div>
+
+    <p>
+      But an ordinary bus-to-bus interval has mean only
+      <strong>10 minutes</strong>.
+    </p>
+
+    <div class="highlight">
+      <strong>Why?</strong><br><br>
+
+      Because when you arrive at a random time, you are more likely
+      to land inside a <strong>long bus gap</strong> than a short one.
+
+      <br><br>
+
+      A 20-minute gap gives you twice as many opportunities to arrive
+      inside it as a 10-minute gap.
+
+      <br><br>
+
+      This phenomenon is called the
+      <strong>inspection paradox</strong>.
+    </div>
+
+  </div>
+
+  <!-- Final Answer -->
+  <div class="card">
+
+    <h2 style="text-align:center;">
+      Final Answer
+    </h2>
+
+    <div class="answers">
+
+      <div class="answer-box">
+        <div class="answer-title">
+          1. Expected wait until next bus
+        </div>
+
+        <div class="answer-value">
+          10 min
+        </div>
+      </div>
+
+      <div class="answer-box">
+        <div class="answer-title">
+          2. Expected time since last bus
+        </div>
+
+        <div class="answer-value">
+          10 min
+        </div>
+      </div>
+
+    </div>
+
+    <div class="formula" style="margin-top:24px;">
+      E[next wait] = E[time since last bus] = 1 / λ = 10 minutes
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
