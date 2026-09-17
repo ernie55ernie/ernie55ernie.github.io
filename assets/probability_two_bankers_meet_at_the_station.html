@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meeting Probability Visualization</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --danger: #f97316;
+      --border: #334155;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.2; }
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 14px;
+    }
+    h2 {
+      font-size: 1.35rem;
+      margin-top: 26px;
+    }
+    p { margin: 10px 0; }
+    .lead {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 900px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+      margin-top: 24px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: rgba(17, 24, 39, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+    }
+    .math {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      overflow-x: auto;
+      color: #dbeafe;
+      margin: 10px 0;
+    }
+    .answer {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 800;
+      color: var(--accent2);
+      margin-top: 10px;
+    }
+    .small {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    li { margin: 6px 0; }
+    button {
+      background: var(--accent);
+      color: #082f49;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover { filter: brightness(1.05); }
+    .sim-result {
+      margin-top: 10px;
+      font-weight: 600;
+      color: #bae6fd;
+    }
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .step {
+      margin-bottom: 16px;
+      padding-left: 14px;
+      border-left: 3px solid var(--accent);
+    }
+    .highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .footer-note {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Probability Two Bankers Meet at the Station</h1>
+    <p class="lead">
+      Two people arrive independently and uniformly at random between <strong>5:00 AM</strong> and <strong>6:00 AM</strong>.
+      Each person waits exactly <strong>5 minutes</strong>. What is the probability that their waiting intervals overlap, so they meet?
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Geometric Visualization</h2>
+        <svg viewBox="0 0 640 520" aria-label="Square diagram showing meeting region">
+          <!-- background square -->
+          <rect x="90" y="40" width="440" height="440" rx="8" fill="#0f172a" stroke="#64748b" stroke-width="2"/>
+
+          <!-- failure triangles -->
+          <polygon points="90,40 493.33,40 90,443.33" fill="#f97316" opacity="0.22"/>
+          <polygon points="530,480 126.67,480 530,76.67" fill="#f97316" opacity="0.22"/>
+
+          <!-- meet band -->
+          <polygon points="90,76.67 90,40 126.67,40 530,443.33 530,480 493.33,480" fill="#22c55e" opacity="0.38"/>
+
+          <!-- diagonal and boundaries -->
+          <line x1="90" y1="40" x2="530" y2="480" stroke="#e5e7eb" stroke-width="2"/>
+          <line x1="126.67" y1="40" x2="530" y2="443.33" stroke="#38bdf8" stroke-width="3" stroke-dasharray="8 8"/>
+          <line x1="90" y1="76.67" x2="493.33" y2="480" stroke="#38bdf8" stroke-width="3" stroke-dasharray="8 8"/>
+
+          <!-- axes -->
+          <line x1="90" y1="480" x2="560" y2="480" stroke="#e5e7eb" stroke-width="2"/>
+          <line x1="90" y1="500" x2="90" y2="20" stroke="#e5e7eb" stroke-width="2"/>
+
+          <!-- x labels -->
+          <g fill="#cbd5e1" font-size="14" text-anchor="middle">
+            <text x="90" y="502">5:00</text>
+            <text x="163.33" y="502">5:10</text>
+            <text x="236.67" y="502">5:20</text>
+            <text x="310" y="502">5:30</text>
+            <text x="383.33" y="502">5:40</text>
+            <text x="456.67" y="502">5:50</text>
+            <text x="530" y="502">6:00</text>
+          </g>
+
+          <!-- y labels -->
+          <g fill="#cbd5e1" font-size="14" text-anchor="end">
+            <text x="80" y="485">5:00</text>
+            <text x="80" y="411.67">5:10</text>
+            <text x="80" y="338.33">5:20</text>
+            <text x="80" y="265">5:30</text>
+            <text x="80" y="191.67">5:40</text>
+            <text x="80" y="118.33">5:50</text>
+            <text x="80" y="45">6:00</text>
+          </g>
+
+          <!-- labels -->
+          <text x="310" y="24" text-anchor="middle" fill="#94a3b8" font-size="15">Banker B arrival time</text>
+          <text x="560" y="474" fill="#94a3b8" font-size="15">Banker A arrival time</text>
+          <text x="190" y="165" fill="#bbf7d0" font-size="18" font-weight="700">MEET REGION</text>
+          <text x="178" y="195" fill="#d1fae5" font-size="13">|A − B| ≤ 5</text>
+          <text x="165" y="310" fill="#fed7aa" font-size="13">Too far apart</text>
+          <text x="430" y="325" fill="#fed7aa" font-size="13">Too far apart</text>
+        </svg>
+
+        <p class="caption">
+          The square represents all possible arrival pairs \((x,y)\), where each coordinate is between 0 and 60 minutes.
+          They meet exactly when the difference in arrival times is at most 5 minutes.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Key Idea</h2>
+        <div class="step">
+          Let <span class="highlight">x</span> and <span class="highlight">y</span> be the two arrival times, measured in minutes after 5:00.
+        </div>
+        <div class="step">
+          They meet if their 5-minute waiting intervals overlap:
+          <div class="math">|x - y| ≤ 5</div>
+        </div>
+        <div class="step">
+          Total sample space = all points in a <strong>60 × 60</strong> square:
+          <div class="math">60² = 3600</div>
+        </div>
+        <div class="step">
+          The failure region consists of two congruent right triangles, each with leg length <strong>55</strong>:
+          <div class="math">Area of one triangle = (1/2) × 55 × 55 = 1512.5</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 22px;">
+      <h2>Step-by-Step Calculation</h2>
+
+      <p><strong>1. Total area:</strong></p>
+      <div class="math">A_total = 60 × 60 = 3600</div>
+
+      <p><strong>2. Area where they do <em>not</em> meet:</strong></p>
+      <p>
+        This happens when one banker arrives more than 5 minutes before the other:
+      </p>
+      <div class="math">|x - y| > 5</div>
+
+      <p>
+        That creates two triangles, each with side length \(60 - 5 = 55\).
+      </p>
+      <div class="math">
+        A_fail = 2 × (1/2 × 55 × 55) = 55² = 3025
+      </div>
+
+      <p><strong>3. Area where they meet:</strong></p>
+      <div class="math">
+        A_meet = 3600 - 3025 = 575
+      </div>
+
+      <p><strong>4. Probability:</strong></p>
+      <div class="math">
+        P(meet) = 575 / 3600 = 23 / 144 ≈ 0.1597
+      </div>
+
+      <div class="answer">Answer: 23/144 ≈ 15.97%</div>
+    </div>
+
+    <div class="grid" style="margin-top: 22px;">
+      <div class="card">
+        <h2>Interpretation</h2>
+        <ul>
+          <li>If they arrive within <strong>5 minutes</strong> of each other, they overlap and meet.</li>
+          <li>If they are more than 5 minutes apart, one leaves before the other arrives.</li>
+          <li>Geometrically, this is the diagonal strip around the line <strong>y = x</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Monte Carlo Check</h2>
+        <p class="small">Click to simulate many random arrival pairs.</p>
+        <button id="simulateBtn">Run Simulation</button>
+        <div class="sim-result" id="simResult">No simulation run yet.</div>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      A useful interview trick: whenever two random times need to be “close enough,” map them to a square and look for a diagonal band.
+    </p>
+  </div>
+
+  <script>
+    const simulateBtn = document.getElementById("simulateBtn");
+    const simResult = document.getElementById("simResult");
+
+    simulateBtn.addEventListener("click", () => {
+      const N = 200000;
+      let meet = 0;
+
+      for (let i = 0; i < N; i++) {
+        const a = Math.random() * 60;
+        const b = Math.random() * 60;
+        if (Math.abs(a - b) <= 5) meet++;
+      }
+
+      const est = meet / N;
+      simResult.innerHTML = `
+        Simulated probability: <strong>${est.toFixed(5)}</strong><br>
+        Exact probability: <strong>${(23/144).toFixed(5)}</strong>
+      `;
+    });
+  </script>
+</body>
+</html>
