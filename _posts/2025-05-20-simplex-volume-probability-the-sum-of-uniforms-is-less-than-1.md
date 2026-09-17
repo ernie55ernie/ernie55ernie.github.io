@@ -15,6 +15,8 @@ We want to compute:
 \Pr\left(X_1 + X_2 + \cdots + X_n \le 1\right)
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/uniform_simplex_probability.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Geometric Interpretation

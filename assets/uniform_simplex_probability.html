@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probability that X1 + ... + Xn ≤ 1</title>
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:#dbe4f0;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --good:#16a34a;
+    }
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:32px 20px 48px;
+    }
+    h1,h2,h3{ margin:0 0 12px; line-height:1.25; }
+    p{ margin:0 0 14px; }
+    .subtitle{
+      color:var(--muted);
+      font-size:1.05rem;
+      margin-top:10px;
+    }
+    .grid{
+      display:grid;
+      gap:18px;
+    }
+    .two{
+      grid-template-columns: 1fr 1fr;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 6px 24px rgba(15,23,42,0.05);
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-weight:600;
+      font-size:0.92rem;
+    }
+    .math{
+      font-family: "Times New Roman", Georgia, serif;
+      font-size:1.15rem;
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px 14px;
+      overflow:auto;
+    }
+    .big-result{
+      font-size:2rem;
+      font-weight:800;
+      color:var(--good);
+      margin-top:10px;
+    }
+    .slider-row{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      margin:14px 0 10px;
+      flex-wrap:wrap;
+    }
+    input[type="range"]{
+      width:260px;
+      max-width:100%;
+    }
+    .n-box{
+      min-width:78px;
+      text-align:center;
+      padding:10px 14px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+      font-weight:700;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    .mini{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:#fbfdff;
+    }
+    .mini .label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:6px;
+    }
+    .mini .value{
+      font-size:1.35rem;
+      font-weight:700;
+    }
+    .steps{
+      padding-left:20px;
+      margin:0;
+    }
+    .steps li{
+      margin:8px 0;
+    }
+    .svg-wrap{
+      width:100%;
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fcfdff;
+      padding:8px;
+    }
+    .note{
+      font-size:0.95rem;
+      color:var(--muted);
+    }
+    .footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    @media (max-width: 860px){
+      .two{ grid-template-columns:1fr; }
+      .kpi{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="pill">Uniform(0,1) Simplex Probability</div>
+    <h1 style="margin-top:14px;">Compute P(X₁ + X₂ + ··· + Xₙ ≤ 1)</h1>
+    <p class="subtitle">
+      Let X₁, …, Xₙ be i.i.d. Uniform(0,1). The event
+      <strong>X₁ + X₂ + ··· + Xₙ ≤ 1</strong>
+      corresponds to an n-dimensional simplex inside the unit cube.
+    </p>
+
+    <div class="grid two" style="margin-top:22px;">
+      <section class="card">
+        <h2>The Result</h2>
+        <div class="math">
+          P(X₁ + X₂ + ··· + Xₙ ≤ 1) = 1 / n!
+        </div>
+        <div class="big-result" id="mainResult">For n = 2: 1 / 2! = 1 / 2 = 0.5</div>
+
+        <div class="slider-row">
+          <label for="nSlider"><strong>Choose n:</strong></label>
+          <input id="nSlider" type="range" min="1" max="10" step="1" value="2" />
+          <div class="n-box" id="nLabel">n = 2</div>
+        </div>
+
+        <div class="kpi">
+          <div class="mini">
+            <div class="label">Factorial</div>
+            <div class="value" id="factVal">2! = 2</div>
+          </div>
+          <div class="mini">
+            <div class="label">Probability</div>
+            <div class="value" id="probFrac">1 / 2</div>
+          </div>
+          <div class="mini">
+            <div class="label">Decimal</div>
+            <div class="value" id="probDec">0.500000</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Geometric Intuition</h2>
+        <p>
+          Since each Xᵢ is Uniform(0,1), the joint distribution is uniform on the
+          <strong>unit cube</strong> [0,1]ⁿ. Therefore:
+        </p>
+        <div class="math">
+          Probability = Volume of the region {x₁ + ··· + xₙ ≤ 1, xᵢ ≥ 0}
+        </div>
+        <p>
+          That region is the standard <strong>n-simplex</strong>, and its volume is:
+        </p>
+        <div class="math">
+          Volume = 1 / n!
+        </div>
+        <p class="note">
+          So the probability is exactly 1 / n!.
+        </p>
+      </section>
+    </div>
+
+    <div class="grid two" style="margin-top:18px;">
+      <section class="card">
+        <h2>Visual for n = 2</h2>
+        <p>
+          When n = 2, the sample space is the unit square. The condition
+          x₁ + x₂ ≤ 1 gives the triangle below.
+        </p>
+
+        <div class="svg-wrap">
+          <svg viewBox="0 0 430 320" width="100%" aria-label="Unit square and simplex region">
+            <!-- square -->
+            <rect x="70" y="30" width="250" height="250" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+            <!-- triangle -->
+            <polygon points="70,280 320,280 70,30" fill="#93c5fd" opacity="0.75"></polygon>
+            <!-- diagonal -->
+            <line x1="70" y1="30" x2="320" y2="280" stroke="#2563eb" stroke-width="3"/>
+            <!-- axes -->
+            <line x1="70" y1="280" x2="350" y2="280" stroke="#0f172a" stroke-width="2"/>
+            <line x1="70" y1="300" x2="70" y2="20" stroke="#0f172a" stroke-width="2"/>
+            <!-- labels -->
+            <text x="335" y="286" font-size="16" fill="#0f172a">x₁</text>
+            <text x="44" y="28" font-size="16" fill="#0f172a">x₂</text>
+            <text x="58" y="296" font-size="13" fill="#475569">0</text>
+            <text x="315" y="296" font-size="13" fill="#475569">1</text>
+            <text x="52" y="35" font-size="13" fill="#475569">1</text>
+            <text x="182" y="145" font-size="14" fill="#1e3a8a" transform="rotate(45 182 145)">x₁ + x₂ = 1</text>
+            <text x="110" y="225" font-size="18" font-weight="700" fill="#0f172a">valid region</text>
+            <text x="110" y="247" font-size="14" fill="#0f172a">area = 1/2</text>
+            <text x="250" y="78" font-size="14" fill="#475569">sum &gt; 1</text>
+          </svg>
+        </div>
+
+        <p class="footer">
+          The whole square has area 1, and the shaded triangle has area 1/2.
+          Therefore, P(X₁ + X₂ ≤ 1) = 1/2.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Derivation</h2>
+        <ol class="steps">
+          <li>
+            The joint density of (X₁, …, Xₙ) is 1 on the unit cube [0,1]ⁿ.
+          </li>
+          <li>
+            So
+            <div class="math" style="margin-top:8px;">
+              P(X₁ + ··· + Xₙ ≤ 1)
+              =
+              ∫···∫<sub>x₁+···+xₙ≤1, xᵢ≥0</sub> 1 dx₁···dxₙ
+            </div>
+          </li>
+          <li>
+            This is exactly the volume of the simplex
+            <div class="math" style="margin-top:8px;">
+              Sₙ = {(x₁, …, xₙ) : xᵢ ≥ 0, x₁ + ··· + xₙ ≤ 1}
+            </div>
+          </li>
+          <li>
+            The standard simplex has volume
+            <div class="math" style="margin-top:8px;">
+              Vol(Sₙ) = 1 / n!
+            </div>
+          </li>
+          <li>
+            Hence
+            <div class="math" style="margin-top:8px;">
+              P(X₁ + X₂ + ··· + Xₙ ≤ 1) = 1 / n!
+            </div>
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>Recursive Proof of the Simplex Volume</h2>
+      <p>
+        Let Vₙ(t) be the volume of the region
+        {x₁ + ··· + xₙ ≤ t, xᵢ ≥ 0}. Then:
+      </p>
+      <div class="math">
+        Vₙ(t) = ∫₀ᵗ Vₙ₋₁(t - x) dx
+      </div>
+      <p>
+        If we assume
+        Vₙ₋₁(t) = tⁿ⁻¹ / (n−1)!,
+        then:
+      </p>
+      <div class="math">
+        Vₙ(t)
+        = ∫₀ᵗ (t - x)ⁿ⁻¹ / (n−1)! dx
+        = tⁿ / n!
+      </div>
+      <p>
+        Setting t = 1 gives:
+      </p>
+      <div class="math">
+        Vₙ(1) = 1 / n!
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function factorial(n){
+      let ans = 1;
+      for(let i=2;i<=n;i++) ans *= i;
+      return ans;
+    }
+
+    const slider = document.getElementById("nSlider");
+    const nLabel = document.getElementById("nLabel");
+    const factVal = document.getElementById("factVal");
+    const probFrac = document.getElementById("probFrac");
+    const probDec = document.getElementById("probDec");
+    const mainResult = document.getElementById("mainResult");
+
+    function update(){
+      const n = parseInt(slider.value, 10);
+      const f = factorial(n);
+      const p = 1 / f;
+
+      nLabel.textContent = `n = ${n}`;
+      factVal.textContent = `${n}! = ${f}`;
+      probFrac.textContent = `1 / ${f}`;
+      probDec.textContent = p.toFixed(6);
+      mainResult.textContent = `For n = ${n}: 1 / ${n}! = 1 / ${f} = ${p.toFixed(6)}`;
+    }
+
+    slider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
