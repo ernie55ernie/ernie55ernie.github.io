@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monty Hall Problem Visualization</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3ef;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --orange: #ea580c;
+      --orange-soft: #ffedd5;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    p { margin: 0 0 12px; }
+
+    .hero {
+      background: linear-gradient(135deg, #eff6ff, #ffffff);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .doors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .door {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 14px;
+      text-align: center;
+      background: #fff;
+      transition: transform 0.15s ease;
+    }
+
+    .door:hover {
+      transform: translateY(-2px);
+    }
+
+    .door.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .emoji {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .door-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .door-subtitle {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .prob-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .prob-box {
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .prob-box.stay {
+      background: var(--orange-soft);
+      border-color: #fed7aa;
+    }
+
+    .prob-box.switch {
+      background: var(--green-soft);
+      border-color: #a7f3d0;
+    }
+
+    .big-prob {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 8px 0 6px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .case-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .case {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fafcff;
+    }
+
+    .case strong {
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .answer {
+      border-left: 6px solid var(--green);
+      background: #f0fdf4;
+    }
+
+    .answer h2 {
+      color: #065f46;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat {
+      background: #fbfdff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .bar-wrap {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .bar-stay { background: var(--orange); }
+    .bar-switch { background: var(--green); }
+
+    .last-game {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .formula {
+      font-family: "Times New Roman", serif;
+      font-size: 1.05rem;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: inline-block;
+      border: 1px solid var(--border);
+      margin-top: 6px;
+    }
+
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .doors,
+      .prob-boxes {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Monty Hall Problem</h1>
+      <p>
+        There are 3 doors: 1 hides a car, 2 hide goats. You choose one door.
+        The host, who knows where the car is, opens another door and reveals a goat.
+        Now you must decide: <strong>stay</strong> with your original choice or <strong>switch</strong> to the other unopened door.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Why switching works</h2>
+        <p class="muted">
+          Suppose you initially pick <strong>Door A</strong>. At that moment:
+        </p>
+
+        <div class="doors">
+          <div class="door selected">
+            <span class="emoji">🚪</span>
+            <div class="door-title">Door A</div>
+            <div class="door-subtitle">Your original pick</div>
+            <div class="formula">P(car behind A) = 1/3</div>
+          </div>
+
+          <div class="door">
+            <span class="emoji">🚪</span>
+            <div class="door-title">Door B</div>
+            <div class="door-subtitle">Not chosen</div>
+            <div class="formula">Part of the other 2/3</div>
+          </div>
+
+          <div class="door">
+            <span class="emoji">🚪</span>
+            <div class="door-title">Door C</div>
+            <div class="door-subtitle">Not chosen</div>
+            <div class="formula">Part of the other 2/3</div>
+          </div>
+        </div>
+
+        <p>
+          Your first choice is correct only <strong>1/3</strong> of the time.
+          So the probability that the car is in one of the <em>other two</em> doors is
+          <strong>2/3</strong>.
+        </p>
+        <p>
+          When the host opens one of those two other doors and shows a goat, that whole
+          <strong>2/3</strong> probability effectively gets concentrated onto the
+          <strong>single remaining unopened door</strong>.
+        </p>
+
+        <div class="prob-boxes">
+          <div class="prob-box stay">
+            <h3>Stay</h3>
+            <div class="big-prob">1/3</div>
+            <p class="muted">Your original door never got more likely.</p>
+          </div>
+
+          <div class="prob-box switch">
+            <h3>Switch</h3>
+            <div class="big-prob">2/3</div>
+            <p class="muted">The remaining unopened door carries the other probability mass.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Three equally likely cases</h2>
+        <p class="muted">Assume your first pick is Door A.</p>
+
+        <div class="case-list">
+          <div class="case">
+            <strong>Case 1: Car behind A</strong>
+            <p>Probability = <strong>1/3</strong></p>
+            <p>Staying wins. Switching loses.</p>
+          </div>
+
+          <div class="case">
+            <strong>Case 2: Car behind B</strong>
+            <p>Probability = <strong>1/3</strong></p>
+            <p>Host opens C. Switching wins.</p>
+          </div>
+
+          <div class="case">
+            <strong>Case 3: Car behind C</strong>
+            <p>Probability = <strong>1/3</strong></p>
+            <p>Host opens B. Switching wins.</p>
+          </div>
+        </div>
+
+        <div class="formula" style="margin-top:16px;">
+          Stay wins in 1 case; switch wins in 2 cases.
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Simulation</h2>
+      <p class="muted">
+        Run repeated random games. Over many trials, the results approach:
+        <strong>stay ≈ 33.3%</strong> and <strong>switch ≈ 66.7%</strong>.
+      </p>
+
+      <div class="controls">
+        <button class="btn-primary" id="runOne">Run 1 game</button>
+        <button class="btn-primary" id="run1000">Run 1,000 games</button>
+        <button class="btn-secondary" id="reset">Reset</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Games played</div>
+          <div class="stat-value" id="gamesPlayed">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Stay win rate</div>
+          <div class="stat-value" id="stayRate">—</div>
+          <div class="bar-wrap">
+            <div class="bar bar-stay" id="stayBar"></div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Switch win rate</div>
+          <div class="stat-value" id="switchRate">—</div>
+          <div class="bar-wrap">
+            <div class="bar bar-switch" id="switchBar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="last-game" id="lastGame">
+        Run a game to see what happens.
+      </div>
+    </section>
+
+    <section class="card answer">
+      <h2>Final answer</h2>
+      <p>
+        You should <strong>switch</strong>.
+      </p>
+      <p>
+        The probability of winning the car is:
+      </p>
+      <div class="formula">
+        P(win by staying) = 1/3 &nbsp;&nbsp;&nbsp; P(win by switching) = 2/3
+      </div>
+      <p style="margin-top:12px;">
+        So switching <strong>doubles</strong> your chance of winning.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    let games = 0;
+    let stayWins = 0;
+    let switchWins = 0;
+
+    const gamesPlayedEl = document.getElementById("gamesPlayed");
+    const stayRateEl = document.getElementById("stayRate");
+    const switchRateEl = document.getElementById("switchRate");
+    const stayBarEl = document.getElementById("stayBar");
+    const switchBarEl = document.getElementById("switchBar");
+    const lastGameEl = document.getElementById("lastGame");
+
+    function simulateOneGame() {
+      // 0,1,2 represent the car's position
+      const carDoor = Math.floor(Math.random() * 3);
+
+      // Assume player always initially picks Door 0 (Door A)
+      const initialPick = 0;
+
+      const stayWon = (carDoor === initialPick);
+      const switchWon = !stayWon;
+
+      games++;
+      if (stayWon) stayWins++;
+      if (switchWon) switchWins++;
+
+      let hostOpened;
+      if (carDoor === 0) {
+        // host can open either 1 or 2
+        hostOpened = Math.random() < 0.5 ? 1 : 2;
+      } else {
+        // host must open the only goat door not chosen by the player
+        hostOpened = (carDoor === 1) ? 2 : 1;
+      }
+
+      const switchedTo = [0, 1, 2].find(d => d !== initialPick && d !== hostOpened);
+
+      const doorName = ["A", "B", "C"];
+      lastGameEl.textContent =
+        `Car was behind Door ${doorName[carDoor]}. ` +
+        `You picked Door A. Host opened Door ${doorName[hostOpened]} to reveal a goat. ` +
+        `If you stayed, you would ${stayWon ? "win" : "lose"}. ` +
+        `If you switched to Door ${doorName[switchedTo]}, you would ${switchWon ? "win" : "lose"}.`;
+
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      gamesPlayedEl.textContent = games;
+
+      if (games === 0) {
+        stayRateEl.textContent = "—";
+        switchRateEl.textContent = "—";
+        stayBarEl.style.width = "0%";
+        switchBarEl.style.width = "0%";
+        return;
+      }
+
+      const stayRate = (stayWins / games) * 100;
+      const switchRate = (switchWins / games) * 100;
+
+      stayRateEl.textContent = stayRate.toFixed(1) + "%";
+      switchRateEl.textContent = switchRate.toFixed(1) + "%";
+      stayBarEl.style.width = stayRate + "%";
+      switchBarEl.style.width = switchRate + "%";
+    }
+
+    document.getElementById("runOne").addEventListener("click", simulateOneGame);
+
+    document.getElementById("run1000").addEventListener("click", () => {
+      for (let i = 0; i < 1000; i++) {
+        simulateOneGame();
+      }
+      lastGameEl.textContent =
+        "Added 1,000 games. As the number of simulations grows, the stay rate approaches about 33.3% and the switch rate approaches about 66.7%.";
+      updateDisplay();
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      games = 0;
+      stayWins = 0;
+      switchWins = 0;
+      lastGameEl.textContent = "Run a game to see what happens.";
+      updateDisplay();
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>

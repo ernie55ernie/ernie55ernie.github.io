@@ -18,6 +18,8 @@ This is one of the most famous puzzles in probability, highlighting how intuitio
 - The host, who **knows** what’s behind each door, opens **another** door, revealing a **goat**.
 - You are then asked: **Do you want to stay with your original pick or switch to the other unopened door?**
 
+<iframe src="{{ site.baseurl }}/assets/monty_hall_problem.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Key Insight
