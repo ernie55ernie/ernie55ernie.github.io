@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boy or Girl Conditioning Puzzle</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --card: #fbfcfe;
+      --border: #d8e0ea;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --good: #16a34a;
+      --warn: #f59e0b;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #f3f6fb 100%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .hero {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 900px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0 8px;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .panel p.lead {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .family-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .family-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 14px;
+      transition: all 0.2s ease;
+      min-height: 166px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .family-card.dimmed {
+      opacity: 0.4;
+    }
+
+    .family-card.highlight {
+      border-color: var(--accent);
+      background: #f8fbff;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.15);
+    }
+
+    .family-label {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .family-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .weight-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .weight-value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      background: #e8edf5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .explanation-box {
+      margin-top: 18px;
+      background: #f9fbfe;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .explanation-box h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .explanation-box p,
+    .explanation-box ul {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .explanation-box ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+
+    .result-card {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .result-top {
+      padding: 18px;
+      background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .result-kicker {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .result-prob {
+      font-size: clamp(38px, 6vw, 62px);
+      font-weight: 800;
+      line-height: 1;
+      margin: 0 0 8px;
+    }
+
+    .result-decimal {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .formula {
+      background: #fafcff;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .formula .math {
+      font-family: "Times New Roman", Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      display: block;
+      margin-top: 8px;
+      color: #111827;
+    }
+
+    .comparison {
+      margin-top: 20px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    .compare-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .compare-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .chip.crossed {
+      text-decoration: line-through;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .weight-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      height: 150px;
+      margin-top: 12px;
+    }
+
+    .bar-col {
+      flex: 1;
+      text-align: center;
+    }
+
+    .bar-col-inner {
+      width: 100%;
+      max-width: 74px;
+      margin: 0 auto;
+      border-radius: 14px 14px 0 0;
+      background: linear-gradient(180deg, #93c5fd, #2563eb);
+      min-height: 4px;
+      transition: height 0.3s ease;
+    }
+
+    .bar-col:nth-child(2) .bar-col-inner,
+    .bar-col:nth-child(3) .bar-col-inner {
+      background: linear-gradient(180deg, #fcd34d, #f59e0b);
+    }
+
+    .bar-col:nth-child(4) .bar-col-inner {
+      background: #d1d5db;
+    }
+
+    .bar-title {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .bar-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      font-size: 15px;
+      color: var(--muted);
+      background: #fffdf5;
+      border: 1px solid #f5e6b5;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    @media (max-width: 950px) {
+      .layout,
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .family-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        padding: 16px 14px 34px;
+      }
+
+      .hero,
+      .panel,
+      .compare-card {
+        padding: 16px;
+      }
+
+      .family-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">Conditional Probability</div>
+      <h1>“At Least One Boy” vs “You See a Boy”</h1>
+      <p class="subtitle">
+        These two statements sound similar, but they condition on information in different ways.
+        That changes the sample space — and the answer.
+      </p>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-mode="A">Part A · At least one is a boy</button>
+        <button class="tab-btn" data-mode="B">Part B · You see a boy</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2 id="scenario-title">Part A: “At Least One Son”</h2>
+        <p class="lead" id="scenario-subtitle">
+          We are told a fact about the family: at least one child is a boy.
+        </p>
+
+        <div class="family-grid">
+          <div class="family-card" id="card-BB">
+            <div class="family-label">BB</div>
+            <div class="family-desc">Boy – Boy</div>
+            <div class="weight-label">Conditional weight</div>
+            <div class="weight-value" id="weight-BB">1</div>
+            <div class="bar-track"><div class="bar-fill" id="fill-BB"></div></div>
+          </div>
+
+          <div class="family-card" id="card-BG">
+            <div class="family-label">BG</div>
+            <div class="family-desc">Boy – Girl</div>
+            <div class="weight-label">Conditional weight</div>
+            <div class="weight-value" id="weight-BG">1</div>
+            <div class="bar-track"><div class="bar-fill" id="fill-BG"></div></div>
+          </div>
+
+          <div class="family-card" id="card-GB">
+            <div class="family-label">GB</div>
+            <div class="family-desc">Girl – Boy</div>
+            <div class="weight-label">Conditional weight</div>
+            <div class="weight-value" id="weight-GB">1</div>
+            <div class="bar-track"><div class="bar-fill" id="fill-GB"></div></div>
+          </div>
+
+          <div class="family-card" id="card-GG">
+            <div class="family-label">GG</div>
+            <div class="family-desc">Girl – Girl</div>
+            <div class="weight-label">Conditional weight</div>
+            <div class="weight-value" id="weight-GG">0</div>
+            <div class="bar-track"><div class="bar-fill" id="fill-GG"></div></div>
+          </div>
+        </div>
+
+        <div class="explanation-box">
+          <h3 id="explanation-title">Why?</h3>
+          <p id="explanation-text">
+            The original four equally likely families are BB, BG, GB, and GG.
+            The condition “at least one is a boy” removes only GG, leaving three equally likely possibilities:
+            BB, BG, and GB.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel result-card">
+        <div class="result-top">
+          <div class="result-kicker">Answer</div>
+          <div class="result-prob" id="result-prob">1/3</div>
+          <div class="result-decimal" id="result-decimal">≈ 33.3%</div>
+        </div>
+
+        <div class="formula">
+          <strong id="formula-title">Part A formula</strong>
+          <span class="math" id="formula-math">
+            P(both are boys | at least one is a boy) = 1 / 3
+          </span>
+        </div>
+
+        <div class="explanation-box">
+          <h3 id="insight-title">Key insight</h3>
+          <p id="insight-text">
+            In Part A, conditioning works like a filter: eliminate impossible cases, then treat the remaining valid families equally.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="comparison">
+      <div class="comparison-grid">
+        <div class="compare-card">
+          <h3>Part A · Condition on a fact</h3>
+          <p style="margin:0; color: var(--muted);">
+            “At least one child is a boy” removes the family GG and keeps the rest equally likely.
+          </p>
+          <div class="chips">
+            <span class="chip">BB ✓</span>
+            <span class="chip">BG ✓</span>
+            <span class="chip">GB ✓</span>
+            <span class="chip crossed">GG</span>
+          </div>
+          <p style="margin:0; color: var(--muted);">So the answer is 1 out of 3.</p>
+        </div>
+
+        <div class="compare-card">
+          <h3>Part B · Condition on an observation</h3>
+          <p style="margin:0; color: var(--muted);">
+            “You see a boy” does not just filter — it weights families by how likely they are to produce that observation.
+          </p>
+          <div class="weight-bars">
+            <div class="bar-col">
+              <div class="bar-col-inner" style="height: 100%;"></div>
+              <div class="bar-title">BB</div>
+              <div class="bar-subtitle">weight 1</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-col-inner" style="height: 50%;"></div>
+              <div class="bar-title">BG</div>
+              <div class="bar-subtitle">weight 1/2</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-col-inner" style="height: 50%;"></div>
+              <div class="bar-title">GB</div>
+              <div class="bar-subtitle">weight 1/2</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-col-inner" style="height: 2%;"></div>
+              <div class="bar-title">GG</div>
+              <div class="bar-subtitle">weight 0</div>
+            </div>
+          </div>
+          <p style="margin:12px 0 0; color: var(--muted);">Total weight = 2, and BB contributes 1 of those 2.</p>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <strong>Bottom line:</strong>  
+        “At least one is a boy” and “you see a boy” are different conditioning events.
+        The first leads to <strong>1/3</strong>, while the second leads to <strong>1/2</strong>.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const data = {
+      A: {
+        title: 'Part A: “At Least One Son”',
+        subtitle: 'We are told a fact about the family: at least one child is a boy.',
+        weights: { BB: 1, BG: 1, GB: 1, GG: 0 },
+        highlight: ['BB', 'BG', 'GB'],
+        dim: ['GG'],
+        resultProb: '1/3',
+        resultDecimal: '≈ 33.3%',
+        formulaTitle: 'Part A formula',
+        formulaMath: 'P(both are boys | at least one is a boy) = 1 / 3',
+        explanationText:
+          'The original four equally likely families are BB, BG, GB, and GG. The condition “at least one is a boy” removes only GG, leaving three equally likely possibilities: BB, BG, and GB.',
+        insightText:
+          'In Part A, conditioning works like a filter: eliminate impossible cases, then treat the remaining valid families equally.'
+      },
+      B: {
+        title: 'Part B: “You See a Boy”',
+        subtitle: 'We directly observe one child, and that observed child is a boy.',
+        weights: { BB: 1, BG: 0.5, GB: 0.5, GG: 0 },
+        highlight: ['BB', 'BG', 'GB'],
+        dim: ['GG'],
+        resultProb: '1/2',
+        resultDecimal: '= 50%',
+        formulaTitle: 'Part B formula',
+        formulaMath: 'P(both are boys | you see a boy) = 1 / 2',
+        explanationText:
+          'Here the observation process matters. A BB family always lets you see a boy, while BG and GB do so only half the time if the observed child is equally likely to be either one. So the conditional weights are BB: 1, BG: 1/2, GB: 1/2, GG: 0.',
+        insightText:
+          'In Part B, conditioning does not just remove cases — it reweights them according to how likely they are to generate the observation “you see a boy.”'
+      }
+    };
+
+    const buttons = document.querySelectorAll('.tab-btn');
+
+    function setMode(mode) {
+      const d = data[mode];
+
+      document.getElementById('scenario-title').textContent = d.title;
+      document.getElementById('scenario-subtitle').textContent = d.subtitle;
+      document.getElementById('result-prob').textContent = d.resultProb;
+      document.getElementById('result-decimal').textContent = d.resultDecimal;
+      document.getElementById('formula-title').textContent = d.formulaTitle;
+      document.getElementById('formula-math').textContent = d.formulaMath;
+      document.getElementById('explanation-text').textContent = d.explanationText;
+      document.getElementById('insight-text').textContent = d.insightText;
+
+      ['BB', 'BG', 'GB', 'GG'].forEach(key => {
+        const weight = d.weights[key];
+        const weightText = weight === 0.5 ? '1/2' : String(weight);
+        const width = (weight * 100) + '%';
+
+        document.getElementById('weight-' + key).textContent = weightText;
+        document.getElementById('fill-' + key).style.width = width;
+
+        const card = document.getElementById('card-' + key);
+        card.classList.remove('highlight', 'dimmed');
+
+        if (d.highlight.includes(key)) card.classList.add('highlight');
+        if (d.dim.includes(key)) card.classList.add('dimmed');
+      });
+
+      buttons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => setMode(btn.dataset.mode));
+    });
+
+    setMode('A');
+  </script>
+</body>
+</html>

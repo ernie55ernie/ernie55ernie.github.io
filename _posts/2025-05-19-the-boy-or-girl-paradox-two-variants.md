@@ -7,6 +7,8 @@ category: quantitative interview
 
 This classic paradox explores how subtly different phrasing in probability problems can lead to distinct outcomes. We'll examine two versions involving two-child families.
 
+<iframe src="{{ site.baseurl }}/assets/a_least_one_boy.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Part A: "At Least One Son"
