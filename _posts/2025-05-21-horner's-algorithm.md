@@ -15,6 +15,8 @@ y = A_0 + A_1 x + A_2 x^2 + \cdots + A_n x^n
 
 **Goal:** Compute this efficiently using only \\( O(n) \\) operations.
 
+<iframe src="{{ site.baseurl }}/assets/horner_method.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Horner’s Algorithm

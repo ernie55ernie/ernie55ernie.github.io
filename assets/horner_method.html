@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Horner's Method — O(n) Polynomial Evaluation</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --card: #18233d;
+      --text: #eef4ff;
+      --muted: #a9b7cf;
+      --border: #2b3958;
+      --accent: #6ea8fe;
+      --accent-soft: #20365e;
+      --good: #74d99f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(110,168,254,.10), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 10px 0 24px;
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .panel, .card {
+      background: rgba(18,26,46,.95);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .panel { padding: 18px; }
+
+    .card {
+      padding: 14px;
+      background: var(--card);
+    }
+
+    label {
+      display: block;
+      font-size: .92rem;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #0f1729;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,168,254,.12);
+    }
+
+    .coef-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .formula {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      overflow-wrap: anywhere;
+      color: #dce7ff;
+    }
+
+    .muted { color: var(--muted); }
+
+    .pipeline {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      overflow-x: auto;
+      padding: 6px 0 4px;
+    }
+
+    .stage {
+      min-width: 125px;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+    }
+
+    .stage.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .stage .small {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .stage .value {
+      font-weight: 800;
+      font-size: 1.35rem;
+      margin-top: 2px;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-size: 1.4rem;
+      flex: 0 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      padding: 11px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #16223a;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .stat .big {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-top: 3px;
+    }
+
+    pre {
+      margin: 10px 0 0;
+      padding: 14px;
+      overflow-x: auto;
+      background: #0f1729;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    code {
+      color: #dbe8ff;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    .good { color: var(--good); }
+
+    @media (max-width: 780px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
+      .coef-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Horner's Method</h1>
+    <p class="subtitle">
+      Evaluate
+      <span class="formula">A₀ + A₁x + A₂x² + ⋯ + Aₙxⁿ</span>
+      in <strong>O(n)</strong> time.
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="section-title">1. Choose a polynomial</div>
+
+        <div class="coef-grid">
+          <label>A₀
+            <input id="a0" type="number" step="any" value="2">
+          </label>
+          <label>A₁
+            <input id="a1" type="number" step="any" value="-1">
+          </label>
+          <label>A₂
+            <input id="a2" type="number" step="any" value="3">
+          </label>
+          <label>A₃
+            <input id="a3" type="number" step="any" value="4">
+          </label>
+        </div>
+
+        <label style="margin-top:12px;">x
+          <input id="x" type="number" step="any" value="2">
+        </label>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="muted" style="font-size:.8rem;">Ordinary form</div>
+          <div id="ordinary" class="formula" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="card" style="margin-top:10px;">
+          <div class="muted" style="font-size:.8rem;">Horner form</div>
+          <div id="hornerForm" class="formula" style="margin-top:6px;"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">2. Trace the multiply-add process</div>
+        <p class="muted" style="margin-top:-3px;">
+          Start with the highest coefficient, then repeatedly do
+          <strong>result = result × x + next coefficient</strong>.
+        </p>
+
+        <div id="pipeline" class="pipeline"></div>
+
+        <div class="card" style="margin-top:14px;">
+          <div id="stepTitle" style="font-weight:800;"></div>
+          <div id="stepMath" class="formula" style="margin-top:8px;"></div>
+          <div id="stepHint" class="muted" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="controls">
+          <button id="prevBtn">← Previous</button>
+          <button id="nextBtn" class="primary">Next →</button>
+          <button id="resetBtn">Restart</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="label">Final result</div>
+        <div id="result" class="big good"></div>
+      </div>
+      <div class="stat">
+        <div class="label">Arithmetic work</div>
+        <div class="big">n mult + n add</div>
+        <div class="muted">Only one multiply and one addition per coefficient.</div>
+      </div>
+      <div class="stat">
+        <div class="label">Time complexity</div>
+        <div class="big">O(n)</div>
+        <div class="muted">One pass from Aₙ down to A₀.</div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:16px;">
+      <div class="section-title">Interview derivation</div>
+      <p>
+        Factor out <span class="formula">x</span> repeatedly:
+      </p>
+      <div class="card formula">
+        A₀ + A₁x + A₂x² + A₃x³
+        <br><br>
+        = A₀ + x(A₁ + A₂x + A₃x²)
+        <br>
+        = A₀ + x(A₁ + x(A₂ + A₃x))
+        <br>
+        = ((A₃x + A₂)x + A₁)x + A₀
+      </div>
+
+      <p class="muted">
+        The key observation is that every inner partial result can be reused instead of recomputing powers
+        such as <span class="formula">x², x³, …</span>.
+      </p>
+
+      <pre><code>result = A[n]
+
+for i = n - 1 down to 0:
+    result = result * x + A[i]
+
+return result</code></pre>
+
+      <p>
+        So for a degree-<span class="formula">n</span> polynomial, Horner's method uses
+        exactly <strong>n multiplications</strong> and <strong>n additions</strong>,
+        giving <strong>O(n)</strong> time and <strong>O(1)</strong> extra space.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const inputs = [
+        document.getElementById('a0'),
+        document.getElementById('a1'),
+        document.getElementById('a2'),
+        document.getElementById('a3')
+      ];
+      const xInput = document.getElementById('x');
+      const ordinary = document.getElementById('ordinary');
+      const hornerForm = document.getElementById('hornerForm');
+      const pipeline = document.getElementById('pipeline');
+      const resultEl = document.getElementById('result');
+      const stepTitle = document.getElementById('stepTitle');
+      const stepMath = document.getElementById('stepMath');
+      const stepHint = document.getElementById('stepHint');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      const subs = ['₀','₁','₂','₃'];
+      let step = 0;
+      let states = [];
+
+      function val(el) {
+        const n = Number(el.value);
+        return Number.isFinite(n) ? n : 0;
+      }
+
+      function fmt(n) {
+        if (Math.abs(n) < 1e-12) n = 0;
+        if (Number.isInteger(n)) return String(n);
+        return String(Math.round(n * 1e6) / 1e6);
+      }
+
+      function polynomialText(a) {
+        const pieces = [];
+        for (let i = 0; i < a.length; i++) {
+          const coeff = a[i];
+          let body = '';
+          if (i === 0) body = String(Math.abs(coeff));
+          else if (i === 1) body = Math.abs(coeff) + 'x';
+          else body = Math.abs(coeff) + 'x^' + i;
+
+          if (i === 0) {
+            pieces.push(fmt(coeff));
+          } else {
+            pieces.push((coeff >= 0 ? ' + ' : ' - ') + body);
+          }
+        }
+        return 'y = ' + pieces.join('');
+      }
+
+      function compute() {
+        const a = inputs.map(val);
+        const x = val(xInput);
+
+        states = [];
+        let r = a[3];
+        states.push({ index: 3, before: null, coeff: a[3], value: r });
+
+        for (let i = 2; i >= 0; i--) {
+          const before = r;
+          r = before * x + a[i];
+          states.push({ index: i, before, coeff: a[i], value: r });
+        }
+
+        ordinary.textContent = polynomialText(a);
+        hornerForm.textContent =
+          'y = ((A₃x + A₂)x + A₁)x + A₀ = ((' +
+          fmt(a[3]) + '·' + fmt(x) + ' + ' + fmt(a[2]) + ')·' +
+          fmt(x) + ' + ' + fmt(a[1]) + ')·' + fmt(x) + ' + ' + fmt(a[0]);
+
+        resultEl.textContent = 'y = ' + fmt(r);
+
+        renderPipeline(x);
+        renderStep(x);
+      }
+
+      function renderPipeline(x) {
+        pipeline.innerHTML = '';
+
+        states.forEach((s, idx) => {
+          const box = document.createElement('div');
+          box.className = 'stage' + (idx === step ? ' active' : '');
+
+          const small = document.createElement('div');
+          small.className = 'small';
+          small.textContent = idx === 0
+            ? 'Start with A₃'
+            : '× ' + fmt(x) + ' + A' + subs[s.index];
+
+          const value = document.createElement('div');
+          value.className = 'value';
+          value.textContent = fmt(s.value);
+
+          box.appendChild(small);
+          box.appendChild(value);
+          pipeline.appendChild(box);
+
+          if (idx < states.length - 1) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
+            arrow.textContent = '→';
+            pipeline.appendChild(arrow);
+          }
+        });
+      }
+
+      function renderStep(x) {
+        const s = states[step];
+
+        if (step === 0) {
+          stepTitle.textContent = 'Step 0: initialize';
+          stepMath.textContent = 'result = A₃ = ' + fmt(s.value);
+          stepHint.textContent =
+            'We begin with the coefficient of the highest power.';
+        } else {
+          stepTitle.textContent =
+            'Step ' + step + ': multiply by x, then add A' + subs[s.index];
+          stepMath.textContent =
+            'result = ' + fmt(s.before) + ' × ' + fmt(x) +
+            ' + ' + fmt(s.coeff) + ' = ' + fmt(s.value);
+          stepHint.textContent =
+            'The previous partial result is reused immediately.';
+        }
+
+        prevBtn.disabled = step === 0;
+        nextBtn.disabled = step === states.length - 1;
+      }
+
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          step = 0;
+          compute();
+        });
+      });
+
+      xInput.addEventListener('input', () => {
+        step = 0;
+        compute();
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (step > 0) {
+          step--;
+          compute();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (step < states.length - 1) {
+          step++;
+          compute();
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        step = 0;
+        compute();
+      });
+
+      compute();
+    })();
+  </script>
+</body>
+</html>
