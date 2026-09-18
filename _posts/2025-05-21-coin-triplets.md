@@ -53,6 +53,8 @@ In Penney's game:
 - **Player 2**, knowing Player 1's choice, selects a different sequence.
 - A fair coin is tossed repeatedly until one of the chosen sequences appears as a consecutive subsequence; the corresponding player wins.
 
+<iframe src="{{ site.baseurl }}/assets/coin_toss_patterns_penneys_game.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 #### Optimal Strategy
 
 The game is non-transitive, meaning that for any sequence chosen by Player 1, there exists a sequence that Player 2 can choose to have a higher probability of winning.
