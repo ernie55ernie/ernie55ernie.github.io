@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dice Race: 12 vs Two Consecutive 7s</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --orange: #d97706;
+      --orange-soft: #fef3c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .outcome {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .outcome:last-child {
+      border-bottom: 0;
+    }
+
+    .badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .badge.seven { background: var(--green-soft); }
+    .badge.twelve { background: var(--orange-soft); }
+    .badge.other { background: #eef2f7; }
+
+    .outcome-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .prob {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+    }
+
+    .answer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .answer-box {
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .answer-box.a { background: var(--orange-soft); }
+    .answer-box.b { background: var(--green-soft); }
+
+    .big {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .muted { color: var(--muted); }
+
+    .equation {
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    .state-diagram {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .state {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      background: white;
+    }
+
+    .state.win-a { border-color: #f59e0b; }
+    .state.win-b { border-color: #10b981; }
+
+    .arrow {
+      font-size: 1.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      background: var(--blue);
+      color: white;
+      font-weight: 700;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover { filter: brightness(0.95); }
+
+    .sim-result {
+      margin-top: 14px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .state-diagram {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+      }
+
+      .answer {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Dice Race: 12 vs Two Consecutive 7s</h1>
+    <p class="subtitle">
+      Two fair six-sided dice are rolled repeatedly. Player A wins when a sum of 12
+      appears before Player B gets two consecutive sums of 7.
+    </p>
+
+    <section class="grid grid-2">
+      <div class="card">
+        <h2>1. Reduce each roll to 3 outcomes</h2>
+
+        <div class="outcome">
+          <div class="badge seven">7</div>
+          <div class="outcome-main">
+            <strong>Sum = 7</strong><br />
+            <span class="muted">6 combinations out of 36</span>
+          </div>
+          <div class="prob">1/6</div>
+        </div>
+
+        <div class="outcome">
+          <div class="badge twelve">12</div>
+          <div class="outcome-main">
+            <strong>Sum = 12</strong><br />
+            <span class="muted">Only (6,6)</span>
+          </div>
+          <div class="prob">1/36</div>
+        </div>
+
+        <div class="outcome">
+          <div class="badge other">×</div>
+          <div class="outcome-main">
+            <strong>Anything else</strong><br />
+            <span class="muted">Breaks a possible streak of 7s</span>
+          </div>
+          <div class="prob">29/36</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Final answer</h2>
+        <div class="answer">
+          <div class="answer-box a">
+            <div>Player A</div>
+            <div class="big">7/13</div>
+            <div>≈ 53.85%</div>
+          </div>
+          <div class="answer-box b">
+            <div>Player B</div>
+            <div class="big">6/13</div>
+            <div>≈ 46.15%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>2. The key idea: only remember whether the previous roll was 7</h2>
+      <p>
+        We do <strong>not</strong> need the full history. The only relevant information is
+        whether the immediately previous roll was a 7.
+      </p>
+
+      <div class="state-diagram">
+        <div class="state">
+          <h3>S₀</h3>
+          <div>No active 7 streak</div>
+          <small class="muted">Start here</small>
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="state">
+          <h3>S₁</h3>
+          <div>Previous roll was 7</div>
+          <small class="muted">One more 7 means B wins</small>
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div>
+          <div class="state win-a" style="margin-bottom:10px;">
+            <strong>A wins</strong><br />
+            Roll 12
+          </div>
+          <div class="state win-b">
+            <strong>B wins</strong><br />
+            Roll 7 from S₁
+          </div>
+        </div>
+      </div>
+
+      <ul>
+        <li>From S₀, a 7 moves us to S₁.</li>
+        <li>From S₀, anything except 7 or 12 keeps us in S₀.</li>
+        <li>From S₁, another 7 makes B win.</li>
+        <li>From S₁, 12 makes A win.</li>
+        <li>From S₁, any other sum resets us to S₀.</li>
+      </ul>
+    </section>
+
+    <section class="grid grid-2" style="margin-top:18px;">
+      <div class="card">
+        <h2>3. Set up equations</h2>
+        <p>
+          Let <strong>a</strong> be the probability that A eventually wins starting
+          from S₀.
+        </p>
+        <p>
+          Let <strong>b</strong> be the probability that A eventually wins starting
+          from S₁.
+        </p>
+
+        <div class="equation">
+          a = 1/36 + (29/36)a + (6/36)b
+        </div>
+
+        <p class="muted">
+          Why? From S₀:
+          roll 12 → A wins;
+          roll something else → stay in S₀;
+          roll 7 → move to S₁.
+        </p>
+
+        <div class="equation">
+          b = 1/36 + (29/36)a
+        </div>
+
+        <p class="muted">
+          From S₁, rolling a 7 makes B win, so that branch contributes 0 to
+          A's winning probability.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>4. Solve</h2>
+
+        <div class="equation">
+          36a = 1 + 29a + 6b
+        </div>
+
+        <div class="equation">
+          7a = 1 + 6b
+        </div>
+
+        <div class="equation">
+          36b = 1 + 29a
+        </div>
+
+        <div class="equation">
+          b = (1 + 29a) / 36
+        </div>
+
+        <div class="equation">
+          7a = 1 + (1 + 29a)/6
+        </div>
+
+        <div class="equation">
+          42a = 7 + 29a
+        </div>
+
+        <div class="equation">
+          13a = 7
+        </div>
+
+        <div class="equation">
+          <strong>a = 7/13</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>5. Interview shortcut</h2>
+      <p>
+        When you see a repeated stochastic process, ask:
+        <strong>“What is the minimum information from the past that affects the future?”</strong>
+      </p>
+      <p>
+        Here the answer is only one bit of memory:
+        <em>Was the previous roll a 7?</em>
+        That gives exactly two transient states, so the infinite game becomes two simple equations.
+      </p>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>6. Monte Carlo check</h2>
+      <p>Run a simulation and compare it with the exact probability 7/13 ≈ 53.846%.</p>
+      <button id="simulate">Run 20,000 games</button>
+      <div id="result" class="sim-result"></div>
+    </section>
+  </main>
+
+  <script>
+    function rollTwoDice() {
+      return 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
+    }
+
+    function playGame() {
+      let previousWasSeven = false;
+
+      while (true) {
+        const sum = rollTwoDice();
+
+        if (sum === 12) {
+          return "A";
+        }
+
+        if (sum === 7) {
+          if (previousWasSeven) {
+            return "B";
+          }
+          previousWasSeven = true;
+        } else {
+          previousWasSeven = false;
+        }
+      }
+    }
+
+    document.getElementById("simulate").addEventListener("click", () => {
+      const games = 20000;
+      let aWins = 0;
+
+      for (let i = 0; i < games; i++) {
+        if (playGame() === "A") {
+          aWins++;
+        }
+      }
+
+      const rate = (100 * aWins / games).toFixed(2);
+      document.getElementById("result").textContent =
+        `Player A won ${aWins.toLocaleString()} of ${games.toLocaleString()} games = ${rate}% (exact: 53.846%).`;
+    });
+  </script>
+</body>
+</html>

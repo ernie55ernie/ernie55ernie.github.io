@@ -14,6 +14,8 @@ Two players engage in a dice game:
 
 The game continues with repeated rolls of two fair six-sided dice until one of these conditions is met.
 
+<iframe src="{{ site.baseurl }}/assets/dice_race_12_vs_two_7s.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Modeling the Game
