@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swap Two Integers Without Extra Storage</title>
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --text: #16181d;
+      --muted: #6b7280;
+      --border: #d8dce3;
+      --accent: #2563eb;
+      --accent-soft: #eaf1ff;
+      --code: #f3f4f6;
+      --success: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      margin: 0 0 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      color: var(--text);
+      background: white;
+    }
+
+    .methods {
+      margin-top: 18px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .methods label {
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .current-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .values {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .value-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 12px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .value-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .value {
+      font-size: 36px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .swap-icon {
+      font-size: 26px;
+      color: var(--muted);
+    }
+
+    .operation {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fafafa;
+    }
+
+    .operation-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .operation code {
+      display: block;
+      margin-top: 5px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .operation p {
+      color: var(--muted);
+      margin: 8px 0 0;
+      font-size: 14px;
+    }
+
+    .pattern {
+      margin-top: 18px;
+    }
+
+    .formula {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .formula code {
+      background: var(--code);
+      border-radius: 9px;
+      padding: 10px 12px;
+      display: block;
+      font-size: 15px;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hidden { display: none; }
+
+    .answer {
+      margin-top: 18px;
+      border-left: 4px solid var(--success);
+      background: #eefbf8;
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+
+    .answer strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .answer code {
+      display: block;
+      font-size: 15px;
+      margin: 4px 0;
+    }
+
+    .error {
+      margin-top: 10px;
+      min-height: 20px;
+      color: #b42318;
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .page { padding-top: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Swap Two Integers Without Extra Storage</h1>
+    <p class="subtitle">
+      Use either arithmetic or XOR to swap <code>i</code> and <code>j</code> without a temporary variable.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="section-title">Try your own values</div>
+
+        <div class="inputs">
+          <label>
+            i
+            <input id="inputI" type="number" value="5" step="1" />
+          </label>
+          <label>
+            j
+            <input id="inputJ" type="number" value="9" step="1" />
+          </label>
+        </div>
+
+        <div class="methods">
+          <label><input type="radio" name="method" value="arith" checked /> Arithmetic</label>
+          <label><input type="radio" name="method" value="xor" /> XOR</label>
+        </div>
+
+        <div class="actions">
+          <button id="resetBtn">Reset</button>
+          <button id="nextBtn" class="primary">Next step →</button>
+        </div>
+
+        <div id="error" class="error"></div>
+      </section>
+
+      <section class="card">
+        <div class="current-head">
+          <div>
+            <div class="muted">Current values</div>
+            <strong id="stepLabel">Start</strong>
+          </div>
+          <div id="counter" class="muted">Step 0 / 3</div>
+        </div>
+
+        <div class="values">
+          <div class="value-box">
+            <div class="value-label">i</div>
+            <div id="displayI" class="value">5</div>
+          </div>
+
+          <div class="swap-icon">⇄</div>
+
+          <div class="value-box">
+            <div class="value-label">j</div>
+            <div id="displayJ" class="value">9</div>
+          </div>
+        </div>
+
+        <div class="operation">
+          <div class="operation-label">Operation</div>
+          <code id="operation">Initial state</code>
+          <p id="explanation">
+            We want i = 9 and j = 5 without creating a temporary variable.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <section class="card pattern">
+      <div class="section-title">The pattern</div>
+
+      <div id="arithFormula" class="formula">
+        <code>i = i + j</code>
+        <code>j = i - j</code>
+        <code>i = i - j</code>
+      </div>
+
+      <div id="xorFormula" class="formula hidden">
+        <code>i = i ^ j</code>
+        <code>j = i ^ j</code>
+        <code>i = i ^ j</code>
+      </div>
+
+      <p id="methodNote" class="note">
+        <strong>Idea:</strong> first store both original values inside <code>i</code>.
+        The next two subtraction steps recover them in reverse order.
+      </p>
+
+      <div class="answer">
+        <strong>Interview answer</strong>
+        <code>i = i + j</code>
+        <code>j = i - j</code>
+        <code>i = i - j</code>
+        <p style="margin:8px 0 0;">
+          Or, for integers, use XOR to avoid arithmetic overflow:
+          <code>i ^= j; j ^= i; i ^= j;</code>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const inputI = document.getElementById("inputI");
+    const inputJ = document.getElementById("inputJ");
+    const displayI = document.getElementById("displayI");
+    const displayJ = document.getElementById("displayJ");
+    const stepLabel = document.getElementById("stepLabel");
+    const counter = document.getElementById("counter");
+    const operation = document.getElementById("operation");
+    const explanation = document.getElementById("explanation");
+    const nextBtn = document.getElementById("nextBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const error = document.getElementById("error");
+    const arithFormula = document.getElementById("arithFormula");
+    const xorFormula = document.getElementById("xorFormula");
+    const methodNote = document.getElementById("methodNote");
+
+    let i, j, originalI, originalJ;
+    let step = 0;
+    let method = "arith";
+
+    function parseBigInt(input) {
+      const raw = input.value.trim();
+      if (!/^-?\d+$/.test(raw)) return null;
+      try {
+        return BigInt(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function render() {
+      displayI.textContent = i.toString();
+      displayJ.textContent = j.toString();
+      counter.textContent = `Step ${step} / 3`;
+      nextBtn.disabled = step >= 3;
+      nextBtn.textContent = step >= 3 ? "Swapped ✓" : "Next step →";
+    }
+
+    function reset() {
+      const newI = parseBigInt(inputI);
+      const newJ = parseBigInt(inputJ);
+
+      if (newI === null || newJ === null) {
+        error.textContent = "Please enter whole integers for both i and j.";
+        return;
+      }
+
+      error.textContent = "";
+      originalI = newI;
+      originalJ = newJ;
+      i = newI;
+      j = newJ;
+      step = 0;
+
+      stepLabel.textContent = "Start";
+      operation.textContent = "Initial state";
+      explanation.textContent =
+        `We want i = ${originalJ} and j = ${originalI} without creating a temporary variable.`;
+
+      render();
+    }
+
+    function arithmeticStep() {
+      if (step === 0) {
+        i = i + j;
+        step = 1;
+        stepLabel.textContent = "Store both values in i";
+        operation.textContent = "i = i + j";
+        explanation.textContent =
+          `i now contains ${originalI} + ${originalJ} = ${i}. j still contains the original j.`;
+      } else if (step === 1) {
+        j = i - j;
+        step = 2;
+        stepLabel.textContent = "Recover old i into j";
+        operation.textContent = "j = i - j";
+        explanation.textContent =
+          `(${originalI} + ${originalJ}) - ${originalJ} = ${originalI}. So j is now the old i.`;
+      } else if (step === 2) {
+        i = i - j;
+        step = 3;
+        stepLabel.textContent = "Recover old j into i";
+        operation.textContent = "i = i - j";
+        explanation.textContent =
+          `(${originalI} + ${originalJ}) - ${originalI} = ${originalJ}. The values are swapped.`;
+      }
+    }
+
+    function xorStep() {
+      if (step === 0) {
+        i = i ^ j;
+        step = 1;
+        stepLabel.textContent = "Combine both bit patterns";
+        operation.textContent = "i = i ^ j";
+        explanation.textContent =
+          "XOR combines the two values reversibly inside i.";
+      } else if (step === 1) {
+        j = i ^ j;
+        step = 2;
+        stepLabel.textContent = "Recover old i into j";
+        operation.textContent = "j = i ^ j";
+        explanation.textContent =
+          `(old i XOR old j) XOR old j = old i, so j becomes ${originalI}.`;
+      } else if (step === 2) {
+        i = i ^ j;
+        step = 3;
+        stepLabel.textContent = "Recover old j into i";
+        operation.textContent = "i = i ^ j";
+        explanation.textContent =
+          `XORing again leaves the original j, ${originalJ}. The values are swapped.`;
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (step >= 3) return;
+
+      if (method === "arith") {
+        arithmeticStep();
+      } else {
+        xorStep();
+      }
+
+      render();
+    });
+
+    resetBtn.addEventListener("click", reset);
+    inputI.addEventListener("change", reset);
+    inputJ.addEventListener("change", reset);
+
+    document.querySelectorAll('input[name="method"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        method = radio.value;
+
+        if (method === "arith") {
+          arithFormula.classList.remove("hidden");
+          xorFormula.classList.add("hidden");
+          methodNote.innerHTML =
+            "<strong>Idea:</strong> first store both original values inside <code>i</code>. " +
+            "The next two subtraction steps recover them in reverse order. " +
+            "In fixed-width languages, <code>i + j</code> can overflow.";
+        } else {
+          arithFormula.classList.add("hidden");
+          xorFormula.classList.remove("hidden");
+          methodNote.innerHTML =
+            "<strong>Idea:</strong> XOR is reversible because <code>x ^ y ^ y = x</code>. " +
+            "It avoids arithmetic overflow and uses no temporary variable.";
+        }
+
+        reset();
+      });
+    });
+
+    reset();
+  </script>
+</body>
+</html>

@@ -9,6 +9,8 @@ category: quantitative interview
 
 You have two integer variables, `i` and `j`. How can you **swap** their values **without using any extra storage**, i.e., no temporary variable?
 
+<iframe src="{{ site.baseurl }}/assets/swap_without_temp.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Solution Using Arithmetic
