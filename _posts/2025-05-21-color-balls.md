@@ -21,20 +21,40 @@ This process repeats until all balls share the same color.
 
 ### Solution
 
-This problem is analogous to the **Moran process** in population genetics, where individuals reproduce and replace others, leading to fixation of a single type. In our scenario, the "types" are the colors of the balls.
+We can elegantly solve this by looking at the process **backwards in time** using coalescent theory. 
 
-In the standard Moran process with a population size of \\( n \\), the expected time to fixation (i.e., all individuals sharing the same type) is:
+Instead of tracking colors forward, track the "ancestor" of each ball. When the first ball is repainted to match the second, its lineage merges with the second ball's lineage. The game ends when all \\( n \\) balls trace back to a single common ancestor.
+
+At any point, if there are \\( k \\) distinct lineages, a step will merge two of them if we select two balls belonging to these \\( k \\) lineages. Since we select two distinct balls uniformly at random (ordered selection without replacement), there are \\( n(n-1) \\) possible pairs. The number of pairs that result in two of the \\( k \\) lineages merging is \\( k(k-1) \\).
+
+Thus, the probability of a merger in a single step is:
 
 \\[
-t^* = n(n - 1)
+P_k = \frac{k(k-1)}{n(n-1)}
 \\]
 
-However, in our process, when both selected balls are of the same color, repainting has no effect. The probability that both selected balls are of the same color is \\( \frac{1}{n} \\), since each ball has an equal chance of being any color, and there are \\( n \\) colors.
-
-Therefore, the expected number of **effective** steps (i.e., steps that change the state) is:
+The expected number of steps to reduce the number of lineages from \\( k \\) to \\( k-1 \\) is the reciprocal of this probability:
 
 \\[
-t = (1 - \frac{1}{n}) \cdot t^* = (1 - \frac{1}{n}) \cdot n(n - 1) = (n - 1)^2
+E_k = \frac{n(n-1)}{k(k-1)}
+\\]
+
+To find the total expected time to reach 1 lineage from \\( n \\) lineages, we sum these expectations:
+
+\\[
+E[\text{Total Steps}] = \sum_{k=2}^{n} \frac{n(n-1)}{k(k-1)} = n(n-1) \sum_{k=2}^{n} \left( \frac{1}{k-1} - \frac{1}{k} \right)
+\\]
+
+The sum is a telescoping series:
+
+\\[
+\sum_{k=2}^{n} \left( \frac{1}{k-1} - \frac{1}{k} \right) = \left(1 - \frac{1}{2}\right) + \left(\frac{1}{2} - \frac{1}{3}\right) + \dots + \left(\frac{1}{n-1} - \frac{1}{n}\right) = 1 - \frac{1}{n} = \frac{n-1}{n}
+\\]
+
+Multiplying this by \\( n(n-1) \\):
+
+\\[
+E[\text{Total Steps}] = n(n-1) \cdot \frac{n-1}{n} = (n-1)^2
 \\]
 
 Thus, the expected number of steps until all balls are the same color is:
