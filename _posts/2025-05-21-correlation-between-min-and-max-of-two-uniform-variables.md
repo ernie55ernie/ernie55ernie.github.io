@@ -26,7 +26,7 @@ P(Y \ge y \mid Z \le z), \quad \text{for } 0 \le y \le z \le 1
 Let’s compute the joint event:
 
 \\[
-P(Y \ge y, Z \le z) = P(y \le X_1, X_2 \le z, X_1 \ne X_2)
+P(Y \ge y, Z \le z) = P(y \le X_1 \le z, \ y \le X_2 \le z)
 \\]
 
 Since \\( X_1 \\) and \\( X_2 \\) are iid, we can write:
