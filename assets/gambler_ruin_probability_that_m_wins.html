@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gambler's Ruin Visualization</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent2:#22c55e;
+      --danger:#f87171;
+      --border:#334155;
+      --yellow:#facc15;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:linear-gradient(180deg,#0b1220,#111827);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:32px 20px 60px;
+    }
+    h1,h2,h3{
+      margin:0 0 12px;
+      line-height:1.2;
+    }
+    h1{font-size:2rem}
+    h2{font-size:1.35rem}
+    h3{font-size:1.05rem}
+    p{margin:0 0 12px}
+    .lead{color:var(--muted); font-size:1.05rem}
+    .grid{
+      display:grid;
+      gap:20px;
+    }
+    .grid-2{
+      grid-template-columns:2fr 1fr;
+    }
+    @media (max-width:900px){
+      .grid-2{grid-template-columns:1fr}
+    }
+    .card{
+      background:rgba(17,24,39,0.92);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(56,189,248,.12);
+      color:#bae6fd;
+      border:1px solid rgba(56,189,248,.35);
+      font-weight:600;
+      font-size:.95rem;
+    }
+    ul{
+      margin:10px 0 0 20px;
+      padding:0;
+    }
+    li{margin:6px 0}
+    .result{
+      font-size:2.4rem;
+      font-weight:800;
+      color:var(--yellow);
+      margin:10px 0 4px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:0.98rem;
+    }
+    .equation{
+      background:rgba(148,163,184,.08);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px 16px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      overflow:auto;
+      white-space:nowrap;
+      margin:10px 0;
+    }
+    .steps{
+      display:grid;
+      gap:14px;
+      margin-top:8px;
+    }
+    .step{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 16px;
+    }
+    .label{
+      display:inline-block;
+      font-size:.82rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      color:var(--accent);
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .sim-wrap{
+      display:grid;
+      gap:16px;
+      margin-top:14px;
+    }
+    .states{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    .state{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px 10px;
+      text-align:center;
+      background:#0f172a;
+      transition:.2s ease;
+    }
+    .state.active{
+      background:rgba(56,189,248,.15);
+      border-color:var(--accent);
+      box-shadow:0 0 0 2px rgba(56,189,248,.18) inset;
+      transform:translateY(-2px);
+    }
+    .state.win{
+      background:rgba(34,197,94,.14);
+      border-color:var(--accent2);
+    }
+    .state.lose{
+      background:rgba(248,113,113,.12);
+      border-color:var(--danger);
+    }
+    .state .money{
+      font-size:1.5rem;
+      font-weight:800;
+    }
+    .state .note{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-top:3px;
+    }
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .btn-primary{
+      background:var(--accent);
+      color:#082f49;
+    }
+    .btn-secondary{
+      background:#1e293b;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+    button:hover{transform:translateY(-1px)}
+    .log{
+      background:#020617;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 16px;
+      min-height:60px;
+      color:#cbd5e1;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      white-space:pre-wrap;
+    }
+    .small{
+      font-size:.92rem;
+      color:var(--muted);
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card" style="margin-bottom:20px;">
+      <h1>Gambler’s Ruin: Probability that M Wins</h1>
+      <p class="lead">
+        Two players, <strong>M</strong> and <strong>N</strong>, play until one is ruined.
+        M starts with <strong>$1</strong>, N starts with <strong>$2</strong>, so the total capital is <strong>$3</strong>.
+      </p>
+      <span class="pill">Goal: Find P(M reaches $3 before $0)</span>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h2>1) State Diagram</h2>
+        <p class="small">
+          Let the state be M’s current amount of money. The absorbing states are:
+          <strong>$0</strong> (M is ruined) and <strong>$3</strong> (M wins).
+        </p>
+
+        <svg viewBox="0 0 920 280" aria-label="State diagram for Gambler's Ruin">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"></path>
+            </marker>
+          </defs>
+
+          <!-- arrows -->
+          <g fill="none" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)">
+            <path d="M 188 140 C 245 75, 315 75, 372 140"></path>
+            <path d="M 372 170 C 315 235, 245 235, 188 170"></path>
+
+            <path d="M 548 140 C 605 75, 675 75, 732 140"></path>
+            <path d="M 732 170 C 675 235, 605 235, 548 170"></path>
+
+            <path d="M 118 155 L 52 155"></path>
+            <path d="M 802 155 L 868 155"></path>
+          </g>
+
+          <!-- arrow labels -->
+          <g font-size="22" font-weight="700" text-anchor="middle" fill="#e5e7eb">
+            <text x="280" y="72">p = 2/3</text>
+            <text x="280" y="256">q = 1/3</text>
+            <text x="640" y="72">p = 2/3</text>
+            <text x="640" y="256">q = 1/3</text>
+            <text x="83" y="140">q</text>
+            <text x="837" y="140">p</text>
+          </g>
+
+          <!-- nodes -->
+          <g>
+            <circle cx="40" cy="155" r="38" fill="#1f2937" stroke="#f87171" stroke-width="4"></circle>
+            <circle cx="153" cy="155" r="42" fill="#1f2937" stroke="#38bdf8" stroke-width="4"></circle>
+            <circle cx="460" cy="155" r="42" fill="#1f2937" stroke="#64748b" stroke-width="4"></circle>
+            <circle cx="880" cy="155" r="38" fill="#1f2937" stroke="#22c55e" stroke-width="4"></circle>
+          </g>
+
+          <!-- node text -->
+          <g text-anchor="middle" fill="#e5e7eb">
+            <text x="40" y="148" font-size="28" font-weight="800">$0</text>
+            <text x="40" y="172" font-size="14">M ruined</text>
+
+            <text x="153" y="148" font-size="30" font-weight="800">$1</text>
+            <text x="153" y="174" font-size="14">start</text>
+
+            <text x="460" y="148" font-size="30" font-weight="800">$2</text>
+            <text x="460" y="174" font-size="14">intermediate</text>
+
+            <text x="880" y="148" font-size="28" font-weight="800">$3</text>
+            <text x="880" y="172" font-size="14">M wins</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="card">
+        <h2>2) Final Answer</h2>
+        <div class="result">4/7</div>
+        <div class="sub">≈ 0.5714 ≈ 57.14%</div>
+
+        <div class="steps" style="margin-top:16px;">
+          <div class="step">
+            <div class="label">Start State</div>
+            M begins at <strong>$1</strong>.
+          </div>
+          <div class="step">
+            <div class="label">Winning State</div>
+            M wins if he reaches <strong>$3</strong>.
+          </div>
+          <div class="step">
+            <div class="label">Losing State</div>
+            M loses if he reaches <strong>$0</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>3) Solve Using State Probabilities</h2>
+      <p>
+        Let:
+      </p>
+      <ul>
+        <li><strong>P₁</strong> = probability M eventually wins starting from <strong>$1</strong></li>
+        <li><strong>P₂</strong> = probability M eventually wins starting from <strong>$2</strong></li>
+      </ul>
+
+      <div class="steps">
+        <div class="step">
+          <div class="label">From State $1</div>
+          <div class="equation">P₁ = (2/3)·P₂ + (1/3)·0</div>
+          <p>
+            From $1, M either:
+          </p>
+          <ul>
+            <li>wins the next game with probability <strong>2/3</strong>, moving to <strong>$2</strong></li>
+            <li>loses the next game with probability <strong>1/3</strong>, moving to <strong>$0</strong> and losing immediately</li>
+          </ul>
+          <div class="equation">So: P₁ = (2/3)P₂</div>
+        </div>
+
+        <div class="step">
+          <div class="label">From State $2</div>
+          <div class="equation">P₂ = (2/3)·1 + (1/3)·P₁</div>
+          <p>
+            From $2, M either:
+          </p>
+          <ul>
+            <li>wins the next game with probability <strong>2/3</strong>, moving to <strong>$3</strong> and winning immediately</li>
+            <li>loses the next game with probability <strong>1/3</strong>, moving back to <strong>$1</strong></li>
+          </ul>
+        </div>
+
+        <div class="step">
+          <div class="label">Substitute and Solve</div>
+          <div class="equation">
+            P₂ = 2/3 + (1/3)P₁
+          </div>
+          <div class="equation">
+            P₁ = (2/3)P₂ = (2/3)[2/3 + (1/3)P₁]
+          </div>
+          <div class="equation">
+            P₁ = 4/9 + 2P₁/9
+          </div>
+          <div class="equation">
+            7P₁/9 = 4/9
+          </div>
+          <div class="equation">
+            P₁ = 4/7
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>4) One-Game Simulation</h2>
+      <p class="small">
+        Click the button to simulate one random path of the game starting from M = $1.
+      </p>
+
+      <div class="sim-wrap">
+        <div class="controls">
+          <button class="btn-primary" id="playBtn">Play One Game</button>
+          <button class="btn-secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="states">
+          <div class="state" data-state="0">
+            <div class="money">$0</div>
+            <div class="note">M ruined</div>
+          </div>
+          <div class="state active" data-state="1">
+            <div class="money">$1</div>
+            <div class="note">start</div>
+          </div>
+          <div class="state" data-state="2">
+            <div class="money">$2</div>
+            <div class="note">middle</div>
+          </div>
+          <div class="state" data-state="3">
+            <div class="money">$3</div>
+            <div class="note">M wins</div>
+          </div>
+        </div>
+
+        <div class="log" id="logBox">Ready. Current state: $1</div>
+      </div>
+
+      <p class="footer-note">
+        Since p = 2/3 is larger than q = 1/3, M is favored, which is why the winning probability is above 50%.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const states = [...document.querySelectorAll(".state")];
+    const logBox = document.getElementById("logBox");
+    const playBtn = document.getElementById("playBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    let current = 1;
+
+    function renderState() {
+      states.forEach(el => {
+        const val = Number(el.dataset.state);
+        el.classList.remove("active", "win", "lose");
+
+        if (val === current) {
+          el.classList.add("active");
+          if (val === 0) el.classList.add("lose");
+          if (val === 3) el.classList.add("win");
+        }
+      });
+    }
+
+    function resetGame() {
+      current = 1;
+      renderState();
+      logBox.textContent = "Ready. Current state: $1";
+    }
+
+    function playGame() {
+      current = 1;
+      const path = [1];
+
+      while (current > 0 && current < 3) {
+        const r = Math.random();
+        if (r < 2 / 3) {
+          current += 1;
+        } else {
+          current -= 1;
+        }
+        path.push(current);
+      }
+
+      renderState();
+
+      const result = current === 3
+        ? "M reaches $3 and wins."
+        : "M reaches $0 and is ruined.";
+
+      logBox.textContent =
+        "Path: " + path.map(x => "$" + x).join(" → ") + "\nResult: " + result;
+    }
+
+    playBtn.addEventListener("click", playGame);
+    resetBtn.addEventListener("click", resetGame);
+
+    renderState();
+  </script>
+</body>
+</html>
