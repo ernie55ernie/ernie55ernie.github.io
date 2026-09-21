@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sliding Window Average Visualization</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f6f8fb;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    input {
+      font-size: 16px;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+
+    #arrayInput {
+      width: 420px;
+      max-width: 100%;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .array {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+
+    .cell {
+      min-width: 70px;
+      padding: 15px 8px;
+      text-align: center;
+      border-radius: 9px;
+      border: 2px solid #d1d5db;
+      background: #f9fafb;
+    }
+
+    .cell.active {
+      background: #dbeafe;
+      border-color: #2563eb;
+    }
+
+    .cell.output-active {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+
+    .index {
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .big {
+      font-size: 30px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    code,
+    .formula {
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .formula {
+      background: #f3f4f6;
+      padding: 14px;
+      border-radius: 8px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .enter {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .leave {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .complexity {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .complexity-box {
+      flex: 1;
+      min-width: 230px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Sliding Window Average</h1>
+
+  <div class="subtitle">
+    Reuse the previous window sum instead of recomputing all
+    <code>n</code> elements.
+  </div>
+
+
+  <!-- Controls -->
+  <div class="card">
+
+    <div class="controls">
+
+      <label>
+        Array A
+        <input
+          id="arrayInput"
+          value="2,4,6,8,10,12,14"
+        />
+      </label>
+
+      <label>
+        Window size n
+        <input
+          id="windowInput"
+          type="number"
+          min="1"
+          value="3"
+        />
+      </label>
+
+      <button id="resetBtn">
+        Reset
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Main array -->
+  <div class="card">
+
+    <h2>1. Slide the window</h2>
+
+    <div id="windowInfo"></div>
+
+    <div
+      id="array"
+      class="array">
+    </div>
+
+    <div class="buttons">
+
+      <button id="prevBtn">
+        ← Previous
+      </button>
+
+      <button id="nextBtn">
+        Next →
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Calculation -->
+  <div class="grid">
+
+    <div class="card">
+
+      <h2>2. Current window</h2>
+
+      <div id="sumExpression"
+           class="formula">
+      </div>
+
+      <div>
+        Sum
+        <div id="sum"
+             class="big">
+        </div>
+      </div>
+
+      <br />
+
+      <div>
+        Average
+        <div id="average"
+             class="big">
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>3. Sliding-window update</h2>
+
+      <div id="transition"
+           class="formula">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Output -->
+  <div class="card">
+
+    <h2>Output array B</h2>
+
+    <p>
+      There are
+      <strong>m − n + 1</strong>
+      valid windows.
+    </p>
+
+    <div
+      id="output"
+      class="array">
+    </div>
+
+  </div>
+
+
+  <!-- Algorithm -->
+  <div class="card">
+
+    <h2>Key idea</h2>
+
+    <div class="formula">
+      First window:<br><br>
+
+      windowSum =
+      A[0] + A[1] + ... + A[n-1]
+
+      <br><br>
+
+      Then slide one position:
+
+      <br><br>
+
+      newSum =
+      oldSum
+      − A[left]
+      + A[right]
+
+      <br><br>
+
+      B[i] =
+      windowSum / n
+    </div>
+
+  </div>
+
+
+  <!-- Complexity -->
+  <div class="card">
+
+    <h2>Complexity</h2>
+
+    <div class="complexity">
+
+      <div class="complexity-box">
+
+        <strong>Naive approach</strong>
+
+        <p>
+          Recalculate all <code>n</code>
+          elements for every window.
+        </p>
+
+        <div class="big">
+          O(mn)
+        </div>
+
+      </div>
+
+
+      <div class="complexity-box">
+
+        <strong>Sliding window</strong>
+
+        <p>
+          Remove one value and add one value
+          for each move.
+        </p>
+
+        <div class="big">
+          O(m)
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const arrayInput =
+  document.getElementById("arrayInput");
+
+const windowInput =
+  document.getElementById("windowInput");
+
+const arrayDiv =
+  document.getElementById("array");
+
+const outputDiv =
+  document.getElementById("output");
+
+const sumExpression =
+  document.getElementById("sumExpression");
+
+const sumDiv =
+  document.getElementById("sum");
+
+const averageDiv =
+  document.getElementById("average");
+
+const transitionDiv =
+  document.getElementById("transition");
+
+const windowInfo =
+  document.getElementById("windowInfo");
+
+const nextBtn =
+  document.getElementById("nextBtn");
+
+const prevBtn =
+  document.getElementById("prevBtn");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+
+let A = [];
+let n = 1;
+let position = 0;
+
+
+function readInput() {
+
+  A =
+    arrayInput.value
+      .split(",")
+      .map(x => Number(x.trim()))
+      .filter(x => Number.isFinite(x));
+
+
+  n = Number(windowInput.value);
+
+
+  if (A.length === 0) {
+    A = [0];
+  }
+
+
+  if (
+    !Number.isInteger(n) ||
+    n < 1
+  ) {
+    n = 1;
+  }
+
+
+  if (n > A.length) {
+    n = A.length;
+  }
+
+
+  windowInput.value = n;
+  windowInput.max = A.length;
+
+}
+
+
+function computeOutput() {
+
+  const B = [];
+
+  let sum = 0;
+
+
+  // First window
+  for (let i = 0; i < n; i++) {
+
+    sum += A[i];
+
+  }
+
+
+  B.push(sum / n);
+
+
+  // Remaining windows
+  for (
+    let right = n;
+    right < A.length;
+    right++
+  ) {
+
+    const left =
+      right - n;
+
+
+    sum =
+      sum
+      - A[left]
+      + A[right];
+
+
+    B.push(sum / n);
+
+  }
+
+
+  return B;
+
+}
+
+
+function createCell(
+  index,
+  value,
+  active = false,
+  output = false
+) {
+
+  const cell =
+    document.createElement("div");
+
+
+  cell.className =
+    "cell";
+
+
+  if (active) {
+
+    cell.classList.add(
+      output
+        ? "output-active"
+        : "active"
+    );
+
+  }
+
+
+  cell.innerHTML = `
+
+    <div class="index">
+      ${output ? "B" : "A"}[${index}]
+    </div>
+
+    <div class="value">
+      ${format(value)}
+    </div>
+
+  `;
+
+
+  return cell;
+
+}
+
+
+function format(x) {
+
+  if (Number.isInteger(x))
+    return x;
+
+  return Number(
+    x.toFixed(3)
+  );
+
+}
+
+
+function render() {
+
+  readInput();
+
+
+  const maxPosition =
+    A.length - n;
+
+
+  position =
+    Math.max(
+      0,
+      Math.min(
+        position,
+        maxPosition
+      )
+    );
+
+
+  /*
+   * Draw A
+   */
+
+  arrayDiv.innerHTML = "";
+
+
+  for (
+    let i = 0;
+    i < A.length;
+    i++
+  ) {
+
+    const inside =
+      i >= position &&
+      i < position + n;
+
+
+    arrayDiv.appendChild(
+      createCell(
+        i,
+        A[i],
+        inside
+      )
+    );
+
+  }
+
+
+
+  /*
+   * Current window
+   */
+
+  const currentWindow =
+    A.slice(
+      position,
+      position + n
+    );
+
+
+  const currentSum =
+    currentWindow.reduce(
+      (a, b) => a + b,
+      0
+    );
+
+
+  const currentAverage =
+    currentSum / n;
+
+
+  windowInfo.innerHTML = `
+
+    Window
+    <strong>
+      ${position + 1}
+    </strong>
+
+    of
+
+    <strong>
+      ${maxPosition + 1}
+    </strong>
+
+    &nbsp;:
+
+    A[${position}]
+    …
+    A[${position + n - 1}]
+
+  `;
+
+
+  sumExpression.innerHTML =
+
+    currentWindow.join(" + ")
+
+    +
+
+    " = "
+
+    +
+
+    format(currentSum);
+
+
+  sumDiv.textContent =
+    format(currentSum);
+
+
+  averageDiv.textContent =
+    `${format(currentSum)} / ${n}
+     = ${format(currentAverage)}`;
+
+
+
+  /*
+   * Explain transition
+   */
+
+  if (position === 0) {
+
+    transitionDiv.innerHTML = `
+
+      First compute the initial window:
+
+      <br><br>
+
+      S₀ =
+      ${currentWindow.join(" + ")}
+
+      <br>
+
+      = <strong>
+        ${format(currentSum)}
+        </strong>
+
+      <br><br>
+
+      Cost: O(n)
+
+    `;
+
+  }
+
+  else {
+
+    const previousWindow =
+      A.slice(
+        position - 1,
+        position - 1 + n
+      );
+
+
+    const oldSum =
+      previousWindow.reduce(
+        (a, b) => a + b,
+        0
+      );
+
+
+    const leaving =
+      A[position - 1];
+
+
+    const entering =
+      A[position + n - 1];
+
+
+    transitionDiv.innerHTML = `
+
+      oldSum =
+      ${format(oldSum)}
+
+      <br><br>
+
+      <span class="leave">
+        − leaving:
+        A[${position - 1}]
+        = ${leaving}
+      </span>
+
+      <br><br>
+
+      <span class="enter">
+        + entering:
+        A[${position + n - 1}]
+        = ${entering}
+      </span>
+
+      <br><br>
+
+      newSum
+
+      = ${format(oldSum)}
+      − ${leaving}
+      + ${entering}
+
+      <br>
+
+      = <strong>
+        ${format(currentSum)}
+        </strong>
+
+    `;
+
+  }
+
+
+
+  /*
+   * Output B
+   */
+
+  const B =
+    computeOutput();
+
+
+  outputDiv.innerHTML = "";
+
+
+  for (
+    let i = 0;
+    i < B.length;
+    i++
+  ) {
+
+    outputDiv.appendChild(
+      createCell(
+        i,
+        B[i],
+        i === position,
+        true
+      )
+    );
+
+  }
+
+
+
+  /*
+   * Buttons
+   */
+
+  prevBtn.disabled =
+    position === 0;
+
+
+  nextBtn.disabled =
+    position === maxPosition;
+
+}
+
+
+nextBtn.addEventListener(
+  "click",
+  () => {
+
+    position++;
+
+    render();
+
+  }
+);
+
+
+prevBtn.addEventListener(
+  "click",
+  () => {
+
+    position--;
+
+    render();
+
+  }
+);
+
+
+resetBtn.addEventListener(
+  "click",
+  () => {
+
+    position = 0;
+
+    render();
+
+  }
+);
+
+
+arrayInput.addEventListener(
+  "input",
+  () => {
+
+    position = 0;
+
+    render();
+
+  }
+);
+
+
+windowInput.addEventListener(
+  "input",
+  () => {
+
+    position = 0;
+
+    render();
+
+  }
+);
+
+
+render();
+
+</script>
+
+</body>
+</html>
