@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Naive Fibonacci Is Exponential</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --panel: #f0f2f7;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d9dee8;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --series1: #64748b;
+      --series2: #0ea5e9;
+      --series3: #22c55e;
+      --series4: #f59e0b;
+      --series5: #a855f7;
+      --series6: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 32px));
+      margin: 32px auto 56px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin: 0 0 8px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .card, .panel {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      background: var(--card);
+    }
+
+    .panel {
+      background: var(--panel);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .range-label {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .n-box {
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .n-value {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .tree-card {
+      margin-bottom: 18px;
+    }
+
+    .tree-head {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent-soft);
+      border-color: #c7d2fe;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .tree-wrap {
+      overflow-x: auto;
+      padding-top: 12px;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 650px;
+      display: block;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: var(--panel);
+      padding: 12px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 12px 0 18px;
+    }
+
+    .complexity {
+      font-size: 1.65rem;
+      font-weight: 800;
+      margin: 6px 0;
+    }
+
+    .bar-bg {
+      height: 9px;
+      background: var(--panel);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .bar {
+      height: 100%;
+      border-radius: 999px;
+      width: 0;
+      transition: width 0.25s ease;
+    }
+
+    .interview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    code {
+      background: #eef0f4;
+      border-radius: 6px;
+      padding: 2px 5px;
+    }
+
+    pre {
+      background: #111827;
+      color: #f9fafb;
+      padding: 16px;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 800px) {
+      .stats, .compare-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .two-col, .interview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      .stats, .compare-grid {
+        grid-template-columns: 1fr;
+      }
+      .n-box {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Why Naive Fibonacci Is Exponential</h1>
+    <p class="subtitle">
+      Visualize the recursion tree, repeated subproblems, and why memoization or dynamic programming removes the wasted work.
+    </p>
+
+    <section class="controls">
+      <div>
+        <div class="range-label">Choose n</div>
+        <div class="small">Drag the slider and watch the call tree grow.</div>
+        <input id="nSlider" type="range" min="2" max="12" value="6" />
+      </div>
+
+      <div class="card n-box">
+        <div class="small">Current input</div>
+        <div id="nValue" class="n-value">n = 6</div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="card">
+        <div class="small">F(n)</div>
+        <div id="fibValue" class="stat-value">8</div>
+      </div>
+      <div class="card">
+        <div class="small">Recursive calls</div>
+        <div id="callCount" class="stat-value">25</div>
+      </div>
+      <div class="card">
+        <div class="small">Unique subproblems</div>
+        <div id="uniqueCount" class="stat-value">7</div>
+      </div>
+      <div class="card">
+        <div class="small">Repeated calls</div>
+        <div id="repeatCount" class="stat-value">18</div>
+      </div>
+    </section>
+
+    <section class="panel tree-card">
+      <div class="tree-head">
+        <div>
+          <div class="section-title">Recursive call tree</div>
+          <div class="small">Repeated F(k) nodes show exactly where the wasted work comes from.</div>
+        </div>
+        <div class="buttons">
+          <button id="minusBtn" type="button">− n</button>
+          <button id="plusBtn" class="primary" type="button">+ n</button>
+        </div>
+      </div>
+
+      <div class="tree-wrap">
+        <svg id="treeSvg" viewBox="0 0 760 390" aria-label="Recursive Fibonacci call tree"></svg>
+      </div>
+
+      <div id="treeNote" class="small"></div>
+    </section>
+
+    <section class="two-col">
+      <article class="card">
+        <div class="section-title">Why the runtime becomes exponential</div>
+
+        <div class="formula">T(n) ≈ T(n−1) + T(n−2) + O(1)</div>
+
+        <p>
+          Every non-base call creates two more calls. The number of calls therefore grows
+          with essentially the same recurrence as the Fibonacci sequence itself.
+        </p>
+
+        <p><strong>Time:</strong> Θ(φ<sup>n</sup>), where φ ≈ 1.618</p>
+        <p><strong>Space:</strong> O(n), because the deepest recursion path is n → n−1 → ... → 1.</p>
+      </article>
+
+      <article class="card">
+        <div class="section-title">The key repeated subproblem</div>
+        <div id="dupExample"></div>
+
+        <div class="panel" style="margin-top: 14px;">
+          <strong>Interview insight:</strong>
+          if recursion branches and different branches repeatedly ask for the same state,
+          think <strong>memoization</strong> or <strong>dynamic programming</strong>.
+        </div>
+      </article>
+    </section>
+
+    <section>
+      <div class="section-title">Four ways to compute F(n)</div>
+      <div class="compare-grid">
+        <article class="card">
+          <strong>Naive recursion</strong>
+          <div class="complexity">O(φ<sup>n</sup>)</div>
+          <div class="small">Huge recursion tree</div>
+          <div class="bar-bg"><div id="barNaive" class="bar" style="background: var(--series2);"></div></div>
+        </article>
+
+        <article class="card">
+          <strong>Memoization</strong>
+          <div class="complexity">O(n)</div>
+          <div class="small">Compute each F(k) once</div>
+          <div class="bar-bg"><div id="barMemo" class="bar" style="background: var(--series3);"></div></div>
+        </article>
+
+        <article class="card">
+          <strong>Bottom-up DP</strong>
+          <div class="complexity">O(n)</div>
+          <div class="small">Keep only the previous two values</div>
+          <div class="bar-bg"><div id="barDp" class="bar" style="background: var(--series4);"></div></div>
+        </article>
+
+        <article class="card">
+          <strong>Fast doubling</strong>
+          <div class="complexity">O(log n)</div>
+          <div class="small">Reduce the input by roughly half each step</div>
+          <div class="bar-bg"><div id="barFast" class="bar" style="background: var(--series5);"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">How to come up with this in an interview</div>
+      <div class="interview-grid">
+        <div>
+          <strong>1. Draw a tiny recursion tree</strong>
+          <p class="small">
+            Expand F(5). You immediately see F(3), F(2), and other states repeated.
+          </p>
+        </div>
+        <div>
+          <strong>2. Write the time recurrence</strong>
+          <p class="small">
+            T(n)=T(n−1)+T(n−2)+O(1). That has Fibonacci-like growth, so the runtime is exponential.
+          </p>
+        </div>
+        <div>
+          <strong>3. Remove duplicate states</strong>
+          <p class="small">
+            Cache each F(k) or compute values iteratively. Now every state is solved once, giving O(n).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top: 18px;" class="card">
+      <div class="section-title">Bottom-up implementation</div>
+      <pre><code>def fibonacci_dp(n):
+    if n &lt;= 1:
+        return n
+
+    a, b = 0, 1
+
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+
+    return b</code></pre>
+    </section>
+  </main>
+
+  <script>
+    const slider = document.getElementById("nSlider");
+    const svg = document.getElementById("treeSvg");
+    const nValue = document.getElementById("nValue");
+    const fibValue = document.getElementById("fibValue");
+    const callCount = document.getElementById("callCount");
+    const uniqueCount = document.getElementById("uniqueCount");
+    const repeatCount = document.getElementById("repeatCount");
+    const treeNote = document.getElementById("treeNote");
+    const dupExample = document.getElementById("dupExample");
+    const minusBtn = document.getElementById("minusBtn");
+    const plusBtn = document.getElementById("plusBtn");
+
+    const NS = "http://www.w3.org/2000/svg";
+
+    const colors = [
+      "#64748b",
+      "#0ea5e9",
+      "#22c55e",
+      "#f59e0b",
+      "#a855f7",
+      "#ef4444"
+    ];
+
+    function fib(n) {
+      let a = 0;
+      let b = 1;
+
+      for (let i = 0; i < n; i++) {
+        [a, b] = [b, a + b];
+      }
+      return a;
+    }
+
+    function calls(n) {
+      if (n <= 1) return 1;
+      return calls(n - 1) + calls(n - 2) + 1;
+    }
+
+    function svgNode(tag, attrs = {}) {
+      const el = document.createElementNS(NS, tag);
+      for (const [key, value] of Object.entries(attrs)) {
+        el.setAttribute(key, value);
+      }
+      return el;
+    }
+
+    function buildTree(n, depth = 0) {
+      const node = {
+        n,
+        depth,
+        left: null,
+        right: null,
+        leaves: 1
+      };
+
+      if (n > 1) {
+        node.left = buildTree(n - 1, depth + 1);
+        node.right = buildTree(n - 2, depth + 1);
+        node.leaves = node.left.leaves + node.right.leaves;
+      }
+
+      return node;
+    }
+
+    function collectVisible(node, maxDepth, out = []) {
+      out.push(node);
+
+      if (node.depth < maxDepth) {
+        if (node.left) collectVisible(node.left, maxDepth, out);
+        if (node.right) collectVisible(node.right, maxDepth, out);
+      }
+
+      return out;
+    }
+
+    function layoutTree(tree, maxDepth) {
+      const width = 740;
+      const leftPad = 28;
+      const rightPad = 28;
+
+      function place(node, x0, x1) {
+        node.x = (x0 + x1) / 2;
+        node.y = 36 + node.depth * 64;
+
+        if (node.depth >= maxDepth) return;
+
+        if (node.left && node.right) {
+          const total = node.left.leaves + node.right.leaves;
+          const split = x0 + (x1 - x0) * (node.left.leaves / total);
+
+          place(node.left, x0, split);
+          place(node.right, split, x1);
+        }
+      }
+
+      place(tree, leftPad, width - rightPad);
+    }
+
+    function drawTree(n) {
+      svg.innerHTML = "";
+
+      const maxDepth = Math.min(n, 5);
+      const tree = buildTree(n);
+
+      layoutTree(tree, maxDepth);
+
+      const visible = collectVisible(tree, maxDepth);
+      const height = 80 + maxDepth * 64;
+
+      svg.setAttribute("viewBox", `0 0 760 ${height}`);
+
+      for (const node of visible) {
+        if (node.depth >= maxDepth) continue;
+
+        for (const child of [node.left, node.right]) {
+          if (!child) continue;
+
+          svg.appendChild(
+            svgNode("line", {
+              x1: node.x,
+              y1: node.y + 17,
+              x2: child.x,
+              y2: child.y - 17,
+              stroke: "#cbd5e1",
+              "stroke-width": 2
+            })
+          );
+        }
+      }
+
+      for (const node of visible) {
+        const circle = svgNode("circle", {
+          cx: node.x,
+          cy: node.y,
+          r: 18,
+          fill: colors[node.n % colors.length],
+          stroke: "#ffffff",
+          "stroke-width": 3
+        });
+
+        const text = svgNode("text", {
+          x: node.x,
+          y: node.y + 4,
+          "text-anchor": "middle",
+          fill: "#ffffff",
+          "font-size": 11,
+          "font-weight": 800
+        });
+
+        text.textContent = `F${node.n}`;
+
+        svg.appendChild(circle);
+        svg.appendChild(text);
+      }
+
+      if (n > maxDepth) {
+        treeNote.textContent =
+          `Showing only the first ${maxDepth + 1} levels. The complete recursion performs ${calls(n).toLocaleString()} calls.`;
+      } else {
+        treeNote.textContent = `This is the complete recursion tree for F(${n}).`;
+      }
+    }
+
+    function updateBars(n) {
+      const naive = calls(n);
+      const memo = n + 1;
+      const dp = Math.max(1, n - 1);
+      const fast = Math.max(1, Math.ceil(Math.log2(Math.max(2, n))));
+
+      const values = [
+        ["barNaive", naive],
+        ["barMemo", memo],
+        ["barDp", dp],
+        ["barFast", fast]
+      ];
+
+      for (const [id, value] of values) {
+        const pct = Math.max(
+          5,
+          100 * Math.log(value + 1) / Math.log(naive + 1)
+        );
+
+        document.getElementById(id).style.width = pct + "%";
+      }
+    }
+
+    function render() {
+      let n = Number(slider.value);
+      n = Math.max(2, Math.min(12, Number.isFinite(n) ? n : 6));
+
+      slider.value = n;
+
+      const f = fib(n);
+      const c = calls(n);
+      const unique = n + 1;
+
+      nValue.textContent = `n = ${n}`;
+      fibValue.textContent = f.toLocaleString();
+      callCount.textContent = c.toLocaleString();
+      uniqueCount.textContent = unique.toLocaleString();
+      repeatCount.textContent = Math.max(0, c - unique).toLocaleString();
+
+      dupExample.innerHTML =
+        `To compute <strong>F(${n})</strong>, the first call asks for ` +
+        `<strong>F(${n - 1})</strong> and <strong>F(${n - 2})</strong>. ` +
+        `But while computing F(${n - 1}), it asks for ` +
+        `<strong>F(${n - 2}) again</strong>. The same duplication continues deeper in the tree.`;
+
+      minusBtn.disabled = n <= 2;
+      plusBtn.disabled = n >= 12;
+
+      drawTree(n);
+      updateBars(n);
+    }
+
+    slider.addEventListener("input", render);
+
+    minusBtn.addEventListener("click", () => {
+      slider.value = Math.max(2, Number(slider.value) - 1);
+      render();
+    });
+
+    plusBtn.addEventListener("click", () => {
+      slider.value = Math.min(12, Number(slider.value) + 1);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
