@@ -15,6 +15,8 @@ Given a one-dimensional array \\( A[1..n] \\) of both positive and negative numb
 
 is **maximized**.
 
+<iframe src="{{ site.baseurl }}/assets/maximum_subarray_kadane_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Naive Approach

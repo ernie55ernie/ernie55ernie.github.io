@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maximum Subarray — Kadane's Algorithm</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2d;
+      --card: #182238;
+      --text: #eef2ff;
+      --muted: #a7b0c3;
+      --border: #2a3550;
+      --accent: #7c9cff;
+      --best: #5cc8a1;
+      --current: #f0b35a;
+      --neutral: #253149;
+      --danger: #ff7b7b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #0b1020, #0e1425);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    label {
+      flex: 1;
+      min-width: 260px;
+      font-weight: 600;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f1628;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,156,255,.15);
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: #182238;
+      color: var(--text);
+      padding: 11px 15px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #08111f;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .rule {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    code {
+      background: #0f1628;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 8px;
+      color: #dbe4ff;
+    }
+
+    .bars {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      overflow-x: auto;
+      padding: 8px 2px 14px;
+      min-height: 210px;
+    }
+
+    .bar-wrap {
+      min-width: 56px;
+      text-align: center;
+    }
+
+    .bar-value {
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .bar-track {
+      height: 130px;
+      width: 44px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px;
+      background: #0f1628;
+    }
+
+    .bar-track.active {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 5px;
+      background: var(--neutral);
+    }
+
+    .bar.best { background: var(--best); }
+    .bar.current { background: var(--current); }
+
+    .bar-index {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      border-radius: 3px;
+      margin-right: 6px;
+      vertical-align: -1px;
+    }
+
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .explanation {
+      min-height: 76px;
+      font-size: 17px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    tr.active-row td {
+      background: rgba(124,156,255,.08);
+      font-weight: 700;
+    }
+
+    .answer {
+      display: none;
+      border-color: rgba(92,200,161,.55);
+    }
+
+    .answer.show {
+      display: block;
+    }
+
+    .answer-array {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 8px 0;
+      word-break: break-word;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        width: min(100% - 20px, 1100px);
+        margin: 18px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Maximum Subarray</h1>
+    <div class="subtitle">
+      Visualize Kadane's Algorithm: at each position, decide whether to
+      <strong>start fresh</strong> or <strong>extend</strong> the previous subarray.
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="input-row">
+          <label>
+            Array A
+            <input id="arrayInput" value="-2, 1, -3, 4, -1, 2, 1, -5, 4" />
+          </label>
+          <button id="loadBtn" class="primary">Load</button>
+        </div>
+        <div id="validation" class="small" style="margin-top:8px">
+          Enter comma-separated integers.
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="rule">
+          <div>
+            <div class="small">Core decision</div>
+            <strong>Start at A[i], or extend the previous best ending here?</strong>
+          </div>
+          <code>current = max(A[i], current + A[i])</code>
+        </div>
+
+        <div id="bars" class="bars"></div>
+
+        <div class="legend">
+          <span><span class="dot" style="background:var(--best)"></span>Best subarray</span>
+          <span><span class="dot" style="background:var(--current)"></span>Current candidate</span>
+          <span><span class="dot" style="background:var(--neutral)"></span>Unselected</span>
+        </div>
+      </section>
+
+      <section class="grid stats">
+        <div class="panel">
+          <div class="stat-label">Index i</div>
+          <div id="idxValue" class="stat-value">—</div>
+        </div>
+        <div class="panel">
+          <div class="stat-label">Best sum ending at i</div>
+          <div id="currentValue" class="stat-value">—</div>
+        </div>
+        <div class="panel">
+          <div class="stat-label">Global maximum sum</div>
+          <div id="bestValue" class="stat-value">—</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div id="explanation" class="explanation"></div>
+        <div class="controls">
+          <button id="prevBtn">← Previous</button>
+          <button id="nextBtn" class="primary">Next →</button>
+          <button id="resetBtn">Reset</button>
+          <button id="finishBtn">Show Answer</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <strong>Step history</strong>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead>
+              <tr>
+                <th>i</th>
+                <th>A[i]</th>
+                <th>Extend</th>
+                <th>Start fresh</th>
+                <th>Current</th>
+                <th>Best</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="answerPanel" class="panel answer">
+        <div class="small">Maximum contiguous subarray</div>
+        <div id="answerArray" class="answer-array"></div>
+        <div>Maximum sum = <strong id="answerSum"></strong></div>
+        <div class="small" style="margin-top:10px">
+          Time complexity: O(n) · Extra space: O(1)
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById("arrayInput");
+    const validation = document.getElementById("validation");
+    const bars = document.getElementById("bars");
+    const idxValue = document.getElementById("idxValue");
+    const currentValue = document.getElementById("currentValue");
+    const bestValue = document.getElementById("bestValue");
+    const explanation = document.getElementById("explanation");
+    const historyBody = document.getElementById("historyBody");
+    const answerPanel = document.getElementById("answerPanel");
+    const answerArray = document.getElementById("answerArray");
+    const answerSum = document.getElementById("answerSum");
+
+    let A = [];
+    let steps = [];
+    let pos = 0;
+
+    function parseArray() {
+      const parts = input.value
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      if (!parts.length || parts.length > 40) {
+        validation.textContent = "Please enter between 1 and 40 integers.";
+        validation.classList.add("error");
+        return null;
+      }
+
+      const nums = parts.map(Number);
+
+      if (nums.some(x => !Number.isFinite(x) || !Number.isInteger(x))) {
+        validation.textContent = "Every element must be an integer.";
+        validation.classList.add("error");
+        return null;
+      }
+
+      validation.textContent = "Use Next to walk through Kadane's Algorithm.";
+      validation.classList.remove("error");
+      return nums;
+    }
+
+    function buildSteps(arr) {
+      const result = [];
+
+      let current = arr[0];
+      let best = arr[0];
+
+      let currentStart = 0;
+      let bestStart = 0;
+      let bestEnd = 0;
+
+      result.push({
+        i: 0,
+        value: arr[0],
+        extend: null,
+        fresh: arr[0],
+        current,
+        best,
+        currentStart,
+        bestStart,
+        bestEnd,
+        choseFresh: true
+      });
+
+      for (let i = 1; i < arr.length; i++) {
+        const extend = current + arr[i];
+        const fresh = arr[i];
+        const choseFresh = fresh > extend;
+
+        if (choseFresh) {
+          current = fresh;
+          currentStart = i;
+        } else {
+          current = extend;
+        }
+
+        if (current > best) {
+          best = current;
+          bestStart = currentStart;
+          bestEnd = i;
+        }
+
+        result.push({
+          i,
+          value: arr[i],
+          extend,
+          fresh,
+          current,
+          best,
+          currentStart,
+          bestStart,
+          bestEnd,
+          choseFresh
+        });
+      }
+
+      return result;
+    }
+
+    function renderBars(step) {
+      bars.innerHTML = "";
+      const maxAbs = Math.max(1, ...A.map(Math.abs));
+
+      A.forEach((value, i) => {
+        const wrap = document.createElement("div");
+        wrap.className = "bar-wrap";
+
+        const valueLabel = document.createElement("div");
+        valueLabel.className = "bar-value";
+        valueLabel.textContent = value;
+
+        const track = document.createElement("div");
+        track.className = "bar-track";
+        if (i === step.i) track.classList.add("active");
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+
+        const height = 18 + Math.round(92 * Math.abs(value) / maxAbs);
+        bar.style.height = height + "px";
+
+        const inBest = i >= step.bestStart && i <= step.bestEnd;
+        const inCurrent = i >= step.currentStart && i <= step.i;
+
+        if (inBest) {
+          bar.classList.add("best");
+        } else if (inCurrent) {
+          bar.classList.add("current");
+        }
+
+        const idx = document.createElement("div");
+        idx.className = "bar-index";
+        idx.textContent = "i=" + i;
+
+        track.appendChild(bar);
+        wrap.append(valueLabel, track, idx);
+        bars.appendChild(wrap);
+      });
+    }
+
+    function renderHistory() {
+      historyBody.innerHTML = "";
+
+      for (let j = 0; j <= pos; j++) {
+        const s = steps[j];
+        const tr = document.createElement("tr");
+
+        if (j === pos) tr.classList.add("active-row");
+
+        [
+          s.i,
+          s.value,
+          s.extend === null ? "—" : s.extend,
+          s.fresh,
+          s.current,
+          s.best
+        ].forEach(value => {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+
+        historyBody.appendChild(tr);
+      }
+    }
+
+    function render() {
+      const s = steps[pos];
+
+      renderBars(s);
+      renderHistory();
+
+      idxValue.textContent = s.i;
+      currentValue.textContent = s.current;
+      bestValue.textContent = s.best;
+
+      if (s.i === 0) {
+        explanation.innerHTML =
+          `<strong>Start:</strong> the only subarray ending at index 0 is ` +
+          `[${s.value}], so <strong>current = best = ${s.value}</strong>.`;
+      } else {
+        const choice = s.choseFresh
+          ? `Starting fresh is better, so discard the previous candidate.`
+          : `Extending the previous candidate is better (or equal), so keep it.`;
+
+        const newBest =
+          s.current === s.best && s.bestEnd === s.i
+            ? ` This creates a <strong>new global maximum</strong>.`
+            : ` The global best stays <strong>${s.best}</strong>.`;
+
+        explanation.innerHTML =
+          `<strong>At A[${s.i}] = ${s.value}:</strong><br>` +
+          `Start fresh: <strong>${s.fresh}</strong><br>` +
+          `Extend: <strong>${s.extend}</strong><br>` +
+          `${choice}${newBest}`;
+      }
+
+      document.getElementById("prevBtn").disabled = pos === 0;
+      document.getElementById("nextBtn").disabled = pos === steps.length - 1;
+    }
+
+    function load() {
+      const parsed = parseArray();
+      if (!parsed) return;
+
+      A = parsed;
+      steps = buildSteps(A);
+      pos = 0;
+
+      answerPanel.classList.remove("show");
+      render();
+    }
+
+    function showAnswer() {
+      pos = steps.length - 1;
+      render();
+
+      const s = steps[steps.length - 1];
+      const chosen = A.slice(s.bestStart, s.bestEnd + 1);
+
+      answerArray.textContent =
+        `A[${s.bestStart}..${s.bestEnd}] = [${chosen.join(", ")}]`;
+
+      answerSum.textContent = s.best;
+      answerPanel.classList.add("show");
+    }
+
+    document.getElementById("loadBtn").addEventListener("click", load);
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (pos > 0) {
+        pos--;
+        render();
+      }
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (pos < steps.length - 1) {
+        pos++;
+        render();
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      pos = 0;
+      answerPanel.classList.remove("show");
+      render();
+    });
+
+    document.getElementById("finishBtn").addEventListener("click", showAnswer);
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") load();
+    });
+
+    load();
+  </script>
+</body>
+</html>
