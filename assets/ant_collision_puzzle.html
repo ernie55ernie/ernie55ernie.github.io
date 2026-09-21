@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ant Collision Puzzle</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d9dee7;
+      --alice: #2563eb;
+      --bob: #e11d48;
+      --accent: #7c3aed;
+      --soft: #f1f5f9;
+      --good: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      width: min(980px, calc(100% - 32px));
+      margin: 40px auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .subtitle {
+      margin: 0 0 28px;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .value {
+      margin-top: 4px;
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .visual {
+      margin-bottom: 22px;
+    }
+
+    .visual-head {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 15px;
+      font-size: 15px;
+      font-weight: 700;
+      background: #ede9fe;
+      color: #5b21b6;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ddd6fe;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .formula {
+      margin: 16px 0;
+      padding: 18px;
+      border-radius: 12px;
+      background: var(--soft);
+      text-align: center;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .matrix {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 6px;
+      margin: 0 auto;
+      min-width: 500px;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    td {
+      border: 1px solid var(--border);
+      background: var(--soft);
+      font-weight: 700;
+    }
+
+    .final {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--good);
+    }
+
+    .insight {
+      border-left: 4px solid var(--accent);
+      padding-left: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .stats, .grid2 {
+        grid-template-columns: 1fr;
+      }
+
+      .wrap {
+        width: min(100% - 20px, 980px);
+        margin: 20px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Ant Collision Puzzle</h1>
+    <p class="subtitle">
+      The key trick: when equal-speed ants bounce off each other, the overall motion is equivalent
+      to the ants simply passing through one another.
+    </p>
+
+    <section class="stats">
+      <div class="card stat">
+        <div class="label">Ants reaching Alice</div>
+        <div class="value">50</div>
+      </div>
+
+      <div class="card stat">
+        <div class="label">Ants reaching Bob</div>
+        <div class="value">20</div>
+      </div>
+
+      <div class="card stat">
+        <div class="label">Total collisions</div>
+        <div class="value">1,000</div>
+        <div class="small">50 × 20</div>
+      </div>
+    </section>
+
+    <section class="card visual">
+      <div class="visual-head">
+        <div>
+          <strong>The identity-swap trick</strong>
+          <div class="small">
+            A bounce can be viewed as two ants exchanging identities.
+          </div>
+        </div>
+        <button id="toggleView">Show pass-through view</button>
+      </div>
+
+      <svg viewBox="0 0 760 230" role="img" aria-label="Alice and Bob connected by a line with ants moving in opposite directions">
+        <defs>
+          <marker id="arrowAlice" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"></path>
+          </marker>
+          <marker id="arrowBob" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#e11d48"></path>
+          </marker>
+        </defs>
+
+        <text x="70" y="34" text-anchor="middle" font-size="18" font-weight="700">Alice</text>
+        <text x="690" y="34" text-anchor="middle" font-size="18" font-weight="700">Bob</text>
+
+        <circle cx="70" cy="112" r="17" fill="#2563eb"></circle>
+        <circle cx="690" cy="112" r="17" fill="#e11d48"></circle>
+        <line x1="90" y1="112" x2="670" y2="112" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"></line>
+
+        <line x1="625" y1="80" x2="135" y2="80"
+              stroke="#e11d48" stroke-width="4" marker-end="url(#arrowBob)"></line>
+        <text x="380" y="66" text-anchor="middle" font-size="15">
+          50 ants from Bob → Alice
+        </text>
+
+        <line x1="135" y1="144" x2="625" y2="144"
+              stroke="#2563eb" stroke-width="4" marker-end="url(#arrowAlice)"></line>
+        <text x="380" y="168" text-anchor="middle" font-size="15">
+          20 ants from Alice → Bob
+        </text>
+
+        <g id="bounceIcon">
+          <circle cx="380" cy="112" r="28" fill="white" stroke="#cbd5e1" stroke-width="2"></circle>
+          <path d="M360 102 Q372 88 383 102 M400 122 Q388 136 377 122"
+                fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round"></path>
+          <text x="380" y="216" text-anchor="middle" font-size="14" fill="#6b7280">
+            Bounce = exchange identities
+          </text>
+        </g>
+
+        <g id="passIcon" opacity="0">
+          <circle cx="380" cy="112" r="28" fill="white" stroke="#cbd5e1" stroke-width="2"></circle>
+          <path d="M360 98 L400 126 M360 126 L400 98"
+                fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round"></path>
+          <text x="380" y="216" text-anchor="middle" font-size="14" fill="#6b7280">
+            Equivalent view: trajectories pass through
+          </text>
+        </g>
+      </svg>
+    </section>
+
+    <section class="grid2">
+      <article class="card">
+        <h2>1. How many reach each side?</h2>
+        <p>
+          Ignore the ants' identities. Each collision just swaps which ant follows which trajectory.
+        </p>
+
+        <div class="insight">
+          <strong>50 left-moving trajectories</strong> eventually reach Alice.<br>
+          <strong>20 right-moving trajectories</strong> eventually reach Bob.
+        </div>
+
+        <p>
+          Therefore:
+        </p>
+        <p><strong>Alice gets 50 ants.</strong></p>
+        <p><strong>Bob gets 20 ants.</strong></p>
+      </article>
+
+      <article class="card">
+        <h2>2. How many collisions?</h2>
+        <p>
+          Pick one of Bob's 50 ants. Its trajectory crosses each of Alice's 20 opposing trajectories exactly once.
+        </p>
+
+        <div class="formula">50 × 20 = 1,000</div>
+
+        <p>
+          So there is one collision for every pair consisting of
+          one ant initially moving left and one ant initially moving right.
+        </p>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Small example: 5 from Bob × 2 from Alice</h2>
+      <p>
+        Every cell below is one opposing pair, hence one collision.
+      </p>
+
+      <div class="matrix">
+        <table>
+          <tr>
+            <th></th>
+            <th>B₁</th>
+            <th>B₂</th>
+            <th>B₃</th>
+            <th>B₄</th>
+            <th>B₅</th>
+          </tr>
+          <tr>
+            <th>A₁</th>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+          </tr>
+          <tr>
+            <th>A₂</th>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+            <td>×</td>
+          </tr>
+        </table>
+      </div>
+
+      <p class="formula" style="font-size: 20px;">
+        2 × 5 = 10 collisions → therefore 20 × 50 = 1,000 collisions
+      </p>
+    </section>
+
+    <section class="card" style="margin-top: 22px;">
+      <div class="final">
+        Alice: 50 ants · Bob: 20 ants · Collisions: 1,000
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const button = document.getElementById("toggleView");
+    const bounceIcon = document.getElementById("bounceIcon");
+    const passIcon = document.getElementById("passIcon");
+
+    let passThrough = false;
+
+    button.addEventListener("click", () => {
+      passThrough = !passThrough;
+
+      bounceIcon.setAttribute("opacity", passThrough ? "0" : "1");
+      passIcon.setAttribute("opacity", passThrough ? "1" : "0");
+
+      button.textContent = passThrough
+        ? "Show bounce view"
+        : "Show pass-through view";
+    });
+  </script>
+</body>
+</html>
