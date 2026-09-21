@@ -23,13 +23,19 @@ Group elements into **pairs** and compare each pair:
   - Compare local mins to find global min (\\( n/2 - 1 \\) comparisons)
   - Compare local maxes to find global max (\\( n/2 - 1 \\) comparisons)
 
-Total comparisons:
+For even \\( n \\), the number of comparisons is:
 
 \\[
-\left\lfloor \frac{n}{2} \right\rfloor + \left\lfloor \frac{n}{2} \right\rfloor - 1 + \left\lfloor \frac{n}{2} \right\rfloor - 1 = \boxed{\left\lfloor \frac{3n}{2} \right\rfloor - 2}
+\frac{n}{2} + \left( \frac{n}{2} - 1 \right) + \left( \frac{n}{2} - 1 \right) = \frac{3n}{2} - 2
 \\]
 
-Worst case: \\( \boxed{\left\lceil \frac{3n}{2} \right\rceil} \\)
+For odd \\( n \\), the unpaired element is tested against the local mins and maxes, bringing the total to \\( \frac{3(n-1)}{2} \\). 
+
+In general, the worst-case number of comparisons is exactly:
+
+\\[
+\boxed{\left\lceil \frac{3n}{2} \right\rceil - 2}
+\\]
 
 ---
 
@@ -77,7 +83,7 @@ At each step:
 
 | Problem                                | Strategy                          | Time Complexity         |
 |----------------------------------------|-----------------------------------|--------------------------|
-| Min & Max from \\( n \\) elements         | Tournament pairing                | \\( \boxed{\left\lceil \frac{3n}{2} \right\rceil} \\) comparisons |
+| Min & Max from \\( n \\) elements         | Tournament pairing                | \\( \boxed{\left\lceil \frac{3n}{2} \right\rceil - 2} \\) comparisons |
 | First nonzero in sparse array          | Exponential + binary search       | \\( O(\log n) \\)         |
 | Search in sorted matrix                | Staircase (top-right traversal)   | \\( O(m) \\)              |
 
