@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bits, Probability & Poisoned Wine</title>
+  <style>
+    :root{
+      --bg:#f7f8fb; --panel:#ffffff; --text:#172033; --muted:#667085;
+      --border:#d9dee8; --accent:#2563eb; --accent-soft:#eaf1ff;
+      --good:#067647; --bad:#b42318; --code:#f2f4f7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
+      "Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.55;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+    h1{margin:0 0 6px;font-size:clamp(1.7rem,4vw,2.5rem)}
+    .sub{color:var(--muted);margin:0 0 22px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    button{
+      border:1px solid var(--border);background:white;color:var(--text);
+      padding:10px 14px;border-radius:10px;font:inherit;font-weight:650;cursor:pointer;
+    }
+    button:hover{border-color:#98a2b3}
+    button.active{background:var(--accent-soft);border-color:#9bb8ff;color:#1746a2}
+    .panel{
+      display:none;background:var(--panel);border:1px solid var(--border);
+      border-radius:16px;padding:20px;
+    }
+    .panel.active{display:block}
+    .grid{display:grid;grid-template-columns:240px 1fr;gap:18px}
+    @media (max-width:700px){.grid{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border);border-radius:12px;padding:16px;background:#fff}
+    label{font-weight:700;display:block;margin-bottom:7px}
+    input{
+      width:100%;padding:10px 12px;border:1px solid var(--border);
+      border-radius:9px;font:inherit;background:white;color:var(--text)
+    }
+    .primary{width:100%;margin-top:10px;background:var(--accent-soft);border-color:#b7c9ff}
+    .bits{
+      display:grid;grid-template-columns:80px 1fr;gap:8px 12px;align-items:center;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.95rem
+    }
+    code,.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);
+      padding:2px 6px;border-radius:6px}
+    .big{font-size:1.25rem;font-weight:800}
+    .good{color:var(--good)} .bad{color:var(--bad)}
+    .note{color:var(--muted);font-size:.92rem}
+    .mice{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    @media(max-width:650px){.mice{grid-template-columns:repeat(2,1fr)}}
+    .mouse{border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+    .mouse .icon{font-size:1.7rem}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{border-bottom:1px solid var(--border);padding:9px;text-align:left}
+    th{font-size:.9rem;color:#475467}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Bits, Probability & Poisoned Wine</h1>
+  <p class="sub">Interactive visualizer for four classic interview problems.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-target="power">1. Power of 2</button>
+    <button class="tab" data-target="mul7">2. Multiply by 7</button>
+    <button class="tab" data-target="coin">3. Arbitrary Probability</button>
+    <button class="tab" data-target="wine">4. Poisoned Wine</button>
+  </div>
+
+  <section id="power" class="panel active">
+    <div class="grid">
+      <div class="card">
+        <label for="powerX">Positive integer x</label>
+        <input id="powerX" type="number" min="1" value="16">
+        <button class="primary" id="checkPower">Check</button>
+      </div>
+      <div class="card">
+        <div id="powerResult" class="big"></div>
+        <div class="bits" style="margin-top:14px">
+          <span>x</span><span id="binX" class="code"></span>
+          <span>x - 1</span><span id="binPrev" class="code"></span>
+          <span>AND</span><span id="binAnd" class="code"></span>
+        </div>
+        <p class="note">
+          A power of 2 has exactly one set bit. Subtracting 1 turns that bit off
+          and all lower zeros into ones, so <code>x &amp; (x - 1)</code> becomes 0.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="mul7" class="panel">
+    <div class="grid">
+      <div class="card">
+        <label for="mulX">Integer x</label>
+        <input id="mulX" type="number" value="13">
+        <button class="primary" id="calcMul">Calculate</button>
+      </div>
+      <div class="card">
+        <div class="big"><span id="mulExpr"></span></div>
+        <p id="mulBinary" class="code" style="margin-top:12px"></p>
+        <p class="note">
+          A left shift by 3 multiplies by <strong>2³ = 8</strong>.
+          Therefore <code>(x &lt;&lt; 3) - x = 8x - x = 7x</code>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="coin" class="panel">
+    <div class="card">
+      <label for="pBits">Binary probability p = 0.</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <input id="pBits" value="101" maxlength="20" style="max-width:220px;font-family:monospace">
+        <button id="flipOnce">Flip once</button>
+        <button id="runMany">Run 5,000 trials</button>
+      </div>
+      <p id="pValue" class="note"></p>
+    </div>
+    <div class="grid" style="margin-top:16px">
+      <div class="card">
+        <strong>Bit-by-bit comparison</strong>
+        <div id="coinSteps" style="margin-top:12px"></div>
+        <div id="coinResult" class="big" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <strong>Why it works</strong>
+        <p>
+          A sequence of fair coin flips creates a random binary number
+          <code>U = 0.c₁c₂c₃…</code>, uniform on <code>[0,1)</code>.
+        </p>
+        <p>Return True exactly when <code>U &lt; p</code>, so:</p>
+        <p class="big">P(U &lt; p) = p</p>
+        <p id="coinStats" class="note"></p>
+        <p class="note">
+          For a finite binary expansion, treat p as continuing with zeros forever.
+          If all supplied bits tie, the result is False except for the probability-zero
+          event of exact equality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="wine" class="panel">
+    <div class="grid">
+      <div class="card">
+        <label for="bottle">Poisoned bottle (0–999)</label>
+        <input id="bottle" type="number" min="0" max="999" value="613">
+        <button class="primary" id="encodeBottle">Encode</button>
+      </div>
+      <div class="card">
+        <div class="big">
+          Bottle <span id="wineDec"></span> → <span id="wineBin" class="code"></span>
+        </div>
+        <div id="mice" class="mice" style="margin-top:16px"></div>
+        <p class="note" style="margin-top:14px">
+          After 18 hours, dead mice represent 1-bits. Reading the pattern as a
+          binary number identifies the poisoned bottle.
+        </p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <strong>Why 10 mice?</strong>
+      <p>Each mouse gives one binary outcome: alive = 0, dead = 1.</p>
+      <p><code>2¹⁰ = 1024</code> unique patterns, enough for 1000 bottles.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+  const tabs = [...document.querySelectorAll('.tab')];
+  const panels = [...document.querySelectorAll('.panel')];
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.toggle('active', b === btn));
+      panels.forEach(p => p.classList.toggle('active', p.id === btn.dataset.target));
+    });
+  });
+
+  function clampInt(value, min, max, fallback) {
+    let n = Number(value);
+    if (!Number.isFinite(n)) n = fallback;
+    n = Math.trunc(n);
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function renderPower() {
+    const input = document.getElementById('powerX');
+    const x = clampInt(input.value, 1, 2147483647, 16);
+    input.value = x;
+
+    const prev = x - 1;
+    const and = x & prev;
+    const width = x.toString(2).length;
+
+    document.getElementById('binX').textContent = x.toString(2).padStart(width, '0');
+    document.getElementById('binPrev').textContent = prev.toString(2).padStart(width, '0');
+    document.getElementById('binAnd').textContent = and.toString(2).padStart(width, '0');
+
+    const result = document.getElementById('powerResult');
+    result.textContent = and === 0
+      ? `${x} is a power of 2 ✓`
+      : `${x} is not a power of 2`;
+    result.className = 'big ' + (and === 0 ? 'good' : 'bad');
+  }
+
+  function renderMul() {
+    const x = Math.trunc(Number(document.getElementById('mulX').value) || 0);
+    const shifted = x * 8;
+    const result = shifted - x;
+
+    document.getElementById('mulExpr').textContent =
+      `(x << 3) - x = ${shifted} - ${x} = ${result}`;
+
+    document.getElementById('mulBinary').textContent =
+      x >= 0
+      ? `${x} = ${x.toString(2)}₂   →   x << 3 = ${shifted.toString(2)}₂ = ${shifted}`
+      : 'For negative integers, the arithmetic identity still holds; binary representation is typically two’s complement.';
+  }
+
+  function parseP() {
+    const input = document.getElementById('pBits');
+    let bits = input.value.replace(/[^01]/g, '').slice(0, 20);
+    if (!bits) bits = '0';
+    input.value = bits;
+
+    let numerator = 0;
+    for (const bit of bits) numerator = numerator * 2 + Number(bit);
+    const denominator = 2 ** bits.length;
+    const p = numerator / denominator;
+
+    document.getElementById('pValue').textContent =
+      `0.${bits}₂ = ${numerator}/${denominator} = ${p.toFixed(6)}`;
+
+    return { bits, p };
+  }
+
+  function simulateOne(show = true) {
+    const { bits } = parseP();
+    const rows = [];
+
+    for (let i = 0; i < bits.length; i++) {
+      const coin = Math.random() < 0.5 ? 0 : 1;
+      const pBit = Number(bits[i]);
+      rows.push({ index: i + 1, pBit, coin });
+
+      if (coin < pBit) {
+        if (show) showCoin(rows, true);
+        return true;
+      }
+      if (coin > pBit) {
+        if (show) showCoin(rows, false);
+        return false;
+      }
+    }
+
+    if (show) showCoin(rows, false);
+    return false;
+  }
+
+  function showCoin(rows, win) {
+    const holder = document.getElementById('coinSteps');
+    holder.innerHTML = '';
+
+    const table = document.createElement('table');
+    table.innerHTML = `
+      <thead>
+        <tr><th>Bit</th><th>p bit</th><th>Coin</th><th>Decision</th></tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
+    rows.forEach(r => {
+      const decision =
+        r.coin === r.pBit ? 'Tie → continue'
+        : r.coin < r.pBit ? 'Coin smaller → True'
+        : 'Coin larger → False';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${r.index}</td><td>${r.pBit}</td><td>${r.coin}</td><td>${decision}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    holder.appendChild(table);
+
+    const result = document.getElementById('coinResult');
+    result.textContent = win ? 'True ✓' : 'False';
+    result.className = 'big ' + (win ? 'good' : 'bad');
+  }
+
+  function renderWine() {
+    const input = document.getElementById('bottle');
+    const bottle = clampInt(input.value, 0, 999, 613);
+    input.value = bottle;
+
+    const bits = bottle.toString(2).padStart(10, '0');
+    document.getElementById('wineDec').textContent = bottle;
+    document.getElementById('wineBin').textContent = bits + '₂';
+
+    const mice = document.getElementById('mice');
+    mice.innerHTML = '';
+
+    for (let i = 0; i < 10; i++) {
+      const bit = bits[9 - i];
+      const dead = bit === '1';
+
+      const card = document.createElement('div');
+      card.className = 'mouse';
+      card.innerHTML = `
+        <div class="icon">${dead ? '💀' : '🐭'}</div>
+        <strong>Mouse ${i}</strong><br>
+        <span class="note">bit ${i} = ${bit}</span><br>
+        <span class="${dead ? 'bad' : 'good'}">${dead ? 'dies' : 'lives'}</span>
+      `;
+      mice.appendChild(card);
+    }
+  }
+
+  document.getElementById('checkPower').addEventListener('click', renderPower);
+  document.getElementById('powerX').addEventListener('input', renderPower);
+  document.getElementById('calcMul').addEventListener('click', renderMul);
+  document.getElementById('mulX').addEventListener('input', renderMul);
+  document.getElementById('pBits').addEventListener('input', parseP);
+  document.getElementById('flipOnce').addEventListener('click', () => simulateOne(true));
+  document.getElementById('runMany').addEventListener('click', () => {
+    const { p } = parseP();
+    let wins = 0;
+    const trials = 5000;
+    for (let i = 0; i < trials; i++) {
+      if (simulateOne(false)) wins++;
+    }
+    document.getElementById('coinStats').innerHTML =
+      `Simulation: <strong>${wins}/${trials}</strong> = <strong>${(wins/trials).toFixed(4)}</strong><br>` +
+      `Target: <strong>${p.toFixed(4)}</strong>`;
+  });
+  document.getElementById('encodeBottle').addEventListener('click', renderWine);
+  document.getElementById('bottle').addEventListener('input', renderWine);
+
+  renderPower();
+  renderMul();
+  parseP();
+  simulateOne(true);
+  renderWine();
+</script>
+</body>
+</html>

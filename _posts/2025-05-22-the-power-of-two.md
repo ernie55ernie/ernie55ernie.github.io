@@ -4,6 +4,7 @@ title: "The power of two"
 date: 2025-05-22
 category: quantitative interview
 ---
+<iframe src="{{ site.baseurl }}/assets/bit_probability_poisoned_wine_visualizer.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
 
 ### 1. Power of 2
 
