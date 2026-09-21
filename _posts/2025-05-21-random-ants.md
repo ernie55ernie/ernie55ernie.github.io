@@ -13,6 +13,8 @@ category: quantitative interview
 - When two ants meet, they **reverse directions**—or equivalently, **pass through** one another unchanged.
 - Ants fall off the string upon reaching either end.
 
+<iframe src="{{ site.baseurl }}/assets/uniform_max_min_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Key Insight
