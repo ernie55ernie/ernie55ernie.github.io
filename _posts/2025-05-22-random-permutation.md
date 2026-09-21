@@ -10,6 +10,8 @@ Two classic algorithmic challenges in randomized computation are:
 1. **Generating a perfect random permutation** (uniformly over all \\( n! \\) orderings).
 2. **Sampling uniformly from a stream of unknown length**.
 
+<iframe src="{{ site.baseurl }}/assets/randomized_algorithms_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## 1. Perfect Shuffling: Fisher–Yates Algorithm

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfect Shuffle & Reservoir Sampling</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --card: #f2f4f8;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d9dee7;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --success: #0f766e;
+      --success-soft: #ccfbf1;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 32px auto 56px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 850px;
+      margin-top: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    h2 {
+      margin: 4px 0 4px;
+      font-size: 1.45rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .demo {
+      margin-top: 18px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .row-between {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .array {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .cell {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+      padding: 10px 6px;
+      background: white;
+      font-weight: 800;
+      min-width: 0;
+      transition: 0.2s ease;
+    }
+
+    .cell .idx {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .cell.dim { opacity: 0.42; }
+
+    .cell.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .message {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 54px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-height: 44px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: transparent;
+      background: var(--accent);
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .explain {
+      margin-top: 20px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .formula {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      overflow-x: auto;
+    }
+
+    .reservoir {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .stream {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      min-height: 44px;
+    }
+
+    .chip {
+      padding: 7px 11px;
+      border-radius: 10px;
+      background: white;
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .shared {
+      margin-top: 24px;
+    }
+
+    .shared-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .mini {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .arrow {
+      font-size: 1.7rem;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--card);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+      .shared-grid { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+    }
+
+    @media (max-width: 520px) {
+      .page { width: min(100% - 20px, 1180px); margin-top: 18px; }
+      .panel { padding: 18px; }
+      .array { gap: 6px; }
+      .cell { padding: 8px 2px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow">Randomized Algorithms</div>
+      <h1>Perfect Shuffle & Reservoir Sampling</h1>
+      <p class="lead">
+        Two classic problems share the same core goal:
+        distribute probability mass perfectly evenly across all possible final outcomes.
+      </p>
+    </header>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="eyebrow">1 · Random permutation</div>
+        <h2>Fisher–Yates Shuffle</h2>
+        <div class="meta">
+          At index <code>i</code>, choose <code>j ∈ [0, i]</code> uniformly and swap.
+        </div>
+        <span class="badge">O(n) time · O(1) space</span>
+
+        <div class="demo">
+          <div class="row-between">
+            <strong>Current array</strong>
+            <code id="fyLabel">i = 5</code>
+          </div>
+
+          <div id="fyArray" class="array"></div>
+
+          <div id="fyMessage" class="message">
+            There are <strong>6</strong> equally likely choices for <code>j</code>.
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="fyStep" class="primary">Random next swap</button>
+          <button id="fyReset">Reset</button>
+        </div>
+
+        <div class="explain">
+          <strong>Why is it uniform?</strong>
+          <p>
+            For one particular final permutation, the algorithm must make exactly one
+            correct choice at each stage:
+          </p>
+          <div class="formula">
+            P(one permutation)<br />
+            = 1/n × 1/(n−1) × ··· × 1/2<br />
+            = <strong>1/n!</strong>
+          </div>
+          <p>
+            Because every permutation corresponds to one unique sequence of these choices,
+            every one of the <code>n!</code> permutations has the same probability.
+          </p>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="eyebrow">2 · Unknown-length stream</div>
+        <h2>Reservoir Sampling (k = 1)</h2>
+        <div class="meta">
+          When item <code>i</code> arrives, keep it with probability <code>1/i</code>.
+        </div>
+        <span class="badge">O(n) time · O(1) space</span>
+
+        <div class="demo">
+          <div class="row-between">
+            <div>
+              <div class="eyebrow">Reservoir</div>
+              <div id="rsResult" class="reservoir">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="eyebrow">Items seen</div>
+              <div id="rsCount" class="reservoir">0</div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px">
+            <div class="row-between">
+              <strong>Incoming stream</strong>
+              <code id="rsProb">replacement probability = —</code>
+            </div>
+            <div id="rsStream" class="stream"></div>
+          </div>
+
+          <div id="rsMessage" class="message">
+            Press “Next item” to start the stream.
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="rsStep" class="primary">Next item</button>
+          <button id="rsReset">Reset</button>
+        </div>
+
+        <div class="explain">
+          <strong>Why does every item finish with probability 1/n?</strong>
+          <p>
+            Suppose item <code>k</code> enters the reservoir when it arrives.
+            It must then survive every later replacement opportunity:
+          </p>
+          <div class="formula">
+            P(finally keep item k)<br />
+            = 1/k × k/(k+1) × (k+1)/(k+2) × ··· × (n−1)/n<br />
+            = <strong>1/n</strong>
+          </div>
+          <p>
+            The middle factors cancel. So every stream item has the same final probability.
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel shared">
+      <div class="eyebrow">The shared idea</div>
+      <h2>Uniformity by carefully balancing probability</h2>
+
+      <div class="shared-grid">
+        <div class="mini">
+          <strong>Fisher–Yates</strong>
+          <p>
+            Fix one position at a time while choosing uniformly from the remaining items.
+          </p>
+        </div>
+
+        <div class="arrow">↔</div>
+
+        <div class="mini">
+          <strong>Reservoir Sampling</strong>
+          <p>
+            Rebalance selection probability every time a new stream item appears.
+          </p>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Solution</th>
+            <th>Uniform?</th>
+            <th>Time</th>
+            <th>Space</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Random permutation of n items</td>
+            <td>Fisher–Yates Shuffle</td>
+            <td>Yes</td>
+            <td>O(n)</td>
+            <td>O(1)</td>
+          </tr>
+          <tr>
+            <td>Sample one item from a stream</td>
+            <td>Reservoir Sampling (k = 1)</td>
+            <td>Yes</td>
+            <td>O(n)</td>
+            <td>O(1)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // Fisher–Yates
+    const fyArray = document.getElementById("fyArray");
+    const fyLabel = document.getElementById("fyLabel");
+    const fyMessage = document.getElementById("fyMessage");
+    const fyStep = document.getElementById("fyStep");
+    const fyReset = document.getElementById("fyReset");
+
+    let cards = ["A", "B", "C", "D", "E", "F"];
+    let i = cards.length - 1;
+    let lastSwap = null;
+
+    function renderFY() {
+      fyArray.innerHTML = "";
+
+      cards.forEach((value, idx) => {
+        const div = document.createElement("div");
+        div.className = "cell";
+
+        if (i >= 1 && idx > i) div.classList.add("dim");
+        if (lastSwap && (idx === lastSwap.i || idx === lastSwap.j)) {
+          div.classList.add("active");
+        }
+
+        div.innerHTML = `<span class="idx">${idx}</span>${value}`;
+        fyArray.appendChild(div);
+      });
+
+      if (i >= 1) {
+        fyLabel.textContent = `i = ${i} · choose j ∈ [0, ${i}]`;
+      } else {
+        fyLabel.textContent = "shuffle complete";
+      }
+
+      fyStep.disabled = i < 1;
+
+      if (i < 1) {
+        fyMessage.innerHTML =
+          "<strong>Done.</strong> One of the 6! = 720 possible permutations has been generated.";
+      }
+    }
+
+    fyStep.addEventListener("click", () => {
+      if (i < 1) return;
+
+      const currentI = i;
+      const j = Math.floor(Math.random() * (i + 1));
+
+      const oldI = cards[currentI];
+      const oldJ = cards[j];
+
+      [cards[currentI], cards[j]] = [cards[j], cards[currentI]];
+      lastSwap = { i: currentI, j };
+
+      fyMessage.innerHTML =
+        `Picked <strong>j = ${j}</strong> with probability ` +
+        `<strong>1/${currentI + 1}</strong>. ` +
+        `Swapped <code>${oldI}</code> and <code>${oldJ}</code>. ` +
+        `Position <strong>${currentI}</strong> is now fixed.`;
+
+      i--;
+      renderFY();
+    });
+
+    fyReset.addEventListener("click", () => {
+      cards = ["A", "B", "C", "D", "E", "F"];
+      i = cards.length - 1;
+      lastSwap = null;
+      fyMessage.innerHTML =
+        'There are <strong>6</strong> equally likely choices for <code>j</code>.';
+      renderFY();
+    });
+
+    renderFY();
+
+    // Reservoir Sampling
+    const rsResult = document.getElementById("rsResult");
+    const rsCount = document.getElementById("rsCount");
+    const rsProb = document.getElementById("rsProb");
+    const rsStream = document.getElementById("rsStream");
+    const rsMessage = document.getElementById("rsMessage");
+    const rsStep = document.getElementById("rsStep");
+    const rsReset = document.getElementById("rsReset");
+
+    const items = ["A","B","C","D","E","F","G","H","I","J","K","L"];
+    let seen = 0;
+    let reservoir = null;
+
+    function renderRS() {
+      rsResult.textContent = reservoir ?? "—";
+      rsCount.textContent = seen;
+      rsProb.textContent =
+        seen === 0 ? "replacement probability = —" : `last step: 1/${seen}`;
+      rsStep.disabled = seen >= items.length;
+    }
+
+    rsStep.addEventListener("click", () => {
+      if (seen >= items.length) return;
+
+      seen++;
+      const item = items[seen - 1];
+      const replace = Math.random() < 1 / seen;
+      const previous = reservoir;
+
+      if (replace) reservoir = item;
+
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = item;
+      rsStream.appendChild(chip);
+
+      if (seen === 1) {
+        rsMessage.innerHTML =
+          `<strong>${item}</strong> arrives. Since 1/1 = 100%, it must enter the reservoir.`;
+      } else if (replace) {
+        rsMessage.innerHTML =
+          `<strong>${item}</strong> arrives. A 1/${seen} event occurred, ` +
+          `so it <strong>replaces ${previous}</strong>.`;
+      } else {
+        rsMessage.innerHTML =
+          `<strong>${item}</strong> arrives. It had probability 1/${seen} of replacing ` +
+          `the reservoir, but <strong>${reservoir}</strong> survives.`;
+      }
+
+      if (seen === items.length) {
+        rsMessage.innerHTML +=
+          ` <strong>Stream ended:</strong> each of the ${items.length} items had probability ` +
+          `1/${items.length} of being the final sample.`;
+      }
+
+      renderRS();
+    });
+
+    rsReset.addEventListener("click", () => {
+      seen = 0;
+      reservoir = null;
+      rsStream.innerHTML = "";
+      rsMessage.textContent = "Press “Next item” to start the stream.";
+      renderRS();
+    });
+
+    renderRS();
+  </script>
+</body>
+</html>
