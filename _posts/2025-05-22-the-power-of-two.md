@@ -45,7 +45,7 @@ def multiply_by_7(x):
 
 ### 3. Simulating Arbitrary Probability with a Coin
 
-**Problem**: Use a fair coin to simulate an event with probability \\( 0 < p < 1 \\), where \\( p \\) is specified as \\( p = 0.p\_1 p\_2 p\_3 \dots \\) in binary.
+**Problem**: Use a fair coin to simulate an event with probability \\( 0 < p < 1 \\), where \\( p \\) is specified as \\( p = 0.p_1 p_2 p_3 \dots \\) in binary.
 
 **Solution**:
 
@@ -59,7 +59,7 @@ def coin_flip_prob(p_binary):
             return True
         elif coin > int(digit):
             return False
-    return True  # if tie, default to win
+    return False  # if tie up to here, implicit trailing 0s mean U > p
 ```
 
 This method ensures that the win probability matches \\( p \\) exactly.
