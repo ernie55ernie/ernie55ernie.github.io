@@ -25,7 +25,7 @@ Output:
 
 [1, 3, 5, 9]
 
-````
+```
 
 ---
 
@@ -41,7 +41,7 @@ def remove_duplicates_sorted(arr):
         if arr[i] != arr[i - 1]:
             result.append(arr[i])
     return result
-````
+```
 
 ---
 
