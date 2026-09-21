@@ -83,9 +83,9 @@ max_sum = 6, indices = (3, 6), subarray = [4, -1, 2, 1]
 
 Kadane’s algorithm computes the **maximum contiguous subarray sum** in:
 
-$$
+\\[
 \boxed{O(n) \text{ time, } O(1) \text{ space}}
-$$
+\\]
 
 ---
 
