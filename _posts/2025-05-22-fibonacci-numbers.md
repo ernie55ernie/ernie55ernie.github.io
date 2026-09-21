@@ -24,27 +24,27 @@ int Fibonacci(int n) {
 
 Let \\( T(n) \\) be the time it takes to compute \\( F(n) \\). The recurrence:
 
-$$
+\\[
 T(n) \approx T(n-1) + T(n-2) + O(1)
-$$
+\\]
 
 has the same structure as the Fibonacci sequence itself. The growth rate is governed by the **golden ratio**:
 
-$$
+\\[
 \varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618
-$$
+\\]
 
 Thus,
 
-$$
+\\[
 T(n+1) \approx \varphi \cdot T(n)
-$$
+\\]
 
 For instance, if \\( T(n) = 100 \\) seconds, then:
 
-$$
+\\[
 T(n+1) \approx 1.618 \times 100 \approx 162 \text{ seconds}
-$$
+\\]
 
 This exponential growth makes the naive approach intractable even for moderately large \\( n \\).
 
@@ -99,27 +99,27 @@ def fibonacci_memo(n):
 
 Use:
 
-$$
+\\[
 \begin{pmatrix}
-F_{n+1} \\
+F_{n+1} \cr
 F_n
 \end{pmatrix}
 =
 \begin{pmatrix}
-1 & 1 \\
+1 & 1 \cr
 1 & 0
 \end{pmatrix}^{\!n}
 \begin{pmatrix}
-1 \\
+1 \cr
 0
 \end{pmatrix}
-$$
+\\]
 
 Or the **fast doubling formulas**:
 
-$$
+\\[
 F_{2k} = F_k(2F_{k+1} - F_k), \quad F_{2k+1} = F_{k+1}^2 + F_k^2
-$$
+\\]
 
 These compute \\( F(n) \\) in \\( O(\log n) \\) time.
 
