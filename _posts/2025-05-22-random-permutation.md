@@ -61,7 +61,7 @@ def reservoir_sample(stream):
 
 ### Why It Works
 
-At step \\( i \\), each previous item has a \\( 1/i \\) chance of being replaced. By induction, each item in the stream has probability \\( 1/n \\) of being selected after \\( n \\) items.
+At step \\( i \\), the previously selected item has a \\( 1/i \\) chance of being replaced. By induction, each item in the stream has probability \\( 1/n \\) of being selected after \\( n \\) items.
 
 ### Properties
 
