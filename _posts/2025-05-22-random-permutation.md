@@ -20,7 +20,7 @@ Given a list of \\( n \\) items (e.g., a 52-card deck), generate a **random perm
 
 ### Fisher–Yates Algorithm
 
-Iterate backwards through the array and for each index \\( i \\), swap the element at \\( i \\) with a randomly chosen element from index \\( 0 \) to \\( i \\):
+Iterate backwards through the array and for each index \\( i \\), swap the element at \\( i \\) with a randomly chosen element from index \\( 0 \\) to \\( i \\):
 
 ```python
 import random
