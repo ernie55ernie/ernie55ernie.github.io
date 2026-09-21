@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classic Search and Comparison Algorithms</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.65;
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 24px;
+      color: #1f2937;
+      background: #ffffff;
+    }
+
+    h1, h2, h3 {
+      color: #111827;
+    }
+
+    h2 {
+      margin-top: 42px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .formula {
+      background: #f8fafc;
+      border-left: 4px solid #64748b;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      overflow-x: auto;
+    }
+
+    .idea {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 18px 0;
+    }
+
+    .step {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 12px 0;
+    }
+
+    .pair {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      margin: 8px 12px 8px 0;
+    }
+
+    .box {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #9ca3af;
+      border-radius: 7px;
+      font-weight: 600;
+    }
+
+    .arrow {
+      color: #6b7280;
+      font-weight: bold;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+    }
+
+    .matrix {
+      border-collapse: separate;
+      border-spacing: 5px;
+      width: auto;
+    }
+
+    .matrix td {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      text-align: center;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+
+    .highlight {
+      background: #dbeafe !important;
+      border: 2px solid #3b82f6 !important;
+      font-weight: bold;
+    }
+
+    .eliminated {
+      opacity: 0.35;
+    }
+
+    .important {
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Three Classic Search & Comparison Problems</h1>
+
+  <!-- ====================================================== -->
+  <!-- A. MIN AND MAX -->
+  <!-- ====================================================== -->
+
+  <h2>A. Find Min & Max Efficiently</h2>
+
+  <p>
+    Given <code>n</code> elements, find both the
+    <strong>minimum</strong> and <strong>maximum</strong>
+    using as few comparisons as possible.
+  </p>
+
+  <h3>Naive Method</h3>
+
+  <ul>
+    <li>
+      Find minimum:
+      <code>n - 1</code> comparisons
+    </li>
+
+    <li>
+      Find maximum:
+      <code>n - 1</code> comparisons
+    </li>
+  </ul>
+
+  <div class="formula">
+    Total = (n - 1) + (n - 1)
+          = 2n - 2
+  </div>
+
+  <div class="idea">
+    <strong>Key idea:</strong>
+    Instead of letting every element compete for both
+    minimum and maximum, first compare elements in pairs.
+    <br><br>
+    The smaller element of each pair only needs to compete
+    for the global minimum, while the larger element only
+    needs to compete for the global maximum.
+  </div>
+
+  <h3>Tournament Pairing</h3>
+
+  <p>Example:</p>
+
+  <div>
+    <span class="pair">
+      <span class="box">8</span>
+      <span>vs</span>
+      <span class="box">3</span>
+    </span>
+
+    <span class="pair">
+      <span class="box">11</span>
+      <span>vs</span>
+      <span class="box">2</span>
+    </span>
+
+    <span class="pair">
+      <span class="box">14</span>
+      <span>vs</span>
+      <span class="box">6</span>
+    </span>
+
+    <span class="pair">
+      <span class="box">9</span>
+      <span>vs</span>
+      <span class="box">1</span>
+    </span>
+  </div>
+
+  <p>After one comparison per pair:</p>
+
+  <div class="step">
+    <strong>Minimum candidates</strong>
+
+    <p>
+      3,
+      2,
+      6,
+      1
+    </p>
+
+    <strong>Maximum candidates</strong>
+
+    <p>
+      8,
+      11,
+      14,
+      9
+    </p>
+  </div>
+
+  <p>
+    For even <code>n</code>:
+  </p>
+
+  <ul>
+    <li>
+      Pair comparisons:
+      <code>n / 2</code>
+    </li>
+
+    <li>
+      Find minimum among the
+      <code>n / 2</code> smaller elements:
+      <code>n / 2 - 1</code>
+    </li>
+
+    <li>
+      Find maximum among the
+      <code>n / 2</code> larger elements:
+      <code>n / 2 - 1</code>
+    </li>
+  </ul>
+
+  <div class="formula">
+    n/2 + (n/2 - 1) + (n/2 - 1)
+
+    = 3n/2 - 2
+  </div>
+
+  <p>
+    The exact worst-case number of comparisons for arbitrary
+    <code>n</code> is:
+  </p>
+
+  <div class="formula">
+    ceil(3n / 2) - 2
+  </div>
+
+  <p>
+    So instead of approximately
+    <code>2n</code> comparisons,
+    we need only approximately
+    <span class="important">1.5n</span>.
+  </p>
+
+
+  <!-- ====================================================== -->
+  <!-- B. EXPONENTIAL SEARCH -->
+  <!-- ====================================================== -->
+
+  <h2>B. First Nonzero in an Array of Unknown Length</h2>
+
+  <p>
+    Suppose an array begins with zeros and then eventually
+    becomes nonzero:
+  </p>
+
+  <div class="formula">
+    [0, 0, 0, 0, 0, 0, 0, ..., nonzero, nonzero, ...]
+  </div>
+
+  <p>
+    We want to find the index of the
+    <strong>first nonzero</strong>,
+    but we do not know where the transition occurs.
+  </p>
+
+  <div class="idea">
+    <strong>Key idea:</strong>
+    We cannot immediately binary search because we do not
+    know the right boundary.
+    <br><br>
+    First find a sufficiently large boundary using
+    <strong>exponential search</strong>.
+    Then use binary search inside that range.
+  </div>
+
+  <h3>Step 1: Exponential Search</h3>
+
+  <p>Check indices:</p>
+
+  <div class="formula">
+    1 → 2 → 4 → 8 → 16 → 32 → ...
+  </div>
+
+  <p>
+    Each time the value is still zero, double the index.
+  </p>
+
+  <p>
+    Suppose:
+  </p>
+
+  <div class="formula">
+    A[8] = 0
+
+    A[16] != 0
+  </div>
+
+  <p>
+    Then the first nonzero must lie somewhere between
+    indices <code>9</code> and <code>16</code>.
+  </p>
+
+  <h3>Step 2: Binary Search</h3>
+
+  <p>
+    Now binary search the interval:
+  </p>
+
+  <div class="formula">
+    [9, 16]
+  </div>
+
+  <p>
+    If the middle element is:
+  </p>
+
+  <ul>
+    <li>
+      <code>0</code> → move right
+    </li>
+
+    <li>
+      nonzero → search the left half, because the first
+      nonzero might be earlier
+    </li>
+  </ul>
+
+  <h3>Complexity</h3>
+
+  <p>
+    If the first nonzero is at position <code>p</code>,
+    exponential search needs approximately:
+  </p>
+
+  <div class="formula">
+    log₂(p)
+  </div>
+
+  <p>
+    probes.
+  </p>
+
+  <p>
+    Binary search also needs:
+  </p>
+
+  <div class="formula">
+    O(log p)
+  </div>
+
+  <p>Therefore:</p>
+
+  <div class="formula">
+    Total = O(log p)
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- C. SORTED MATRIX -->
+  <!-- ====================================================== -->
+
+  <h2>C. Search a Row- and Column-Sorted Matrix</h2>
+
+  <p>
+    Suppose every row is sorted from left to right and every
+    column is sorted from top to bottom.
+  </p>
+
+  <table class="matrix">
+    <tr>
+      <td>1</td>
+      <td>4</td>
+      <td>7</td>
+      <td>11</td>
+      <td class="highlight">15</td>
+    </tr>
+
+    <tr>
+      <td>2</td>
+      <td>5</td>
+      <td>8</td>
+      <td>12</td>
+      <td>19</td>
+    </tr>
+
+    <tr>
+      <td>3</td>
+      <td>6</td>
+      <td>9</td>
+      <td>16</td>
+      <td>22</td>
+    </tr>
+
+    <tr>
+      <td>10</td>
+      <td>13</td>
+      <td>14</td>
+      <td>17</td>
+      <td>24</td>
+    </tr>
+
+    <tr>
+      <td>18</td>
+      <td>21</td>
+      <td>23</td>
+      <td>26</td>
+      <td>30</td>
+    </tr>
+  </table>
+
+  <div class="idea">
+    <strong>Key idea:</strong>
+    Start from the <strong>top-right corner</strong>.
+    <br><br>
+    This location is special because moving
+    <strong>left makes values smaller</strong>,
+    while moving <strong>down makes values larger</strong>.
+  </div>
+
+  <h3>Staircase Search</h3>
+
+  <p>
+    Let the current value be <code>x</code>.
+  </p>
+
+  <div class="step">
+    <strong>If:</strong>
+
+    <div class="formula">
+      x == target
+    </div>
+
+    Found it.
+  </div>
+
+  <div class="step">
+    <strong>If:</strong>
+
+    <div class="formula">
+      x > target
+    </div>
+
+    Move <strong>left</strong>.
+
+    <p>
+      Why?
+      Everything below <code>x</code> in the current column
+      is even larger, so the entire column can be discarded.
+    </p>
+  </div>
+
+  <div class="step">
+    <strong>If:</strong>
+
+    <div class="formula">
+      x < target
+    </div>
+
+    Move <strong>down</strong>.
+
+    <p>
+      Why?
+      Everything to the left of <code>x</code> in the current
+      row is even smaller, so the entire row can be discarded.
+    </p>
+  </div>
+
+  <h3>Example</h3>
+
+  <p>
+    Search for:
+  </p>
+
+  <div class="formula">
+    target = 14
+  </div>
+
+  <p>The path is:</p>
+
+  <div class="formula">
+    15
+    ↓ because 15 > 14, move left
+
+    11
+    ↓ because 11 < 14, move down
+
+    12
+    ↓ because 12 < 14, move down
+
+    16
+    ↓ because 16 > 14, move left
+
+    9
+    ↓ because 9 < 14, move down
+
+    14
+    ✓ found
+  </div>
+
+  <h3>Time Complexity</h3>
+
+  <p>
+    For an <code>m × n</code> matrix:
+  </p>
+
+  <div class="formula">
+    at most m + n - 1 inspected cells
+  </div>
+
+  <p>Therefore:</p>
+
+  <div class="formula">
+    O(m + n)
+  </div>
+
+  <p>
+    For an <code>m × m</code> matrix:
+  </p>
+
+  <div class="formula">
+    O(m)
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- SUMMARY -->
+  <!-- ====================================================== -->
+
+  <h2>Summary</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Problem</th>
+        <th>Main Idea</th>
+        <th>Complexity</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Find min & max</td>
+        <td>
+          Pair elements first, then run separate
+          min/max tournaments
+        </td>
+        <td>
+          <code>⌈3n/2⌉ - 2</code> comparisons
+        </td>
+      </tr>
+
+      <tr>
+        <td>First nonzero, unknown boundary</td>
+        <td>
+          Exponential search to find a range,
+          then binary search
+        </td>
+        <td>
+          <code>O(log p)</code>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Search sorted matrix</td>
+        <td>
+          Start top-right and eliminate one row
+          or column at each step
+        </td>
+        <td>
+          <code>O(m + n)</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
