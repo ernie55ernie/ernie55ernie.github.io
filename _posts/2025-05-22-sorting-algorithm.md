@@ -67,13 +67,22 @@ A divide-and-conquer algorithm. Chooses a pivot, partitions the array into eleme
 **Pseudocode**:
 
 ```python
-def quick_sort(A):
-    if len(A) <= 1:
-        return A
-    pivot = A[0]
-    left = [x for x in A[1:] if x < pivot]
-    right = [x for x in A[1:] if x >= pivot]
-    return quick_sort(left) + [pivot] + quick_sort(right)
+def quick_sort(A, low=0, high=None):
+    if high is None:
+        high = len(A) - 1
+    if low < high:
+        pivot = A[high]
+        i = low - 1
+        for j in range(low, high):
+            if A[j] <= pivot:
+                i += 1
+                A[i], A[j] = A[j], A[i]
+        A[i + 1], A[high] = A[high], A[i + 1]
+        pi = i + 1
+
+        quick_sort(A, low, pi - 1)
+        quick_sort(A, pi + 1, high)
+    return A
 ```
 
 **Complexity**:
@@ -97,9 +106,13 @@ Repeatedly compares adjacent elements and swaps them if out of order. Continues 
 
 ```python
 for i in range(n):
+    swapped = False
     for j in range(0, n - i - 1):
         if A[j] > A[j + 1]:
             A[j], A[j + 1] = A[j + 1], A[j]
+            swapped = True
+    if not swapped:
+        break
 ```
 
 **Complexity**:
