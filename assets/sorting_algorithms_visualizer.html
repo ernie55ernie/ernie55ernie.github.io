@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sorting Algorithms Visualizer</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --card:#f0f2f7;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#d7dbe5;
+    --accent:#2563eb;
+    --accent-bg:#dbeafe;
+    --series-2:#c7d2fe;
+    --series-3:#bbf7d0;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  .wrap{max-width:1150px;margin:32px auto;padding:0 18px}
+  h1{margin:0 0 8px;font-size:30px}
+  .subtitle{color:var(--muted);margin-bottom:22px}
+  .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.8fr);gap:18px}
+  .panel,.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+  }
+  .card{background:#fff}
+  .topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+  .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+  .algo-title{font-size:22px;font-weight:800;margin-top:3px}
+  .pill{border:1px solid var(--border);border-radius:999px;padding:7px 12px;font-size:14px}
+  .tabs,.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  button,select{
+    min-height:42px;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:10px;
+    padding:9px 13px;
+    color:var(--text);
+    font:inherit;
+    cursor:pointer;
+  }
+  button.active{border-color:var(--accent);background:var(--accent-bg)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:700}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .vizbox{background:var(--card);border-radius:14px;padding:14px;margin-top:16px}
+  #bars{height:300px;display:flex;align-items:flex-end;justify-content:center;gap:8px}
+  .bar-wrap{height:100%;display:flex;align-items:flex-end;flex:1;min-width:0}
+  .bar{
+    width:100%;
+    min-height:34px;
+    border:1px solid var(--border);
+    border-radius:8px 8px 0 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:5px;
+    font-weight:700;
+    font-size:13px;
+    background:var(--series-2);
+    transition:height .2s,background .2s;
+  }
+  .bar.active{background:var(--accent-bg);border-color:var(--accent)}
+  .bar.sorted{background:var(--series-3)}
+  #arrayText{text-align:center;margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+  .speed{margin-left:auto;display:flex;align-items:center;gap:7px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .stat{text-align:center;border:1px solid var(--border);border-radius:12px;padding:10px}
+  .stat small{color:var(--muted)}
+  .stat strong{display:block;margin-top:4px;font-size:20px}
+  #status{min-height:54px;border:1px solid var(--border);border-radius:12px;margin-top:12px;padding:12px}
+  aside{display:flex;flex-direction:column;gap:15px}
+  .mini-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;margin-top:10px}
+  .muted{color:var(--muted)}
+  ul{padding-left:20px;margin:10px 0 0}
+  li{margin:8px 0}
+  .table-wrap{overflow-x:auto;margin-top:18px;background:#fff;border:1px solid var(--border);border-radius:18px}
+  table{width:100%;min-width:760px;border-collapse:collapse}
+  th,td{padding:13px;border-bottom:1px solid var(--border);text-align:left}
+  th{background:var(--card)}
+  tr:last-child td{border-bottom:none}
+  .note{font-size:13px;color:var(--muted);line-height:1.55;margin-top:10px}
+  @media(max-width:800px){
+    .grid{grid-template-columns:1fr}
+    #bars{height:230px}
+    .speed{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sorting Algorithms Visualizer</h1>
+  <div class="subtitle">Compare five classic sorting algorithms step by step.</div>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">Interactive simulation</div>
+          <div id="algoTitle" class="algo-title">Insertion Sort</div>
+        </div>
+        <div id="complexityPill" class="pill">Avg: O(n²)</div>
+      </div>
+
+      <div class="tabs">
+        <button data-algo="insertion" class="algo-btn">Insertion</button>
+        <button data-algo="merge" class="algo-btn">Merge</button>
+        <button data-algo="quick" class="algo-btn">Quick</button>
+        <button data-algo="bubble" class="algo-btn">Bubble</button>
+        <button data-algo="selection" class="algo-btn">Selection</button>
+      </div>
+
+      <div class="vizbox">
+        <div id="bars"></div>
+        <div id="arrayText"></div>
+      </div>
+
+      <div class="controls">
+        <button id="shuffleBtn">Shuffle</button>
+        <button id="stepBtn">Step</button>
+        <button id="playBtn" class="primary">▶ Play</button>
+        <button id="resetBtn">Reset</button>
+        <label class="speed">
+          Speed
+          <select id="speedSelect">
+            <option value="900">Slow</option>
+            <option value="480" selected>Normal</option>
+            <option value="160">Fast</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><small>Comparisons</small><strong id="comparisons">0</strong></div>
+        <div class="stat"><small>Writes / swaps</small><strong id="swaps">0</strong></div>
+        <div class="stat"><small>Step</small><strong id="stepCount">0</strong></div>
+      </div>
+
+      <div id="status"></div>
+    </section>
+
+    <aside>
+      <section class="card">
+        <div class="eyebrow">Mental model</div>
+        <div id="mentalModel" style="margin-top:9px;line-height:1.6"></div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Complexity</div>
+        <div class="mini-grid">
+          <span class="muted">Best</span><strong id="best"></strong>
+          <span class="muted">Average</span><strong id="avg"></strong>
+          <span class="muted">Worst</span><strong id="worst"></strong>
+          <span class="muted">Space</span><strong id="space"></strong>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">What to notice</div>
+        <ul id="notice"></ul>
+      </section>
+    </aside>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Auxiliary Space</th><th>Core Idea</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Insertion Sort</b></td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Grow a sorted prefix</td></tr>
+        <tr><td><b>Merge Sort</b></td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Split → sort → merge</td></tr>
+        <tr><td><b>Quick Sort</b></td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n) average recursion</td><td>Partition around a pivot</td></tr>
+        <tr><td><b>Bubble Sort</b></td><td>O(n)*</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Swap adjacent inversions</td></tr>
+        <tr><td><b>Selection Sort</b></td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Repeatedly select the minimum</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">
+    * Bubble sort has O(n) best-case only when implemented with an early-exit check.
+    In-place quicksort typically uses O(log n) recursion space on average, while the simple
+    Python version that constructs separate left/right lists uses O(n) additional memory.
+  </p>
+</div>
+
+<script>
+const info = {
+  insertion: {
+    name:'Insertion Sort', best:'O(n)', avg:'O(n²)', worst:'O(n²)', space:'O(1)',
+    model:'Imagine sorting playing cards in your hand: take the next card and slide it left until it reaches the correct position.',
+    notice:['The left prefix gradually becomes sorted.','Very effective for small or nearly sorted inputs.','Its cost comes from repeatedly shifting larger elements.']
+  },
+  merge: {
+    name:'Merge Sort', best:'O(n log n)', avg:'O(n log n)', worst:'O(n log n)', space:'O(n)',
+    model:'Split the array into halves until pieces are tiny, then merge sorted pieces back together.',
+    notice:['There are about log₂ n levels of recursion.','Each level processes about n elements.','The predictable runtime requires extra memory for merging.']
+  },
+  quick: {
+    name:'Quick Sort', best:'O(n log n)', avg:'O(n log n)', worst:'O(n²)', space:'O(log n) average',
+    model:'Choose a pivot, move smaller elements to one side and larger elements to the other, then recursively repeat.',
+    notice:['Balanced partitions produce O(n log n).','Consistently poor pivots can lead to O(n²).','Pivot choice strongly affects performance.']
+  },
+  bubble: {
+    name:'Bubble Sort', best:'O(n) optimized', avg:'O(n²)', worst:'O(n²)', space:'O(1)',
+    model:'Repeatedly compare neighbors and swap inverted pairs so large elements bubble toward the right.',
+    notice:['Each pass settles another large element at the end.','It performs many local comparisons and swaps.','An early-exit flag detects already sorted input.']
+  },
+  selection: {
+    name:'Selection Sort', best:'O(n²)', avg:'O(n²)', worst:'O(n²)', space:'O(1)',
+    model:'Search the remaining unsorted region for the smallest element and place it into the next final position.',
+    notice:['One position is finalized per outer pass.','It still scans the remaining elements even if already sorted.','It uses relatively few swaps.']
+  }
+};
+
+const initial = [7,3,8,2,6,1,5,4];
+let base = initial.slice();
+let algo = 'insertion';
+let steps = [];
+let idx = 0;
+let playing = false;
+let timer = null;
+
+const $ = s => document.querySelector(s);
+const copy = a => a.slice();
+
+function state(a, active=[], sorted=[], text='', comparisons=0, swaps=0){
+  return {a:copy(a),active:copy(active),sorted:copy(sorted),text,comparisons,swaps};
+}
+
+function insertionSteps(input){
+  const a=copy(input), out=[state(a,[],[],'Start with the first element as a sorted prefix.')];
+  let c=0,w=0;
+  for(let i=1;i<a.length;i++){
+    const key=a[i];
+    let j=i-1;
+    out.push(state(a,[i],Array.from({length:i},(_,k)=>k),`Take ${key} as the key.`,c,w));
+    while(j>=0){
+      c++;
+      out.push(state(a,[j,j+1],[],`Compare ${a[j]} with key ${key}.`,c,w));
+      if(a[j] <= key) break;
+      a[j+1]=a[j];
+      w++;
+      out.push(state(a,[j,j+1],[],`Shift ${a[j]} one position right.`,c,w));
+      j--;
+    }
+    a[j+1]=key;
+    w++;
+    out.push(state(a,[j+1],Array.from({length:i+1},(_,k)=>k),`Insert ${key} into its correct position.`,c,w));
+  }
+  out.push(state(a,[],a.map((_,i)=>i),'Sorted!',c,w));
+  return out;
+}
+
+function bubbleSteps(input){
+  const a=copy(input), out=[state(a,[],[],'Compare adjacent pairs from left to right.')];
+  let c=0,w=0;
+  for(let end=a.length-1;end>0;end--){
+    let changed=false;
+    for(let j=0;j<end;j++){
+      c++;
+      out.push(state(a,[j,j+1],[],`Compare neighbors ${a[j]} and ${a[j+1]}.`,c,w));
+      if(a[j]>a[j+1]){
+        [a[j],a[j+1]]=[a[j+1],a[j]];
+        w++;
+        changed=true;
+        out.push(state(a,[j,j+1],[],`Swap them because they are out of order.`,c,w));
+      }
+    }
+    out.push(state(a,[end],Array.from({length:a.length-end},(_,k)=>end+k),`Position ${end+1} is settled.`,c,w));
+    if(!changed) break;
+  }
+  out.push(state(a,[],a.map((_,i)=>i),'Sorted!',c,w));
+  return out;
+}
+
+function selectionSteps(input){
+  const a=copy(input), out=[state(a,[],[],'Find the minimum of the unsorted region.')];
+  let c=0,w=0;
+  for(let i=0;i<a.length-1;i++){
+    let m=i;
+    out.push(state(a,[i],Array.from({length:i},(_,k)=>k),`Current minimum is ${a[m]}.`,c,w));
+    for(let j=i+1;j<a.length;j++){
+      c++;
+      out.push(state(a,[m,j],Array.from({length:i},(_,k)=>k),`Compare ${a[j]} with minimum ${a[m]}.`,c,w));
+      if(a[j]<a[m]){
+        m=j;
+        out.push(state(a,[m],Array.from({length:i},(_,k)=>k),`New minimum found: ${a[m]}.`,c,w));
+      }
+    }
+    if(m!==i){
+      [a[i],a[m]]=[a[m],a[i]];
+      w++;
+      out.push(state(a,[i,m],[],`Swap the minimum into position ${i+1}.`,c,w));
+    }
+  }
+  out.push(state(a,[],a.map((_,i)=>i),'Sorted!',c,w));
+  return out;
+}
+
+function quickSteps(input){
+  const a=copy(input), out=[state(a,[],[],'Partition the array around pivots.')];
+  let c=0,w=0;
+
+  function q(lo,hi){
+    if(lo>=hi) return;
+    const pivot=a[hi];
+    let i=lo;
+    out.push(state(a,[hi],[],`Choose ${pivot} as pivot for positions ${lo+1}–${hi+1}.`,c,w));
+
+    for(let j=lo;j<hi;j++){
+      c++;
+      out.push(state(a,[j,hi],[],`Is ${a[j]} < pivot ${pivot}?`,c,w));
+      if(a[j]<pivot){
+        if(i!==j){
+          [a[i],a[j]]=[a[j],a[i]];
+          w++;
+          out.push(state(a,[i,j],[],`Move ${a[i]} into the smaller-than-pivot region.`,c,w));
+        }
+        i++;
+      }
+    }
+
+    if(i!==hi){
+      [a[i],a[hi]]=[a[hi],a[i]];
+      w++;
+    }
+    out.push(state(a,[i],[i],`Pivot ${a[i]} reaches its final position.`,c,w));
+    q(lo,i-1);
+    q(i+1,hi);
+  }
+
+  q(0,a.length-1);
+  out.push(state(a,[],a.map((_,i)=>i),'Sorted!',c,w));
+  return out;
+}
+
+function mergeSteps(input){
+  const a=copy(input), out=[state(a,[],[],'Split recursively, then merge sorted pieces.')];
+  let c=0,w=0;
+
+  function m(lo,hi){
+    if(hi-lo<=1) return;
+    const mid=Math.floor((lo+hi)/2);
+    m(lo,mid);
+    m(mid,hi);
+
+    const left=a.slice(lo,mid);
+    const right=a.slice(mid,hi);
+    let i=0,j=0,k=lo;
+
+    out.push(state(a,Array.from({length:hi-lo},(_,x)=>lo+x),[],`Merge positions ${lo+1}–${mid} and ${mid+1}–${hi}.`,c,w));
+
+    while(i<left.length && j<right.length){
+      c++;
+      if(left[i]<=right[j]) a[k++]=left[i++];
+      else a[k++]=right[j++];
+      w++;
+      out.push(state(a,[k-1],[],`Write the smaller front element into position ${k}.`,c,w));
+    }
+    while(i<left.length){
+      a[k++]=left[i++];
+      w++;
+      out.push(state(a,[k-1],[],`Copy the remaining left element.`,c,w));
+    }
+    while(j<right.length){
+      a[k++]=right[j++];
+      w++;
+      out.push(state(a,[k-1],[],`Copy the remaining right element.`,c,w));
+    }
+  }
+
+  m(0,a.length);
+  out.push(state(a,[],a.map((_,i)=>i),'Sorted!',c,w));
+  return out;
+}
+
+function stop(){
+  playing=false;
+  if(timer){
+    clearInterval(timer);
+    timer=null;
+  }
+}
+
+function build(){
+  stop();
+  idx=0;
+  if(algo==='insertion') steps=insertionSteps(base);
+  if(algo==='merge') steps=mergeSteps(base);
+  if(algo==='quick') steps=quickSteps(base);
+  if(algo==='bubble') steps=bubbleSteps(base);
+  if(algo==='selection') steps=selectionSteps(base);
+  updateInfo();
+  render();
+}
+
+function updateInfo(){
+  const d=info[algo];
+  $('#algoTitle').textContent=d.name;
+  $('#complexityPill').textContent='Avg: '+d.avg;
+  $('#mentalModel').textContent=d.model;
+  $('#best').textContent=d.best;
+  $('#avg').textContent=d.avg;
+  $('#worst').textContent=d.worst;
+  $('#space').textContent=d.space;
+
+  const ul=$('#notice');
+  ul.innerHTML='';
+  d.notice.forEach(x=>{
+    const li=document.createElement('li');
+    li.textContent=x;
+    ul.appendChild(li);
+  });
+
+  document.querySelectorAll('.algo-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.algo===algo);
+  });
+}
+
+function render(){
+  const s=steps[Math.min(idx,steps.length-1)];
+  const bars=$('#bars');
+  bars.innerHTML='';
+  const max=Math.max(...s.a,1);
+
+  s.a.forEach((v,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='bar-wrap';
+
+    const bar=document.createElement('div');
+    bar.className='bar';
+    if(s.sorted.includes(i)) bar.classList.add('sorted');
+    if(s.active.includes(i)) bar.classList.add('active');
+    bar.style.height=Math.max(12,(v/max)*92)+'%';
+    bar.textContent=v;
+
+    wrap.appendChild(bar);
+    bars.appendChild(wrap);
+  });
+
+  $('#arrayText').textContent='['+s.a.join(', ')+']';
+  $('#comparisons').textContent=s.comparisons;
+  $('#swaps').textContent=s.swaps;
+  $('#stepCount').textContent=idx+' / '+(steps.length-1);
+  $('#status').textContent=s.text;
+  $('#stepBtn').disabled=idx>=steps.length-1;
+  $('#playBtn').textContent=playing?'❚❚ Pause':(idx>=steps.length-1?'↻ Replay':'▶ Play');
+}
+
+function step(){
+  if(idx<steps.length-1){
+    idx++;
+    render();
+  }
+}
+
+function play(){
+  if(playing){
+    stop();
+    render();
+    return;
+  }
+
+  if(idx>=steps.length-1) idx=0;
+  playing=true;
+  render();
+
+  timer=setInterval(()=>{
+    if(idx>=steps.length-1){
+      stop();
+      render();
+      return;
+    }
+    idx++;
+    render();
+  },Number($('#speedSelect').value));
+}
+
+function shuffle(){
+  stop();
+  base=base.slice();
+  for(let i=base.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [base[i],base[j]]=[base[j],base[i]];
+  }
+  build();
+}
+
+document.querySelectorAll('.algo-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    algo=b.dataset.algo;
+    build();
+  });
+});
+
+$('#shuffleBtn').addEventListener('click',shuffle);
+$('#stepBtn').addEventListener('click',step);
+$('#playBtn').addEventListener('click',play);
+$('#resetBtn').addEventListener('click',()=>{
+  base=initial.slice();
+  build();
+});
+$('#speedSelect').addEventListener('change',()=>{
+  if(playing){
+    stop();
+    play();
+  }
+});
+
+build();
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ category: quantitative interview
 ---
 
 This post describes **five well-known sorting algorithms** that can sort a list of \\( n \\) distinct elements \\( A_1, A_2, \dots, A_n \\). We analyze each algorithm in terms of **time** and **space** complexity.
+<iframe src="{{ site.baseurl }}/assets/sorting_algorithms_visualizer.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
 
 ---
 
