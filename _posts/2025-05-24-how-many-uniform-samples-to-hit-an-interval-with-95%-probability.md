@@ -43,14 +43,14 @@ We want:
 
 ### Step 3: Solve for \\( n \\)
 
-Take logs:
+Take natural logs:
 
 \\[
-\log(0.98^n) \le \log(0.05) \Rightarrow n \cdot \log(0.98) \le \log(0.05)
+\ln(0.98^n) \le \ln(0.05) \Rightarrow n \cdot \ln(0.98) \le \ln(0.05)
 \\]
 
 \\[
-n \ge \frac{\log(0.05)}{\log(0.98)} \approx \frac{-1.3010}{-0.00877} \approx 148.36
+n \ge \frac{\ln(0.05)}{\ln(0.98)} \approx \frac{-2.9957}{-0.0202} \approx 148.28
 \\]
 
 Round up:
