@@ -11,6 +11,8 @@ The number \\( 2^{29} \\) is a 9-digit number where **each digit appears exactly
 
 **Question:** Without computing \\( 2^{29} \\) directly, which digit is missing?
 
+<iframe src="{{ site.baseurl }}/assets/missing_digit_2_pow_29.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Key Insight: Sum of Digits from 0–9

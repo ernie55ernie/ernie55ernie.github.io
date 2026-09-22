@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missing Digit in 2^29</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --success: #15803d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.1;
+    }
+    .subtitle {
+      margin: 0 0 26px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .step {
+      margin-bottom: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .label {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .digits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0;
+    }
+    .digit {
+      min-width: 34px;
+      text-align: center;
+      padding: 6px 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      font-weight: 700;
+    }
+    .equation {
+      margin-top: 10px;
+      font-size: 1.18rem;
+      font-weight: 700;
+    }
+    .cycle {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .cycle-item {
+      text-align: center;
+      padding: 10px 5px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+    }
+    .cycle-item small {
+      display: block;
+      color: var(--muted);
+    }
+    .solve {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100%;
+      text-align: center;
+    }
+    .solve .line {
+      font-size: 1.4rem;
+      font-weight: 750;
+      margin: 7px 0;
+    }
+    .arrow {
+      color: var(--muted);
+      font-size: 1.6rem;
+    }
+    button {
+      margin-top: 20px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      min-height: 44px;
+      padding: 11px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .75; cursor: default; }
+    .answer {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      border: 2px solid var(--success);
+      border-radius: 12px;
+      background: #f0fdf4;
+    }
+    .answer strong {
+      display: block;
+      font-size: 3rem;
+      color: var(--success);
+      line-height: 1;
+      margin: 6px 0;
+    }
+    .tip {
+      margin-top: 18px;
+      padding: 16px 18px;
+      background: var(--accent-soft);
+      border-radius: 12px;
+      border: 1px solid #bfdbfe;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .cycle { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Find the Missing Digit in 2<sup>29</sup></h1>
+    <p class="subtitle">
+      We know 2<sup>29</sup> is a 9-digit number containing every digit exactly once,
+      except for one missing digit. We do not need to compute 2<sup>29</sup>.
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="step">
+          <div class="label">Step 1 · Use the digit sum</div>
+          <p>A number has the same remainder modulo 9 as the sum of its digits.</p>
+
+          <div class="digits" aria-label="digits zero through nine">
+            <span class="digit">0</span>
+            <span class="digit">1</span>
+            <span class="digit">2</span>
+            <span class="digit">3</span>
+            <span class="digit">4</span>
+            <span class="digit">5</span>
+            <span class="digit">6</span>
+            <span class="digit">7</span>
+            <span class="digit">8</span>
+            <span class="digit">9</span>
+          </div>
+
+          <div class="equation">0 + 1 + 2 + ··· + 9 = 45</div>
+          <p>If the missing digit is <strong>d</strong>, then the digit sum is:</p>
+          <div class="equation">45 − d</div>
+        </div>
+
+        <div class="step">
+          <div class="label">Step 2 · Compute only 2²⁹ mod 9</div>
+          <p>Powers of 2 modulo 9 repeat:</p>
+
+          <div class="cycle">
+            <div class="cycle-item"><small>2¹ mod 9</small><strong>2</strong></div>
+            <div class="cycle-item"><small>2² mod 9</small><strong>4</strong></div>
+            <div class="cycle-item"><small>2³ mod 9</small><strong>8</strong></div>
+            <div class="cycle-item"><small>2⁴ mod 9</small><strong>7</strong></div>
+            <div class="cycle-item"><small>2⁵ mod 9</small><strong>5</strong></div>
+            <div class="cycle-item"><small>2⁶ mod 9</small><strong>1</strong></div>
+          </div>
+
+          <p>
+            Since <code>29 = 6 × 4 + 5</code>,
+          </p>
+          <div class="equation">
+            2<sup>29</sup> ≡ 2<sup>5</sup> ≡ 5 &nbsp;(mod 9)
+          </div>
+        </div>
+      </section>
+
+      <section class="card solve">
+        <div class="label">Step 3 · Match the remainders</div>
+
+        <div class="line">45 − d ≡ 5 &nbsp;(mod 9)</div>
+        <div class="arrow">↓</div>
+        <div class="line">−d ≡ 5 &nbsp;(mod 9)</div>
+        <div class="arrow">↓</div>
+        <div class="line">d ≡ 4 &nbsp;(mod 9)</div>
+
+        <button id="reveal" type="button">Reveal missing digit</button>
+
+        <div id="answer" class="answer" aria-live="polite">
+          Since <strong>d</strong> must be a digit from 0 to 9:
+          <strong>4</strong>
+          is the only possibility.
+        </div>
+      </section>
+    </div>
+
+    <aside class="tip">
+      <strong>Interview shortcut:</strong>
+      if you see “every digit appears once except one,” think
+      <strong>digit sum + modulo 9</strong>.
+    </aside>
+  </main>
+
+  <script>
+    const reveal = document.getElementById("reveal");
+    const answer = document.getElementById("answer");
+
+    reveal.addEventListener("click", () => {
+      answer.style.display = "block";
+      reveal.textContent = "Missing digit = 4";
+      reveal.disabled = true;
+    });
+  </script>
+</body>
+</html>
