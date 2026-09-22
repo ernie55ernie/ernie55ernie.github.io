@@ -17,6 +17,8 @@ To show this is a **valid PDF**, we need to verify:
 \int_{-\infty}^{\infty} f(x) \, dx = 1
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/standard_normal_pdf_proof.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step 1: Square the Integral

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why the Standard Normal PDF Integrates to 1</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#18212f;
+      --muted:#667085;
+      --border:#d9dee8;
+      --accent:#4f46e5;
+      --accent2:#0ea5e9;
+      --soft:#eef2ff;
+      --good:#15803d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    .wrap{
+      width:min(1000px,calc(100% - 32px));
+      margin:32px auto 56px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#ffffff,#f3f5ff);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:28px;
+      margin-bottom:22px;
+    }
+    h1{font-size:clamp(28px,5vw,46px);line-height:1.1;margin:0 0 12px}
+    h2{font-size:22px;margin:0 0 10px}
+    p{margin:8px 0}
+    .muted{color:var(--muted)}
+    .formula{
+      font-family:"Times New Roman",serif;
+      font-size:clamp(21px,3.5vw,34px);
+      text-align:center;
+      overflow:auto;
+      padding:14px;
+      white-space:nowrap;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+    @media(max-width:760px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      margin:18px 0;
+    }
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .num{
+      width:36px;height:36px;border-radius:999px;
+      background:var(--accent);color:white;
+      display:grid;place-items:center;
+      font-weight:700;flex:0 0 auto;
+    }
+    svg{width:100%;height:auto;display:block}
+    .key{
+      background:var(--soft);
+      border-radius:12px;
+      padding:14px;
+      margin-top:12px;
+    }
+    .result{
+      font-size:30px;
+      font-weight:800;
+      text-align:center;
+      color:var(--good);
+      margin-top:10px;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    button{
+      border:none;
+      border-radius:10px;
+      padding:10px 14px;
+      font-size:15px;
+      cursor:pointer;
+      background:var(--accent);
+      color:white;
+    }
+    button.secondary{background:#e9ecf3;color:var(--text)}
+    .hidden{display:none}
+    .timeline{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+    .timeline div{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 8px;
+      text-align:center;
+      font-size:14px;
+    }
+    @media(max-width:700px){.timeline{grid-template-columns:1fr 1fr}}
+    code{background:#f1f3f7;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="grid">
+        <div>
+          <h1>Why the Standard Normal PDF Integrates to 1</h1>
+          <p class="muted">
+            The standard normal density is
+          </p>
+          <div class="formula">
+            f(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}
+          </div>
+          <p>
+            To be a valid probability density function, its total area must equal 1:
+          </p>
+          <div class="formula">
+            \int_{-\infty}^{\infty} f(x)\,dx = 1
+          </div>
+        </div>
+
+        <div>
+          <svg viewBox="0 0 420 250" aria-label="Normal bell curve">
+            <line x1="25" y1="215" x2="395" y2="215" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="210" y1="25" x2="210" y2="225" stroke="#e2e8f0"/>
+            <path d="M35 214 C75 212,110 202,140 165 C165 135,180 70,210 48 C240 70,255 135,280 165 C310 202,345 212,385 214 L385 215 L35 215 Z"
+                  fill="#4f46e5" opacity=".14"/>
+            <path d="M35 214 C75 212,110 202,140 165 C165 135,180 70,210 48 C240 70,255 135,280 165 C310 202,345 212,385 214"
+                  fill="none" stroke="#4f46e5" stroke-width="4" stroke-linecap="round"/>
+            <text x="248" y="88" font-size="16" fill="#18212f">Area = 1</text>
+            <text x="215" y="235" font-size="13" fill="#667085">0</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h2>Start with the hard integral</h2>
+          <p>Ignore the normalization constant for a moment and define</p>
+        </div>
+      </div>
+      <div class="formula">
+        I=\int_{-\infty}^{\infty} e^{-x^2/2}\,dx
+      </div>
+      <p class="muted">
+        The problem is that <code>e^(-x²/2)</code> has no elementary antiderivative.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h2>Square the integral</h2>
+          <p>Introduce another independent variable, <strong>y</strong>.</p>
+        </div>
+      </div>
+      <div class="formula">
+        I^2=
+        \left(\int_{-\infty}^{\infty}e^{-x^2/2}\,dx\right)
+        \left(\int_{-\infty}^{\infty}e^{-y^2/2}\,dy\right)
+      </div>
+      <div class="formula">
+        I^2=
+        \iint_{\mathbb R^2}e^{-(x^2+y^2)/2}\,dx\,dy
+      </div>
+      <div class="key">
+        The key observation is that <strong>x² + y²</strong> is the squared distance from the origin.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h2>Switch to polar coordinates</h2>
+          <p>Because the expression depends on <strong>x²+y²</strong>, circles are the natural coordinates.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <svg viewBox="0 0 330 280" aria-label="Polar coordinates">
+            <circle cx="165" cy="140" r="105" fill="#0ea5e9" opacity=".08" stroke="#0ea5e9" stroke-width="2"/>
+            <line x1="35" y1="140" x2="295" y2="140" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="165" y1="255" x2="165" y2="25" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="165" y1="140" x2="242" y2="78" stroke="#4f46e5" stroke-width="4"/>
+            <circle cx="242" cy="78" r="6" fill="#4f46e5"/>
+            <path d="M205 140 A40 40 0 0 0 196 115" fill="none" stroke="#0ea5e9" stroke-width="4"/>
+            <text x="207" y="101" font-size="17">r</text>
+            <text x="199" y="129" font-size="17">θ</text>
+            <text x="248" y="74" font-size="15">(x,y)</text>
+          </svg>
+        </div>
+
+        <div>
+          <div class="key">
+            <p><strong>x = r cos θ</strong></p>
+            <p><strong>y = r sin θ</strong></p>
+            <p><strong>x² + y² = r²</strong></p>
+            <p><strong>dx dy = r dr dθ</strong></p>
+          </div>
+          <div class="formula">
+            I^2=
+            \int_0^{2\pi}
+            \int_0^\infty e^{-r^2/2}r\,dr\,d\theta
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">4</div>
+        <div>
+          <h2>Evaluate the radial integral</h2>
+          <p>Now the integral becomes simple.</p>
+        </div>
+      </div>
+
+      <div class="formula">
+        \int_0^\infty e^{-r^2/2}r\,dr
+      </div>
+
+      <div class="key">
+        Let
+        <strong>u = r²/2</strong>,
+        so
+        <strong>du = r dr</strong>.
+      </div>
+
+      <div class="formula">
+        \int_0^\infty e^{-u}\,du = 1
+      </div>
+
+      <div class="formula">
+        I^2 = \int_0^{2\pi}1\,d\theta = 2\pi
+      </div>
+      <div class="formula">
+        I=\sqrt{2\pi}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="step">
+        <div class="num">5</div>
+        <div>
+          <h2>Put the normalization constant back</h2>
+          <p>The factor <strong>1/√(2π)</strong> is chosen precisely to cancel the Gaussian integral.</p>
+        </div>
+      </div>
+
+      <div class="formula">
+        \int_{-\infty}^{\infty}
+        \frac{1}{\sqrt{2\pi}}e^{-x^2/2}\,dx
+        =
+        \frac{1}{\sqrt{2\pi}}\sqrt{2\pi}
+      </div>
+      <div class="result">= 1 ✓</div>
+    </section>
+
+    <section class="card">
+      <h2>Interview memory trick</h2>
+      <p class="muted">Remember just five moves:</p>
+      <div class="timeline">
+        <div><strong>1</strong><br>Define I</div>
+        <div><strong>2</strong><br>Square I</div>
+        <div><strong>3</strong><br>Use polar coordinates</div>
+        <div><strong>4</strong><br>Get 2π</div>
+        <div><strong>5</strong><br>Normalize</div>
+      </div>
+
+      <div class="controls">
+        <button id="showIdea">Show intuition</button>
+        <button id="reset" class="secondary">Hide intuition</button>
+      </div>
+
+      <div id="intuition" class="key hidden">
+        Squaring the 1D integral turns the problem into a 2D integral.
+        In 2D, the exponent depends only on distance from the origin, so polar coordinates
+        convert the awkward expression into a simple exponential integral.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const idea = document.getElementById('intuition');
+    document.getElementById('showIdea').addEventListener('click', () => {
+      idea.classList.remove('hidden');
+    });
+    document.getElementById('reset').addEventListener('click', () => {
+      idea.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
