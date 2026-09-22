@@ -11,6 +11,8 @@ You generate \\( n \\) independent random variables \\( X_1, X_2, \dots, X_n \\)
 
 **Question**: How large must \\( n \\) be so that **at least one** sample falls in the interval \\( [0.7, 0.72] \\) with probability **at least 95%**?
 
+<iframe src="{{ site.baseurl }}/assets/how_large_must_n_be.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step-by-Step Solution

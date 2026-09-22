@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>At Least One Sample in [0.7, 0.72]</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent2:#22c55e;
+      --border:#334155;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:linear-gradient(180deg,#0b1220 0%, #0f172a 100%);
+      color:var(--text);
+      line-height:1.55;
+    }
+    .container{
+      max-width:1000px;
+      margin:0 auto;
+      padding:32px 20px 48px;
+    }
+    h1,h2,h3{margin:0 0 12px}
+    h1{
+      font-size:clamp(1.8rem,3vw,2.6rem);
+      line-height:1.15;
+      margin-bottom:10px;
+    }
+    p{margin:0 0 14px}
+    .sub{
+      color:var(--muted);
+      font-size:1.02rem;
+      margin-bottom:24px;
+    }
+    .grid{
+      display:grid;
+      gap:16px;
+    }
+    .grid-3{
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    }
+    .grid-2{
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    }
+    .card{
+      background:rgba(17,24,39,.9);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .label{
+      color:var(--muted);
+      font-size:.95rem;
+      margin-bottom:6px;
+    }
+    .value{
+      font-size:2rem;
+      font-weight:800;
+      color:white;
+    }
+    .value.small{
+      font-size:1.35rem;
+    }
+    .formula{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 16px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:1rem;
+      overflow:auto;
+      white-space:nowrap;
+    }
+    .step{
+      margin-bottom:10px;
+    }
+    .highlight{
+      color:var(--accent);
+      font-weight:700;
+    }
+    .good{
+      color:var(--accent2);
+      font-weight:700;
+    }
+    .bar-wrap{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:999px;
+      height:28px;
+      overflow:hidden;
+      position:relative;
+      margin-top:10px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transition:width .25s ease;
+    }
+    .bar-target{
+      position:absolute;
+      top:0;
+      bottom:0;
+      left:95%;
+      width:2px;
+      background:rgba(255,255,255,.8);
+    }
+    .bar-text{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .controls{
+      display:flex;
+      gap:16px;
+      align-items:end;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .control{
+      flex:1 1 260px;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:var(--accent);
+    }
+    input[type="number"]{
+      width:120px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+      font-size:1rem;
+    }
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(56,189,248,.12);
+      border:1px solid rgba(56,189,248,.3);
+      color:#bae6fd;
+      font-size:.92rem;
+      margin-bottom:14px;
+    }
+    .answer{
+      font-size:1.25rem;
+      font-weight:700;
+      margin-top:8px;
+    }
+    .footer-note{
+      color:var(--muted);
+      font-size:.95rem;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Probability Visualization</div>
+    <h1>How large must <em>n</em> be?</h1>
+    <p class="sub">
+      We draw <strong>n independent Uniform(0,1)</strong> samples and want the probability that
+      <strong>at least one</strong> falls in the interval <strong>[0.7, 0.72]</strong> to be at least <strong>95%</strong>.
+    </p>
+
+    <section class="grid grid-3">
+      <div class="card">
+        <div class="label">Target interval</div>
+        <div class="value small">[0.70, 0.72]</div>
+        <p>Its length is <strong>0.02</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="label">Hit probability for one sample</div>
+        <div class="value">0.02</div>
+        <p>So a single sample misses with probability <strong>0.98</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="label">Smallest valid sample size</div>
+        <div class="value" id="finalN">149</div>
+        <p>This is the first integer that reaches the 95% threshold.</p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Key idea: use the complement</h2>
+      <p>
+        It is easier to compute the probability that <strong>none</strong> of the samples land in the interval,
+        then subtract from 1.
+      </p>
+
+      <div class="formula step">P(one sample lands in [0.7,0.72]) = 0.72 - 0.70 = 0.02</div>
+      <div class="formula step">P(one sample misses [0.7,0.72]) = 1 - 0.02 = 0.98</div>
+      <div class="formula step">P(all n samples miss) = (0.98)^n</div>
+      <div class="formula step">P(at least one sample lands in [0.7,0.72]) = 1 - (0.98)^n</div>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Solve the inequality</h2>
+      <div class="formula step">1 - (0.98)^n ≥ 0.95</div>
+      <div class="formula step">(0.98)^n ≤ 0.05</div>
+      <div class="formula step">n ln(0.98) ≤ ln(0.05)</div>
+      <div class="formula step">n ≥ ln(0.05) / ln(0.98) ≈ 148.28</div>
+      <p class="answer">
+        Therefore, the smallest integer is <span class="highlight">n = 149</span>.
+      </p>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Interactive check</h2>
+      <p>Move the slider or enter a value for <strong>n</strong>:</p>
+
+      <div class="controls">
+        <div class="control">
+          <label for="slider"><strong>Sample size n</strong></label>
+          <input id="slider" type="range" min="1" max="300" value="149" />
+        </div>
+        <div>
+          <label for="num"><strong>n</strong></label><br />
+          <input id="num" type="number" min="1" value="149" />
+        </div>
+      </div>
+
+      <div class="bar-text">
+        <div>
+          <strong>P(at least one hit)</strong> =
+          <span id="probText" class="good">95.06%</span>
+        </div>
+        <div>Target: <strong>95%</strong></div>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" id="bar"></div>
+        <div class="bar-target" title="95% target"></div>
+      </div>
+
+      <p id="status" style="margin-top:14px;">
+        For <strong>n = 149</strong>, the probability is <strong>95.06%</strong>, so it works.
+      </p>
+    </section>
+
+    <section class="grid grid-2" style="margin-top:20px;">
+      <div class="card">
+        <div class="label">Check n = 148</div>
+        <div class="value small" id="p148">94.96%</div>
+        <p>Just below 95%, so it is <span style="color:var(--warn);font-weight:700;">not enough</span>.</p>
+      </div>
+      <div class="card">
+        <div class="label">Check n = 149</div>
+        <div class="value small" id="p149">95.06%</div>
+        <p>Just above 95%, so it <span class="good">does work</span>.</p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>Final answer</h2>
+      <p class="answer">
+        You need <span class="highlight">n = 149</span> samples.
+      </p>
+      <p class="footer-note">
+        Because each sample has a 2% chance of landing in [0.7, 0.72], and
+        1 - (0.98)<sup>149</sup> ≈ 95.06%.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const slider = document.getElementById('slider');
+    const num = document.getElementById('num');
+    const probText = document.getElementById('probText');
+    const bar = document.getElementById('bar');
+    const status = document.getElementById('status');
+    const p148 = document.getElementById('p148');
+    const p149 = document.getElementById('p149');
+
+    function prob(n) {
+      return 1 - Math.pow(0.98, n);
+    }
+
+    function pct(x) {
+      return (x * 100).toFixed(2) + '%';
+    }
+
+    function update(raw) {
+      let n = Math.max(1, Math.round(Number(raw) || 1));
+      slider.value = Math.min(n, 300);
+      num.value = n;
+
+      const p = prob(n);
+      probText.textContent = pct(p);
+      bar.style.width = Math.min(100, p * 100) + '%';
+
+      if (p >= 0.95) {
+        status.innerHTML = `For <strong>n = ${n}</strong>, the probability is <strong>${pct(p)}</strong>, so it works.`;
+      } else {
+        status.innerHTML = `For <strong>n = ${n}</strong>, the probability is only <strong>${pct(p)}</strong>, so it is still below 95%.`;
+      }
+    }
+
+    slider.addEventListener('input', e => update(e.target.value));
+    num.addEventListener('input', e => update(e.target.value));
+
+    p148.textContent = pct(prob(148));
+    p149.textContent = pct(prob(149));
+    update(149);
+  </script>
+</body>
+</html>
