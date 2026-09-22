@@ -45,7 +45,7 @@
       text-align:center;
       overflow:auto;
       padding:14px;
-      white-space:nowrap;
+      
     }
     .grid{
       display:grid;
@@ -119,6 +119,20 @@
     @media(max-width:700px){.timeline{grid-template-columns:1fr 1fr}}
     code{background:#f1f3f7;padding:2px 6px;border-radius:6px}
   </style>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
 </head>
 <body>
   <main class="wrap">
@@ -130,13 +144,13 @@
             The standard normal density is
           </p>
           <div class="formula">
-            f(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}
+            \[f(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}\]
           </div>
           <p>
             To be a valid probability density function, its total area must equal 1:
           </p>
           <div class="formula">
-            \int_{-\infty}^{\infty} f(x)\,dx = 1
+            \[\int_{-\infty}^{\infty} f(x)\,dx = 1\]
           </div>
         </div>
 
@@ -164,10 +178,10 @@
         </div>
       </div>
       <div class="formula">
-        I=\int_{-\infty}^{\infty} e^{-x^2/2}\,dx
+        \[I=\int_{-\infty}^{\infty} e^{-x^2/2}\,dx\]
       </div>
       <p class="muted">
-        The problem is that <code>e^(-x²/2)</code> has no elementary antiderivative.
+        The problem is that \(e^{-x^2/2}\) has no elementary antiderivative.
       </p>
     </section>
 
@@ -180,16 +194,20 @@
         </div>
       </div>
       <div class="formula">
-        I^2=
-        \left(\int_{-\infty}^{\infty}e^{-x^2/2}\,dx\right)
-        \left(\int_{-\infty}^{\infty}e^{-y^2/2}\,dy\right)
+        \[
+I^2=
+\left(\int_{-\infty}^{\infty}e^{-x^2/2}\,dx\right)
+\left(\int_{-\infty}^{\infty}e^{-y^2/2}\,dy\right)
+\]
       </div>
       <div class="formula">
-        I^2=
-        \iint_{\mathbb R^2}e^{-(x^2+y^2)/2}\,dx\,dy
+        \[
+I^2=
+\iint_{\mathbb R^2}e^{-(x^2+y^2)/2}\,dx\,dy
+\]
       </div>
       <div class="key">
-        The key observation is that <strong>x² + y²</strong> is the squared distance from the origin.
+        The key observation is that <strong>\(x^2+y^2\)</strong> is the squared distance from the origin.
       </div>
     </section>
 
@@ -219,15 +237,17 @@
 
         <div>
           <div class="key">
-            <p><strong>x = r cos θ</strong></p>
-            <p><strong>y = r sin θ</strong></p>
-            <p><strong>x² + y² = r²</strong></p>
-            <p><strong>dx dy = r dr dθ</strong></p>
+            <p><strong>\(x=r\cos\theta\)</strong></p>
+            <p><strong>\(y=r\sin\theta\)</strong></p>
+            <p><strong>\(x^2+y^2=r^2\)</strong></p>
+            <p><strong>\(dx\,dy=r\,dr\,d\theta\)</strong></p>
           </div>
           <div class="formula">
-            I^2=
-            \int_0^{2\pi}
-            \int_0^\infty e^{-r^2/2}r\,dr\,d\theta
+            \[
+I^2=
+\int_0^{2\pi}
+\[\int_0^\infty e^{-r^2/2}r\,dr\]\,d\theta
+\]
           </div>
         </div>
       </div>
@@ -243,25 +263,25 @@
       </div>
 
       <div class="formula">
-        \int_0^\infty e^{-r^2/2}r\,dr
+        \[\int_0^\infty e^{-r^2/2}r\,dr\]
       </div>
 
       <div class="key">
         Let
-        <strong>u = r²/2</strong>,
+        <strong>\(u=r^2/2\)</strong>,
         so
-        <strong>du = r dr</strong>.
+        <strong>\(du=r\,dr\)</strong>.
       </div>
 
       <div class="formula">
-        \int_0^\infty e^{-u}\,du = 1
+        \[\int_0^\infty e^{-u}\,du = 1\]
       </div>
 
       <div class="formula">
-        I^2 = \int_0^{2\pi}1\,d\theta = 2\pi
+        \[I^2 = \int_0^{2\pi}1\,d\theta = 2\pi\]
       </div>
       <div class="formula">
-        I=\sqrt{2\pi}
+        \[I=\sqrt{2\pi}\]
       </div>
     </section>
 
@@ -270,15 +290,17 @@
         <div class="num">5</div>
         <div>
           <h2>Put the normalization constant back</h2>
-          <p>The factor <strong>1/√(2π)</strong> is chosen precisely to cancel the Gaussian integral.</p>
+          <p>The factor <strong>\(1/\sqrt{2\pi}\)</strong> is chosen precisely to cancel the Gaussian integral.</p>
         </div>
       </div>
 
       <div class="formula">
-        \int_{-\infty}^{\infty}
-        \frac{1}{\sqrt{2\pi}}e^{-x^2/2}\,dx
-        =
-        \frac{1}{\sqrt{2\pi}}\sqrt{2\pi}
+        \[
+\int_{-\infty}^{\infty}
+\frac{1}{\sqrt{2\pi}}e^{-x^2/2}\,dx
+=
+\frac{1}{\sqrt{2\pi}}\sqrt{2\pi}
+\]
       </div>
       <div class="result">= 1 ✓</div>
     </section>
