@@ -9,6 +9,8 @@ category: quantitative interview
 
 An ant is at one corner of a \\( 10 \times 10 \times 10 \\) cube-shaped room and wants to reach the **opposite corner**, traveling **only along the walls** (not diagonally through space). What is the **shortest path length** it can take?
 
+<iframe src="{{ site.baseurl }}/assets/cube_shortest_path_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Key Insight
