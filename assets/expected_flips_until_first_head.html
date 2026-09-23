@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expected Flips Until First Head</title>
+  <style>
+    :root{
+      --bg:#f7f8fb; --card:#ffffff; --text:#182033; --muted:#667085;
+      --border:#d9deea; --accent:#5b6ee1; --accent-soft:#eef1ff;
+      --series:#7c8cf0; --series2:#a8b2f6;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px}
+    h1{font-size:32px;margin:0 0 8px}
+    .lead{color:var(--muted);margin:0 0 24px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .section-title{font-size:16px;font-weight:700;margin-bottom:6px}
+    .muted{color:var(--muted)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);background:white;color:var(--text);
+      padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;
+    }
+    button.active{background:var(--accent-soft);border-color:var(--accent)}
+    input[type=range]{width:100%;accent-color:var(--accent)}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .stat .big{font-size:34px;font-weight:800;margin-top:6px}
+    .bars{height:250px;display:flex;align-items:flex-end;gap:10px;padding-top:30px}
+    .bar-wrap{flex:1;text-align:center;min-width:0}
+    .bar{
+      width:100%;background:var(--series);border-radius:8px 8px 2px 2px;
+      position:relative;transition:height .25s ease;
+    }
+    .bar-label{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:12px;color:var(--muted);margin-bottom:5px;white-space:nowrap}
+    .xlab{font-size:12px;color:var(--muted);margin-top:8px}
+    .paths{display:grid;gap:8px;margin-top:12px}
+    .path-row{display:grid;grid-template-columns:60px 1fr auto;gap:12px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:#fff}
+    code, .formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .formula-box{background:#f4f6fb;border-radius:12px;padding:14px;line-height:1.8}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+    .coin{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--border);background:#fff;font-weight:800;margin-right:6px;margin-bottom:6px}
+    .sim-output{margin-top:12px;background:#f4f6fb;border-radius:12px;padding:12px;min-height:58px}
+    .slider-row{margin-top:14px}
+    .hidden{display:none}
+    @media(max-width:800px){
+      .grid,.two{grid-template-columns:1fr}
+      .wrap{padding:18px}
+      h1{font-size:27px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Expected Flips Until First Head</h1>
+    <p class="lead">
+      Explore both versions: a <strong>fair coin</strong> and a <strong>biased coin</strong> with probability
+      <code>p</code> of heads. The waiting time follows a geometric distribution.
+    </p>
+
+    <section class="grid">
+      <div>
+        <div class="card">
+          <div class="section-title">Choose the coin</div>
+          <div id="mode-note" class="muted">Fair coin: p = 0.50</div>
+
+          <div class="controls" style="margin-top:14px">
+            <button id="fair-btn" class="active">Fair</button>
+            <button id="biased-btn">Biased</button>
+          </div>
+
+          <div id="p-controls" class="slider-row hidden">
+            <label for="p-slider"><strong>Probability of heads, p</strong></label>
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px">
+              <span class="muted">0.05</span>
+              <strong id="p-value">0.30</strong>
+              <span class="muted">0.95</span>
+            </div>
+            <input id="p-slider" type="range" min="0.05" max="0.95" step="0.05" value="0.30" />
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="muted">Expected flips</div>
+            <div id="expected" class="big">2.00</div>
+            <div class="muted">E[N] = 1 / p</div>
+          </div>
+          <div class="stat">
+            <div class="muted">Chance first flip is H</div>
+            <div id="first-prob" class="big">50%</div>
+            <div class="muted">Exactly p</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Where can the first head occur?</div>
+        <div class="muted">Bar height = P(N = k)</div>
+        <div id="bars" class="bars"></div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <div class="section-title">Build the expectation one path at a time</div>
+      <div class="muted">To finish on flip k, we need k−1 tails followed by one head.</div>
+      <div id="paths" class="paths"></div>
+    </section>
+
+    <section class="two">
+      <div class="card">
+        <div class="section-title">Method 1 · Geometric distribution</div>
+        <div class="formula-box formula">
+          P(N = k) = (1 − p)<sup>k−1</sup>p<br>
+          E[N] = Σ k(1 − p)<sup>k−1</sup>p<br>
+          <strong>E[N] = 1 / p</strong>
+        </div>
+        <p id="direct-result" class="muted">For p = 0.50: E[N] = 1 / 0.50 = 2.</p>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Method 2 · Interview recurrence</div>
+        <div class="formula-box formula">
+          E = 1 + (1 − p)E<br>
+          pE = 1<br>
+          <strong>E = 1 / p</strong>
+        </div>
+        <p class="muted">
+          You always spend one flip. If that flip is a tail, which happens with probability
+          <code>1 − p</code>, you are back in exactly the same situation.
+        </p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+        <div>
+          <div class="section-title">Try one random run</div>
+          <div class="muted">Generate flips until the first head.</div>
+        </div>
+        <button id="simulate">Flip until H</button>
+      </div>
+      <div id="simulation" class="sim-output">Press “Flip until H” to see one sample path.</div>
+    </section>
+  </main>
+
+  <script>
+    const fairBtn = document.getElementById('fair-btn');
+    const biasedBtn = document.getElementById('biased-btn');
+    const controls = document.getElementById('p-controls');
+    const slider = document.getElementById('p-slider');
+    const pValue = document.getElementById('p-value');
+    const expected = document.getElementById('expected');
+    const firstProb = document.getElementById('first-prob');
+    const bars = document.getElementById('bars');
+    const paths = document.getElementById('paths');
+    const note = document.getElementById('mode-note');
+    const directResult = document.getElementById('direct-result');
+    const simulate = document.getElementById('simulate');
+    const simulation = document.getElementById('simulation');
+
+    let mode = 'fair';
+    let p = 0.5;
+
+    function pct(x) {
+      const v = x * 100;
+      return (v >= 10 ? v.toFixed(1) : v.toFixed(2)).replace(/\.0+$/, '') + '%';
+    }
+
+    function sequence(k) {
+      return 'T'.repeat(k - 1) + 'H';
+    }
+
+    function renderBars() {
+      bars.innerHTML = '';
+      const vals = [];
+      for (let k = 1; k <= 8; k++) vals.push(Math.pow(1-p, k-1)*p);
+      const max = Math.max(...vals);
+
+      vals.forEach((v, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'bar-wrap';
+
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = Math.max(4, (v/max)*190) + 'px';
+
+        const lab = document.createElement('div');
+        lab.className = 'bar-label';
+        lab.textContent = pct(v);
+
+        const x = document.createElement('div');
+        x.className = 'xlab';
+        x.textContent = i + 1;
+
+        bar.appendChild(lab);
+        wrap.appendChild(bar);
+        wrap.appendChild(x);
+        bars.appendChild(wrap);
+      });
+    }
+
+    function renderPaths() {
+      paths.innerHTML = '';
+      for (let k = 1; k <= 5; k++) {
+        const prob = Math.pow(1-p, k-1)*p;
+
+        const row = document.createElement('div');
+        row.className = 'path-row';
+
+        const a = document.createElement('strong');
+        a.textContent = 'N = ' + k;
+
+        const b = document.createElement('code');
+        b.textContent = sequence(k);
+
+        const c = document.createElement('span');
+        c.className = 'muted';
+        c.textContent = pct(prob);
+
+        row.append(a,b,c);
+        paths.appendChild(row);
+      }
+    }
+
+    function render() {
+      p = mode === 'fair' ? 0.5 : Number(slider.value);
+
+      fairBtn.classList.toggle('active', mode === 'fair');
+      biasedBtn.classList.toggle('active', mode === 'biased');
+      controls.classList.toggle('hidden', mode !== 'biased');
+
+      pValue.textContent = p.toFixed(2);
+      note.textContent = mode === 'fair'
+        ? 'Fair coin: p = 0.50'
+        : 'Biased coin: p = ' + p.toFixed(2);
+
+      expected.textContent = (1/p).toFixed(2);
+      firstProb.textContent = pct(p);
+      directResult.textContent =
+        'For p = ' + p.toFixed(2) + ': E[N] = 1 / ' + p.toFixed(2) + ' = ' + (1/p).toFixed(2) + '.';
+
+      renderBars();
+      renderPaths();
+    }
+
+    fairBtn.addEventListener('click', () => {
+      mode = 'fair';
+      simulation.textContent = 'Press “Flip until H” to see one sample path.';
+      render();
+    });
+
+    biasedBtn.addEventListener('click', () => {
+      mode = 'biased';
+      simulation.textContent = 'Press “Flip until H” to see one sample path.';
+      render();
+    });
+
+    slider.addEventListener('input', render);
+
+    simulate.addEventListener('click', () => {
+      const flips = [];
+      const cap = 100;
+
+      for (let i = 0; i < cap; i++) {
+        if (Math.random() < p) {
+          flips.push('H');
+          break;
+        }
+        flips.push('T');
+      }
+
+      simulation.innerHTML = '';
+
+      const seq = document.createElement('div');
+      flips.forEach(f => {
+        const coin = document.createElement('span');
+        coin.className = 'coin';
+        coin.textContent = f;
+        seq.appendChild(coin);
+      });
+
+      const msg = document.createElement('div');
+      msg.className = 'muted';
+      msg.style.marginTop = '8px';
+
+      if (flips[flips.length - 1] === 'H') {
+        msg.textContent =
+          'First head arrived on flip ' + flips.length +
+          '. Over many runs, the average approaches ' + (1/p).toFixed(2) + ' flips.';
+      } else {
+        msg.textContent = 'No head occurred in the first 100 displayed flips.';
+      }
+
+      simulation.appendChild(seq);
+      simulation.appendChild(msg);
+    });
+
+    render();
+  </script>
+</body>
+</html>
