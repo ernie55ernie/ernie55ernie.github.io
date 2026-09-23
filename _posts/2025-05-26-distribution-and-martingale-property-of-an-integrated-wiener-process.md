@@ -5,10 +5,10 @@ date: 2025-05-26
 category: quantitative interview
 ---
 
-Let \\( W\sb{t} \\) be a standard Wiener process (Brownian motion), and define
+Let \\( W_t \\) be a standard Wiener process (Brownian motion), and define
 
 \\[
-X\sb{t} = \int\sb{0}^t W\sb{\tau}\,d\tau.
+X_t = \int_0^t W_\tau\,d\tau.
 \\]
 
 We answer two questions:
@@ -17,17 +17,17 @@ We answer two questions:
 
 ---
 
-### 1. Distribution of \\( X\sb{t} \\)
+### 1. Distribution of \\( X_t \\)
 
-The process \\( X\sb{t} \\) is a stochastic integral of Brownian motion with respect to Lebesgue measure (not Itô). It can be evaluated in distribution as follows:
+The process \\( X_t \\) is a stochastic integral of Brownian motion with respect to Lebesgue measure (not Itô). It can be evaluated in distribution as follows:
 
-- \\( X\sb{t} \\) is a **Gaussian** random variable (being a linear transformation of a Gaussian process).
+- \\( X_t \\) is a **Gaussian** random variable (being a linear transformation of a Gaussian process).
 - We compute its **mean** and **variance**.
 
 #### Mean:
 
 \\[
-\mathbb{E}[X\sb{t}] = \mathbb{E}\left[\int\sb{0}^t W\sb{\tau}\,d\tau\right] = \int\sb{0}^t \mathbb{E}[W\sb{\tau}]\,d\tau = \int\sb{0}^t 0\,d\tau = 0.
+\mathbb{E}[X_t] = \mathbb{E}\left[\int_0^t W_\tau\,d\tau\right] = \int_0^t \mathbb{E}[W_\tau]\,d\tau = \int_0^t 0\,d\tau = 0.
 \\]
 
 #### Variance:
@@ -35,59 +35,83 @@ The process \\( X\sb{t} \\) is a stochastic integral of Brownian motion with res
 Using the covariance of Brownian motion:
 
 \\[
-\text{Var}(X\sb{t}) = \mathbb{E}[X\sb{t}^2] = \mathbb{E}\left[ \left( \int\sb{0}^t W\sb{\tau}\,d\tau \right)^2 \right] = \int\sb{0}^t\int\sb{0}^t \mathbb{E}[W\sb{s} W\sb{u}]\,ds\,du.
+\text{Var}(X_t) = \mathbb{E}[X_t^2] = \mathbb{E}\left[ \left( \int_0^t W_\tau\,d\tau \right)^2 \right] = \int_0^t\int_0^t \mathbb{E}[W_s W_u]\,ds\,du.
 \\]
 
-Since \\( \mathbb{E}[W\sb{s} W\sb{u}] = \min(s, u) \\), we compute:
+Since \\( \mathbb{E}[W_s W_u] = \min(s, u) \\), we compute:
 
 \\[
-\text{Var}(X\sb{t}) = \int\sb{0}^t \int\sb{0}^t \min(s, u)\,ds\,du = \frac{t^3}{3}.
+\text{Var}(X_t) = \int_0^t \int_0^t \min(s, u)\,ds\,du = \frac{t^3}{3}.
 \\]
 
 Thus,
 
 \\[
-X\sb{t} \sim \mathcal{N}\left(0, \frac{t^3}{3} \right).
+X_t \sim \mathcal{N}\left(0, \frac{t^3}{3} \right).
 \\]
 
 ---
 
-### 2. Is \\( \{X\sb{t}\}_{t \ge 0} \\) a martingale?
+### 2. Is \\( \{X_t\}_{t \ge 0} \\) a martingale?
 
-We check whether \\( X\sb{t} \\) satisfies the martingale property with respect to the natural filtration \\( \mathcal{F}\sb{t} = \sigma(W\sb{s}: s \le t) \\):
+We check whether \\( X_t \\) satisfies the martingale property with respect to the natural filtration \\( \mathcal{F}_t = \sigma(W_s: s \le t) \\):
 
-We evaluate \\( \mathbb{E}[X\sb{t} \mid \mathcal{F}\sb{s}] \\) for \\( s < t \\). Note that:
+We evaluate \\( \mathbb{E}[X_t \mid \mathcal{F}_s] \\) for \\( s < t \\). Note that:
 
 \\[
-X\sb{t} = \int\sb{0}^t W\sb{\tau}\,d\tau = \int\sb{0}^s W\sb{\tau}\,d\tau + \int\sb{s}^t W\sb{\tau}\,d\tau = X\sb{s} + \int\sb{s}^t W\sb{\tau}\,d\tau.
+X_t = \int_0^t W_\tau\,d\tau = \int_0^s W_\tau\,d\tau + \int_s^t W_\tau\,d\tau = X_s + \int_s^t W_\tau\,d\tau.
 \\]
 
-Then, taking the conditional expectation:
+Then,
 
 \\[
-\mathbb{E}[X\sb{t} \mid \mathcal{F}\sb{s}] = X\sb{s} + \mathbb{E}\left[ \int\sb{s}^t W\sb{\tau}\,d\tau \mathrel{\Big\vert} \mathcal{F}\sb{s} \right].
+a = \int_s^t W_\tau\,d\tau, 
+\\]
+\\[
+\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}[ a \mid \mathcal{F}_s ].
 \\]
 
-By Fubini's theorem (or moving the expectation inside the integral), and using the martingale property of Brownian motion (\\( \mathbb{E}[W\sb{\tau} \mid \mathcal{F}\sb{s}] = W\sb{s} \\) for \\( \tau > s \\)):
+However, for \\( \tau > s \\), \\( W_\tau \\) is not \\( \mathcal{F}_s \\)-measurable. In fact,
 
 \\[
-\mathbb{E}\left[ \int\sb{s}^t W\sb{\tau}\,d\tau \mathrel{\Big\vert} \mathcal{F}\sb{s} \right] = \int\sb{s}^t \mathbb{E}[W\sb{\tau} \mid \mathcal{F}\sb{s}]\,d\tau = \int\sb{s}^t W\sb{s}\,d\tau = (t - s)W\sb{s}.
+\mathbb{E}[W_\tau \mid \mathcal{F}_s] = W_s,
+\\]
+
+so:
+
+\\[
+a = \int_s^t W_\tau\,d\tau, 
+\\]
+\\[
+b = \mathbb{E}[W_\tau \mid \mathcal{F}_s],
+\\]
+\\[
+\mathbb{E}[ a \mid \mathcal{F}_s ]
+\\]
+\\[
+ = \int_s^t b \,d\tau
+\\]
+\\[
+ =\int_s^t W_s\,d\tau
+\\]
+\\[
+= (t - s)W_s
 \\]
 
 Therefore,
 
 \\[
-\mathbb{E}[X\sb{t} \mid \mathcal{F}\sb{s}] = X\sb{s} + (t - s)W\sb{s} \ne X\sb{s}.
+\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + (t - s)W_s \ne X_s.
 \\]
 
-So \\( X\sb{t} \\) is **not** a martingale.
+So \\( X_t \\) is **not** a martingale.
 
 ---
 
 ## Conclusion
 
-- \\( X\sb{t} = \int\sb{0}^t W\sb{\tau}\,d\tau \sim \mathcal{N}(0, t^3/3) \\)
-- \\( X\sb{t} \\) is **not** a martingale with respect to the natural filtration of \\( W\sb{t} \\)
+- \\( X_t = \int_0^t W_\tau\,d\tau \sim \mathcal{N}(0, t^3/3) \\)
+- \\( X_t \\) is **not** a martingale with respect to the natural filtration of \\( W_t \\)
 
 # Reference
 
