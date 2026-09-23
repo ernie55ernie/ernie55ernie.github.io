@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>European Put Convexity & Arbitrage</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --border: #dfe3eb;
+      --blue: #355cde;
+      --green: #14804a;
+      --red: #c9362b;
+      --soft-blue: #eef3ff;
+      --soft-green: #ecf8f1;
+      --soft-red: #fff0ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .card + .card { margin-top: 16px; }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .formula {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      background: #f8f9fc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+
+    .big {
+      font-size: 28px;
+      font-weight: 750;
+    }
+
+    .success {
+      background: var(--soft-green);
+      border-color: #b8e1c9;
+    }
+
+    .warning {
+      background: var(--soft-red);
+      border-color: #efc0bc;
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mini {
+      background: #fafbfc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .mini strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 21px;
+    }
+
+    .rule {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .arrow { color: var(--muted); padding: 0 8px; }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .three { grid-template-columns: 1fr; }
+      .page { padding: 24px 14px 40px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <span class="pill">Options Arbitrage</span>
+    <h1>European Put Convexity in Strike</h1>
+    <p class="subtitle">
+      Given P(30)=6, P(20)=4, and P(0)=0, do these prices violate convexity?
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Plot the three quoted prices</h2>
+        <p class="small">
+          The points are (0,0), (20,4), and (30,6).
+        </p>
+
+        <svg viewBox="0 0 640 350" role="img"
+             aria-label="Put price plotted against strike">
+          <line x1="70" y1="290" x2="590" y2="290" stroke="#cfd5df" stroke-width="2"/>
+          <line x1="70" y1="290" x2="70" y2="40" stroke="#cfd5df" stroke-width="2"/>
+
+          <text x="300" y="335" fill="#667085" font-size="15">Strike K</text>
+          <text x="16" y="28" fill="#667085" font-size="15">P(K)</text>
+
+          <text x="62" y="314" fill="#667085" font-size="13">0</text>
+          <text x="388" y="314" fill="#667085" font-size="13">20</text>
+          <text x="548" y="314" fill="#667085" font-size="13">30</text>
+
+          <text x="42" y="294" fill="#667085" font-size="13">0</text>
+          <text x="42" y="183" fill="#667085" font-size="13">4</text>
+          <text x="42" y="126" fill="#667085" font-size="13">6</text>
+
+          <line x1="70" y1="290" x2="550" y2="120"
+                stroke="#355cde" stroke-width="5" stroke-linecap="round"/>
+
+          <circle cx="70" cy="290" r="7" fill="#355cde"/>
+          <circle cx="390" cy="177" r="7" fill="#355cde"/>
+          <circle cx="550" cy="120" r="7" fill="#355cde"/>
+
+          <text x="82" y="275" fill="#172033" font-size="14" font-weight="700">(0,0)</text>
+          <text x="402" y="164" fill="#172033" font-size="14" font-weight="700">(20,4)</text>
+          <text x="500" y="100" fill="#172033" font-size="14" font-weight="700">(30,6)</text>
+        </svg>
+      </section>
+
+      <aside>
+        <div class="card">
+          <div class="small">Correct line</div>
+          <div class="big">P(K)=K/5</div>
+          <p class="small">
+            Since 4/20 = 6/30 = 0.2.
+          </p>
+        </div>
+
+        <div class="card success">
+          <div class="small">Slope test</div>
+          <div class="formula">
+            slope(0→20) = 4/20 = 0.20<br/>
+            slope(20→30) = 2/10 = 0.20
+          </div>
+          <strong>0.20 ≤ 0.20 ✓</strong>
+          <p class="small">
+            The slope does not decrease, so convexity is satisfied.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>2. Why this does not contradict convexity</h2>
+      <p>
+        A convex function does not need to be curved. A linear function is also convex.
+        Therefore, the fact that the three prices lie on one straight line does
+        <strong>not</strong> create a convexity violation.
+      </p>
+
+      <div class="formula">
+        For K₁ &lt; K₂ &lt; K₃:<br/><br/>
+        [P(K₂)-P(K₁)] / [K₂-K₁]
+        ≤
+        [P(K₃)-P(K₂)] / [K₃-K₂]
+      </div>
+
+      <p>Here both slopes equal 0.20, so the inequality holds with equality.</p>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>3. Butterfly / convex-combination check</h2>
+      <p>
+        Because 20 is two-thirds of the way from 0 to 30,
+      </p>
+
+      <div class="formula">
+        20 = (1/3)·0 + (2/3)·30
+      </div>
+
+      <p>
+        Convexity therefore requires
+      </p>
+
+      <div class="formula">
+        P(20) ≤ (1/3)P(0) + (2/3)P(30)
+      </div>
+
+      <div class="three">
+        <div class="mini">
+          <span class="small">Weighted price</span>
+          <strong>(1/3)·0 + (2/3)·6 = 4</strong>
+        </div>
+
+        <div class="mini">
+          <span class="small">Observed price</span>
+          <strong>P(20)=4</strong>
+        </div>
+
+        <div class="mini">
+          <span class="small">Difference</span>
+          <strong>4 − 4 = 0</strong>
+        </div>
+      </div>
+
+      <div class="card success" style="margin-top:16px;">
+        <strong>Conclusion: no convexity arbitrage from these three quotes.</strong>
+      </div>
+    </section>
+
+    <section class="card warning" style="margin-top:20px;">
+      <h2>When would there be an arbitrage?</h2>
+      <p>
+        Suppose instead that P(20) were greater than 4.
+        Then the middle-strike put would lie above the chord joining the
+        K=0 and K=30 puts:
+      </p>
+
+      <div class="formula">
+        P(20) &gt; (1/3)P(0) + (2/3)P(30)
+      </div>
+
+      <p>
+        That would violate convexity and allow a butterfly-style arbitrage:
+        sell the overpriced middle-strike put and buy the weighted combination
+        of the surrounding strikes.
+      </p>
+    </section>
+
+    <div class="rule">
+      Put prices increase with strike
+      <span class="arrow">+</span>
+      slope must not decrease
+      <span class="arrow">⇒</span>
+      convex in strike
+    </div>
+  </main>
+</body>
+</html>

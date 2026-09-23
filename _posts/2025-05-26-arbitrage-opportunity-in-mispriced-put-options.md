@@ -21,6 +21,8 @@ P(K) = \frac{2}{3}K
 
 This implies a linear relationship, contradicting the convexity of put prices as a function of strike price. This leads to an **arbitrage opportunity**.
 
+<iframe src="{{ site.baseurl }}/assets/european_put_convexity.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### Arbitrage Strategy
 
 The arbitrage arises because the price of the put at strike 20 is **too high** compared to what convexity implies.
