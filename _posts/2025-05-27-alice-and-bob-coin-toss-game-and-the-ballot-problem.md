@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Alice vs. Bob: Coin Toss Game and the Ballot Problem"
+title: "Alice vs. Bob: Coin Toss Game"
 date: 2025-05-27
 category: quantitative interview
 ---
@@ -25,23 +25,42 @@ We want:
 P(A > B)
 \\]
 
-Rather than summing over binomial probabilities directly, this problem is closely related to a classic result in combinatorics: the **Ballot Problem**.
+Rather than summing over binomial probabilities directly, we can solve this using **symmetry**.
 
 ---
 
-### Ballot Problem Analogy
+### Symmetry Argument
 
-In the Ballot Problem:
+Let \\( A_n \\) be the number of heads Alice gets in her first \\( n \\) tosses, and let her last toss be \\( C \\) (which is 1 if heads, 0 if tails). 
+So, \\( A = A_n + C \\).
 
-> If candidate A receives \\( a \\) votes and candidate B receives \\( b \\) votes with \\( a > b \\), and the votes are counted in random order, what is the probability that A is always ahead?
-
-For our problem, there is a known result that gives:
+By symmetry, since Alice and Bob both toss \\( n \\) fair coins:
 
 \\[
-P(A > B) = \frac{1}{2}
+P(A_n > B) = P(A_n < B)
 \\]
 
-This result follows from **symmetry**: Alice has one extra coin toss. For each possible configuration of Bob’s tosses, exactly half of Alice’s outcomes will result in **more heads**, due to the fair and independent nature of the coins.
+Since the probabilities must sum to 1:
+
+\\[
+P(A_n > B) = \frac{1 - P(A_n = B)}{2}
+\\]
+
+Now, Alice gets strictly more heads than Bob (\\( A > B \\)) in two mutually exclusive cases:
+1. \\( A_n > B \\): Alice already has more heads in the first \\( n \\) tosses. Regardless of her final toss \\( C \\), she wins.
+2. \\( A_n = B \\) **and** \\( C = 1 \\): They are tied after \\( n \\) tosses, but Alice's final coin lands heads.
+
+The total probability is:
+
+\\[
+P(A > B) = P(A_n > B) + P(A_n = B) \cdot P(C = 1)
+\\]
+
+Substitute \\( P(A_n > B) \\) and \\( P(C = 1) = \frac{1}{2} \\):
+
+\\[
+P(A > B) = \frac{1 - P(A_n = B)}{2} + P(A_n = B) \cdot \frac{1}{2} = \frac{1}{2}
+\\]
 
 ---
 
