@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three Ways to Compute Fibonacci</title>
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --panel: #ffffff;
+      --panel-soft: #f1f4f9;
+      --text: #172033;
+      --muted: #667085;
+      --border: #d8dee9;
+      --accent: #5b5bd6;
+      --accent-soft: #ececff;
+      --series: #2f6f9f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 4vw, 44px);
+    }
+
+    .lead {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .method {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: left;
+      color: var(--text);
+      transition: .18s ease;
+    }
+
+    .method:hover {
+      transform: translateY(-1px);
+      border-color: #b7bfd0;
+    }
+
+    .method.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .method strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .method span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .controls, .card {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .controls-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 10px;
+      accent-color: var(--accent);
+    }
+
+    .metric {
+      background: var(--panel-soft);
+      border-radius: 10px;
+      min-width: 92px;
+      padding: 10px 14px;
+      text-align: center;
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .metric strong {
+      font-size: 22px;
+    }
+
+    .main-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 16px;
+    }
+
+    .card h2, .card h3 {
+      margin: 0;
+    }
+
+    .sub {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .animate {
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      padding: 10px 16px;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    .visual {
+      margin-top: 16px;
+      min-height: 340px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+
+    .side {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .kv:last-child { border-bottom: 0; }
+    .kv span { color: var(--muted); }
+    .kv strong { text-align: right; }
+
+    .intuition {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .compare {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .mini {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--panel-soft);
+    }
+
+    .mini code {
+      display: block;
+      margin-top: 10px;
+      line-height: 1.6;
+      white-space: pre-line;
+      color: var(--muted);
+    }
+
+    .state-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .state-row.fade {
+      opacity: .16;
+      transform: translateY(4px);
+    }
+
+    .state-row small {
+      color: var(--muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .tail-row {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .tail-row.fade {
+      opacity: .16;
+      transform: translateY(4px);
+    }
+
+    svg text {
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .node {
+      transition: opacity .25s ease;
+    }
+
+    .node.fade {
+      opacity: .14;
+    }
+
+    @media (max-width: 800px) {
+      .methods,
+      .compare,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .controls-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .controls-row label {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Three Ways to Compute Fibonacci</h1>
+    <p class="lead">
+      Compare recursive, iterative, and tail-recursive C++ implementations.
+      Move the slider, switch methods, and animate the execution.
+    </p>
+
+    <section class="methods">
+      <button class="method active" data-method="recursive">
+        <strong>1 · Recursive</strong>
+        <span>Natural definition, but repeated work creates exponential growth.</span>
+      </button>
+      <button class="method" data-method="iterative">
+        <strong>2 · Iterative</strong>
+        <span>One forward pass with only two running values.</span>
+      </button>
+      <button class="method" data-method="tail">
+        <strong>3 · Tail Recursive</strong>
+        <span>Recursive syntax carrying the state in parameters.</span>
+      </button>
+    </section>
+
+    <section class="controls">
+      <div class="controls-row">
+        <label>
+          Choose n
+          <input id="nInput" type="range" min="0" max="10" value="6" />
+        </label>
+        <div class="metric">
+          <small>n</small>
+          <strong id="nValue">6</strong>
+        </div>
+        <div class="metric">
+          <small>F(n)</small>
+          <strong id="fibValue">8</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <div class="topline">
+          <div>
+            <h2 id="methodTitle">Recursive execution tree</h2>
+            <p id="methodSubtitle" class="sub">
+              The same Fibonacci values are recomputed many times.
+            </p>
+          </div>
+          <button id="animateBtn" class="animate">Animate</button>
+        </div>
+        <div id="visualArea" class="visual"></div>
+      </div>
+
+      <aside class="side">
+        <div class="card">
+          <h3>Complexity</h3>
+          <div id="complexity" style="margin-top: 10px;"></div>
+        </div>
+
+        <div class="card">
+          <h3>Key intuition</h3>
+          <p id="intuition" class="intuition"></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="card">
+      <h3>Same recurrence, different execution</h3>
+      <div class="compare">
+        <div class="mini">
+          <strong>Recursive</strong>
+          <code>fib(n)
+↙ fib(n−1)
+↘ fib(n−2)</code>
+          <p class="sub">Each call creates two smaller subproblems.</p>
+        </div>
+
+        <div class="mini">
+          <strong>Iterative</strong>
+          <code>(a,b)
+→ (b,a+b)
+→ (b,a+b)</code>
+          <p class="sub">Only the previous two Fibonacci values are needed.</p>
+        </div>
+
+        <div class="mini">
+          <strong>Tail Recursive</strong>
+          <code>helper(n,a,b)
+→ helper(n−1,b,a+b)</code>
+          <p class="sub">The recursive call carries exactly the state used by the loop.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>C++ implementations</h3>
+      <pre style="margin-top:14px;overflow:auto;background:#111827;color:#e5e7eb;padding:16px;border-radius:12px;line-height:1.55;"><code>// 1. Recursive
+int fib_recursive(int n) {
+    if (n &lt;= 1) return n;
+    return fib_recursive(n - 1) + fib_recursive(n - 2);
+}
+
+// 2. Iterative
+int fib_iterative(int n) {
+    if (n &lt;= 1) return n;
+    int a = 0, b = 1;
+    for (int i = 2; i &lt;= n; ++i) {
+        int temp = a + b;
+        a = b;
+        b = temp;
+    }
+    return b;
+}
+
+// 3. Tail Recursive
+int fib_tail_helper(int n, int a, int b) {
+    if (n == 0) return a;
+    return fib_tail_helper(n - 1, b, a + b);
+}
+
+int fib_tail_recursive(int n) {
+    return fib_tail_helper(n, 0, 1);
+}</code></pre>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const nInput = document.getElementById("nInput");
+      const nValue = document.getElementById("nValue");
+      const fibValue = document.getElementById("fibValue");
+      const visualArea = document.getElementById("visualArea");
+      const methodTitle = document.getElementById("methodTitle");
+      const methodSubtitle = document.getElementById("methodSubtitle");
+      const complexity = document.getElementById("complexity");
+      const intuition = document.getElementById("intuition");
+      const animateBtn = document.getElementById("animateBtn");
+      const methodButtons = [...document.querySelectorAll(".method")];
+
+      let method = "recursive";
+      let timer = null;
+
+      const info = {
+        recursive: {
+          title: "Recursive execution tree",
+          subtitle: "The same Fibonacci values are recomputed many times.",
+          time: "≈ O(φⁿ), often simplified to O(2ⁿ)",
+          space: "O(n) call-stack depth",
+          execution: "Branching recursion",
+          intuition:
+            "The mathematical definition translates directly into code: F(n)=F(n−1)+F(n−2). The problem is that the same subproblems appear again and again. For example, F(3) is recomputed inside several branches."
+        },
+        iterative: {
+          title: "Iterative state transition",
+          subtitle: "Each loop advances the pair of consecutive Fibonacci values.",
+          time: "O(n)",
+          space: "O(1)",
+          execution: "Single forward pass",
+          intuition:
+            "To compute the next Fibonacci number, you only need the previous two. So instead of rebuilding a recursion tree, keep two variables and repeatedly update them."
+        },
+        tail: {
+          title: "Tail-recursive call chain",
+          subtitle: "The Fibonacci state is carried in the helper parameters.",
+          time: "O(n)",
+          space: "O(n) in standard C++ unless tail-call optimization occurs",
+          execution: "One recursive call per step",
+          intuition:
+            "The helper stores consecutive Fibonacci values in a and b. Each call changes (n,a,b) into (n−1,b,a+b), which is essentially the same state update as the iterative solution."
+        }
+      };
+
+      function fib(n) {
+        let a = 0, b = 1;
+        for (let i = 0; i < n; i++) {
+          [a, b] = [b, a + b];
+        }
+        return a;
+      }
+
+      function updateInfo() {
+        const x = info[method];
+        methodTitle.textContent = x.title;
+        methodSubtitle.textContent = x.subtitle;
+        intuition.textContent = x.intuition;
+
+        complexity.innerHTML = `
+          <div class="kv"><span>Time</span><strong>${x.time}</strong></div>
+          <div class="kv"><span>Space</span><strong>${x.space}</strong></div>
+          <div class="kv"><span>Execution</span><strong>${x.execution}</strong></div>
+        `;
+
+        methodButtons.forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.method === method);
+        });
+      }
+
+      function buildTree(n) {
+        let id = 0;
+        const nodes = [];
+        const edges = [];
+
+        function build(k, depth, parent = null) {
+          const myId = id++;
+          nodes.push({ id: myId, k, depth, x: 0 });
+
+          if (parent !== null) edges.push([parent, myId]);
+
+          if (k > 1) {
+            build(k - 1, depth + 1, myId);
+            build(k - 2, depth + 1, myId);
+          }
+
+          return myId;
+        }
+
+        build(n, 0);
+
+        let leafX = 0;
+
+        function assignX(nodeId) {
+          const node = nodes.find(x => x.id === nodeId);
+          const children = edges
+            .filter(e => e[0] === nodeId)
+            .map(e => e[1]);
+
+          if (!children.length) {
+            node.x = leafX++;
+            return node.x;
+          }
+
+          node.x =
+            children.reduce((sum, childId) => sum + assignX(childId), 0) /
+            children.length;
+
+          return node.x;
+        }
+
+        assignX(0);
+
+        return {
+          nodes,
+          edges,
+          width: Math.max(720, Math.max(1, leafX) * 64),
+          height: Math.max(310, (n + 1) * 70)
+        };
+      }
+
+      function renderRecursive(n) {
+        if (n > 8) {
+          visualArea.innerHTML = `
+            <div style="height:310px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);line-height:1.6;">
+              The recursion tree becomes very large.<br>
+              Move the slider to n ≤ 8 to inspect it clearly.
+            </div>
+          `;
+          return [];
+        }
+
+        const data = buildTree(n);
+        const margin = 38;
+        const maxX = Math.max(1, ...data.nodes.map(x => x.x));
+        const pos = new Map();
+
+        data.nodes.forEach(node => {
+          pos.set(node.id, {
+            x: margin + (node.x / maxX) * (data.width - margin * 2),
+            y: 38 + node.depth * 64
+          });
+        });
+
+        let svg = `
+          <svg viewBox="0 0 ${data.width} ${data.height}"
+               style="min-width:680px;width:100%;display:block;"
+               aria-label="Recursive Fibonacci call tree">
+        `;
+
+        data.edges.forEach(([a, b]) => {
+          const p = pos.get(a);
+          const q = pos.get(b);
+          svg += `
+            <line x1="${p.x}" y1="${p.y}"
+                  x2="${q.x}" y2="${q.y}"
+                  stroke="#c3cad6" stroke-width="2"/>
+          `;
+        });
+
+        data.nodes.forEach((node, i) => {
+          const p = pos.get(node.id);
+          svg += `
+            <g class="node" data-step="${i}">
+              <circle cx="${p.x}" cy="${p.y}" r="23"
+                      fill="#ffffff" stroke="${getComputedStyle(document.documentElement).getPropertyValue('--series').trim()}"
+                      stroke-width="2"/>
+              <text x="${p.x}" y="${p.y + 4}"
+                    text-anchor="middle" font-size="12" fill="#172033">
+                F(${node.k})
+              </text>
+            </g>
+          `;
+        });
+
+        svg += "</svg>";
+        visualArea.innerHTML = svg;
+
+        return [...visualArea.querySelectorAll(".node")];
+      }
+
+      function makeStates(n) {
+        const rows = [];
+        let a = 0, b = 1;
+        rows.push({ step: 0, a, b });
+
+        for (let i = 1; i <= n; i++) {
+          [a, b] = [b, a + b];
+          rows.push({ step: i, a, b });
+        }
+
+        return rows;
+      }
+
+      function renderIterative(n) {
+        const rows = makeStates(n);
+
+        visualArea.innerHTML = `
+          <div style="display:grid;grid-template-columns:56px 1fr 1fr;gap:10px;margin-bottom:8px;color:var(--muted);font-size:12px;font-weight:600;">
+            <div>Step</div><div>a</div><div>b</div>
+          </div>
+          <div id="iterRows"></div>
+        `;
+
+        const host = document.getElementById("iterRows");
+
+        rows.forEach((row, i) => {
+          const div = document.createElement("div");
+          div.className = "state-row";
+          div.dataset.step = i;
+          div.innerHTML = `
+            <strong>${row.step}</strong>
+            <div><small>a</small><code>${row.a}</code></div>
+            <div><small>b</small><code>${row.b}</code></div>
+          `;
+          host.appendChild(div);
+        });
+
+        return [...host.querySelectorAll(".state-row")];
+      }
+
+      function renderTail(n) {
+        let a = 0, b = 1;
+        const rows = [];
+
+        for (let k = n; k >= 0; k--) {
+          rows.push({ k, a, b });
+          [a, b] = [b, a + b];
+        }
+
+        visualArea.innerHTML = `<div id="tailRows"></div>`;
+        const host = document.getElementById("tailRows");
+
+        rows.forEach((row, i) => {
+          const div = document.createElement("div");
+          div.className = "tail-row";
+          div.dataset.step = i;
+
+          if (row.k === 0) {
+            div.innerHTML = `helper(${row.k}, ${row.a}, ${row.b}) → <strong>return ${row.a}</strong>`;
+          } else {
+            div.innerHTML =
+              `helper(${row.k}, ${row.a}, ${row.b}) → ` +
+              `helper(${row.k - 1}, ${row.b}, ${row.a + row.b})`;
+          }
+
+          host.appendChild(div);
+        });
+
+        return [...host.querySelectorAll(".tail-row")];
+      }
+
+      function render() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+
+        animateBtn.textContent = "Animate";
+
+        const n = Number(nInput.value);
+        nValue.textContent = n;
+        fibValue.textContent = fib(n);
+
+        updateInfo();
+
+        if (method === "recursive") {
+          renderRecursive(n);
+        } else if (method === "iterative") {
+          renderIterative(n);
+        } else {
+          renderTail(n);
+        }
+      }
+
+      function animate() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+          animateBtn.textContent = "Animate";
+          render();
+          return;
+        }
+
+        const n = Number(nInput.value);
+
+        let elements =
+          method === "recursive"
+            ? renderRecursive(n)
+            : method === "iterative"
+            ? renderIterative(n)
+            : renderTail(n);
+
+        if (!elements.length) return;
+
+        const fadeClass = method === "recursive" ? "fade" : "fade";
+        elements.forEach(el => el.classList.add(fadeClass));
+
+        let i = 0;
+        animateBtn.textContent = "Stop";
+
+        function reveal() {
+          if (i < elements.length) {
+            elements[i].classList.remove(fadeClass);
+            i++;
+          } else {
+            clearInterval(timer);
+            timer = null;
+            animateBtn.textContent = "Animate";
+          }
+        }
+
+        reveal();
+        timer = setInterval(reveal, 280);
+      }
+
+      methodButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          method = btn.dataset.method;
+          render();
+        });
+      });
+
+      nInput.addEventListener("input", render);
+      animateBtn.addEventListener("click", animate);
+
+      render();
+    })();
+  </script>
+</body>
+</html>
