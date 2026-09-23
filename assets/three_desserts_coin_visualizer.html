@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pick One of Three Desserts Using Only a Coin</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --card: #f1f3f7;
+      --text: #1f2937;
+      --muted: #667085;
+      --border: #d9dee8;
+      --accent: #2563eb;
+      --accent-soft: #e8f0ff;
+      --cake: #8b5cf6;
+      --ice: #06b6d4;
+      --pudding: #f59e0b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+    }
+
+    .lead {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: inline-flex;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .tab, .btn {
+      min-height: 42px;
+      border-radius: 9px;
+      border: 0;
+      padding: 9px 13px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: var(--accent-soft);
+      color: #1747a6;
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn.secondary {
+      border: 1px solid var(--border);
+      background: white;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .outcomes {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 620px) {
+      .outcomes { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .outcome {
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 10px;
+      background: var(--card);
+    }
+
+    .outcome.retry {
+      background: white;
+      border-style: dashed;
+    }
+
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .callout {
+      margin-top: 16px;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .formula {
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .hidden { display: none; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 18px;
+      text-align: center;
+      border-radius: 14px;
+      background: var(--card);
+    }
+
+    .result .big {
+      font-size: 32px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .bars {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .bar-row .label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .track {
+      height: 12px;
+      border-radius: 999px;
+      background: #e9edf3;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .cake { background: var(--cake); }
+    .ice { background: var(--ice); }
+    .pudding { background: var(--pudding); }
+
+    .bias-box {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #fbfcfe;
+      border: 1px solid var(--border);
+    }
+
+    input[type="range"] { width: 100%; }
+
+    .summary {
+      margin-top: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    .step {
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--card);
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Pick 1 of 3 Desserts Using Only a Coin</h1>
+    <p class="lead">
+      Alice wants Cake, Ice Cream, and Pudding to each be chosen with probability exactly
+      <strong>1/3</strong>.
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <div class="section-title">Algorithm</div>
+            <div class="muted">Switch between a fair coin and an unknown biased coin.</div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active" id="fairTab">Fair coin</button>
+            <button class="tab" id="biasedTab">Unknown bias</button>
+          </div>
+        </div>
+
+        <div id="fairPanel">
+          <h2 style="font-size:18px;margin-top:22px;">Toss the fair coin twice</h2>
+
+          <div class="outcomes">
+            <div class="outcome">
+              <div class="code">HH</div>
+              <div>🍰 Cake</div>
+              <div class="tiny">Probability 1/4</div>
+            </div>
+            <div class="outcome">
+              <div class="code">HT</div>
+              <div>🍦 Ice Cream</div>
+              <div class="tiny">Probability 1/4</div>
+            </div>
+            <div class="outcome">
+              <div class="code">TH</div>
+              <div>🍮 Pudding</div>
+              <div class="tiny">Probability 1/4</div>
+            </div>
+            <div class="outcome retry">
+              <div class="code">TT</div>
+              <div>↻ Retry</div>
+              <div class="tiny">Probability 1/4</div>
+            </div>
+          </div>
+
+          <div class="callout">
+            We keep only <strong>HH, HT, TH</strong>. Since those three outcomes are equally
+            likely, conditioning on acceptance gives
+            <div class="formula">(1/4) / (3/4) = 1/3</div>
+            for each dessert.
+          </div>
+        </div>
+
+        <div id="biasedPanel" class="hidden">
+          <h2 style="font-size:18px;margin-top:22px;">Step 1: Extract a fair bit</h2>
+          <p class="muted">
+            Let the unknown probability of heads be <strong>p</strong>. Toss the biased coin twice.
+          </p>
+
+          <div class="outcomes">
+            <div class="outcome retry">
+              <div class="code">HH</div>
+              <div>Discard</div>
+              <div class="tiny">p²</div>
+            </div>
+            <div class="outcome">
+              <div class="code">HT</div>
+              <div>Fair bit 0</div>
+              <div class="tiny">p(1-p)</div>
+            </div>
+            <div class="outcome">
+              <div class="code">TH</div>
+              <div>Fair bit 1</div>
+              <div class="tiny">(1-p)p</div>
+            </div>
+            <div class="outcome retry">
+              <div class="code">TT</div>
+              <div>Discard</div>
+              <div class="tiny">(1-p)²</div>
+            </div>
+          </div>
+
+          <div class="callout">
+            The key observation is
+            <div class="formula">P(HT) = p(1-p) = (1-p)p = P(TH)</div>
+            so when the two tosses differ, <strong>HT and TH are equally likely</strong>.
+            This is the von Neumann extractor.
+          </div>
+
+          <h2 style="font-size:18px;margin-top:22px;">Step 2: Use two extracted fair bits</h2>
+
+          <div class="outcomes">
+            <div class="outcome"><div class="code">00</div><div>🍰 Cake</div></div>
+            <div class="outcome"><div class="code">01</div><div>🍦 Ice Cream</div></div>
+            <div class="outcome"><div class="code">10</div><div>🍮 Pudding</div></div>
+            <div class="outcome retry"><div class="code">11</div><div>↻ Retry</div></div>
+          </div>
+
+          <div class="callout">
+            The extracted bits are fair, so the same 3-out-of-4 rejection method gives each
+            dessert probability exactly <strong>1/3</strong>.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <div class="section-title">Interactive simulation</div>
+            <div class="muted" id="simDescription">Simulating the fair-coin algorithm.</div>
+          </div>
+          <button class="btn secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="bias-box hidden" id="biasBox">
+          <label>
+            Hidden probability of heads:
+            <strong id="biasValue">0.80</strong>
+          </label>
+          <input id="biasSlider" type="range" min="0.05" max="0.95" step="0.01" value="0.80" />
+          <div class="tiny">
+            Change the bias. The final dessert frequencies should still approach 1/3 each.
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="pickBtn">Pick once</button>
+          <button class="btn secondary" id="manyBtn">Run 10,000 picks</button>
+        </div>
+
+        <div class="result">
+          <div class="tiny">LATEST RESULT</div>
+          <div class="big" id="resultText">—</div>
+          <div class="muted" id="detailText">Press “Pick once”.</div>
+        </div>
+
+        <div class="bars">
+          <div class="bar-row">
+            <div class="label">
+              <span>🍰 Cake</span>
+              <span id="cakePct">0.00%</span>
+            </div>
+            <div class="track"><div class="fill cake" id="cakeBar"></div></div>
+          </div>
+
+          <div class="bar-row">
+            <div class="label">
+              <span>🍦 Ice Cream</span>
+              <span id="icePct">0.00%</span>
+            </div>
+            <div class="track"><div class="fill ice" id="iceBar"></div></div>
+          </div>
+
+          <div class="bar-row">
+            <div class="label">
+              <span>🍮 Pudding</span>
+              <span id="puddingPct">0.00%</span>
+            </div>
+            <div class="track"><div class="fill pudding" id="puddingBar"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"
+             class="tiny">
+          <span id="countText">0 accepted picks</span>
+          <span>Target: 33.33% each</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="summary">
+      <div class="section-title">How to discover the solution in an interview</div>
+      <div class="summary-grid">
+        <div class="step">
+          <strong>1. Notice the mismatch</strong><br>
+          One fair coin gives 2 states, but you need 3 equally likely choices.
+        </div>
+        <div class="step">
+          <strong>2. Create a power of two</strong><br>
+          Two fair tosses give 4 equally likely states. Assign 3 and reject 1.
+        </div>
+        <div class="step">
+          <strong>3. Remove unknown bias</strong><br>
+          For a biased coin, HT and TH have equal probability, so use them as fair bits.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const fairTab = document.getElementById("fairTab");
+    const biasedTab = document.getElementById("biasedTab");
+    const fairPanel = document.getElementById("fairPanel");
+    const biasedPanel = document.getElementById("biasedPanel");
+    const biasBox = document.getElementById("biasBox");
+    const biasSlider = document.getElementById("biasSlider");
+    const biasValue = document.getElementById("biasValue");
+    const simDescription = document.getElementById("simDescription");
+
+    const resultText = document.getElementById("resultText");
+    const detailText = document.getElementById("detailText");
+
+    const cakePct = document.getElementById("cakePct");
+    const icePct = document.getElementById("icePct");
+    const puddingPct = document.getElementById("puddingPct");
+
+    const cakeBar = document.getElementById("cakeBar");
+    const iceBar = document.getElementById("iceBar");
+    const puddingBar = document.getElementById("puddingBar");
+    const countText = document.getElementById("countText");
+
+    let mode = "fair";
+    let total = 0;
+    const counts = { cake: 0, ice: 0, pudding: 0 };
+
+    function coin(p) {
+      return Math.random() < p ? "H" : "T";
+    }
+
+    function reset() {
+      total = 0;
+      counts.cake = 0;
+      counts.ice = 0;
+      counts.pudding = 0;
+      resultText.textContent = "—";
+      detailText.textContent = "Press “Pick once”.";
+      updateBars();
+    }
+
+    function setMode(next) {
+      mode = next;
+      const fair = mode === "fair";
+
+      fairTab.classList.toggle("active", fair);
+      biasedTab.classList.toggle("active", !fair);
+
+      fairPanel.classList.toggle("hidden", !fair);
+      biasedPanel.classList.toggle("hidden", fair);
+      biasBox.classList.toggle("hidden", fair);
+
+      simDescription.textContent = fair
+        ? "Simulating the fair-coin algorithm."
+        : "Simulating an unknown biased coin, then extracting fair bits.";
+
+      reset();
+    }
+
+    function extractFairBit(p) {
+      let pairs = 0;
+
+      while (true) {
+        const a = coin(p);
+        const b = coin(p);
+        pairs++;
+
+        if (a === "H" && b === "T") return { bit: 0, pairs };
+        if (a === "T" && b === "H") return { bit: 1, pairs };
+      }
+    }
+
+    function pickWithFairCoin() {
+      let retries = 0;
+
+      while (true) {
+        const pair = coin(0.5) + coin(0.5);
+
+        if (pair === "HH")
+          return { key: "cake", label: "🍰 Cake", detail: pair + retryText(retries) };
+
+        if (pair === "HT")
+          return { key: "ice", label: "🍦 Ice Cream", detail: pair + retryText(retries) };
+
+        if (pair === "TH")
+          return { key: "pudding", label: "🍮 Pudding", detail: pair + retryText(retries) };
+
+        retries++;
+      }
+    }
+
+    function retryText(n) {
+      if (n === 0) return "";
+      return " after " + n + (n === 1 ? " retry" : " retries");
+    }
+
+    function pickWithBiasedCoin(showDetail) {
+      const p = Number(biasSlider.value);
+      let totalPairs = 0;
+
+      while (true) {
+        const a = extractFairBit(p);
+        const b = extractFairBit(p);
+
+        totalPairs += a.pairs + b.pairs;
+
+        const bits = "" + a.bit + b.bit;
+
+        if (bits === "00")
+          return {
+            key: "cake",
+            label: "🍰 Cake",
+            detail: showDetail ? `fair bits ${bits} · ${totalPairs} biased-coin pairs used` : ""
+          };
+
+        if (bits === "01")
+          return {
+            key: "ice",
+            label: "🍦 Ice Cream",
+            detail: showDetail ? `fair bits ${bits} · ${totalPairs} biased-coin pairs used` : ""
+          };
+
+        if (bits === "10")
+          return {
+            key: "pudding",
+            label: "🍮 Pudding",
+            detail: showDetail ? `fair bits ${bits} · ${totalPairs} biased-coin pairs used` : ""
+          };
+
+        // 11 => reject and generate two new fair bits
+      }
+    }
+
+    function makePick(showDetail = true) {
+      const result =
+        mode === "fair"
+          ? pickWithFairCoin()
+          : pickWithBiasedCoin(showDetail);
+
+      counts[result.key]++;
+      total++;
+
+      if (showDetail) {
+        resultText.textContent = result.label;
+        detailText.textContent = result.detail;
+      }
+    }
+
+    function updateBars() {
+      const cake = total ? (counts.cake / total) * 100 : 0;
+      const ice = total ? (counts.ice / total) * 100 : 0;
+      const pudding = total ? (counts.pudding / total) * 100 : 0;
+
+      cakePct.textContent = cake.toFixed(2) + "%";
+      icePct.textContent = ice.toFixed(2) + "%";
+      puddingPct.textContent = pudding.toFixed(2) + "%";
+
+      cakeBar.style.width = cake + "%";
+      iceBar.style.width = ice + "%";
+      puddingBar.style.width = pudding + "%";
+
+      countText.textContent =
+        total.toLocaleString() + " accepted " + (total === 1 ? "pick" : "picks");
+    }
+
+    fairTab.addEventListener("click", () => setMode("fair"));
+    biasedTab.addEventListener("click", () => setMode("biased"));
+
+    document.getElementById("resetBtn").addEventListener("click", reset);
+
+    document.getElementById("pickBtn").addEventListener("click", () => {
+      makePick(true);
+      updateBars();
+    });
+
+    document.getElementById("manyBtn").addEventListener("click", () => {
+      for (let i = 0; i < 10000; i++) makePick(false);
+
+      resultText.textContent = "10,000 trials ✓";
+
+      if (mode === "fair") {
+        detailText.textContent = "The frequencies converge toward 1/3 each.";
+      } else {
+        detailText.textContent =
+          "Even with P(H) = " +
+          Number(biasSlider.value).toFixed(2) +
+          ", the extracted choices remain uniform.";
+      }
+
+      updateBars();
+    });
+
+    biasSlider.addEventListener("input", () => {
+      biasValue.textContent = Number(biasSlider.value).toFixed(2);
+      reset();
+    });
+  </script>
+</body>
+</html>
