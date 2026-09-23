@@ -10,6 +10,8 @@ We want to compute the expected number of tosses required to get **two heads in 
 - A **fair coin** (\\( P(H) = 0.5 \\))
 - A **biased coin** (\\( P(H) = 0.25 \\))
 
+<iframe src="{{ site.baseurl }}/assets/expected_number_of_tosses_until_two_heads_in_a_row.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Setup: Markov States
