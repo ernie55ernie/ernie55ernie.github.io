@@ -19,7 +19,7 @@ Though the room is 3D, the ant walks **only along the surfaces** of the cube. We
 
 ### Unfolding the Cube
 
-Imagine unfolding three adjacent walls into a flat rectangle of size:
+Imagine unfolding two adjacent faces (e.g., the floor and one wall) into a flat rectangle of size:
 
 \\[
 10 \times (10 + 10) = 10 \times 20
