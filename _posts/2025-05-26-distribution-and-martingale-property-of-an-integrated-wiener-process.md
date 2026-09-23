@@ -60,40 +60,16 @@ We evaluate \\( \mathbb{E}[X_t \mid \mathcal{F}_s] \\) for \\( s < t \\). Note t
 X_t = \int_0^t W_\tau\,d\tau = \int_0^s W_\tau\,d\tau + \int_s^t W_\tau\,d\tau = X_s + \int_s^t W_\tau\,d\tau.
 \\]
 
-Then,
+Then, taking the conditional expectation:
 
 \\[
-a = \int_s^t W_\tau\,d\tau, 
-\\]
-\\[
-\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}[ a \mid \mathcal{F}_s ].
+\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big|} \mathcal{F}_s \right].
 \\]
 
-However, for \\( \tau > s \\), \\( W_\tau \\) is not \\( \mathcal{F}_s \\)-measurable. In fact,
+By Fubini's theorem (or moving the expectation inside the integral), and using the martingale property of Brownian motion (\\( \mathbb{E}[W_\tau \mid \mathcal{F}_s] = W_s \\) for \\( \tau > s \\)):
 
 \\[
-\mathbb{E}[W_\tau \mid \mathcal{F}_s] = W_s,
-\\]
-
-so:
-
-\\[
-a = \int_s^t W_\tau\,d\tau, 
-\\]
-\\[
-b = \mathbb{E}[W_\tau \mid \mathcal{F}_s],
-\\]
-\\[
-\mathbb{E}[ a \mid \mathcal{F}_s ]
-\\]
-\\[
- = \int_s^t b \,d\tau
-\\]
-\\[
- =\int_s^t W_s\,d\tau
-\\]
-\\[
-= (t - s)W_s
+\mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big|} \mathcal{F}_s \right] = \int_s^t \mathbb{E}[W_\tau \mid \mathcal{F}_s]\,d\tau = \int_s^t W_s\,d\tau = (t - s)W_s.
 \\]
 
 Therefore,
