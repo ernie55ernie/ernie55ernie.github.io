@@ -9,6 +9,8 @@ category: quantitative interview
 
 You toss a **fair coin** \\( n \\) times. What is the probability that **no two consecutive heads** appear in the sequence?
 
+<iframe src="{{ site.baseurl }}/assets/no_consecutive_heads_visualization.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Step 1: Count Valid Sequences

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>No Consecutive Heads</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --text:#172033;
+    --muted:#697386;
+    --border:#dfe3eb;
+    --accent:#4f46e5;
+    --accent-soft:#eef2ff;
+    --series:#8b5cf6;
+    --good:#15803d;
+    --bad:#b91c1c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.5;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 18px 56px}
+  h1{font-size:clamp(28px,5vw,48px);line-height:1.1;margin:0}
+  .subtitle{margin:10px 0 24px;color:var(--muted);font-size:18px}
+  .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 8px 30px rgba(23,32,51,.05);
+  }
+  .eyebrow{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .big{font-size:21px;font-weight:700;margin-top:6px}
+  .case{display:flex;gap:12px;margin-top:16px}
+  .coin{
+    min-width:44px;height:44px;padding:0 9px;border:1px solid var(--border);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:800;background:#fafafa
+  }
+  .formula{
+    margin-top:20px;padding:18px;border-radius:14px;background:#f8fafc;text-align:center;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:22px;font-weight:700
+  }
+  .muted{color:var(--muted)}
+  .controls label{font-weight:700}
+  input[type=range]{width:100%;margin:15px 0 8px;accent-color:var(--accent)}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .stat{padding:14px;border-radius:14px;background:#f8fafc}
+  .stat .value{font-size:28px;font-weight:800;margin-top:4px}
+  .prob{
+    margin-top:14px;padding:18px;border:1px solid var(--border);border-radius:14px;text-align:center
+  }
+  .prob .frac{font-size:28px;font-weight:800;font-family:"SFMono-Regular",Consolas,monospace}
+  .bars-card{margin-top:18px}
+  .bars{height:210px;display:flex;align-items:flex-end;gap:6px;overflow-x:auto;padding:18px 2px 4px}
+  .barwrap{min-width:42px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .barvalue{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .bar{width:70%;min-width:20px;border-radius:8px 8px 3px 3px;background:var(--series);transition:.2s}
+  .bar.selected{background:var(--accent)}
+  .barlabel{font-size:12px;color:var(--muted);margin-top:5px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .outcomes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px}
+  .outcome{padding:9px;border-radius:10px;background:#f8fafc;text-align:center;font-family:monospace}
+  .good{color:var(--good)}
+  .bad{color:var(--bad)}
+  .stack{display:grid;gap:10px;margin-top:15px;text-align:center}
+  .stack .box{padding:15px;border-radius:12px;background:#f8fafc;font-family:monospace;font-size:20px}
+  .answer{font-size:28px;font-weight:900;color:var(--accent);margin-top:8px}
+  .interview{margin-top:18px}
+  code{background:#f3f4f6;padding:2px 6px;border-radius:6px}
+  @media (max-width:780px){
+    .grid,.two{grid-template-columns:1fr}
+    .outcomes{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>No Two Consecutive Heads</h1>
+  <p class="subtitle">Toss a fair coin <strong>n</strong> times. What is the probability that the sequence contains no <strong>HH</strong>?</p>
+
+  <div class="grid">
+    <section class="card">
+      <div class="eyebrow">Key idea</div>
+      <div class="big">Count valid sequences, then divide by all 2<sup>n</sup> equally likely sequences.</div>
+
+      <div class="case">
+        <div class="coin">T</div>
+        <div><strong>Ends in T:</strong> the first <em>n−1</em> tosses can be any valid sequence, giving <code>aₙ₋₁</code> possibilities.</div>
+      </div>
+
+      <div class="case">
+        <div class="coin">TH</div>
+        <div><strong>Ends in H:</strong> the previous toss must be T. Append <code>TH</code> to any valid sequence of length <em>n−2</em>, giving <code>aₙ₋₂</code> possibilities.</div>
+      </div>
+
+      <div class="formula">
+        aₙ = aₙ₋₁ + aₙ₋₂
+        <div class="muted" style="font-size:14px;margin-top:7px">a₀ = 1, a₁ = 2 ⇒ aₙ = Fₙ₊₂</div>
+      </div>
+    </section>
+
+    <section class="card controls">
+      <label for="n">Number of tosses: <span id="nLabel">5</span></label>
+      <input id="n" type="range" min="0" max="20" value="5" step="1" />
+
+      <div class="stats">
+        <div class="stat">
+          <div class="muted">Valid sequences</div>
+          <div class="value" id="valid">13</div>
+        </div>
+        <div class="stat">
+          <div class="muted">All sequences</div>
+          <div class="value" id="total">32</div>
+        </div>
+      </div>
+
+      <div class="prob">
+        <div class="eyebrow">Probability</div>
+        <div class="frac" id="fraction">13 / 32</div>
+        <div class="muted" id="decimal">= 0.40625 ≈ 40.63%</div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card bars-card">
+    <div class="big">Fibonacci recurrence</div>
+    <div class="muted">The number of valid sequences is 1, 2, 3, 5, 8, 13, …</div>
+    <div id="bars" class="bars"></div>
+  </section>
+
+  <div class="two">
+    <section class="card">
+      <div class="big">Example: n = 3</div>
+      <div class="muted">All 8 outcomes are equally likely.</div>
+      <div class="outcomes">
+        <div class="outcome good">TTT ✓</div>
+        <div class="outcome good">TTH ✓</div>
+        <div class="outcome good">THT ✓</div>
+        <div class="outcome bad">THH ✗</div>
+        <div class="outcome good">HTT ✓</div>
+        <div class="outcome good">HTH ✓</div>
+        <div class="outcome bad">HHT ✗</div>
+        <div class="outcome bad">HHH ✗</div>
+      </div>
+      <div class="formula">P₃ = 5 / 8</div>
+    </section>
+
+    <section class="card">
+      <div class="big">Final result</div>
+      <div class="stack">
+        <div class="box"># valid = Fₙ₊₂</div>
+        <div>÷</div>
+        <div class="box"># total = 2ⁿ</div>
+        <div class="answer">P(no HH) = Fₙ₊₂ / 2ⁿ</div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card interview">
+    <div class="big">Interview shortcut</div>
+    <p>
+      Define <code>aₙ</code> as the number of valid length-<em>n</em> sequences. Split by the final toss.
+      If it ends in T, there are <code>aₙ₋₁</code> choices. If it ends in H, the previous toss must be T,
+      so there are <code>aₙ₋₂</code> choices. Hence <code>aₙ = aₙ₋₁ + aₙ₋₂</code>.
+      With <code>a₀ = 1</code> and <code>a₁ = 2</code>, we get <code>aₙ = Fₙ₊₂</code>.
+    </p>
+  </section>
+</div>
+
+<script>
+(function(){
+  const slider = document.getElementById('n');
+  const nLabel = document.getElementById('nLabel');
+  const validEl = document.getElementById('valid');
+  const totalEl = document.getElementById('total');
+  const fractionEl = document.getElementById('fraction');
+  const decimalEl = document.getElementById('decimal');
+  const bars = document.getElementById('bars');
+
+  function countValid(n){
+    if(n===0) return 1;
+    if(n===1) return 2;
+    let a=1,b=2;
+    for(let i=2;i<=n;i++){
+      const c=a+b;
+      a=b;
+      b=c;
+    }
+    return b;
+  }
+
+  function renderBars(n){
+    bars.innerHTML='';
+    const maxN=Math.max(5,n);
+    const vals=[];
+    for(let k=0;k<=maxN;k++) vals.push(countValid(k));
+    const max=Math.max(...vals);
+
+    vals.forEach((v,k)=>{
+      const wrap=document.createElement('div');
+      wrap.className='barwrap';
+
+      const val=document.createElement('div');
+      val.className='barvalue';
+      val.textContent=v;
+
+      const bar=document.createElement('div');
+      bar.className='bar'+(k===n?' selected':'');
+      bar.style.height=Math.max(8,(v/max)*145)+'px';
+
+      const label=document.createElement('div');
+      label.className='barlabel';
+      label.textContent='n='+k;
+
+      wrap.append(val,bar,label);
+      bars.appendChild(wrap);
+    });
+  }
+
+  function update(){
+    const n=Number(slider.value);
+    const valid=countValid(n);
+    const total=2**n;
+    const p=valid/total;
+
+    nLabel.textContent=n;
+    validEl.textContent=valid.toLocaleString();
+    totalEl.textContent=total.toLocaleString();
+    fractionEl.textContent=valid.toLocaleString()+' / '+total.toLocaleString();
+    decimalEl.textContent='= '+p.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')+' ≈ '+(100*p).toFixed(2)+'%';
+    renderBars(n);
+  }
+
+  slider.addEventListener('input',update);
+  update();
+})();
+</script>
+</body>
+</html>
