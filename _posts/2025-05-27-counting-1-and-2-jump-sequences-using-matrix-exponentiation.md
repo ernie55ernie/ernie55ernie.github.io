@@ -39,7 +39,7 @@ F_n
 \end{pmatrix}.
 \\]
 
-Thus, to compute \\( a_{100} = F_{101} \\), we need to compute the top-left entry of:
+Thus, to compute \\( a_{100} = F_{101} \\), we need to compute the **top entry** of the vector:
 
 \\[
 \begin{pmatrix}
