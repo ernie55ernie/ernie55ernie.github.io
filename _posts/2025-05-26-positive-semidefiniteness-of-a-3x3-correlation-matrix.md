@@ -42,8 +42,8 @@ To be PSD, **all leading principal minors** must be nonnegative.
 
 \\[
 \begin{vmatrix}
-1 & 0.6,
-0.6 & 1,
+1 & 0.6 \cr
+0.6 & 1
 \end{vmatrix}
 \\]
 \\[
@@ -102,8 +102,8 @@ Solve the quadratic:
 \\]
 
 \\[
-\sqrt{2.3296} \approx 1.525 \Rightarrow \rho \in \left[ \frac{-0.36 - 1.525}{2}, \frac{-0.36 + 1.525}{2} \right]
-= [-0.9425, 0.5825]
+\sqrt{2.3296} \approx 1.5263 \Rightarrow \rho \in \left[ \frac{-0.36 - 1.5263}{2}, \frac{-0.36 + 1.5263}{2} \right]
+= [-0.94315, 0.58315]
 \\]
 
 ---
@@ -113,7 +113,7 @@ Solve the quadratic:
 The matrix is a valid correlation matrix **if and only if**:
 
 \\[
-\rho \in [-0.9425, 0.5825]
+\rho \in [-0.94315, 0.58315]
 \\]
 
 This is the full set of real values for \\( \rho \\) making the matrix positive semidefinite.
