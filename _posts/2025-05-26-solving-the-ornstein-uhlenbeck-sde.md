@@ -13,6 +13,8 @@ dr_t = \lambda(\theta - r_t)\,dt + \sigma\,dW_t,
 
 where \\( r_0 \\) is the initial value, \\( \lambda, \theta, \sigma \in \mathbb{R} \\), and \\( W_t \\) is a standard Brownian motion.
 
+<iframe src="{{ site.baseurl }}/assets/solving_the_ornstein_uhlenbech_sde.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Step 1: Linearization and Integrating Factor

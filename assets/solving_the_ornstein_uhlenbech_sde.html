@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ornstein–Uhlenbeck / Vasicek SDE</title>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 24px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 32px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #2563eb;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+    }
+
+    .equation {
+      overflow-x: auto;
+      padding: 18px;
+      margin: 18px 0;
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .answer {
+      background: #eff6ff;
+      border: 2px solid #3b82f6;
+    }
+
+    .intuition {
+      background: #f0fdf4;
+      border-left: 5px solid #22c55e;
+    }
+
+    .step-number {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .important {
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .summary-box {
+      padding: 18px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 28px;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="card">
+    <h1>Solving the Ornstein–Uhlenbeck SDE</h1>
+
+    <p>We are given</p>
+
+    <div class="equation">
+      $$
+      dr_t = \lambda(\theta-r_t)\,dt+\sigma\,dW_t,
+      \qquad r_0 \text{ given}.
+      $$
+    </div>
+
+    <p>
+      This is a <strong>linear stochastic differential equation</strong>.
+      When $\lambda>0$, it is the classic
+      <strong>Ornstein–Uhlenbeck process</strong>
+      (or Vasicek model in interest-rate modeling).
+    </p>
+  </div>
+
+
+  <div class="card">
+    <h2><span class="step-number">1</span>Rearrange the SDE</h2>
+
+    <p>Expand the drift:</p>
+
+    <div class="equation">
+      $$
+      dr_t
+      =
+      \lambda\theta\,dt
+      -
+      \lambda r_t\,dt
+      +
+      \sigma\,dW_t.
+      $$
+    </div>
+
+    <p>Move the $r_t$ term to the left:</p>
+
+    <div class="equation">
+      $$
+      dr_t+\lambda r_t\,dt
+      =
+      \lambda\theta\,dt+\sigma\,dW_t.
+      $$
+    </div>
+
+    <p>
+      This now looks exactly like a first-order linear ODE.
+    </p>
+  </div>
+
+
+  <div class="card">
+    <h2><span class="step-number">2</span>Use an integrating factor</h2>
+
+    <p>
+      For the deterministic equation
+      $y'(t)+\lambda y(t)=\cdots$,
+      the integrating factor is
+    </p>
+
+    <div class="equation">
+      $$
+      e^{\lambda t}.
+      $$
+    </div>
+
+    <p>Multiply the whole SDE by $e^{\lambda t}$:</p>
+
+    <div class="equation">
+      $$
+      e^{\lambda t}dr_t
+      +
+      \lambda e^{\lambda t}r_t\,dt
+      =
+      \lambda\theta e^{\lambda t}\,dt
+      +
+      \sigma e^{\lambda t}\,dW_t.
+      $$
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2><span class="step-number">3</span>Recognize a product derivative</h2>
+
+    <p>Using Itô's product rule,</p>
+
+    <div class="equation">
+      $$
+      d\left(e^{\lambda t}r_t\right)
+      =
+      e^{\lambda t}dr_t
+      +
+      \lambda e^{\lambda t}r_t\,dt.
+      $$
+    </div>
+
+    <p>
+      There is no quadratic variation correction here because
+      $e^{\lambda t}$ is deterministic.
+    </p>
+
+    <p>Therefore,</p>
+
+    <div class="equation">
+      $$
+      d\left(e^{\lambda t}r_t\right)
+      =
+      \lambda\theta e^{\lambda t}\,dt
+      +
+      \sigma e^{\lambda t}\,dW_t.
+      $$
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2><span class="step-number">4</span>Integrate from $0$ to $t$</h2>
+
+    <div class="equation">
+      $$
+      e^{\lambda t}r_t-r_0
+      =
+      \lambda\theta
+      \int_0^t e^{\lambda s}\,ds
+      +
+      \sigma
+      \int_0^t e^{\lambda s}\,dW_s.
+      $$
+    </div>
+
+    <p>For $\lambda\neq0$,</p>
+
+    <div class="equation">
+      $$
+      \lambda
+      \int_0^t e^{\lambda s}\,ds
+      =
+      e^{\lambda t}-1.
+      $$
+    </div>
+
+    <p>Hence</p>
+
+    <div class="equation">
+      $$
+      e^{\lambda t}r_t
+      =
+      r_0
+      +
+      \theta(e^{\lambda t}-1)
+      +
+      \sigma\int_0^t e^{\lambda s}\,dW_s.
+      $$
+    </div>
+  </div>
+
+
+  <div class="card answer">
+    <h2>Final solution</h2>
+
+    <p>Multiply by $e^{-\lambda t}$:</p>
+
+    <div class="equation">
+      $$
+      \boxed{
+      r_t
+      =
+      \theta
+      +
+      (r_0-\theta)e^{-\lambda t}
+      +
+      \sigma
+      \int_0^t
+      e^{-\lambda(t-s)}
+      \,dW_s
+      }
+      $$
+    </div>
+
+    <p>
+      The solution has three pieces:
+    </p>
+
+    <div class="summary-grid">
+
+      <div class="summary-box">
+        <strong>Long-run level</strong>
+
+        $$
+        \theta
+        $$
+
+        The value toward which the process is pulled when $\lambda>0$.
+      </div>
+
+      <div class="summary-box">
+        <strong>Initial condition</strong>
+
+        $$
+        (r_0-\theta)e^{-\lambda t}
+        $$
+
+        The effect of $r_0$ decays exponentially.
+      </div>
+
+      <div class="summary-box">
+        <strong>Random noise</strong>
+
+        $$
+        \sigma
+        \int_0^t e^{-\lambda(t-s)}\,dW_s
+        $$
+
+        Past Brownian shocks decay over time.
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2>Distribution of $r_t$</h2>
+
+    <p>
+      The stochastic integral has a deterministic integrand, so it is
+      Gaussian. Therefore $r_t$ is normally distributed.
+    </p>
+
+    <h3>Mean</h3>
+
+    <p>Since an Itô integral has mean zero,</p>
+
+    <div class="equation">
+      $$
+      \boxed{
+      \mathbb E[r_t]
+      =
+      \theta+(r_0-\theta)e^{-\lambda t}
+      }.
+      $$
+    </div>
+
+
+    <h3>Variance</h3>
+
+    <p>Using Itô isometry,</p>
+
+    <div class="equation">
+      $$
+      \begin{aligned}
+      \operatorname{Var}(r_t)
+      &=
+      \sigma^2
+      \int_0^t
+      e^{-2\lambda(t-s)}
+      \,ds \\[4pt]
+      &=
+      \boxed{
+      \frac{\sigma^2}{2\lambda}
+      \left(1-e^{-2\lambda t}\right)
+      }
+      \qquad (\lambda\neq0).
+      \end{aligned}
+      $$
+    </div>
+
+    <p>Thus</p>
+
+    <div class="equation">
+      $$
+      \boxed{
+      r_t
+      \sim
+      \mathcal N
+      \left(
+      \theta+(r_0-\theta)e^{-\lambda t},
+      \frac{\sigma^2}{2\lambda}
+      (1-e^{-2\lambda t})
+      \right)
+      }
+      $$
+    </div>
+  </div>
+
+
+  <div class="card intuition">
+    <h2>Intuition when $\lambda>0$</h2>
+
+    <div class="equation">
+      $$
+      dr_t=\lambda(\theta-r_t)dt+\sigma dW_t.
+      $$
+    </div>
+
+    <p>If $r_t&lt;\theta$, then</p>
+
+    <div class="equation">
+      $$
+      \theta-r_t>0
+      \quad\Rightarrow\quad
+      \text{positive drift}.
+      $$
+    </div>
+
+    <p>If $r_t&gt;\theta$, then</p>
+
+    <div class="equation">
+      $$
+      \theta-r_t<0
+      \quad\Rightarrow\quad
+      \text{negative drift}.
+      $$
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <p style="text-align:center">
+      <span class="important">
+        The process is pulled back toward $\theta$.
+      </span>
+    </p>
+  </div>
+
+
+  <div class="card">
+    <h2>Long-run distribution</h2>
+
+    <p>When $\lambda>0$,</p>
+
+    <div class="equation">
+      $$
+      e^{-\lambda t}\to0
+      \qquad\text{as }t\to\infty.
+      $$
+    </div>
+
+    <p>Therefore,</p>
+
+    <div class="equation">
+      $$
+      \mathbb E[r_t]\to\theta
+      $$
+    </div>
+
+    <p>and</p>
+
+    <div class="equation">
+      $$
+      \operatorname{Var}(r_t)
+      \to
+      \frac{\sigma^2}{2\lambda}.
+      $$
+    </div>
+
+    <p>Hence the stationary distribution is</p>
+
+    <div class="equation">
+      $$
+      \boxed{
+      r_\infty
+      \sim
+      \mathcal N
+      \left(
+      \theta,
+      \frac{\sigma^2}{2\lambda}
+      \right)
+      }.
+      $$
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2>Interview way to recognize the solution</h2>
+
+    <p>
+      The important pattern is
+    </p>
+
+    <div class="equation">
+      $$
+      dX_t+aX_t\,dt
+      =
+      \text{something}.
+      $$
+    </div>
+
+    <p>
+      Your immediate thought should be:
+    </p>
+
+    <div class="equation">
+      $$
+      \boxed{\text{Integrating factor }e^{at}}
+      $$
+    </div>
+
+    <p>
+      So for this problem:
+    </p>
+
+    <div class="equation">
+      $$
+      dr_t+\lambda r_tdt
+      =
+      \lambda\theta dt+\sigma dW_t
+      $$
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="equation">
+      $$
+      \text{multiply by }e^{\lambda t}
+      $$
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="equation">
+      $$
+      d(e^{\lambda t}r_t)
+      =
+      \lambda\theta e^{\lambda t}dt
+      +
+      \sigma e^{\lambda t}dW_t
+      $$
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="equation">
+      $$
+      \boxed{
+      r_t
+      =
+      \theta+(r_0-\theta)e^{-\lambda t}
+      +
+      \sigma\int_0^t
+      e^{-\lambda(t-s)}dW_s
+      }.
+      $$
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
