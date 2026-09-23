@@ -16,6 +16,7 @@ You're standing on a **perfectly spherical Earth**. You:
 ...and you end up **exactly where you started**.
 
 If you’re **not at the North Pole**, where else could you possibly be?
+<iframe src="{{ site.baseurl }}/assets/where_else_can_you_start_besides_the_north_pole.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
 
 ---
 

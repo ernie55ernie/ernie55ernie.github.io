@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>South-East-North Earth Puzzle</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --accent: #2563eb;
+      --accent2: #059669;
+      --accent3: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .small {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .equation {
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: "Courier New", monospace;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    .answer-box {
+      border-left: 5px solid var(--accent);
+      background: #eff6ff;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin: 18px 0;
+    }
+
+    .steps ol {
+      margin: 8px 0 0 20px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .metric .label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .metric .value {
+      margin-top: 6px;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .footnote {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .formula {
+      font-weight: 700;
+      color: var(--accent3);
+    }
+
+    .highlight {
+      color: var(--accent2);
+      font-weight: 700;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .caption {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    ul {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Where else can you start besides the North Pole?</h1>
+    <p class="lead">
+      On a perfectly spherical Earth, there are actually <strong>infinitely many other starting points</strong>.
+      They are all located <strong>near the South Pole</strong>.
+    </p>
+
+    <div class="answer-box">
+      <strong>Answer:</strong>
+      Start <strong>1 mile north</strong> of a tiny latitude circle whose circumference is
+      <strong>1/n mile</strong> for some positive integer <strong>n = 1, 2, 3, ...</strong>.
+      Then your 1-mile eastward walk goes around that circle exactly <strong>n times</strong>,
+      so you end up on the same spot and the final 1-mile north walk returns you to where you started.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Geometric idea</h2>
+        <svg viewBox="0 0 700 430" aria-label="South Pole geometry diagram">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" fill="#1f2937"></path>
+            </marker>
+          </defs>
+
+          <!-- Earth cross section -->
+          <circle cx="350" cy="20" r="380" fill="none" stroke="#d1d5db" stroke-width="2"></circle>
+
+          <!-- Axis -->
+          <line x1="350" y1="50" x2="350" y2="390" stroke="#d1d5db" stroke-dasharray="6 6" stroke-width="2"></line>
+
+          <!-- South pole -->
+          <circle cx="350" cy="390" r="5" fill="#1f2937"></circle>
+          <text x="365" y="395" font-size="16" fill="#1f2937">South Pole</text>
+
+          <!-- Tiny latitude circle -->
+          <line x1="225" y1="345" x2="475" y2="345" stroke="#059669" stroke-width="5" stroke-linecap="round"></line>
+          <text x="485" y="350" font-size="15" fill="#1f2937">tiny latitude circle</text>
+
+          <!-- Start point -->
+          <circle cx="350" cy="275" r="7" fill="#2563eb"></circle>
+          <text x="365" y="280" font-size="16" fill="#1f2937">starting point</text>
+
+          <!-- South move -->
+          <line x1="350" y1="286" x2="350" y2="333" stroke="#1f2937" stroke-width="3" marker-end="url(#arrow)"></line>
+          <text x="362" y="315" font-size="14" fill="#6b7280">1 mile south</text>
+
+          <!-- East loop -->
+          <ellipse cx="350" cy="345" rx="90" ry="20" fill="none" stroke="#059669" stroke-width="4" stroke-dasharray="8 6"></ellipse>
+          <text x="175" y="382" font-size="14" fill="#6b7280">
+            Then 1 mile east goes around this circle a whole-number number of times
+          </text>
+
+          <!-- North move -->
+          <line x1="332" y1="333" x2="332" y2="286" stroke="#1f2937" stroke-width="3" marker-end="url(#arrow)"></line>
+          <text x="205" y="315" font-size="14" fill="#6b7280">1 mile north</text>
+        </svg>
+        <div class="caption">
+          The key is making the eastward leg wrap around a tiny parallel exactly an integer number of times.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Interactive example</h2>
+        <p class="small">
+          Choose how many complete laps the 1-mile east walk makes.
+        </p>
+
+        <label for="nSlider"><strong>Number of laps n:</strong> <span id="nDisplay">1</span></label>
+        <input id="nSlider" type="range" min="1" max="20" value="1" />
+
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="label">Required latitude circumference</div>
+            <div class="value" id="circVal">1.000 mi</div>
+          </div>
+          <div class="metric">
+            <div class="label">Distance of that circle from South Pole</div>
+            <div class="value" id="ringVal">0.159 mi</div>
+          </div>
+          <div class="metric" style="grid-column: 1 / -1;">
+            <div class="label">Starting distance from South Pole</div>
+            <div class="value" id="startVal">1.159 mi</div>
+          </div>
+        </div>
+
+        <div class="footnote">
+          Using Earth radius R ≈ 3959 miles.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 20px;">
+      <div class="card steps">
+        <h2>Why it works</h2>
+        <ol>
+          <li>Pick a tiny latitude circle near the South Pole.</li>
+          <li>Make its circumference exactly <strong>1/n mile</strong>.</li>
+          <li>Start exactly <strong>1 mile north</strong> of that circle.</li>
+          <li>Walk 1 mile south: you land on the circle.</li>
+          <li>Walk 1 mile east: you loop around the circle exactly <strong>n</strong> times and return to the same spot.</li>
+          <li>Walk 1 mile north: you return to your starting point.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>General formula</h2>
+        <p>
+          If the chosen latitude circle has circumference <span class="formula">1/n</span> mile,
+          then its radius on the Earth's surface is approximately:
+        </p>
+
+        <div class="equation">
+          2πr = 1/n
+          <br />
+          so
+          <br />
+          r ≈ 1 / (2πn) miles
+        </div>
+
+        <p>
+          So the starting point is about
+          <span class="highlight">1 + 1/(2πn)</span>
+          miles from the South Pole.
+        </p>
+
+        <p class="small">
+          More exactly, on a sphere of radius <em>R</em>, if <em>dₙ</em> is the surface distance from the South Pole to the tiny circle, then:
+        </p>
+
+        <div class="equation">
+          dₙ = R · arcsin(1 / (2πRn))
+        </div>
+
+        <p class="small">
+          and the starting point is <strong>1 + dₙ</strong> miles from the South Pole.
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Final conclusion</h2>
+      <p>
+        Besides the North Pole, the other solutions are:
+      </p>
+      <ul>
+        <li>all points <strong>1 mile north</strong> of a latitude circle near the South Pole whose circumference is <strong>1 mile</strong>,</li>
+        <li>or <strong>1/2 mile</strong>,</li>
+        <li>or <strong>1/3 mile</strong>,</li>
+        <li>or in general <strong>1/n mile</strong> for any positive integer <strong>n</strong>.</li>
+      </ul>
+      <p>
+        So there are <strong>infinitely many such starting points</strong>, all clustered just north of the South Pole.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const R = 3959;
+      const slider = document.getElementById("nSlider");
+      const nDisplay = document.getElementById("nDisplay");
+      const circVal = document.getElementById("circVal");
+      const ringVal = document.getElementById("ringVal");
+      const startVal = document.getElementById("startVal");
+
+      function update() {
+        const n = Number(slider.value);
+        const circumference = 1 / n;
+        const d = R * Math.asin(1 / (2 * Math.PI * R * n)); // exact surface distance
+        const start = 1 + d;
+
+        nDisplay.textContent = n;
+        circVal.textContent = circumference.toFixed(3) + " mi";
+        ringVal.textContent = d.toFixed(3) + " mi";
+        startVal.textContent = start.toFixed(3) + " mi";
+      }
+
+      slider.addEventListener("input", update);
+      update();
+    })();
+  </script>
+</body>
+</html>
