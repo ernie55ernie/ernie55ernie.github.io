@@ -13,6 +13,8 @@ X_t = \int_0^t W_\tau\,d\tau.
 
 We answer two questions:
 
+<iframe src="{{ site.baseurl }}/assets/integrated_brownian_motion.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### 1. Distribution of \\( X_t \\)
