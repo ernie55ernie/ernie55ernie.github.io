@@ -11,6 +11,8 @@ category: quantitative interview
 - Bob tosses \\( n \\) **fair coins**.
 - What is the probability that **Alice gets strictly more heads** than Bob?
 
+<iframe src="{{ site.baseurl }}/assets/alice_vs_bob_coin_probability.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Reformulation and Intuition
