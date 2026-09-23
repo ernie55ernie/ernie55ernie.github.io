@@ -21,11 +21,11 @@ If you’re **not at the North Pole**, where else could you possibly be?
 
 ## Solution 1: The Obvious Answer — The North Pole
 
-If you're **exactly 1 mile north** of a parallel where the **eastward circle has circumference = 1 mile**, then:
+If you start at the **North Pole**:
 
-- Going 1 mile **south** puts you on that circle
-- Going 1 mile **east** takes you **once around** that circle (back to the same point)
-- Going 1 mile **north** returns you to your starting point
+- Going 1 mile **south** puts you on a circle of latitude exactly 1 mile from the pole.
+- Going 1 mile **east** moves you along that circle (your distance from the pole remains 1 mile).
+- Going 1 mile **north** takes you straight back, because **all paths heading north converge at the North Pole**.
 
 That’s the well-known solution.
 
