@@ -52,18 +52,17 @@ V(S_T) = 2 \cdot \max(30 - S_T, 0) - 3 \cdot \max(20 - S_T, 0)
 Let's analyze key intervals:
 
 - If \\( S_T \geq 30 \\): payoff = 0
-- If \\( 20 \leq S_T < 30 \\): payoff = \\( 2(30 - S_T) - 3(20 - S_T) = 60 - 2S_T - 60 + 3S_T = S_T \\)
+- If \\( 20 \leq S_T < 30 \\): payoff = \\( 2(30 - S_T) - 3(0) = 60 - 2S_T \\)
 - If \\( S_T < 20 \\): payoff = \\( 2(30 - S_T) - 3(20 - S_T) = 60 - 2S_T - 60 + 3S_T = S_T \\)
 
 Hence:
 
 \\[
 V(S_T) = 
-\\]
-\\[
 \begin{cases}
 0 &\text{if } S_T \geq 30\cr
-S_T &\text{if } S_T < 30
+60 - 2S_T &\text{if } 20 \leq S_T < 30\cr
+S_T &\text{if } 0 \leq S_T < 20
 \end{cases}
 \\]
 
