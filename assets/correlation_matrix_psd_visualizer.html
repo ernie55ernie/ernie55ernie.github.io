@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Correlation Matrix PSD Visualizer</title>
+<style>
+:root{--bg:#0b1020;--panel:#141b2d;--card:#1a2338;--text:#f3f6fb;--muted:#aeb8ca;--border:#2c3854;--accent:#7dd3fc;--good:#86efac;--bad:#fca5a5;--curve:#c4b5fd}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.5}main{max-width:1000px;margin:auto;padding:32px 18px 48px}h1{font-size:clamp(1.8rem,4vw,2.7rem);margin:0 0 8px}h2{font-size:1.1rem;margin:0 0 12px}p{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px}.matrix-wrap{display:flex;justify-content:center;padding:18px 0}.matrix{position:relative;display:grid;grid-template-columns:repeat(3,70px);gap:8px 16px;padding:10px 26px;font:600 1.15rem/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}.matrix:before,.matrix:after{content:"";position:absolute;top:0;bottom:0;width:14px;border-top:2px solid var(--text);border-bottom:2px solid var(--text)}.matrix:before{left:0;border-left:2px solid var(--text)}.matrix:after{right:0;border-right:2px solid var(--text)}label{display:flex;justify-content:space-between;align-items:center;gap:12px}input[type=range]{width:100%;accent-color:var(--accent)}output{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:0}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.status{margin-top:14px;border:1px solid var(--border);border-radius:12px;padding:12px 14px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}.small{font-size:.82rem;color:var(--muted)}svg{display:block;width:100%;height:auto}.answer{margin-top:18px;padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:var(--panel)}.answer strong{color:var(--accent)}@media(max-width:760px){.grid,.cards{grid-template-columns:1fr}.matrix{grid-template-columns:repeat(3,60px);gap:6px 10px}}
+</style>
+</head>
+<body>
+<main>
+<h1>Correlation Matrix PSD Visualizer</h1>
+<p>Find all real values of ρ for which Σ is a valid correlation matrix, i.e. positive semidefinite.</p>
+<div class="grid">
+<section class="panel">
+<h2>1. Matrix</h2>
+<div class="matrix-wrap"><div class="matrix" aria-label="Sigma matrix"><span>1</span><span>0.6</span><span>−0.3</span><span>0.6</span><span>1</span><span id="r1">ρ</span><span>−0.3</span><span id="r2">ρ</span><span>1</span></div></div>
+<label for="rho"><span>Choose ρ</span><output id="rhoOut">0.000</output></label>
+<input id="rho" type="range" min="-1.2" max="1.2" step="0.001" value="0" />
+<div class="small" style="display:flex;justify-content:space-between"><span>−1.2</span><span>0</span><span>1.2</span></div>
+</section>
+<section class="panel">
+<h2>2. PSD checklist</h2>
+<div class="row"><span>Diagonal entries</span><span class="mono">1 ≥ 0</span></div>
+<div class="row"><span>Minor {1,2}</span><span class="mono">1−0.6² = 0.64</span></div>
+<div class="row"><span>Minor {1,3}</span><span class="mono">1−(−0.3)² = 0.91</span></div>
+<div class="row"><span>Minor {2,3}</span><span id="minor23" class="mono"></span></div>
+<div class="row"><strong>det(Σ)</strong><span id="detOut" class="mono"></span></div>
+<div class="small mono">det(Σ) = 0.55 − 0.36ρ − ρ²</div>
+<div id="status" class="status"></div>
+</section>
+</div>
+<section class="panel" style="margin-top:18px">
+<h2>3. Binding condition: det(Σ) ≥ 0</h2>
+<p class="small">The determinant is a downward-opening parabola. PSD holds between its two roots.</p>
+<svg viewBox="0 0 760 300" role="img" aria-label="Plot of determinant versus rho"><line x1="60" y1="235" x2="720" y2="235" stroke="#52617f" stroke-width="1.5"/><line x1="390" y1="30" x2="390" y2="250" stroke="#52617f" stroke-width="1"/><rect id="band" y="30" height="205" fill="#86efac" opacity="0.10" rx="5"/><path id="curve" fill="none" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line id="guide" stroke="#7dd3fc" stroke-width="1.5" stroke-dasharray="5 5"/><circle id="point" r="7" fill="#7dd3fc"/><text x="727" y="240" fill="#aeb8ca" font-size="13">ρ</text><text x="398" y="24" fill="#aeb8ca" font-size="13">det(Σ)</text><text id="leftLabel" y="258" text-anchor="middle" fill="#aeb8ca" font-size="12"></text><text id="rightLabel" y="258" text-anchor="middle" fill="#aeb8ca" font-size="12"></text></svg>
+</section>
+<div class="cards"><div class="card"><div class="small">Solve determinant inequality</div><div class="mono">ρ² + 0.36ρ − 0.55 ≤ 0</div></div><div class="card"><div class="small">Roots</div><div class="mono">ρ = (−9 ± 4√91)/50</div></div><div class="card"><div class="small">Final interval</div><div class="mono"><strong>−0.943151… ≤ ρ ≤ 0.583151…</strong></div></div></div>
+<div class="answer"><strong>Interview shortcut:</strong> for a symmetric 3×3 matrix, PSD is equivalent to all principal minors being nonnegative. The fixed 2×2 minors are already positive, while <span class="mono">1−ρ² ≥ 0</span> gives <span class="mono">|ρ|≤1</span>. The determinant is tighter, giving <span class="mono">ρ ∈ [(−9−4√91)/50, (−9+4√91)/50]</span>.</div>
+</main>
+<script>
+(()=>{const slider=document.getElementById('rho'),rhoOut=document.getElementById('rhoOut'),r1=document.getElementById('r1'),r2=document.getElementById('r2'),minor23=document.getElementById('minor23'),detOut=document.getElementById('detOut'),status=document.getElementById('status'),curve=document.getElementById('curve'),point=document.getElementById('point'),guide=document.getElementById('guide'),band=document.getElementById('band'),leftLabel=document.getElementById('leftLabel'),rightLabel=document.getElementById('rightLabel');const lo=(-9-4*Math.sqrt(91))/50,hi=(-9+4*Math.sqrt(91))/50,xMin=-1.2,xMax=1.2,yMin=-1.3,yMax=.7,L=60,R=720,T=30,B=235;const det=r=>.55-.36*r-r*r,xScale=x=>L+(x-xMin)/(xMax-xMin)*(R-L),yScale=y=>B-(y-yMin)/(yMax-yMin)*(B-T);let path='';for(let i=0;i<=240;i++){const r=xMin+(xMax-xMin)*i/240,x=xScale(r),y=yScale(det(r));path+=(i===0?'M':'L')+x.toFixed(2)+' '+y.toFixed(2)+' '}curve.setAttribute('d',path);band.setAttribute('x',xScale(lo));band.setAttribute('width',xScale(hi)-xScale(lo));leftLabel.setAttribute('x',xScale(lo));rightLabel.setAttribute('x',xScale(hi));leftLabel.textContent=lo.toFixed(3);rightLabel.textContent=hi.toFixed(3);function update(){const r=Number(slider.value),d=det(r),m=1-r*r,psd=m>=-1e-10&&d>=-1e-10;rhoOut.textContent=r.toFixed(3);r1.textContent=r.toFixed(3);r2.textContent=r.toFixed(3);minor23.textContent='1−ρ² = '+m.toFixed(4);detOut.textContent=d.toFixed(4);const px=xScale(r),py=yScale(d);point.setAttribute('cx',px);point.setAttribute('cy',py);guide.setAttribute('x1',px);guide.setAttribute('x2',px);guide.setAttribute('y1',py);guide.setAttribute('y2',B);if(psd){status.style.borderColor='#86efac';status.style.background='rgba(134,239,172,.08)';status.innerHTML="<strong style='color:#86efac'>✓ PSD</strong> — all principal minors are nonnegative."}else{status.style.borderColor='#fca5a5';status.style.background='rgba(252,165,165,.08)';const reason=m<0?'the 2×2 minor 1−ρ² is negative.':'det(Σ) is negative.';status.innerHTML="<strong style='color:#fca5a5'>✕ Not PSD</strong> — "+reason}}slider.addEventListener('input',update);update()})();
+</script>
+</body>
+</html>

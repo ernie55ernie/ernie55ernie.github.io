@@ -20,6 +20,8 @@ We are given the symmetric matrix:
 
 We are to find all real values of \\( \rho \\) for which this matrix is a **valid correlation matrix**, i.e., **positive semidefinite (PSD)**.
 
+<iframe src="{{ site.baseurl }}/assets/correlation_matrix_psd_visualizer.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Step 1: Symmetry and Unit Diagonal
