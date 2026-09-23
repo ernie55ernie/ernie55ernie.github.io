@@ -65,13 +65,13 @@ X_t = \int_0^t W_\tau\,d\tau = \int_0^s W_\tau\,d\tau + \int_s^t W_\tau\,d\tau =
 Then, taking the conditional expectation:
 
 \\[
-\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big|} \mathcal{F}_s \right].
+\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s + \mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big\vert} \mathcal{F}_s \right].
 \\]
 
 By Fubini's theorem (or moving the expectation inside the integral), and using the martingale property of Brownian motion (\\( \mathbb{E}[W_\tau \mid \mathcal{F}_s] = W_s \\) for \\( \tau > s \\)):
 
 \\[
-\mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big|} \mathcal{F}_s \right] = \int_s^t \mathbb{E}[W_\tau \mid \mathcal{F}_s]\,d\tau = \int_s^t W_s\,d\tau = (t - s)W_s.
+\mathbb{E}\left[ \int_s^t W_\tau\,d\tau \mathrel{\Big\vert} \mathcal{F}_s \right] = \int_s^t \mathbb{E}[W_\tau \mid \mathcal{F}_s]\,d\tau = \int_s^t W_s\,d\tau = (t - s)W_s.
 \\]
 
 Therefore,
