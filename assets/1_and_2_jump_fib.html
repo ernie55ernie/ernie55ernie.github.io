@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jump Sequences and Fibonacci</title>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    async>
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 22px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .formula {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 18px 0;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    input[type="range"] {
+      width: 300px;
+    }
+
+    .n-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      min-width: 70px;
+    }
+
+    .big-answer {
+      font-size: 2rem;
+      text-align: center;
+      font-weight: 700;
+      margin: 20px 0;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .group {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .group h3 {
+      margin-top: 0;
+    }
+
+    .sequence {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 9px;
+      margin: 7px 0;
+      border-radius: 9px;
+      background: white;
+      border: 1px solid #e5e7eb;
+    }
+
+    .jump {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-weight: bold;
+      border: 1px solid #d1d5db;
+    }
+
+    .jump.one {
+      width: 38px;
+      background: #dbeafe;
+    }
+
+    .jump.two {
+      width: 65px;
+      background: #dcfce7;
+    }
+
+    .plus {
+      color: #9ca3af;
+    }
+
+    .explanation {
+      line-height: 1.7;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .highlight {
+      background: #fef3c7;
+      font-weight: 700;
+    }
+
+    .final {
+      background: #eef2ff;
+      border-left: 5px solid #6366f1;
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 650px) {
+      body {
+        padding: 15px;
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      input[type="range"] {
+        width: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>1″ and 2″ Jumps → Fibonacci</h1>
+
+    <p class="subtitle">
+      Count the number of sequences of 1-unit and 2-unit jumps whose total distance is \(n\).
+    </p>
+
+    <div class="card">
+      <h2>1. Define the problem</h2>
+
+      <p class="explanation">
+        Let \(a_n\) be the number of ordered sequences consisting of
+        jumps of size \(1\) and \(2\) whose total is \(n\).
+      </p>
+
+      <div class="formula">
+        \[
+        a_n = a_{n-1} + a_{n-2},
+        \qquad
+        a_0 = 1,\quad a_1 = 1
+        \]
+      </div>
+
+      <p>
+        Why? Every valid sequence must end in exactly one of two ways:
+      </p>
+
+      <ul>
+        <li>its final jump is \(1\), or</li>
+        <li>its final jump is \(2\).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Interactive example</h2>
+
+      <div class="controls">
+        <label for="slider"><strong>Select \(n\):</strong></label>
+
+        <input
+          id="slider"
+          type="range"
+          min="0"
+          max="8"
+          value="5"
+        />
+
+        <div class="n-value">
+          n = <span id="nDisplay">5</span>
+        </div>
+      </div>
+
+      <div class="big-answer">
+        \(a_n =\)
+        <span id="answer">8</span>
+      </div>
+
+      <div id="allSequences"></div>
+    </div>
+
+    <div class="card">
+      <h2>3. Why does the recurrence work?</h2>
+
+      <div class="split">
+
+        <div class="group">
+          <h3>Sequences ending in 1</h3>
+
+          <div id="endingOne"></div>
+
+          <p class="explanation">
+            Remove the final \(1\).
+            The remaining sequence must sum to \(n-1\).
+          </p>
+
+          <div class="formula" id="oneFormula"></div>
+        </div>
+
+        <div class="group">
+          <h3>Sequences ending in 2</h3>
+
+          <div id="endingTwo"></div>
+
+          <p class="explanation">
+            Remove the final \(2\).
+            The remaining sequence must sum to \(n-2\).
+          </p>
+
+          <div class="formula" id="twoFormula"></div>
+        </div>
+
+      </div>
+
+      <div class="formula" id="recurrenceExample"></div>
+    </div>
+
+    <div class="card">
+      <h2>4. Compare with Fibonacci</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>\(n\)</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr id="aRow">
+            <th>\(a_n\)</th>
+          </tr>
+
+          <tr id="fRow">
+            <th>\(F_{n+1}\)</th>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="formula">
+        \[
+        1,\;1,\;2,\;3,\;5,\;8,\;13,\;21,\;34,\ldots
+        \]
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5. Why exactly Fibonacci?</h2>
+
+      <p class="explanation">
+        The standard Fibonacci sequence satisfies
+      </p>
+
+      <div class="formula">
+        \[
+        F_{k}=F_{k-1}+F_{k-2},
+        \qquad
+        F_0=0,\quad F_1=1.
+        \]
+      </div>
+
+      <p class="explanation">
+        Therefore
+      </p>
+
+      <div class="formula">
+        \[
+        F_1=1,\qquad
+        F_2=1.
+        \]
+      </div>
+
+      <p class="explanation">
+        These match our initial values
+      </p>
+
+      <div class="formula">
+        \[
+        a_0=1,\qquad a_1=1.
+        \]
+      </div>
+
+      <p>
+        Both sequences have the same initial values and obey the same recurrence,
+        except that the Fibonacci indices are shifted by one.
+      </p>
+
+      <div class="final">
+        Therefore,
+        \[
+        \boxed{a_n = F_{n+1}}.
+        \]
+
+        For example,
+
+        \[
+        a_5 = 8 = F_6.
+        \]
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const nDisplay = document.getElementById("nDisplay");
+    const answer = document.getElementById("answer");
+
+    const allSequences = document.getElementById("allSequences");
+    const endingOne = document.getElementById("endingOne");
+    const endingTwo = document.getElementById("endingTwo");
+
+    const recurrenceExample =
+      document.getElementById("recurrenceExample");
+
+    const oneFormula =
+      document.getElementById("oneFormula");
+
+    const twoFormula =
+      document.getElementById("twoFormula");
+
+    const aRow = document.getElementById("aRow");
+    const fRow = document.getElementById("fRow");
+
+
+    function fib(n) {
+      if (n === 0) return 0;
+      if (n === 1) return 1;
+
+      let a = 0;
+      let b = 1;
+
+      for (let i = 2; i <= n; i++) {
+        const temp = a + b;
+        a = b;
+        b = temp;
+      }
+
+      return b;
+    }
+
+
+    function generateSequences(n) {
+
+      if (n === 0) {
+        return [[]];
+      }
+
+      const result = [];
+
+      function backtrack(remaining, current) {
+
+        if (remaining === 0) {
+          result.push([...current]);
+          return;
+        }
+
+        if (remaining >= 1) {
+          current.push(1);
+          backtrack(remaining - 1, current);
+          current.pop();
+        }
+
+        if (remaining >= 2) {
+          current.push(2);
+          backtrack(remaining - 2, current);
+          current.pop();
+        }
+      }
+
+      backtrack(n, []);
+
+      return result;
+    }
+
+
+    function renderSequence(sequence) {
+
+      if (sequence.length === 0) {
+        return `<span>empty sequence</span>`;
+      }
+
+      return sequence
+        .map((jump, index) => {
+
+          const jumpHTML =
+            `<span class="jump ${jump === 1 ? "one" : "two"}">
+              ${jump}
+            </span>`;
+
+          if (index === sequence.length - 1) {
+            return jumpHTML;
+          }
+
+          return jumpHTML +
+            `<span class="plus">+</span>`;
+
+        })
+        .join("");
+    }
+
+
+    function renderList(container, sequences) {
+
+      if (sequences.length === 0) {
+
+        container.innerHTML =
+          `<p style="color:#6b7280">None</p>`;
+
+        return;
+      }
+
+      container.innerHTML =
+        sequences
+          .map(sequence =>
+            `<div class="sequence">
+              ${renderSequence(sequence)}
+            </div>`
+          )
+          .join("");
+    }
+
+
+    function renderTable(selectedN) {
+
+      aRow.innerHTML = `<th>\\(a_n\\)</th>`;
+      fRow.innerHTML = `<th>\\(F_{n+1}\\)</th>`;
+
+      for (let n = 0; n <= 8; n++) {
+
+        const value = fib(n + 1);
+
+        const className =
+          n === selectedN
+            ? "highlight"
+            : "";
+
+        aRow.innerHTML +=
+          `<td class="${className}">
+            ${value}
+          </td>`;
+
+        fRow.innerHTML +=
+          `<td class="${className}">
+            ${value}
+          </td>`;
+      }
+    }
+
+
+    function update() {
+
+      const n = Number(slider.value);
+
+      nDisplay.textContent = n;
+
+      const sequences =
+        generateSequences(n);
+
+      answer.textContent =
+        sequences.length;
+
+      const end1 =
+        sequences.filter(
+          seq =>
+            seq.length > 0 &&
+            seq[seq.length - 1] === 1
+        );
+
+      const end2 =
+        sequences.filter(
+          seq =>
+            seq.length > 0 &&
+            seq[seq.length - 1] === 2
+        );
+
+
+      allSequences.innerHTML =
+        `<h3>
+          All ${sequences.length}
+          sequence${sequences.length === 1 ? "" : "s"}
+        </h3>`;
+
+      renderList(
+        allSequences,
+        sequences
+      );
+
+
+      renderList(
+        endingOne,
+        end1
+      );
+
+      renderList(
+        endingTwo,
+        end2
+      );
+
+
+      if (n >= 1) {
+
+        oneFormula.innerHTML =
+          `\\[
+          ${end1.length}
+          =
+          a_{${n - 1}}
+          \\]`;
+
+      } else {
+
+        oneFormula.innerHTML =
+          `Base case`;
+
+      }
+
+
+      if (n >= 2) {
+
+        twoFormula.innerHTML =
+          `\\[
+          ${end2.length}
+          =
+          a_{${n - 2}}
+          \\]`;
+
+      } else {
+
+        twoFormula.innerHTML =
+          `No sequence can end in 2.`;
+
+      }
+
+
+      if (n >= 2) {
+
+        recurrenceExample.innerHTML =
+          `
+          \\[
+          a_${n}
+          =
+          a_${n - 1}
+          +
+          a_${n - 2}
+          =
+          ${fib(n)}
+          +
+          ${fib(n - 1)}
+          =
+          ${fib(n + 1)}
+          \\]
+          `;
+
+      } else {
+
+        recurrenceExample.innerHTML =
+          `Base case:
+          \\(
+          a_${n}
+          =
+          ${fib(n + 1)}
+          \\)`;
+      }
+
+
+      renderTable(n);
+
+
+      if (window.MathJax &&
+          window.MathJax.typesetPromise) {
+
+        MathJax.typesetPromise();
+
+      }
+    }
+
+
+    slider.addEventListener(
+      "input",
+      update
+    );
+
+
+    update();
+  </script>
+
+</body>
+</html>

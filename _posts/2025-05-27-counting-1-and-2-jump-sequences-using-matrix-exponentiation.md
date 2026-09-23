@@ -17,6 +17,8 @@ This is identical to the Fibonacci sequence shifted by one index. That is,
 a_n = F_{n+1}, \quad \text{where } F_n \text{ is the Fibonacci number with } F_0 = 0, F_1 = 1.
 \\]
 
+<iframe src="{{ site.baseurl }}/assets/1_and_2_jump_fib.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Matrix Formulation
