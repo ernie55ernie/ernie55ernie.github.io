@@ -14,6 +14,8 @@ Alice writes **two distinct real numbers between 0 and 1** on separate sheets. B
 
 Can Bob devise a strategy that gives him **more than a 50% chance of being correct**?
 
+<iframe src="{{ site.baseurl }}/assets/random_threshold_strategy.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Naïve Strategy

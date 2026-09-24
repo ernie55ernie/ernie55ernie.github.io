@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Threshold Strategy</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d9dde7;
+      --accent: #5b5bd6;
+      --accent-soft: #ececff;
+      --good: #3fa66f;
+      --small: #d97706;
+      --large: #2563eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 56px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .strategy {
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    code {
+      background: #f0f1f6;
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      margin: 8px 0;
+      font-weight: 650;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .prob {
+      font-size: 38px;
+      font-weight: 800;
+      margin: 8px 0;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      padding: 11px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { filter: brightness(0.96); }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .explain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .explain-grid { grid-template-columns: 1fr; }
+    }
+
+    .mini {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      line-height: 1.55;
+      background: #fcfcfe;
+    }
+
+    .muted { color: var(--muted); }
+
+    .answer {
+      font-size: 20px;
+      line-height: 1.7;
+    }
+
+    .highlight {
+      background: #f1fbf6;
+      border-left: 5px solid var(--good);
+      padding: 14px 16px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Can Bob beat 50%?</h1>
+  <p class="subtitle">
+    Yes. Bob can use a random threshold to get a strictly better-than-50% success probability
+    for any two distinct numbers Alice chooses in <strong>(0,1)</strong>.
+  </p>
+
+  <section class="card strategy">
+    <strong>Bob's strategy:</strong><br>
+    Generate a random threshold <code>T ~ Uniform(0,1)</code> before looking at the chosen number.
+    If the observed number is greater than <code>T</code>, guess <strong>larger</strong>.
+    Otherwise, guess <strong>smaller</strong>.
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <label>
+        Smaller number: <span id="smallVal">0.30</span>
+      </label>
+      <input id="small" type="range" min="0.01" max="0.98" step="0.01" value="0.30">
+
+      <label style="margin-top:18px">
+        Larger number: <span id="largeVal">0.70</span>
+      </label>
+      <input id="large" type="range" min="0.02" max="0.99" step="0.01" value="0.70">
+
+      <p class="muted" id="validation">
+        Alice may choose any two distinct values.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="muted">Exact success probability</div>
+      <div class="prob" id="prob">70.0%</div>
+      <div class="formula" id="formula">
+        P(correct) = 1/2 + (0.70 - 0.30)/2 = 0.70
+      </div>
+      <p class="muted">
+        The farther apart the numbers are, the larger Bob's advantage.
+      </p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <strong>Why the threshold helps</strong>
+      <button id="randomize" type="button">Randomize threshold</button>
+    </div>
+
+    <svg id="numberLine" viewBox="0 0 760 170" aria-label="Interactive number line">
+      <line x1="70" y1="85" x2="690" y2="85"
+            stroke="#b5bac7" stroke-width="4" />
+      <text x="65" y="118" font-size="15">0</text>
+      <text x="686" y="118" font-size="15">1</text>
+
+      <rect id="goodZone"
+            x="256" y="70" width="248" height="30" rx="8"
+            fill="#3fa66f" opacity="0.18" />
+
+      <circle id="smallDot" cx="256" cy="85" r="10" fill="#d97706" />
+      <circle id="largeDot" cx="504" cy="85" r="10" fill="#2563eb" />
+
+      <line id="thresholdLine"
+            x1="380" y1="35" x2="380" y2="132"
+            stroke="#5b5bd6" stroke-width="4"
+            stroke-dasharray="7 6" />
+
+      <text id="thresholdLabel" x="380" y="24"
+            text-anchor="middle" font-size="15">
+        T = 0.50
+      </text>
+
+      <text id="smallLabel" x="256" y="151"
+            text-anchor="middle" font-size="15">
+        a = 0.30
+      </text>
+
+      <text id="largeLabel" x="504" y="151"
+            text-anchor="middle" font-size="15">
+        b = 0.70
+      </text>
+    </svg>
+
+    <p id="thresholdResult" style="text-align:center;font-weight:700">
+      T lies between the two numbers → Bob is guaranteed correct.
+    </p>
+
+    <div class="explain-grid">
+      <div class="mini">
+        <strong>T &lt; a</strong>
+        <p class="muted">
+          Both numbers are above the threshold. Bob always guesses “larger,”
+          so he is correct only if he happened to see the larger number.
+        </p>
+        <div class="formula">success = 1/2</div>
+      </div>
+
+      <div class="mini">
+        <strong>a &lt; T &lt; b</strong>
+        <p class="muted">
+          The threshold separates the two values. Seeing <em>a</em> makes Bob
+          guess “smaller”; seeing <em>b</em> makes him guess “larger.”
+        </p>
+        <div class="formula">success = 1</div>
+      </div>
+
+      <div class="mini">
+        <strong>T &gt; b</strong>
+        <p class="muted">
+          Both numbers are below the threshold. Bob always guesses “smaller,”
+          so he is correct only if he happened to see the smaller number.
+        </p>
+        <div class="formula">success = 1/2</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card answer">
+    <div class="highlight">
+      Let Alice's values be <strong>a &lt; b</strong>.
+      Since <code>T</code> is uniform on (0,1),
+      <strong>P(a &lt; T &lt; b) = b - a</strong>.
+      Therefore:
+      <div class="formula" style="margin-top:10px">
+        P(correct)
+        = 1/2 · (1 - (b-a)) + 1 · (b-a)
+        = 1/2 + (b-a)/2
+        &gt; 1/2.
+      </div>
+    </div>
+
+    <p>
+      So Bob can always do strictly better than random guessing for any two
+      distinct numbers. If the two numbers are extremely close, his advantage
+      may be tiny, but it is still positive.
+    </p>
+  </section>
+</main>
+
+<script>
+(() => {
+  const small = document.getElementById('small');
+  const large = document.getElementById('large');
+  const smallVal = document.getElementById('smallVal');
+  const largeVal = document.getElementById('largeVal');
+  const validation = document.getElementById('validation');
+  const prob = document.getElementById('prob');
+  const formula = document.getElementById('formula');
+  const randomize = document.getElementById('randomize');
+  const smallDot = document.getElementById('smallDot');
+  const largeDot = document.getElementById('largeDot');
+  const goodZone = document.getElementById('goodZone');
+  const thresholdLine = document.getElementById('thresholdLine');
+  const thresholdLabel = document.getElementById('thresholdLabel');
+  const smallLabel = document.getElementById('smallLabel');
+  const largeLabel = document.getElementById('largeLabel');
+  const thresholdResult = document.getElementById('thresholdResult');
+
+  let threshold = 0.50;
+
+  const xPos = v => 70 + 620 * v;
+
+  function getValues() {
+    let a = Number(small.value);
+    let b = Number(large.value);
+
+    if (a >= b) {
+      if (document.activeElement === small) {
+        a = Math.max(0.01, b - 0.01);
+        small.value = a.toFixed(2);
+      } else {
+        b = Math.min(0.99, a + 0.01);
+        large.value = b.toFixed(2);
+      }
+      validation.textContent =
+        "Adjusted slightly so Alice's numbers remain distinct.";
+    } else {
+      validation.textContent =
+        "Alice may choose any two distinct values.";
+    }
+    return [a, b];
+  }
+
+  function render() {
+    const [a, b] = getValues();
+    const p = 0.5 + (b - a) / 2;
+
+    smallVal.textContent = a.toFixed(2);
+    largeVal.textContent = b.toFixed(2);
+    prob.textContent = (100 * p).toFixed(1) + "%";
+    formula.textContent =
+      `P(correct) = 1/2 + (${b.toFixed(2)} - ${a.toFixed(2)})/2 = ${p.toFixed(3)}`;
+
+    const xa = xPos(a);
+    const xb = xPos(b);
+    const xt = xPos(threshold);
+
+    smallDot.setAttribute("cx", xa);
+    largeDot.setAttribute("cx", xb);
+
+    goodZone.setAttribute("x", xa);
+    goodZone.setAttribute("width", Math.max(2, xb - xa));
+
+    thresholdLine.setAttribute("x1", xt);
+    thresholdLine.setAttribute("x2", xt);
+
+    thresholdLabel.setAttribute("x", xt);
+    smallLabel.setAttribute("x", xa);
+    largeLabel.setAttribute("x", xb);
+
+    thresholdLabel.textContent = `T = ${threshold.toFixed(2)}`;
+    smallLabel.textContent = `a = ${a.toFixed(2)}`;
+    largeLabel.textContent = `b = ${b.toFixed(2)}`;
+
+    if (threshold > a && threshold < b) {
+      thresholdResult.textContent =
+        "T lies between the two numbers → Bob is guaranteed correct, whichever sheet he sees.";
+    } else if (threshold <= a) {
+      thresholdResult.textContent =
+        "T is below both numbers → for this threshold Bob succeeds 50% of the time.";
+    } else {
+      thresholdResult.textContent =
+        "T is above both numbers → for this threshold Bob succeeds 50% of the time.";
+    }
+  }
+
+  small.addEventListener("input", render);
+  large.addEventListener("input", render);
+
+  randomize.addEventListener("click", () => {
+    threshold = Math.random();
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
