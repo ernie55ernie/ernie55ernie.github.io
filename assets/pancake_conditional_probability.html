@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pancake Conditional Probability</title>
+  <style>
+    :root{
+      --bg:#f7f7f8; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --border:#e5e7eb; --accent:#2563eb; --accent-bg:#dbeafe;
+      --gold:#f3c969; --burnt:#8b5e3c; --good:#ecfdf5;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 40px}
+    h1{font-size:clamp(1.8rem,4vw,2.7rem);margin:0 0 8px}
+    .lead{color:var(--muted);margin:0 0 24px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:18px;
+      padding:20px;
+    }
+    .section-title{font-weight:700;margin-bottom:5px}
+    .small{font-size:.92rem;color:var(--muted);line-height:1.5}
+    .pancakes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .pancake-card{
+      border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;
+    }
+    .faces{display:flex;justify-content:center;gap:10px;margin:12px 0}
+    .face{
+      width:56px;height:56px;border-radius:50%;display:inline-flex;align-items:center;
+      justify-content:center;font-weight:800;font-size:1.15rem;border:2px solid var(--border);
+    }
+    button.face{cursor:pointer}
+    .gold{background:var(--gold)}
+    .burnt{background:var(--burnt);color:#fff;opacity:.72}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);background:#fff;border-radius:12px;
+      min-height:44px;padding:10px 14px;font-weight:650;cursor:pointer;
+    }
+    button.primary{background:var(--accent-bg);border-color:#bfdbfe}
+    button:hover{filter:brightness(.98)}
+    .sample{margin-top:16px;border:1px solid var(--border);border-radius:14px;padding:16px;display:none}
+    .outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .outcome{
+      border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;
+      background:#fafafa;
+    }
+    .outcome.good{background:var(--good)}
+    .frac{display:flex;align-items:center;justify-content:center;gap:18px;margin:26px 0}
+    .stack{text-align:center;font-size:2.2rem;font-weight:800;line-height:1}
+    .stack .top{border-bottom:2px solid var(--text);padding:0 12px 6px}
+    .stack .bottom{padding-top:6px}
+    .big{font-size:2rem;font-weight:800}
+    .callout{border:1px solid var(--border);border-radius:12px;padding:14px;line-height:1.55}
+    .sim{margin-top:18px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .stat{background:#fafafa;border-radius:12px;padding:14px;text-align:center}
+    .stat strong{display:block;font-size:1.7rem}
+    #status{margin-top:12px;color:var(--muted)}
+    @media (max-width:760px){
+      .grid{grid-template-columns:1fr}
+      .pancakes{grid-template-columns:1fr}
+      .outcomes{grid-template-columns:1fr}
+    }
+    @media (max-width:480px){
+      .stats{grid-template-columns:1fr}
+      .frac{flex-direction:column;gap:10px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Pancake Conditional Probability</h1>
+    <p class="lead">
+      You randomly choose one of three pancakes — GG, BB, or GB — then observe that the visible side is golden.
+      What is the probability that the hidden side is also golden?
+    </p>
+
+    <section class="grid">
+      <div class="card">
+        <div class="section-title">Condition on what you actually observed</div>
+        <div class="small">Once you know the visible face is golden, count the equally likely golden-face observations.</div>
+
+        <div class="pancakes">
+          <div class="pancake-card">
+            <strong>GG pancake</strong>
+            <div class="faces">
+              <button class="face gold" data-outcome="GG">G</button>
+              <button class="face gold" data-outcome="GG">G</button>
+            </div>
+            <div class="small">2 golden faces</div>
+          </div>
+
+          <div class="pancake-card">
+            <strong>BB pancake</strong>
+            <div class="faces">
+              <span class="face burnt">B</span>
+              <span class="face burnt">B</span>
+            </div>
+            <div class="small">Cannot produce the observation G</div>
+          </div>
+
+          <div class="pancake-card">
+            <strong>GB pancake</strong>
+            <div class="faces">
+              <button class="face gold" data-outcome="GB">G</button>
+              <span class="face burnt">B</span>
+            </div>
+            <div class="small">1 golden face</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px" class="btns">
+          <button id="reveal" class="primary">Reveal the sample space</button>
+        </div>
+
+        <div id="sample" class="sample">
+          <strong>After observing G, exactly 3 equally likely face-observations remain:</strong>
+          <div class="outcomes">
+            <div class="outcome good">
+              <div class="big">GG</div>
+              <div class="small">golden face 1</div>
+              <div><strong>other side = G ✓</strong></div>
+            </div>
+            <div class="outcome good">
+              <div class="big">GG</div>
+              <div class="small">golden face 2</div>
+              <div><strong>other side = G ✓</strong></div>
+            </div>
+            <div class="outcome">
+              <div class="big">GB</div>
+              <div class="small">golden face</div>
+              <div><strong>other side = B</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card">
+        <div class="small">Conditional probability</div>
+        <div class="frac">
+          <div class="stack">
+            <div class="top">2</div>
+            <div class="bottom">3</div>
+          </div>
+          <div class="big">≈ 66.7%</div>
+        </div>
+        <p style="line-height:1.65">
+          Of the <strong>3 possible golden faces</strong> you could have observed,
+          <strong>2 belong to the GG pancake</strong>. Therefore,
+          the probability that the hidden side is also golden is:
+        </p>
+        <p style="font-size:1.45rem;font-weight:800;text-align:center">P(other side is G | visible side is G) = 2/3</p>
+
+        <div class="callout">
+          <strong>Why not 1/2?</strong><br>
+          After seeing gold, the remaining pancakes are not equally likely.
+          GG is twice as likely as GB because GG has two golden faces that could have produced your observation.
+        </div>
+      </aside>
+    </section>
+
+    <section class="card sim">
+      <div class="section-title">Try a simulation</div>
+      <div class="small">
+        Each trial randomly chooses a pancake and then a side. Trials where the visible side is burnt are discarded.
+      </div>
+
+      <div class="btns" style="margin-top:14px">
+        <button id="one">Run 1 trial</button>
+        <button id="many" class="primary">Run 1,000 trials</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="goldCount">0</strong><span class="small">Observed golden</span></div>
+        <div class="stat"><strong id="successCount">0</strong><span class="small">Other side golden</span></div>
+        <div class="stat"><strong id="rate">—</strong><span class="small">Observed probability</span></div>
+      </div>
+
+      <div id="status">Run trials to see the estimate approach 66.7%.</div>
+    </section>
+  </main>
+
+  <script>
+    const sample = document.getElementById('sample');
+    const reveal = document.getElementById('reveal');
+
+    reveal.addEventListener('click', () => {
+      const visible = sample.style.display === 'block';
+      sample.style.display = visible ? 'none' : 'block';
+      reveal.textContent = visible ? 'Reveal the sample space' : 'Hide the sample space';
+    });
+
+    let golden = 0;
+    let success = 0;
+
+    const goldCount = document.getElementById('goldCount');
+    const successCount = document.getElementById('successCount');
+    const rate = document.getElementById('rate');
+    const status = document.getElementById('status');
+
+    function update() {
+      goldCount.textContent = golden;
+      successCount.textContent = success;
+      rate.textContent = golden ? (100 * success / golden).toFixed(1) + '%' : '—';
+    }
+
+    function trial() {
+      const pancakes = [
+        ['G', 'G'],
+        ['B', 'B'],
+        ['G', 'B']
+      ];
+
+      const p = Math.floor(Math.random() * 3);
+      const face = Math.floor(Math.random() * 2);
+
+      if (pancakes[p][face] === 'G') {
+        golden++;
+        const other = pancakes[p][1 - face];
+        if (other === 'G') success++;
+        return other;
+      }
+      return null;
+    }
+
+    document.getElementById('one').addEventListener('click', () => {
+      const result = trial();
+      update();
+
+      if (result === null) {
+        status.textContent = 'This trial showed a burnt face, so it is discarded by the condition.';
+      } else if (result === 'G') {
+        status.textContent = 'Golden observed → the hidden side was also golden.';
+      } else {
+        status.textContent = 'Golden observed → the hidden side was burnt.';
+      }
+    });
+
+    document.getElementById('many').addEventListener('click', () => {
+      for (let i = 0; i < 1000; i++) trial();
+      update();
+      status.textContent = 'After many accepted trials, the estimate should settle near 66.7%.';
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      golden = 0;
+      success = 0;
+      update();
+      status.textContent = 'Run trials to see the estimate approach 66.7%.';
+    });
+
+    document.querySelectorAll('button.face').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sample.style.display = 'block';
+        reveal.textContent = 'Hide the sample space';
+
+        status.textContent =
+          btn.dataset.outcome === 'GG'
+            ? 'You selected a golden face on GG → the hidden side must be golden.'
+            : 'You selected the golden face on GB → the hidden side is burnt.';
+      });
+    });
+  </script>
+</body>
+</html>
