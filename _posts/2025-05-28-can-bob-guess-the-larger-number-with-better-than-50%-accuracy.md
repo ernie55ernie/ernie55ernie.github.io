@@ -51,13 +51,13 @@ Let the two hidden numbers be \\( a < b \\). Bob randomly picks one of them to i
 Each has probability \\( \frac{1}{2} \\), so:
 
 \\[
-P(\text{correct}) = \frac{1}{2}P(r > b) + \frac{1}{2}P(r < a)
+P(\text{correct}) = \frac{1}{2}P(r > a) + \frac{1}{2}P(r < b)
 \\]
 
-Because \\( r \sim \text{Uniform}(0,1) \\), these probabilities are \\( 1 - b \\) and \\( a \\), so:
+Because \\( r \sim \text{Uniform}(0,1) \\), these probabilities are \\( 1 - a \\) and \\( b \\), so:
 
 \\[
-P(\text{correct}) = \frac{1}{2}(1 - b + a)
+P(\text{correct}) = \frac{1}{2}(1 - a + b) = \frac{1}{2} + \frac{b - a}{2}
 \\]
 
 Since \\( a < b \\), we have:
