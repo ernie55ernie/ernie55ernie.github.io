@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Visible Cubes in a 10×10×10 Cube</title>
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#d1d5db;
+    --accent:#2563eb;
+    --accent-soft:#dbeafe;
+    --core:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:1000px;
+    margin:0 auto;
+    padding:32px 18px 50px;
+  }
+  h1{
+    margin:0 0 8px;
+    font-size:clamp(28px,5vw,46px);
+    line-height:1.1;
+  }
+  .lead{
+    margin:0 0 26px;
+    color:var(--muted);
+    font-size:18px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:20px;
+    align-items:start;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+  }
+  .topline{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .title{
+    font-weight:800;
+    font-size:18px;
+  }
+  button{
+    border:1px solid var(--border);
+    background:white;
+    border-radius:12px;
+    padding:10px 14px;
+    min-height:44px;
+    cursor:pointer;
+    font-size:15px;
+  }
+  button:hover{background:#f3f4f6}
+  svg{width:100%;height:auto;display:block}
+  .stack{display:grid;gap:14px}
+  .metric{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+  }
+  .metric .label{color:var(--muted);font-size:14px}
+  .metric .value{font-size:34px;font-weight:800;margin-top:2px}
+  .metric.answer{
+    border:2px solid var(--accent);
+    background:var(--accent-soft);
+  }
+  .metric.answer .value{font-size:42px}
+  .explain{
+    margin-top:20px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+  }
+  .formula{
+    font-size:clamp(22px,4vw,34px);
+    font-weight:800;
+    text-align:center;
+    margin:14px 0;
+  }
+  .steps{
+    display:grid;
+    gap:10px;
+    margin-top:16px;
+  }
+  .step{
+    background:#f9fafb;
+    border-left:4px solid var(--accent);
+    padding:12px 14px;
+    border-radius:10px;
+  }
+  .shortcut{
+    margin-top:18px;
+    padding:14px 16px;
+    border-radius:14px;
+    background:#eef2ff;
+  }
+  @media(max-width:760px){
+    .grid{grid-template-columns:1fr}
+    .topline{align-items:flex-start;flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>How many unit cubes are visible?</h1>
+  <p class="lead">A 10×10×10 cube contains 1000 unit cubes. Count the outside shell by subtracting the completely hidden inner core.</p>
+
+  <div class="grid">
+    <section class="card">
+      <div class="topline">
+        <div>
+          <div class="title">Whole cube − hidden core</div>
+          <div style="color:var(--muted);font-size:14px">A cube is hidden only if it touches no outside face.</div>
+        </div>
+        <button id="toggleCore">Hide core</button>
+      </div>
+
+      <svg viewBox="0 0 430 335" role="img" aria-label="A 10 by 10 by 10 cube with an inner 8 by 8 by 8 hidden core">
+        <defs>
+          <pattern id="gridPattern" width="18" height="18" patternUnits="userSpaceOnUse">
+            <path d="M18 0H0V18" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+          </pattern>
+        </defs>
+
+        <polygon points="105,95 285,95 345,45 165,45"
+                 fill="#f3f4f6" stroke="#111827" stroke-width="2"/>
+        <polygon points="285,95 345,45 345,225 285,275"
+                 fill="#e5e7eb" stroke="#111827" stroke-width="2"/>
+        <rect x="105" y="95" width="180" height="180"
+              fill="url(#gridPattern)" stroke="#111827" stroke-width="2"/>
+
+        <g id="coreGroup" style="transition:opacity .25s ease">
+          <polygon points="123,113 267,113 315,73 171,73"
+                   fill="rgba(245,158,11,.28)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 5"/>
+          <polygon points="267,113 315,73 315,217 267,257"
+                   fill="rgba(245,158,11,.22)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 5"/>
+          <rect x="123" y="113" width="144" height="144"
+                fill="rgba(245,158,11,.16)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="195" y="182" text-anchor="middle" font-size="21" font-weight="800" fill="#111827">8 × 8 × 8</text>
+          <text x="195" y="207" text-anchor="middle" font-size="14" fill="#6b7280">hidden core</text>
+        </g>
+
+        <text x="195" y="307" text-anchor="middle" font-size="15" font-weight="700" fill="#111827">10 cubes across</text>
+        <text x="65" y="187" text-anchor="middle" font-size="14" fill="#6b7280" transform="rotate(-90 65 187)">10 high</text>
+        <text x="333" y="263" text-anchor="middle" font-size="14" fill="#6b7280" transform="rotate(-40 333 263)">10 deep</text>
+      </svg>
+    </section>
+
+    <div class="stack">
+      <div class="metric">
+        <div class="label">All unit cubes</div>
+        <div class="value">10³ = 1000</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">Completely hidden cubes</div>
+        <div class="value">8³ = 512</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:14px">
+          Removing the outside layer from both sides of each dimension leaves 10 − 2 = 8.
+        </div>
+      </div>
+
+      <div class="metric answer">
+        <div class="label">Visible on the outside</div>
+        <div class="value">488</div>
+        <div style="font-weight:700">1000 − 512 = 488</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="explain">
+    <div class="title">Why this works</div>
+    <div class="formula">10³ − (10−2)³ = 1000 − 512 = 488</div>
+
+    <div class="steps">
+      <div class="step"><strong>1.</strong> Start with all <strong>1000</strong> unit cubes.</div>
+      <div class="step"><strong>2.</strong> The only invisible cubes are completely inside the large cube.</div>
+      <div class="step"><strong>3.</strong> Removing one outer layer from every side leaves an <strong>8×8×8</strong> inner cube.</div>
+      <div class="step"><strong>4.</strong> Hidden cubes = <strong>512</strong>, so visible cubes = <strong>1000 − 512 = 488</strong>.</div>
+    </div>
+
+    <div class="shortcut">
+      <strong>Interview shortcut:</strong> For an n×n×n cube, the number of visible unit cubes is
+      <strong>n³ − (n−2)³</strong>.
+    </div>
+  </section>
+</div>
+
+<script>
+  const button = document.getElementById("toggleCore");
+  const core = document.getElementById("coreGroup");
+  let shown = true;
+
+  button.addEventListener("click", () => {
+    shown = !shown;
+    core.style.opacity = shown ? "1" : "0";
+    button.textContent = shown ? "Hide core" : "Show hidden core";
+  });
+</script>
+</body>
+</html>

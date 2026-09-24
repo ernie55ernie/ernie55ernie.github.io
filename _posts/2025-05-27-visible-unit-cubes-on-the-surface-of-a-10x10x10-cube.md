@@ -9,6 +9,8 @@ category: quantitative interview
 
 A \\( 10 \times 10 \times 10 \\) cube is made up of \\( 1000 \\) unit cubes. How many of these unit cubes are **visible on the outside**?
 
+<iframe src="{{ site.baseurl }}/assets/visible_cubes_10x10x10.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ### Step 1: Total Number of Cubes
