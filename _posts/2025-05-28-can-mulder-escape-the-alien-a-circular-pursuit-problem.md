@@ -62,7 +62,7 @@ So, if Mulder is **at least ~21.5% of the way from the center to the edge**, the
 Mulder must reach this point \\( xR \\) without being intercepted. To do that, he **orbits around the circle of radius \\( xR \\)**. The alien tries to rotate along the outer circle, but Mulder's **angular speed** exceeds that of the alien when:
 
 \\[
-\frac{v}{xR} > \frac{4v}{\pi R}
+\frac{v}{xR} > \frac{4v}{R}
 \Rightarrow x < \frac{1}{4}
 \\]
 
