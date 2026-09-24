@@ -9,6 +9,8 @@ category: quantitative interview
 
 Mulder is imprisoned in a **circular field** of radius \\( R \\), and an alien—**4 times faster**—is constrained to the **perimeter**. If Mulder reaches an unguarded point on the fence, he can instantly escape. Can he do it?
 
+<iframe src="{{ site.baseurl }}/assets/can_mulder_escape.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Variables

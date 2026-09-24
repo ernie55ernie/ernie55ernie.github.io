@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mulder vs Alien - Circular Escape</title>
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#d1d5db;
+      --blue:#2563eb;
+      --green:#059669;
+      --orange:#ea580c;
+      --purple:#7c3aed;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 20px 36px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:30px;
+      line-height:1.2;
+    }
+    .subtitle{
+      color:var(--muted);
+      margin-bottom:24px;
+      font-size:17px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap:20px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.04);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:20px;
+    }
+    .small{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .formula{
+      background:#f3f4f6;
+      border-radius:12px;
+      padding:12px 14px;
+      margin:12px 0;
+      font-family: "Courier New", monospace;
+      overflow:auto;
+    }
+    .highlight{
+      background:#ecfdf5;
+      border:1px solid #a7f3d0;
+      color:#065f46;
+      border-radius:12px;
+      padding:14px;
+      font-weight:700;
+      margin-top:14px;
+    }
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    input[type="range"]{
+      width:100%;
+      max-width:340px;
+    }
+    button{
+      background:var(--blue);
+      color:#fff;
+      border:none;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button:hover{
+      filter:brightness(0.95);
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .stat{
+      background:#f9fafb;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+    }
+    .stat .label{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .stat .value{
+      font-size:22px;
+      font-weight:700;
+      margin-top:4px;
+    }
+    #verdict{
+      margin-top:12px;
+      padding:12px;
+      border-radius:12px;
+      font-weight:700;
+      border:1px solid var(--line);
+      background:#f9fafb;
+    }
+    ol{
+      padding-left:20px;
+    }
+    li{ margin:8px 0; }
+    .footer-note{
+      margin-top:18px;
+      font-size:18px;
+      font-weight:700;
+      color:var(--purple);
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Can Mulder Escape?</h1>
+    <div class="subtitle">
+      Mulder is inside a circular field of radius <b>R</b>. An alien moves only on the perimeter, but it is <b>4 times faster</b> than Mulder.
+      If Mulder reaches any unguarded point on the fence, he escapes instantly.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Geometry View</h2>
+        <div class="small">Blue = Mulder, Orange = Alien, dashed inner circle = radius R/4</div>
+
+        <svg viewBox="0 0 560 420" aria-label="Mulder and alien on a circular field">
+          <!-- field -->
+          <circle cx="260" cy="210" r="160" fill="none" stroke="#d1d5db" stroke-width="4"/>
+          <!-- R/4 circle -->
+          <circle cx="260" cy="210" r="40" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="7 7"/>
+          <text x="306" y="186" font-size="14" fill="#6b7280">r = R/4</text>
+
+          <!-- half-circle path -->
+          <path d="M100,210 A160,160 0 0 1 420,210" fill="none" stroke="#fb923c" stroke-width="5" opacity="0.45"/>
+          <text x="204" y="36" font-size="14" fill="#6b7280">alien must cover half the fence</text>
+
+          <!-- line to exit -->
+          <line id="runLine" x1="298.4" y1="210" x2="420" y2="210"
+                stroke="#2563eb" stroke-width="4" stroke-dasharray="8 6"/>
+
+          <!-- Mulder -->
+          <circle id="mulder" cx="298.4" cy="210" r="10" fill="#2563eb"/>
+          <text id="mulderText" x="312" y="201" font-size="15" font-weight="700" fill="#1f2937">Mulder</text>
+
+          <!-- Alien -->
+          <circle id="alien" cx="100" cy="210" r="11" fill="#ea580c"/>
+          <text id="alienText" x="42" y="200" font-size="15" font-weight="700" fill="#1f2937">Alien</text>
+
+          <!-- center -->
+          <circle cx="260" cy="210" r="4" fill="#6b7280"/>
+          <text x="268" y="228" font-size="13" fill="#6b7280">center</text>
+        </svg>
+
+        <div class="controls">
+          <button id="playBtn">Animate Sprint</button>
+          <div>
+            <label for="rSlider"><b>Choose starting radius:</b> <span id="rLabel">0.240R</span></label><br>
+            <input id="rSlider" type="range" min="0.215" max="0.249" step="0.001" value="0.240">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Key Idea</h2>
+
+        <ol>
+          <li>
+            <b>First, stay close enough to the center.</b><br>
+            If Mulder is at distance <b>r</b> from the center, his maximum angular speed is <b>v/r</b>.
+            The alien’s angular speed along the fence is <b>4v/R</b>.
+          </li>
+        </ol>
+
+        <div class="formula">
+          v/r ≥ 4v/R  &nbsp;⇒&nbsp; r ≤ R/4
+        </div>
+
+        <div class="small">
+          So while Mulder is inside the circle of radius <b>R/4</b>, he can maneuver so that the alien stays exactly opposite him.
+        </div>
+
+        <ol start="2">
+          <li>
+            <b>Then Mulder runs straight to the boundary.</b><br>
+            If the alien is on the opposite side, it must travel half the circumference to intercept him.
+          </li>
+        </ol>
+
+        <div class="formula">
+          Alien time = (πR)/(4v)
+        </div>
+
+        <div class="formula">
+          Mulder time = (R - r)/v
+        </div>
+
+        <div class="formula">
+          (R - r)/v &lt; (πR)/(4v)
+          <br><br>
+          ⇒ 1 - r/R &lt; π/4
+          <br>
+          ⇒ r/R &gt; 1 - π/4 ≈ 0.2146
+        </div>
+
+        <div class="small">
+          So Mulder should start his sprint from a radius <b>r</b> satisfying:
+        </div>
+
+        <div class="formula">
+          0.2146R &lt; r &lt; 0.25R
+        </div>
+
+        <div class="highlight">
+          Therefore, yes — Mulder can escape.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Numerical Check</h2>
+      <div class="small">Try a value of r between 0.2146R and 0.25R.</div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Mulder’s sprint time</div>
+          <div class="value" id="mulderTime">0.760 R/v</div>
+        </div>
+        <div class="stat">
+          <div class="label">Alien’s shortest intercept time</div>
+          <div class="value">0.785 R/v</div>
+        </div>
+      </div>
+
+      <div id="verdict"></div>
+
+      <div class="footer-note">
+        Conclusion: Mulder wins by circling near the center until the alien is diametrically opposite, then sprinting outward.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById("rSlider");
+    const rLabel = document.getElementById("rLabel");
+    const mulderTimeEl = document.getElementById("mulderTime");
+    const verdict = document.getElementById("verdict");
+    const playBtn = document.getElementById("playBtn");
+
+    const mulder = document.getElementById("mulder");
+    const alien = document.getElementById("alien");
+    const mulderText = document.getElementById("mulderText");
+    const alienText = document.getElementById("alienText");
+    const runLine = document.getElementById("runLine");
+
+    const cx = 260, cy = 210, Rpx = 160;
+    const alienTime = Math.PI / 4;
+    let raf = null;
+
+    function updateDisplay() {
+      const r = parseFloat(slider.value);
+      const mulderTime = 1 - r;
+
+      rLabel.textContent = r.toFixed(3) + "R";
+      mulderTimeEl.textContent = mulderTime.toFixed(3) + " R/v";
+
+      const x = cx + Rpx * r;
+      mulder.setAttribute("cx", x);
+      mulder.setAttribute("cy", cy);
+      mulderText.setAttribute("x", x + 14);
+      mulderText.setAttribute("y", cy - 9);
+      runLine.setAttribute("x1", x);
+
+      if (mulderTime < alienTime) {
+        verdict.innerHTML = "✅ <b>Escape works.</b> Mulder arrives first by <b>" +
+          (alienTime - mulderTime).toFixed(3) + " R/v</b>.";
+        verdict.style.background = "#ecfdf5";
+        verdict.style.borderColor = "#a7f3d0";
+        verdict.style.color = "#065f46";
+      } else {
+        verdict.innerHTML = "⚠️ <b>Too small a radius advantage.</b> Choose r a bit larger before sprinting.";
+        verdict.style.background = "#fff7ed";
+        verdict.style.borderColor = "#fdba74";
+        verdict.style.color = "#9a3412";
+      }
+
+      resetAnimationObjects();
+    }
+
+    function resetAnimationObjects() {
+      const r = parseFloat(slider.value);
+      const x = cx + Rpx * r;
+      mulder.setAttribute("cx", x);
+      mulder.setAttribute("cy", cy);
+      alien.setAttribute("cx", cx - Rpx);
+      alien.setAttribute("cy", cy);
+      mulderText.setAttribute("x", x + 14);
+      mulderText.setAttribute("y", cy - 9);
+      alienText.setAttribute("x", 42);
+      alienText.setAttribute("y", 200);
+    }
+
+    function animateSprint() {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+        playBtn.textContent = "Animate Sprint";
+        resetAnimationObjects();
+        return;
+      }
+
+      playBtn.textContent = "Reset";
+      const r = parseFloat(slider.value);
+      const mTime = 1 - r;
+      const start = performance.now();
+      const duration = 3200;
+
+      function frame(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const scaledTime = p * alienTime;
+
+        // Mulder runs outward
+        const mProg = Math.min(1, scaledTime / mTime);
+        const mx = cx + Rpx * (r + (1 - r) * mProg);
+        mulder.setAttribute("cx", mx);
+        mulderText.setAttribute("x", Math.min(460, mx + 10));
+
+        // Alien runs half-circle from left point to right point
+        const aProg = Math.min(1, scaledTime / alienTime);
+        const theta = Math.PI - Math.PI * aProg;
+        const ax = cx + Rpx * Math.cos(theta);
+        const ay = cy - Rpx * Math.sin(theta);
+        alien.setAttribute("cx", ax);
+        alien.setAttribute("cy", ay);
+        alienText.setAttribute("x", Math.max(10, Math.min(470, ax + 12)));
+        alienText.setAttribute("y", Math.max(20, ay - 8));
+
+        if (p < 1) {
+          raf = requestAnimationFrame(frame);
+        } else {
+          raf = null;
+          playBtn.textContent = "Replay Sprint";
+        }
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+
+    slider.addEventListener("input", updateDisplay);
+    playBtn.addEventListener("click", animateSprint);
+
+    updateDisplay();
+  </script>
+</body>
+</html>
