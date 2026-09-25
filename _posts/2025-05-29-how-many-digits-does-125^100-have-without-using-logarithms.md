@@ -9,6 +9,8 @@ category: quantitative interview
 
 Find the number of digits in the number \\( 125^{100} \\), **without** using values like \\( \log_{10} 2 \\) or \\( \log_{10} 5 \\).
 
+<iframe src="{{ site.baseurl }}/assets/digits_125_power_100.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Step-by-Step Derivation

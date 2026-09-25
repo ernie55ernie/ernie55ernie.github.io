@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digits of 125^100 — No Logs Needed</title>
+  <style>
+    :root{
+      --bg:#f7f8fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --border:#dbe2ea; --accent:#2563eb; --soft:#eff6ff; --good:#166534;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg); color:var(--text); line-height:1.55;
+    }
+    main{max-width:900px;margin:0 auto;padding:32px 18px 48px}
+    h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 10px}
+    .sub{color:var(--muted);margin-bottom:24px}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:18px;
+      padding:22px; margin:16px 0;
+    }
+    .step{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+    .eq{
+      font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      font-size:clamp(18px,3.3vw,26px); text-align:center; margin:14px 0;
+      overflow-wrap:anywhere;
+    }
+    .arrow{text-align:center;font-size:28px;color:var(--muted);margin:4px 0}
+    .highlight{background:var(--soft);border-color:#bfdbfe}
+    .answer{
+      text-align:center; font-size:clamp(24px,5vw,38px); font-weight:800;
+      color:var(--good); margin-top:8px;
+    }
+    .small{font-size:14px;color:var(--muted)}
+    button{
+      border:0;border-radius:10px;padding:11px 16px;font-size:16px;font-weight:700;
+      background:var(--accent);color:white;cursor:pointer
+    }
+    button:focus{outline:3px solid #93c5fd;outline-offset:2px}
+    #proof{display:none;margin-top:18px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>How many digits does 125<sup>100</sup> have?</h1>
+  <div class="sub">Solve it without using values such as log<sub>10</sub>2 or log<sub>10</sub>5.</div>
+
+  <section class="grid">
+    <div class="card">
+      <div class="step">Step 1 · Rewrite</div>
+      <div class="eq">125<sup>100</sup> = 5<sup>300</sup></div>
+      <div class="small">Because 125 = 5³.</div>
+    </div>
+
+    <div class="card">
+      <div class="step">Step 2 · Create powers of 10</div>
+      <div class="eq">5<sup>300</sup> = 10<sup>300</sup> / 2<sup>300</sup></div>
+      <div class="small">Since 2³⁰⁰·5³⁰⁰ = 10³⁰⁰.</div>
+    </div>
+
+    <div class="card">
+      <div class="step">Step 3 · Bound 2³⁰⁰</div>
+      <div class="eq">10<sup>90</sup> &lt; 2<sup>300</sup> &lt; 10<sup>91</sup></div>
+      <div class="small">This is the only non-obvious part.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="step">Why is that bound true?</div>
+    <p>Use the convenient exact power</p>
+    <div class="eq">2<sup>30</sup> = 1,073,741,824.</div>
+
+    <button id="toggle">Reveal the inequality</button>
+
+    <div id="proof">
+      <div class="eq">10<sup>9</sup> &lt; 2<sup>30</sup> &lt; 1.1 × 10<sup>9</sup></div>
+      <div class="arrow">↓ raise to the 10th power</div>
+      <div class="eq">
+        10<sup>90</sup> &lt; 2<sup>300</sup> &lt;
+        1.1<sup>10</sup> × 10<sup>90</sup>
+      </div>
+      <p class="small" style="text-align:center">
+        Since 1.1<sup>10</sup> ≈ 2.59 &lt; 10,
+      </p>
+      <div class="eq">10<sup>90</sup> &lt; 2<sup>300</sup> &lt; 10<sup>91</sup>.</div>
+    </div>
+  </section>
+
+  <section class="card highlight">
+    <div class="step">Finish</div>
+    <div class="eq">10<sup>90</sup> &lt; 2<sup>300</sup> &lt; 10<sup>91</sup></div>
+    <div class="arrow">↓ divide 10³⁰⁰ by the bounds</div>
+    <div class="eq">
+      10<sup>209</sup> &lt;
+      10<sup>300</sup>/2<sup>300</sup>
+      &lt; 10<sup>210</sup>
+    </div>
+    <div class="eq">
+      10<sup>209</sup> &lt; 125<sup>100</sup> &lt; 10<sup>210</sup>
+    </div>
+    <div class="answer">Therefore, 125<sup>100</sup> has 210 digits.</div>
+  </section>
+
+  <section class="card">
+    <div class="step">Interview intuition</div>
+    <p>
+      When the base contains powers of 5, pair them with powers of 2 to manufacture powers of 10.
+      Then estimate the remaining power using a convenient exact benchmark such as 2<sup>30</sup>.
+    </p>
+  </section>
+</main>
+
+<script>
+  const button = document.getElementById("toggle");
+  const proof = document.getElementById("proof");
+  button.addEventListener("click", () => {
+    const open = proof.style.display === "block";
+    proof.style.display = open ? "none" : "block";
+    button.textContent = open ? "Reveal the inequality" : "Hide the inequality";
+  });
+</script>
+</body>
+</html>
