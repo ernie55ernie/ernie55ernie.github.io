@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Probability that A ⊆ B</title>
+<style>
+  :root{
+    --bg:#f6f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe1ea;
+    --good:#eaf7ee;--bad:#fdecec;--accent:#4f46e5;--accent-soft:#eef2ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:980px;margin:40px auto;padding:0 18px 48px}
+  h1{font-size:clamp(28px,5vw,44px);margin:0 0 10px;text-align:center}
+  .lead{text-align:center;color:var(--muted);font-size:18px;margin:0 auto 28px;max-width:760px}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+  .states{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .state{border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;background:#fff}
+  .state.good{background:var(--good)}
+  .state.bad{background:var(--bad);border-color:#f3b7b7}
+  .state .math{font:600 17px ui-monospace,SFMono-Regular,Menlo,monospace}
+  .state .tag{font-size:14px;margin-top:6px}
+  .summary{margin-top:16px;background:var(--accent-soft);border-radius:14px;padding:16px;text-align:center}
+  .summary strong{font-size:24px}
+  label{display:block;font-weight:700;margin-bottom:8px}
+  input[type=range]{width:100%}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;min-height:34px}
+  .chip{font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--border);border-radius:8px;padding:6px 9px;background:#fff}
+  .result{text-align:center;margin-top:20px}
+  .formula{font:700 clamp(24px,4vw,34px) ui-monospace,SFMono-Regular,Menlo,monospace;margin:8px 0}
+  .percent{font-size:20px}
+  .counting{margin-top:18px;background:#fafafa;border-radius:14px;padding:16px}
+  .counting p{margin:6px 0}
+  .final{margin-top:24px;text-align:center;background:#111827;color:#fff;border-radius:18px;padding:22px}
+  .final .formula{color:#fff;margin:0}
+  .note{font-size:14px;color:var(--muted);margin-top:8px}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}.states{grid-template-columns:1fr}.wrap{margin-top:24px}}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>What is P(A ⊆ B)?</h1>
+    <p class="lead">Let X have n elements. Choose A and B independently and uniformly from all subsets of X.</p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Look at one element x ∈ X</h2>
+        <p>For each element, membership in A and B gives four equally likely possibilities:</p>
+        <div class="states">
+          <div class="state good"><div class="math">x ∉ A, x ∉ B</div><div class="tag">✓ allowed</div></div>
+          <div class="state good"><div class="math">x ∉ A, x ∈ B</div><div class="tag">✓ allowed</div></div>
+          <div class="state bad"><div class="math">x ∈ A, x ∉ B</div><div class="tag">✗ forbidden</div></div>
+          <div class="state good"><div class="math">x ∈ A, x ∈ B</div><div class="tag">✓ allowed</div></div>
+        </div>
+        <div class="summary">
+          For A ⊆ B, only one of the four states is forbidden.<br>
+          <strong>P(one element is compatible) = 3/4</strong>
+        </div>
+      </section>
+
+      <section class="card">
+        <label for="nRange">Number of elements n: <span id="nLabel">4</span></label>
+        <input id="nRange" type="range" min="0" max="20" value="4" step="1" />
+        <div id="chips" class="chips" aria-live="polite"></div>
+        <div class="result">
+          <div>All n elements must avoid the forbidden state.</div>
+          <div id="formula" class="formula">(3/4)^4 = 81/256</div>
+          <div id="percent" class="percent">≈ 31.64%</div>
+        </div>
+        <div class="counting">
+          <p><strong>Counting shortcut:</strong></p>
+          <p>Total ordered pairs (A, B): <code>4^n</code></p>
+          <p>Valid pairs with A ⊆ B: <code>3^n</code></p>
+        </div>
+      </section>
+    </div>
+
+    <section class="final">
+      <div class="formula">P(A ⊆ B) = (3/4)<sup>n</sup></div>
+      <div class="note" style="color:#d1d5db">Because each element independently has 3 valid membership states out of 4.</div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  const range = document.getElementById('nRange');
+  const label = document.getElementById('nLabel');
+  const chips = document.getElementById('chips');
+  const formula = document.getElementById('formula');
+  const percent = document.getElementById('percent');
+
+  function render(){
+    const n = Number(range.value);
+    label.textContent = n;
+    chips.innerHTML = '';
+    if(n === 0){
+      chips.textContent = 'No elements: A ⊆ B is vacuously true.';
+    } else {
+      for(let i=0;i<n;i++){
+        const span = document.createElement('span');
+        span.className = 'chip';
+        span.textContent = '3/4';
+        chips.appendChild(span);
+      }
+    }
+    const num = 3 ** n;
+    const den = 4 ** n;
+    formula.textContent = `(3/4)^${n} = ${num.toLocaleString()}/${den.toLocaleString()}`;
+    percent.textContent = `≈ ${(100 * Math.pow(0.75,n)).toFixed(n < 8 ? 2 : 4)}%`;
+  }
+
+  range.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
