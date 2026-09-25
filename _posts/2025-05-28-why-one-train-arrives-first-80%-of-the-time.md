@@ -33,12 +33,12 @@ Even if both trains run **every 10 minutes**, you might still observe one coming
 #### Example:
 
 - Train A: 1:00, 1:10, 1:20, ...
-- Train B: 1:12, 1:22, 1:32, ...
+- Train B: 1:02, 1:12, 1:22, ...
 
-Your arrival is **uniformly random** over time. Between 1:00 and 1:10:
+Your arrival is **uniformly random** over time. Consider a typical 10-minute cycle between 1:00 and 1:10:
 
-- You’ll see Train A first **8 out of 10 minutes** (1:00 to 1:11)
-- Only during the **last 2 minutes** (1:12 to 1:14) will Train B come first
+- If you arrive between **1:00 and 1:02** (a 2-minute window), the next train is Train B (at 1:02).
+- If you arrive between **1:02 and 1:10** (an 8-minute window), the next train is Train A (at 1:10).
 
 So:
 
