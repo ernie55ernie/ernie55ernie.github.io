@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Train A Arrives First 80% of the Time</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #dbe3ee;
+      --a: #2563eb;
+      --b: #f59e0b;
+      --accent: #7c3aed;
+      --soft-a: #dbeafe;
+      --soft-b: #fef3c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 46px);
+      line-height: 1.05;
+    }
+
+    .lead {
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .topline {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      min-height: 44px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { filter: brightness(1.05); }
+    button:focus-visible { outline: 3px solid #c4b5fd; outline-offset: 2px; }
+
+    .timeline-wrap {
+      overflow-x: auto;
+      margin-top: 18px;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 640px;
+      height: auto;
+      display: block;
+    }
+
+    .result {
+      margin-top: 10px;
+      min-height: 26px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .stat small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 34px;
+      margin-bottom: 2px;
+    }
+
+    .equation {
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 800;
+      text-align: center;
+      padding: 18px 8px;
+    }
+
+    .key {
+      background: #f1f5f9;
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .key h2 {
+      margin-top: 0;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 620px) {
+      .grid { grid-template-columns: 1fr; }
+      .wrap { padding: 24px 14px 40px; }
+      .card, .stat, .key { padding: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Equal frequency, but A arrives first 80% of the time?</h1>
+    <p class="lead">
+      The trick is that equal frequency does <strong>not</strong> mean the trains are evenly spaced.
+    </p>
+
+    <section class="card">
+      <div class="topline">
+        <div>
+          <strong>Example schedule</strong><br>
+          <span style="color:var(--muted)">Both trains run once every 10 minutes.</span>
+        </div>
+        <button id="randomBtn" type="button">Arrive at a random time</button>
+      </div>
+
+      <div class="timeline-wrap">
+        <svg viewBox="0 0 760 230" role="img"
+             aria-label="Timeline. Train A arrives at minute zero and ten. Train B arrives at minute two.">
+          <!-- Long and short waiting windows -->
+          <rect x="80" y="78" width="120" height="82" rx="14" fill="var(--soft-b)"></rect>
+          <rect x="200" y="78" width="480" height="82" rx="14" fill="var(--soft-a)"></rect>
+
+          <text x="140" y="102" text-anchor="middle" font-size="15" fill="var(--text)">B is next</text>
+          <text x="440" y="102" text-anchor="middle" font-size="15" fill="var(--text)">A is next</text>
+
+          <line x1="80" y1="125" x2="680" y2="125"
+                stroke="var(--border)" stroke-width="5" stroke-linecap="round"></line>
+
+          <circle cx="80" cy="125" r="11" fill="var(--a)"></circle>
+          <circle cx="200" cy="125" r="11" fill="var(--b)"></circle>
+          <circle cx="680" cy="125" r="11" fill="var(--a)"></circle>
+
+          <text x="80" y="59" text-anchor="middle" font-weight="800" fill="var(--a)">Train A</text>
+          <text x="200" y="59" text-anchor="middle" font-weight="800" fill="var(--b)">Train B</text>
+          <text x="680" y="59" text-anchor="middle" font-weight="800" fill="var(--a)">Train A</text>
+
+          <text x="80" y="188" text-anchor="middle" fill="var(--muted)">0 min</text>
+          <text x="200" y="188" text-anchor="middle" fill="var(--muted)">2 min</text>
+          <text x="680" y="188" text-anchor="middle" fill="var(--muted)">10 min</text>
+
+          <g id="person" visibility="hidden">
+            <line id="personLine" x1="0" y1="111" x2="0" y2="160"
+                  stroke="var(--accent)" stroke-width="3" stroke-dasharray="5 5"></line>
+            <circle id="personDot" cx="0" cy="125" r="7" fill="var(--accent)"></circle>
+            <text id="personLabel" x="0" y="218" text-anchor="middle"
+                  font-size="14" font-weight="700" fill="var(--accent)"></text>
+          </g>
+        </svg>
+      </div>
+
+      <div id="result" class="result" aria-live="polite">
+        Click the button to simulate arriving at a random time.
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="stat">
+        <small>Arrive during minute 0–2</small>
+        <strong>20%</strong>
+        Train B arrives next.
+      </article>
+
+      <article class="stat">
+        <small>Arrive during minute 2–10</small>
+        <strong>80%</strong>
+        Train A arrives next.
+      </article>
+    </section>
+
+    <section class="key">
+      <h2>What’s going on?</h2>
+      <p>
+        Imagine the repeating schedule is:
+        <strong>A at 0 minutes, B at 2 minutes, A again at 10 minutes</strong>.
+      </p>
+
+      <p>
+        Both trains still have the same frequency: each arrives once every 10 minutes.
+        But they are <strong>clustered together</strong>.
+      </p>
+
+      <p>
+        After A arrives, there are only 2 minutes until B.
+        After B arrives, there are 8 minutes until the next A.
+        If you enter the station at a random time, you are four times more likely
+        to land in that long 8-minute interval.
+      </p>
+
+      <div class="equation">
+        P(A next) = 8/10 = 80%<br>
+        P(B next) = 2/10 = 20%
+      </div>
+
+      <p>
+        So the observation does <strong>not</strong> imply Train A runs four times as often.
+        It only tells you something about how the two schedules are spaced relative to one another.
+      </p>
+
+      <p class="note">
+        This is closely related to waiting-time bias / the inspection paradox:
+        random observers are disproportionately likely to find themselves inside longer gaps.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const button = document.getElementById("randomBtn");
+    const person = document.getElementById("person");
+    const line = document.getElementById("personLine");
+    const dot = document.getElementById("personDot");
+    const label = document.getElementById("personLabel");
+    const result = document.getElementById("result");
+
+    button.addEventListener("click", () => {
+      const t = Math.random() * 10;
+      const x = 80 + (t / 10) * 600;
+
+      line.setAttribute("x1", x);
+      line.setAttribute("x2", x);
+      dot.setAttribute("cx", x);
+      label.setAttribute("x", x);
+      label.textContent = `You: ${t.toFixed(1)} min`;
+      person.setAttribute("visibility", "visible");
+
+      if (t < 2) {
+        result.textContent =
+          `You arrived at ${t.toFixed(1)} minutes → Train B comes next at minute 2.`;
+      } else {
+        result.textContent =
+          `You arrived at ${t.toFixed(1)} minutes → Train A comes next at minute 10.`;
+      }
+    });
+  </script>
+</body>
+</html>
