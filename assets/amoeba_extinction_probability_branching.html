@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amoeba Extinction Probability</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f7f8fc;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 32px 20px 60px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 2.2rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .choice {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      text-align: center;
+      padding: 18px 8px;
+      background: #fafafa;
+    }
+
+    .choice .emoji {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .choice strong {
+      display: block;
+      font-size: 1.05rem;
+    }
+
+    .math-box {
+      text-align: center;
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 18px;
+      margin: 18px 0;
+      font-size: 1.2rem;
+    }
+
+    .branches {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 16px;
+      max-width: 560px;
+      margin: 22px auto;
+    }
+
+    .branch-label {
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    .equations {
+      text-align: center;
+      font-size: 1.12rem;
+    }
+
+    .answer {
+      background: #eef6ff;
+      border: 2px solid #93c5fd;
+      border-radius: 16px;
+      padding: 26px;
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .answer .big {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin: 8px 0;
+    }
+
+    .highlight {
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .iterations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .iteration {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      text-align: center;
+      font-family: monospace;
+    }
+
+    button {
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 9px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-top: 15px;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .note {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      .choices {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .answer .big {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🦠 Amoeba Extinction Probability</h1>
+
+    <div class="subtitle">
+      A branching-process visualization
+    </div>
+
+    <div class="card">
+      <h2>1. What can one amoeba do?</h2>
+
+      <p>
+        Every minute, each amoeba independently produces
+        \(0,1,2,\) or \(3\) amoebas, each with probability
+        \(\frac14\).
+      </p>
+
+      <div class="choices">
+        <div class="choice">
+          <div class="emoji">💀</div>
+          <strong>0 amoebas</strong>
+          \(P=\frac14\)
+        </div>
+
+        <div class="choice">
+          <div class="emoji">●</div>
+          <strong>1 amoeba</strong>
+          \(P=\frac14\)
+        </div>
+
+        <div class="choice">
+          <div class="emoji">● ●</div>
+          <strong>2 amoebas</strong>
+          \(P=\frac14\)
+        </div>
+
+        <div class="choice">
+          <div class="emoji">● ● ●</div>
+          <strong>3 amoebas</strong>
+          \(P=\frac14\)
+        </div>
+      </div>
+
+      <div class="math-box">
+        \[
+        E[N]
+        =
+        \frac{0+1+2+3}{4}
+        =
+        \frac32
+        \]
+      </div>
+
+      <p>
+        Since the expected number of descendants is
+        <strong>greater than 1</strong>, extinction is not certain.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>2. Define the extinction probability</h2>
+
+      <p>
+        Let
+      </p>
+
+      <div class="math-box">
+        \[
+        q = P(\text{the entire population eventually dies out})
+        \]
+      </div>
+
+      <p>
+        Look only at what happens to the <strong>first amoeba</strong>.
+      </p>
+
+      <div class="branches">
+        <div class="branch-label">0 →</div>
+        <div>
+          The population is already extinct:
+          \(1\)
+        </div>
+
+        <div class="branch-label">1 →</div>
+        <div>
+          The one descendant must eventually die:
+          \(q\)
+        </div>
+
+        <div class="branch-label">2 →</div>
+        <div>
+          Both independent descendant populations must die:
+          \(q^2\)
+        </div>
+
+        <div class="branch-label">3 →</div>
+        <div>
+          All three independent descendant populations must die:
+          \(q^3\)
+        </div>
+      </div>
+
+      <p>
+        Since each case has probability \(\frac14\),
+      </p>
+
+      <div class="math-box">
+        \[
+        \boxed{
+        q=\frac14(1+q+q^2+q^3)
+        }
+        \]
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Solve the fixed-point equation</h2>
+
+      <div class="equations">
+        \[
+        4q=1+q+q^2+q^3
+        \]
+
+        \[
+        q^3+q^2-3q+1=0
+        \]
+
+        \[
+        (q-1)(q^2+2q-1)=0
+        \]
+
+        Therefore,
+
+        \[
+        q=1,\qquad q=-1+\sqrt2,\qquad q=-1-\sqrt2.
+        \]
+      </div>
+
+      <p>
+        A probability must lie in \([0,1]\), so the two possible
+        fixed points are
+      </p>
+
+      <div class="math-box">
+        \[
+        q=1
+        \qquad\text{or}\qquad
+        q=\sqrt2-1.
+        \]
+      </div>
+
+      <p>
+        For a Galton–Watson branching process, the extinction
+        probability is the <span class="highlight">smallest fixed point</span>
+        of the offspring generating function in \([0,1]\).
+      </p>
+
+      <div class="answer">
+        <div>Probability of eventual extinction</div>
+
+        <div class="big">
+          \[
+          \boxed{q=\sqrt2-1}
+          \]
+        </div>
+
+        <div>
+          \[
+          q\approx0.41421356
+          \]
+        </div>
+
+        <strong>≈ 41.42%</strong>
+      </div>
+
+      <p style="text-align:center; margin-top:18px;">
+        Hence the probability that the population survives forever is
+        \[
+        1-q=2-\sqrt2\approx58.58\%.
+        \]
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>4. Watch the probability converge</h2>
+
+      <p>
+        Start with \(q_0=0\), then repeatedly apply
+      </p>
+
+      <div class="math-box">
+        \[
+        q_{n+1}
+        =
+        \frac{1+q_n+q_n^2+q_n^3}{4}.
+        \]
+      </div>
+
+      <p class="note">
+        This converges to the smallest fixed point,
+        \(\sqrt2-1\).
+      </p>
+
+      <button class="primary" id="stepButton">
+        Next iteration
+      </button>
+
+      <button class="secondary" id="runButton">
+        Run to convergence
+      </button>
+
+      <button class="secondary" id="resetButton">
+        Reset
+      </button>
+
+      <div class="iterations" id="iterations"></div>
+    </div>
+  </div>
+
+  <script>
+    let q = 0;
+    let iteration = 0;
+
+    const iterations = document.getElementById("iterations");
+
+    function f(x) {
+      return (1 + x + x * x + x * x * x) / 4;
+    }
+
+    function addIteration() {
+      const box = document.createElement("div");
+      box.className = "iteration";
+      box.innerHTML =
+        "q<sub>" +
+        iteration +
+        "</sub><br><strong>" +
+        q.toFixed(8) +
+        "</strong>";
+
+      iterations.appendChild(box);
+    }
+
+    function reset() {
+      q = 0;
+      iteration = 0;
+      iterations.innerHTML = "";
+      addIteration();
+    }
+
+    document
+      .getElementById("stepButton")
+      .addEventListener("click", () => {
+        q = f(q);
+        iteration++;
+        addIteration();
+      });
+
+    document
+      .getElementById("runButton")
+      .addEventListener("click", () => {
+        for (let i = 0; i < 20; i++) {
+          const previous = q;
+
+          q = f(q);
+          iteration++;
+          addIteration();
+
+          if (Math.abs(q - previous) < 1e-10) {
+            break;
+          }
+        }
+      });
+
+    document
+      .getElementById("resetButton")
+      .addEventListener("click", reset);
+
+    reset();
+  </script>
+</body>
+</html>
