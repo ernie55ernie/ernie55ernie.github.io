@@ -75,7 +75,7 @@ B =
 We start at state \\( (0, 0) \\) since no games have been played. From matrix \\( B \\), we find:
 
 \\[
-B(1,1) = 31.25
+B(0,0) = 31.25
 \\]
 
 This means **we should bet \$31.25 on the Yankees in the first game**.
