@@ -56,26 +56,29 @@ The problem becomes:
 
 ---
 
-## Step 3: Recognize the Hidden Tic-Tac-Toe
+## Step 3: Analyze the Winning Lines
 
-There are exactly **8 numbers**, and the win condition is:
+Let's list all the possible triplets from this set that sum to 0:
 
-> Find 3 elements from the set that sum to 0.
+1. \\( \{-4, 0, 4\} \\)
+2. \\( \{-3, 0, 3\} \\)
+3. \\( \{-2, 0, 2\} \\)
+4. \\( \{-4, 1, 3\} \\)
+5. \\( \{-3, 1, 2\} \\)
 
-This is equivalent to **3-in-a-line** in a magic square or **Tic-Tac-Toe** on a suitable representation of these 8 values.
+There are exactly **5 winning lines**. 
 
-This game has been studied — and it turns out the structure is **isomorphic to standard Tic-Tac-Toe**.
+*(Note: This is often confused with the game of choosing numbers from 1 to 9 that sum to 15, which has 9 numbers, 8 winning lines, and is isomorphic to Tic-Tac-Toe. Our game here is much sparser!)*
 
 ---
 
 ## Step 4: Result
 
-In **standard Tic-Tac-Toe**, the **first player can force a win or draw** — **but not always win** if the second player plays optimally.
+Because this game has only 8 numbers and 5 winning lines, it is significantly harder to form winning combinations than in Tic-Tac-Toe. 
 
-Hence, in this game:
-
-- Alice **cannot always guarantee a win**.
-- If **Bob plays optimally**, the game will end in a **draw**.
+- Alice **cannot force a win**. She has too few winning lines to easily set up an unblockable "double threat" if Bob plays optimally.
+- By the **strategy-stealing argument** (having an extra number is never a disadvantage), Alice can guarantee at least a draw.
+- If **Bob plays optimally** (e.g., picking central numbers like \\( -3 \\) or \\( 0 \\) to block multiple lines), the game will end in a **draw**.
 - But if **Bob makes a mistake**, Alice **can win**.
 
 ---
