@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Party Handshake Puzzle</title>
+  <style>
+    :root{
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#d1d5db;
+      --accent:#2563eb;
+      --accent-bg:#dbeafe;
+      --success:#166534;
+      --success-bg:#dcfce7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:28px 18px 40px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.7rem,3vw,2.4rem);
+    }
+    .lead{
+      margin:0 0 20px;
+      color:var(--muted);
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:1.2fr .9fr;
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:18px;
+    }
+    .people{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+    .person{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px 8px;
+      text-align:center;
+      background:#fafafa;
+      transition:.2s ease;
+    }
+    .person .num{
+      font-size:1.45rem;
+      font-weight:800;
+    }
+    .person .small{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .person.removed{
+      opacity:.25;
+      transform:scale(.96);
+    }
+    .person.leftover{
+      border:2px solid var(--accent);
+      background:var(--accent-bg);
+    }
+    .controls{
+      margin-top:16px;
+      border-top:1px solid var(--border);
+      padding-top:16px;
+    }
+    .status{
+      min-height:68px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+    button{
+      width:100%;
+      min-height:46px;
+      border:0;
+      border-radius:10px;
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    button:disabled{
+      cursor:default;
+      opacity:.55;
+    }
+    .secondary{
+      margin-top:10px;
+      background:white;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+    .pair-list{
+      display:grid;
+      gap:8px;
+      margin-top:12px;
+    }
+    .pair{
+      display:flex;
+      justify-content:space-between;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+    }
+    .pair.final{
+      border:2px solid var(--accent);
+      background:var(--accent-bg);
+      font-weight:800;
+    }
+    .answer{
+      margin-top:16px;
+      display:none;
+      border:2px solid #22c55e;
+      background:var(--success-bg);
+      border-radius:14px;
+      padding:16px;
+    }
+    .answer.show{display:block}
+    .answer strong{
+      font-size:1.55rem;
+      color:var(--success);
+    }
+    code{
+      background:#eef2ff;
+      padding:2px 6px;
+      border-radius:6px;
+    }
+    @media (max-width:760px){
+      .layout{grid-template-columns:1fr}
+      .people{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Mr. & Mrs. Jones Handshake Puzzle</h1>
+    <p class="lead">
+      Nine people report different handshake counts: <code>0,1,2,...,8</code>.
+      People never shake hands with themselves or their spouse.
+    </p>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Interactive elimination</h2>
+        <p>Repeatedly pair the smallest and largest remaining counts.</p>
+
+        <div id="people" class="people"></div>
+
+        <div class="controls">
+          <div id="status" class="status">
+            Start with the extreme answers: <strong>0</strong> and <strong>8</strong>.
+          </div>
+          <button id="nextBtn">Next pair →</button>
+          <button id="resetBtn" class="secondary">Reset</button>
+        </div>
+      </section>
+
+      <aside>
+        <section class="card">
+          <h2>Why 0 must pair with 8</h2>
+          <p>
+            The person who says <strong>8</strong> shook hands with everyone they were allowed
+            to shake hands with: all 8 non-spouses.
+          </p>
+          <p>
+            But the person who says <strong>0</strong> shook nobody. Therefore the 8-person
+            could not have shaken the 0-person, so those two must be spouses.
+          </p>
+        </section>
+
+        <section class="card" style="margin-top:18px">
+          <h2>Forced spouse pairs</h2>
+          <div class="pair-list">
+            <div class="pair"><span>0 ↔ 8</span><span>spouses</span></div>
+            <div class="pair"><span>1 ↔ 7</span><span>spouses</span></div>
+            <div class="pair"><span>2 ↔ 6</span><span>spouses</span></div>
+            <div class="pair"><span>3 ↔ 5</span><span>spouses</span></div>
+            <div class="pair final"><span>4</span><span>left over</span></div>
+          </div>
+
+          <div id="answer" class="answer">
+            The only unpaired respondent is Mrs. Jones, because Mr. Jones was the one person
+            who was not asked.
+            <p><strong>Mrs. Jones shook 4 hands.</strong></p>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const pairs = [[0,8],[1,7],[2,6],[3,5]];
+    let step = 0;
+
+    const people = document.getElementById('people');
+    const status = document.getElementById('status');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const answer = document.getElementById('answer');
+
+    function render(){
+      people.innerHTML = '';
+
+      for(let n=0;n<=8;n++){
+        const div = document.createElement('div');
+        div.className = 'person';
+
+        const pairIndex = pairs.findIndex(p => p.includes(n));
+        if(pairIndex >= 0 && pairIndex < step) div.classList.add('removed');
+        if(n === 4 && step === 4) div.classList.add('leftover');
+
+        div.innerHTML = `
+          <div class="num">${n}</div>
+          <div class="small">handshakes</div>
+        `;
+        people.appendChild(div);
+      }
+
+      if(step === 0){
+        status.innerHTML = 'Start with the extreme answers: <strong>0</strong> and <strong>8</strong>.';
+      } else if(step < 4){
+        const prev = pairs[step-1];
+        const next = pairs[step];
+        status.innerHTML =
+          `<strong>${prev[0]} ↔ ${prev[1]}</strong> must be spouses. ` +
+          `Remove them. The same argument now forces ` +
+          `<strong>${next[0]} ↔ ${next[1]}</strong>.`;
+      } else {
+        status.innerHTML =
+          '<strong>3 ↔ 5</strong> is the fourth guest couple. ' +
+          'The only remaining answer is <strong>4</strong>.';
+      }
+
+      answer.classList.toggle('show', step === 4);
+
+      if(step === 4){
+        nextBtn.textContent = 'Solved: Mrs. Jones = 4';
+        nextBtn.disabled = true;
+      }else{
+        nextBtn.textContent = 'Next pair →';
+        nextBtn.disabled = false;
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if(step < 4) step++;
+      render();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      step = 0;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
