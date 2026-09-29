@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alternating Subset Weight</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+  }
+  .container { max-width: 1050px; margin: auto; }
+  h1 { margin-bottom: 8px; }
+  .subtitle { color: #667085; margin-bottom: 28px; }
+  .card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+  .formula {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    text-align: center;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .plus { color: #16803c; font-weight: 700; }
+  .minus { color: #c83232; font-weight: 700; }
+  .highlight {
+    background: #eef6ff;
+    border: 2px solid #4d91e8;
+  }
+  .answer {
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    margin: 14px 0;
+  }
+  select {
+    font-size: 17px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+  }
+  .cases {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .case {
+    min-width: 90px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+  }
+  .sign {
+    font-size: 20px;
+    margin-top: 5px;
+  }
+  .arrow {
+    text-align: center;
+    font-size: 28px;
+    color: #777;
+    margin: 8px;
+  }
+  .small { color: #667085; line-height: 1.6; }
+  @media(max-width: 700px) {
+    body { padding: 16px; }
+    .row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1>Alternating Subset Weights</h1>
+  <div class="subtitle">
+    S = {1,2,...,2013}. Find the sum of w(A) over every subset A ⊆ S.
+  </div>
+
+  <div class="card">
+    <h2>Problem</h2>
+    <div class="formula">
+      A = {a₁ &lt; a₂ &lt; ... &lt; aₖ}
+      <br><br>
+      w(A) = a₁ − a₂ + a₃ − a₄ + ...
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>① Don't sum subsets — track one number j</h2>
+
+    <p>
+      Suppose a subset contains <b>j</b>.
+      Its sign depends on how many selected numbers are smaller than j.
+    </p>
+
+    <div class="formula">
+      sign(j) = (−1)<sup># selected elements below j</sup>
+    </div>
+
+    <p class="small">
+      Example: if two selected elements occur before j, then j is the
+      third element of the subset and receives a + sign.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>② Explore the cancellation</h2>
+
+    <label>
+      Choose j:
+      <select id="jSelect">
+        <option>1</option>
+        <option>2</option>
+        <option selected>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+      </select>
+    </label>
+
+    <div id="description" class="small" style="margin-top:14px"></div>
+    <div id="cases" class="cases"></div>
+    <div id="signSum" class="formula" style="margin-top:18px"></div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <h2>③ Why j &gt; 1 disappears</h2>
+
+      <p>The total coefficient of j is</p>
+
+      <div class="formula">
+        Σ<sub>B⊆{1,...,j−1}</sub>
+        (−1)<sup>|B|</sup>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <div class="formula">
+        (1 − 1)<sup>j−1</sup>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <div class="formula">
+        0 &nbsp;&nbsp; if j &gt; 1
+      </div>
+
+      <p class="small">
+        So every number 2,3,...,2013 has total contribution zero.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>④ What happens to j = 1?</h2>
+
+      <p>
+        There are no smaller numbers than 1.
+      </p>
+
+      <p>
+        Therefore whenever a subset contains 1, it is always the
+        first element:
+      </p>
+
+      <div class="formula">
+        <span class="plus">+1</span>
+      </div>
+
+      <p>
+        The remaining 2012 elements can independently be
+        included or excluded.
+      </p>
+
+      <div class="formula">
+        # subsets containing 1 = 2<sup>2012</sup>
+      </div>
+    </div>
+  </div>
+
+  <div class="card highlight">
+    <h2 style="text-align:center">Only 1 survives</h2>
+
+    <div class="formula">
+      contribution(1)
+      =
+      1 × 2<sup>2012</sup>
+    </div>
+
+    <div class="answer">
+      ∑<sub>A⊆S</sub> w(A) = 2<sup>2012</sup>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Interview shortcut</h2>
+
+    <p>
+      Instead of considering all 2<sup>2013</sup> subsets, ask:
+    </p>
+
+    <div class="formula">
+      "What is the total coefficient of each number j?"
+    </div>
+
+    <p>
+      For every <b>j &gt; 1</b>, toggle one smaller element.
+      This changes j's position from odd to even, or even to odd:
+    </p>
+
+    <div class="formula">
+      <span class="plus">+j</span>
+      &nbsp; ↔ &nbsp;
+      <span class="minus">−j</span>
+    </div>
+
+    <p>
+      Thus they cancel pairwise. The number <b>1</b> has no smaller
+      element available to toggle, so it is the only survivor.
+    </p>
+  </div>
+
+</div>
+
+<script>
+const select = document.getElementById("jSelect");
+const cases = document.getElementById("cases");
+const signSum = document.getElementById("signSum");
+const description = document.getElementById("description");
+
+function render() {
+  const j = Number(select.value);
+  const n = j - 1;
+
+  cases.innerHTML = "";
+
+  if (n === 0) {
+    description.innerHTML =
+      "There are no elements smaller than <b>1</b>.";
+
+    cases.innerHTML = `
+      <div class="case">
+        B = ∅
+        <div class="sign plus">+1</div>
+      </div>
+    `;
+
+    signSum.innerHTML =
+      "sum of signs = 1 &nbsp; → &nbsp; <b>1 survives</b>";
+
+    return;
+  }
+
+  description.innerHTML =
+    `Consider every possible choice B ⊆ {1,...,${j-1}}.
+     The sign of ${j} is (−1)<sup>|B|</sup>.`;
+
+  const total = 1 << n;
+  let sum = 0;
+
+  for (let mask = 0; mask < total; mask++) {
+
+    let selected = [];
+    let count = 0;
+
+    for (let x = 1; x < j; x++) {
+      if (mask & (1 << (x - 1))) {
+        selected.push(x);
+        count++;
+      }
+    }
+
+    const sign = count % 2 === 0 ? 1 : -1;
+    sum += sign;
+
+    const div = document.createElement("div");
+    div.className = "case";
+
+    const setText =
+      selected.length === 0
+        ? "∅"
+        : "{" + selected.join(",") + "}";
+
+    div.innerHTML = `
+      B = ${setText}
+      <div class="sign ${sign > 0 ? "plus" : "minus"}">
+        ${sign > 0 ? "+" : "−"}${j}
+      </div>
+    `;
+
+    cases.appendChild(div);
+  }
+
+  signSum.innerHTML =
+    `sum of signs = ${sum}
+     &nbsp; → &nbsp;
+     <b>${j} cancels completely</b>`;
+}
+
+select.addEventListener("change", render);
+render();
+</script>
+
+</body>
+</html>

@@ -16,6 +16,8 @@ w(A) = a_1 - a_2 + a_3 - a_4 + \dots + (-1)^{k+1} a_k
 
 What is the **sum of the weights** over all subsets of \\( S \\)?
 
+<iframe src="{{ site.baseurl }}/assets/alternating_subset_weights.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ---
 
 ## Insight: Pairing Trick
