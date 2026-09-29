@@ -11,6 +11,8 @@ The New York Yankees and the San Francisco Giants are playing in a best-of-seven
 
 To solve this, we utilize **dynamic programming** and model the game state using matrices to determine the optimal amount to bet at each stage of the series.
 
+<iframe src="{{ site.baseurl }}/assets/world_series_betting_dp.html" width="100%" height="800px" style="border:none; border-radius: 12px; margin: 20px 0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></iframe>
+
 ### State Representation
 
 We define a matrix \\( P \\) that holds the **net payoff** in each state \\( (i, j) \\), where:

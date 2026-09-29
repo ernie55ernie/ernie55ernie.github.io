@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Series Betting — Dynamic Programming</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --panel:#f0f3f8; --text:#172033;
+      --muted:#667085; --border:#d9dee8; --accent:#335cff; --good:#117a4b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:24px; font-family:Inter,ui-sans-serif,system-ui,-apple-system,
+      BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text);
+    }
+    .wrap{max-width:1050px;margin:auto}
+    h1{margin:0 0 8px;font-size:clamp(28px,4vw,44px)}
+    .lead{color:var(--muted);line-height:1.6;margin:0 0 24px}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .panel{background:var(--panel);border-radius:12px;padding:14px}
+    .eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--muted);font-weight:700}
+    .answer{font-size:42px;font-weight:800;margin-top:8px}
+    .muted{color:var(--muted)}
+    .small{font-size:14px;line-height:1.6}
+    input{
+      width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;
+      font-size:16px;background:white;color:var(--text)
+    }
+    button{
+      min-height:44px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);
+      background:white;color:var(--text);font-weight:700;cursor:pointer
+    }
+    button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse;min-width:650px}
+    th,td{padding:12px;text-align:center;border-top:1px solid var(--border)}
+    thead th{border-top:none;background:var(--panel)}
+    th:first-child,td:first-child{text-align:left}
+    .scroll{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
+    .formula{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:var(--panel);padding:14px;border-radius:10px;text-align:center
+    }
+    .row{
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+      background:var(--panel);padding:12px;border-radius:10px;margin-top:8px
+    }
+    .history{display:grid;gap:8px}
+    .history>div{border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+    .score{font-size:34px;font-weight:800}
+    .highlight{outline:3px solid var(--accent);outline-offset:-3px;font-weight:800}
+    section{margin-top:18px}
+    @media (max-width:760px){
+      body{padding:14px}.grid,.grid2{grid-template-columns:1fr}.answer{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>World Series Betting with Dynamic Programming</h1>
+  <p class="lead">
+    Replicate a <strong>$100 even-odds bet on the Yankees to win a best-of-seven series</strong>
+    using only even-odds bets on individual games.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="eyebrow">Answer</div>
+      <div id="firstBet" class="answer">$31.25</div>
+      <div class="muted">Bet this amount on the Yankees in Game 1.</div>
+      <p class="small muted">
+        The target terminal payoff is <strong>+$100</strong> if the Yankees win the series and
+        <strong>−$100</strong> if they lose.
+      </p>
+    </div>
+
+    <div class="card">
+      <label for="stake"><strong>Series wager size</strong></label>
+      <div style="margin-top:8px">
+        <input id="stake" type="number" min="1" max="100000" step="1" value="100" />
+      </div>
+      <p id="validation" class="small muted">Change this amount to scale every hedge proportionally.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="card">
+      <h2 style="margin-top:0">1. Dynamic-programming value matrix</h2>
+      <p class="small muted">
+        Let <strong>V(i,j)</strong> be the required profit position when the Yankees have
+        <strong>i</strong> wins and the Giants have <strong>j</strong> wins.
+      </p>
+      <div class="formula">V(i,j) = ½[V(i+1,j) + V(i,j+1)]</div>
+      <p class="small muted">
+        Boundary values: V(4,j)=+$100 and V(i,4)=−$100.
+      </p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Y \ G</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+          </thead>
+          <tbody id="valueBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2 style="margin-top:0">2. Why Game 1 is $31.25</h2>
+      <div class="row"><span>If Yankees win Game 1</span><strong id="upValue">+$31.25</strong></div>
+      <div class="row"><span>If Giants win Game 1</span><strong id="downValue">−$31.25</strong></div>
+      <p class="small">
+        At even odds, betting <strong>B</strong> on the Yankees moves the position from 0 to
+        <strong>+B</strong> after a win and <strong>−B</strong> after a loss.
+      </p>
+      <div id="formula" class="formula">B = (31.25 − (−31.25))/2 = $31.25</div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">3. Probability interpretation</h2>
+      <p class="small muted">
+        After a Game-1 Yankees win, the score is 1–0. Assuming each game is a fair 50–50 event,
+        the Yankees' probability of eventually winning the series is:
+      </p>
+      <div class="formula">P(series win | 1–0) = 21/32 = 65.625%</div>
+      <p class="small">
+        Therefore the value of the original series bet at that state is:
+      </p>
+      <div id="probFormula" class="formula">100 × [2(21/32) − 1] = $31.25</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2 style="margin-top:0">4. Walk through a possible series</h2>
+      <p class="small muted">
+        Click game outcomes to see how much you would bet before each subsequent game.
+      </p>
+      <div class="grid2">
+        <div class="panel">
+          <div class="small muted">Current score</div>
+          <div id="score" class="score">0 – 0</div>
+          <p id="status" class="small">Before Game 1, bet <strong>$31.25</strong> on the Yankees.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="yw" class="primary">Yankees win next game</button>
+            <button id="gw">Giants win next game</button>
+            <button id="reset">Reset</button>
+          </div>
+        </div>
+        <div>
+          <strong>Betting path</strong>
+          <div id="history" class="history" style="margin-top:10px">
+            <div>Start at 0–0 → bet <strong>$31.25 on Yankees</strong>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2 style="margin-top:0">Interview shortcut</h2>
+      <p class="small" style="margin-bottom:0">
+        Work backward from <strong>+100</strong> and <strong>−100</strong>.
+        At each state, the required value is the average of the two next-state values,
+        and the next-game bet is half their difference.
+        From 0–0, the next states are +31.25 and −31.25, so the first bet is
+        <strong>$31.25</strong>.
+      </p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const stakeInput = document.getElementById('stake');
+  const valueBody = document.getElementById('valueBody');
+  const firstBetEl = document.getElementById('firstBet');
+  const upValueEl = document.getElementById('upValue');
+  const downValueEl = document.getElementById('downValue');
+  const formulaEl = document.getElementById('formula');
+  const probFormulaEl = document.getElementById('probFormula');
+  const validationEl = document.getElementById('validation');
+  const scoreEl = document.getElementById('score');
+  const statusEl = document.getElementById('status');
+  const historyEl = document.getElementById('history');
+  const yButton = document.getElementById('yw');
+  const gButton = document.getElementById('gw');
+  const resetButton = document.getElementById('reset');
+
+  let stake = 100;
+  let y = 0, g = 0;
+
+  function money(x) {
+    const sign = x < -1e-9 ? '−' : x > 1e-9 ? '+' : '';
+    return sign + '$' + Math.abs(x).toFixed(2);
+  }
+
+  function absMoney(x) {
+    return '$' + Math.abs(x).toFixed(2);
+  }
+
+  function buildDP(S) {
+    const V = Array.from({length:5}, () => Array(5).fill(null));
+    for (let j=0;j<4;j++) V[4][j] = S;
+    for (let i=0;i<4;i++) V[i][4] = -S;
+
+    for (let i=3;i>=0;i--) {
+      for (let j=3;j>=0;j--) {
+        V[i][j] = (V[i+1][j] + V[i][j+1]) / 2;
+      }
+    }
+    return V;
+  }
+
+  function nextBet(V,i,j) {
+    if (i>=4 || j>=4) return 0;
+    return (V[i+1][j] - V[i][j+1]) / 2;
+  }
+
+  function renderMatrix(V) {
+    valueBody.innerHTML = '';
+    for (let i=0;i<=4;i++) {
+      const tr = document.createElement('tr');
+
+      const first = document.createElement('th');
+      first.textContent = i;
+      tr.appendChild(first);
+
+      for (let j=0;j<=4;j++) {
+        const td = document.createElement('td');
+
+        if ((i===4 && j===4) || (i<4 && j<4 && i+j>6)) {
+          td.textContent = '—';
+          td.className = 'muted';
+        } else if (V[i][j] !== null) {
+          td.textContent = money(V[i][j]);
+          if (i===0 && j===0) td.classList.add('highlight');
+        } else {
+          td.textContent = '—';
+        }
+        tr.appendChild(td);
+      }
+      valueBody.appendChild(tr);
+    }
+  }
+
+  function renderStatic() {
+    const V = buildDP(stake);
+    const b0 = nextBet(V,0,0);
+
+    firstBetEl.textContent = absMoney(b0);
+    upValueEl.textContent = money(V[1][0]);
+    downValueEl.textContent = money(V[0][1]);
+    formulaEl.textContent =
+      `B = (${V[1][0].toFixed(2)} − (${V[0][1].toFixed(2)}))/2 = ${absMoney(b0)}`;
+    probFormulaEl.textContent =
+      `${stake.toFixed(0)} × [2(21/32) − 1] = ${absMoney(V[1][0])}`;
+
+    renderMatrix(V);
+    renderState(false);
+  }
+
+  function renderState(addHistory) {
+    const V = buildDP(stake);
+    scoreEl.textContent = `${y} – ${g}`;
+
+    if (y===4 || g===4) {
+      const won = y===4;
+      statusEl.innerHTML = won
+        ? `Series over. Replicated payoff: <strong>+${absMoney(stake)}</strong>.`
+        : `Series over. Replicated payoff: <strong>−${absMoney(stake)}</strong>.`;
+
+      yButton.disabled = true;
+      gButton.disabled = true;
+
+      if (addHistory) {
+        const d = document.createElement('div');
+        d.innerHTML = `Final ${y}–${g} → payoff <strong>${won ? '+' : '−'}${absMoney(stake)}</strong>.`;
+        historyEl.appendChild(d);
+      }
+      return;
+    }
+
+    yButton.disabled = false;
+    gButton.disabled = false;
+
+    const b = nextBet(V,y,g);
+    const side = b >= 0 ? 'Yankees' : 'Giants';
+
+    statusEl.innerHTML =
+      `Before Game ${y+g+1}, bet <strong>${absMoney(b)}</strong> on the ` +
+      `<strong>${side}</strong>. Current DP value: <strong>${money(V[y][g])}</strong>.`;
+
+    if (addHistory) {
+      const d = document.createElement('div');
+      d.innerHTML = `Score ${y}–${g} → bet <strong>${absMoney(b)} on ${side}</strong>.`;
+      historyEl.appendChild(d);
+    }
+  }
+
+  stakeInput.addEventListener('input', () => {
+    let v = Number(stakeInput.value);
+
+    if (!Number.isFinite(v) || v <= 0) {
+      validationEl.textContent = 'Enter a positive wager amount.';
+      return;
+    }
+
+    v = Math.min(v,100000);
+    stake = v;
+    validationEl.textContent = 'Every hedge scales proportionally with the series wager.';
+
+    y = 0;
+    g = 0;
+    historyEl.innerHTML = '';
+
+    renderStatic();
+
+    const V = buildDP(stake);
+    historyEl.innerHTML =
+      `<div>Start at 0–0 → bet <strong>${absMoney(nextBet(V,0,0))} on Yankees</strong>.</div>`;
+  });
+
+  yButton.addEventListener('click', () => {
+    if (y<4 && g<4) {
+      y++;
+      renderState(true);
+    }
+  });
+
+  gButton.addEventListener('click', () => {
+    if (y<4 && g<4) {
+      g++;
+      renderState(true);
+    }
+  });
+
+  resetButton.addEventListener('click', () => {
+    y = 0;
+    g = 0;
+    const V = buildDP(stake);
+    historyEl.innerHTML =
+      `<div>Start at 0–0 → bet <strong>${absMoney(nextBet(V,0,0))} on Yankees</strong>.</div>`;
+    renderState(false);
+  });
+
+  renderStatic();
+})();
+</script>
+</body>
+</html>
