@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "AArbitrage Like a Master: Strategy, Mathematics, Execution, Infrastructure, Risk, and Regulation"
+title: "Arbitrage Like a Master: Strategy, Mathematics, Execution, Infrastructure, Risk, and Regulation"
 date: 2026-10-27
 category: trading
 ---
