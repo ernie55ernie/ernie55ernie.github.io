@@ -1,11 +1,9 @@
 ---
 layout: post
-title: "Arbitrage Like a Master"
+title: "AArbitrage Like a Master: Strategy, Mathematics, Execution, Infrastructure, Risk, and Regulation"
 date: 2026-10-27
 category: trading
 ---
-
-# Arbitrage Like a Master: Strategy, Mathematics, Execution, Infrastructure, Risk, and Regulation
 
 > **Research cutoff:** October 23, 2026. Educational/engineering research; not legal or investment advice. Source citation links have been reconstructed from primary publications and official documentation.
 
@@ -171,7 +169,7 @@ $$
 
 plus higher-order and jump terms. CME educational material distinguishes implied volatility as forward-looking market pricing from realized volatility observed from past price variation; Cboe historical analysis found that VIX implied volatility systematically exceeded subsequent realized S&P 500 volatility on average over its studied sample. ([Cboe implied vs. realized volatility](https://www.cboe.com/insights/posts/white-paper-shows-volatility-risk-premium-facilitated-higher-risk-adjusted-returns-for-put-index/))
 
-![Historical Cboe-reported average implied and realized volatility, 1990–2018](assets/images/volatility-risk-premium-1990-2018.png)
+![Historical Cboe-reported average implied and realized volatility, 1990–2018](assets/volatility-risk-premium-1990-2018.png)
 
 *Recreated from the published 1990–2018 averages, not the original Cboe graphic.*
 
